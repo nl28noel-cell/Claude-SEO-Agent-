@@ -55,7 +55,14 @@ Grundregel: **teure Expansion nur auf wenige, geprüfte Seeds; Bewertung immer g
 
 Richtwert für einen vollständigen Discovery-Lauf dieses Piloten: ca. **8.000–15.000 Units** (15 Seeds × 30 Zeilen Broad Match ≈ 9.000; 3 Batches phrase_these ≈ 2.000–3.000; 15 SERPs ≈ 1.500; 3 Wettbewerber × 50 ≈ 1.500). Das passt in ein 50.000er-Kontingent, wenn keine anderen Nutzer im Account parallel verbrauchen.
 
-### 1.5 Hinterlegen eines Semrush-Keys (sicher)
+### 1.5 Entscheidung Pilot (23.11.2026)
+
+**Primärer Semrush-Zugang = offizieller Semrush MCP Connector. Kein zusätzliches Semrush-Secret.**
+- Alle bisherigen Semrush-Abfragen liefen über den Connector (`mcp__Semrush__execute_report`). Jede Antwort enthielt `usage.api_units` und `usage.api_units_left` → Verbrauch wird auf das Account-Kontingent angerechnet (deckt sich mit der Doku).
+- Cache und API-effiziente Strategie gelten unverändert: vor jedem Connector-Call `tools/keyword_cache.py missing …`, Ergebnisse danach importieren; `display_limit` und Batch-Reports (`phrase_these`) nutzen.
+- Eigene API-Skripte (v4-Key als Network Secret) erst, wenn geplante autonome Jobs, Multi-Client-Skalierung oder Connector-Lücken es erfordern.
+
+### 1.6 Falls später doch ein Semrush-Key nötig wird
 
 - Key **nie** in den Chat, ins Repo oder in eine Datei. Hinterlegung über das **sichere Formular dieser Umgebung (Network Secret)**: Host `api.semrush.com`, Header `Authorization`, Präfix `Apikey`. Der Proxy fügt den Key nur in Requests an diesen Host ein; Claude sieht den Wert nie.
 - Empfohlene Key-Einstellungen in Semrush: eigener Key „Claude SEO Autopilot“, **Read-only**, TTL z. B. 90 Tage.
