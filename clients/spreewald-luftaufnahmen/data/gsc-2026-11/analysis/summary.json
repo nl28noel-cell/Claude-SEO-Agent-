@@ -1,0 +1,71 @@
+{
+ "queries": 530,
+ "query_clicks": 48,
+ "query_impressions": 77097,
+ "quickwins": 108,
+ "cannibalization_cases": 37,
+ "local_queries": 77,
+ "nbo_queries": 48,
+ "places_seen": [
+  [
+   "berlin",
+   41
+  ],
+  [
+   "brandenburg",
+   12
+  ],
+  [
+   "münchen",
+   6
+  ],
+  [
+   "deutschland",
+   3
+  ],
+  [
+   "thüringen",
+   2
+  ],
+  [
+   "tempelhof",
+   2
+  ],
+  [
+   "köln",
+   2
+  ],
+  [
+   "in der nähe",
+   2
+  ],
+  [
+   "potsdam",
+   2
+  ],
+  [
+   "sachsen",
+   1
+  ],
+  [
+   "cottbus",
+   1
+  ],
+  [
+   "neuruppin",
+   1
+  ],
+  [
+   "frankfurt",
+   1
+  ],
+  [
+   "hamburg",
+   1
+  ],
+  [
+   "spreewald",
+   1
+  ]
+ ]
+}

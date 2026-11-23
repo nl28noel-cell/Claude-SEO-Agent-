@@ -15,3 +15,10 @@ Laufende Liste. **Status OPEN = erkannt, nichts verändert.** Änderungen an der
 | F-009 | 23.11.2026 | On-Page | Viele H2 sind generische Template-Blöcke | OPEN |
 | F-010 | 23.11.2026 | Kannibalisierung | „drohnenvermessung berlin“ / „anbieter vermessung drohne berlin“: Dachvermessung (7/8) + Gebäudeinspektion (59/87) | OPEN |
 | F-011 | 23.11.2026 | Content-Claim | „Bis zu 99,4 % Genauigkeit“ (Dachvermessung) – Quelle bestätigen | OPEN – prüfen |
+| F-012 | 23.11.2026 | Performance | Seitenübergreifender Impressionsrückgang ab Juli 2026 (≈ −50 %), Klicks stabil; stark: Immobilien, Baudoku, Dachvermessung, Gebäudeinspektion | OPEN – Analyse |
+| F-013 | 23.11.2026 | Kannibalisierung | Dachinspektion-Queries landen überwiegend auf /drohne-dach-gebaeude-inspektion/ (813 vs. 382 Impr.) | OPEN – nach Freeze |
+| F-014 | 23.11.2026 | Kannibalisierung | Fassadeninspektion-Queries landen auf /fassadenaufmass-…/ (448 Impr.); neue Seite im Aufbau | MONITOR |
+| F-015 | 23.11.2026 | Content-Lücke | 3D-Modell-Queries (~1.300 Impr.) ohne passende Zielseite (Baudoku/Dachvermessung) | OPEN |
+| F-016 | 23.11.2026 | CTR | Preisseite CTR 0,13 % bei Pos. ~10 (38.600 Impr., 33 statt ~1.000 erwarteten Klicks) | OPEN |
+| F-017 | 23.11.2026 | Technik | /kontakt/?rwg_token=… (GBP-Reservierungslink) in GSC sichtbar – unkritisch | MONITOR |
+| F-018 | 23.11.2026 | Datenqualität | Verdacht auf nicht-menschliche Impressionen (Frühjahr 2026: hohe Impr., 0 Klicks, danach 0) | HINWEIS |

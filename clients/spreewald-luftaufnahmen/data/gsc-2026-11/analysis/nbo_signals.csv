@@ -1,0 +1,49 @@
+query,cluster,places,nbo_signal,clicks,impressions,ctr,position,pos_bucket,exp_clicks,ctr_gap_clicks,top_page,n_pages
+gebäudeinspektion drohne,inspektion_allgemein,,True,0,495,0.0,33.03,21-50,1.0,1.0,/drohne-dach-gebaeude-inspektion/,1
+3d-modell drohne berlin,vermessung_allgemein,berlin,True,0,479,0.0,12.12,11-20,4.8,4.8,/drohnen-baudokumentation/,2
+fassadeninspektion drohne,fassadeninspektion,,True,0,258,0.0,28.7,21-50,0.5,0.5,/fassadenaufmass-drohnen-vermessung-fassade/,3
+drohnendienstleister 3d-modell berlin,vermessung_allgemein,berlin,True,0,238,0.0,16.24,11-20,2.4,2.4,/drohnen-baudokumentation/,2
+dachinspektion mit drohne,dachinspektion,,True,0,205,0.0,51.45,>50,0.4,0.4,/dachinspektion-mit-drohne/,2
+fassadeninspektion,fassadeninspektion,,True,0,190,0.0,41.65,21-50,0.4,0.4,/fassadenaufmass-drohnen-vermessung-fassade/,3
+dachinspektion per drohne,dachinspektion,,True,1,171,0.0058,36.61,21-50,0.3,-0.7,/drohne-dach-gebaeude-inspektion/,2
+drohne dachinspektion,dachinspektion,,True,0,161,0.0,80.01,>50,0.3,0.3,/drohne-dach-gebaeude-inspektion/,2
+3d-modell immobilien drohne berlin,vermessung_allgemein,berlin,True,0,150,0.0,15.26,11-20,1.5,1.5,/drohnen-baudokumentation/,3
+dachinspektion drohne,dachinspektion,,True,0,150,0.0,61.77,>50,0.3,0.3,/drohne-dach-gebaeude-inspektion/,2
+dachinspektion mit drohnen,dachinspektion,,True,0,133,0.0,35.84,21-50,0.3,0.3,/drohne-dach-gebaeude-inspektion/,2
+anbieter 3d-modell drohne berlin,vermessung_allgemein,berlin,True,0,131,0.0,14.95,11-20,1.3,1.3,/drohne-dach-vermessung/,2
+dachinspektion per drohne berlin,dachinspektion,berlin,True,0,110,0.0,17.33,11-20,1.1,1.1,/dachinspektion-mit-drohne/,3
+dachinspektion drohne berlin,dachinspektion,berlin,True,1,100,0.01,26.57,21-50,0.2,-0.8,/drohne-dach-gebaeude-inspektion/,3
+3d-dachvermessung,dachvermessung,,True,0,98,0.0,59.31,>50,0.2,0.2,/drohne-dach-vermessung/,1
+3d-modell drohne immobilien berlin,vermessung_allgemein,berlin,True,0,83,0.0,16.04,11-20,0.8,0.8,/drohnen-baudokumentation/,3
+hochzeitsfotograf mit drohne westerwald,hochzeit_event,,True,0,64,0.0,35.42,21-50,0.1,0.1,/drohne-luftaufnahmen-hochzeit/,1
+dachinspektion sachsen,dachinspektion,sachsen,True,0,58,0.0,17.66,11-20,0.6,0.6,/drohne-dach-gebaeude-inspektion/,1
+fassadeninspektion digital,fassadeninspektion,,True,0,45,0.0,87.44,>50,0.1,0.1,/drohne-dach-gebaeude-inspektion/,1
+drohneninspektion kosten,inspektion_allgemein,,True,0,31,0.0,27.68,21-50,0.1,0.1,/drohne-dach-gebaeude-inspektion/,1
+drone service 3d-model berlin,vermessung_allgemein,berlin,True,0,19,0.0,17.63,11-20,0.2,0.2,/drohne-dach-vermessung/,1
+dachinspektion,dachinspektion,,True,0,16,0.0,41.12,21-50,0.0,0.0,/dachinspektion-mit-drohne/,1
+preis für drohnenbilder von solaranlage,preis,,True,0,16,0.0,49.38,21-50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+dachinspektion drohne kosten,dachinspektion,,True,0,15,0.0,40.33,21-50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+dachinspektion mit drohne bonn,dachinspektion,,True,0,10,0.0,73.2,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,2
+gebäudeinspektion,inspektion_allgemein,,True,0,10,0.0,66.2,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+luftaufnahmen drohnen inspektion münchen,inspektion_allgemein,münchen,True,0,10,0.0,73.3,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,2
+dach- und gebäudeinspektion,inspektion_allgemein,,True,0,9,0.0,16.56,11-20,0.1,0.1,/drohne-dach-gebaeude-inspektion/,1
+drohneninspektion dach,dachinspektion,,True,0,7,0.0,25.86,21-50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+dachinspektion durchführen lassen,dachinspektion,,True,0,5,0.0,24.6,21-50,0.0,0.0,/dachinspektion-mit-drohne/,1
+dachinspektion drohne vs manuell,dachinspektion,,True,0,4,0.0,10.75,11-20,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+dachinspektion mit drohne köln,dachinspektion,köln,True,0,4,0.0,60.0,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+dachinspektion mittels drohne,dachinspektion,,True,0,3,0.0,48.0,21-50,0.0,0.0,/dachinspektion-mit-drohne/,1
+dachinspektion weg,dachinspektion,,True,0,2,0.0,84.0,>50,0.0,0.0,/dachinspektion-mit-drohne/,1
+drohne gebäudeinspektion,inspektion_allgemein,,True,0,2,0.0,20.0,11-20,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+drohneninspektion,inspektion_allgemein,,True,0,2,0.0,88.5,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+fpv luftaufnahmen,generisch_drohne,,True,0,2,0.0,65.0,>50,0.0,0.0,/,1
+"ich suche dienstleister, die professionelle drohnenvermessung und photogrammetrie im dach-raum anbieten. welche konkreten firmen und vermessungsbüros kannst du mir für solche befliegungen empfehlen?",dachvermessung,,True,0,2,0.0,1.0,1-3,0.6,0.6,/drohne-dach-vermessung/,1
+3d modell drohne berlin,vermessung_allgemein,berlin,True,0,1,0.0,28.0,21-50,0.0,0.0,/drohne-dach-vermessung/,1
+dachinspektion flachdach,dachinspektion,,True,0,1,0.0,42.0,21-50,0.0,0.0,/dachinspektion-mit-drohne/,1
+dachinspektion sicher mit drohne lemgo,dachinspektion,,True,0,1,0.0,37.0,21-50,0.0,0.0,/dachinspektion-mit-drohne/,1
+drohne für dachvermessung kaufen,dachvermessung,,True,0,1,0.0,41.0,21-50,0.0,0.0,/drohne-dach-vermessung/,1
+drohnen kurse,generisch_drohne,,True,0,1,0.0,7.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+drohnenführerschein,generisch_drohne,,True,0,1,0.0,4.0,4-10,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohneninspektion fassade,fassadeninspektion,,True,0,1,0.0,28.0,21-50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+quadrocopter für luftaufnahmen kaufen,generisch_drohne,,True,0,1,0.0,68.0,>50,0.0,0.0,/,1
+spreewald,sonstiges,spreewald,True,0,1,0.0,5.0,4-10,0.1,0.1,/,1
+wärmebild drohne,inspektion_allgemein,,True,0,1,0.0,16.0,11-20,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1

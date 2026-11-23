@@ -110,7 +110,34 @@ Empfohlene Pilot-Lösung:
 - Risiko-Begrenzung: persönliche Umgebung (nur Noel), Dienstkonto ohne IAM-Rollen, nur Lesezugriff auf die freigegebenen Properties, Schlüssel alle 90 Tage rotieren, jederzeit in Cloud Console widerrufbar.
 - Skalierungs-Lösung später: kleiner Token-Broker (z. B. Cloud Run), der den Schlüssel hält und dem Autopiloten nur über einen festen API-Key (Network Secret) Daten liefert – dann liegt kein Google-Schlüssel mehr im Container.
 
-### 2.5 Ergebnis
+### 2.5 Umsetzung im Pilot (Stand 23.11.2026)
+
+- Service Account `seo-autopilot@claude-seo-agent-515611.iam.gserviceaccount.com`, Property `https://www.spreewald-luftaufnahmen.de/` (URL-Präfix), Rolle **Vollständig** → `check`, Search Analytics und URL Inspection getestet ✅.
+- Credential-Auflösung in `tools/gsc_client.py`: 1) Umgebungsvariable `GSC_SERVICE_ACCOUNT_JSON_B64` (persistent, bevorzugt) 2) Pfad aus `GSC_SERVICE_ACCOUNT_FILE` 3) `~/.config/semsharks/gsc-service-account.json` (außerhalb des Repos, chmod 600, **nur temporär – überlebt keinen Container-Neuaufbau**). Ausgegeben wird nur die Quelle, nie der Inhalt.
+- `.gitignore` schließt Service-Account-/Credential-JSONs, `.env`, `secrets/`, Schlüsseldateien aus.
+
+### 2.6 Persistente Secret-/Environment-Verwaltung dieser Umgebung
+
+Die Cloud-Umgebung „Claude-SEO-Agent“ bietet zwei dauerhafte Mechanismen (Einstellungen der Umgebung → Bearbeiten):
+
+| Mechanismus | Wie es funktioniert | Für GSC geeignet? |
+|---|---|---|
+| **Network Secrets** (API credentials) | Gespeichert auf der Umgebung; der Proxy fügt einen **festen Header** in Requests an genau einen Host ein. Claude sieht den Wert nie. | **Nein** – Google verlangt stündlich neu signierte Tokens aus dem privaten Schlüssel; ein fester Header reicht nicht. |
+| **Umgebungsvariablen** | Gespeichert auf der Umgebung, bei jedem Session-Start im Container gesetzt. Klartext auf der Umgebung; lesbar für Sessions/Befehle in dieser Umgebung. Persönliche Umgebung → nur Noel. | **Ja** – `GSC_SERVICE_ACCOUNT_JSON_B64`. Einmal eingetragen, in jeder neuen Session verfügbar; **kein erneuter Upload**. |
+
+Ablauf für einen neuen Schlüssel: neuen JSON-Key erzeugen → `base64 -i key.json | pbcopy` (macOS) bzw. `base64 -w0 key.json` (Linux) → in den Umgebungseinstellungen als Variable `GSC_SERVICE_ACCOUNT_JSON_B64` einfügen → neue Session starten → `python3 tools/gsc_client.py check` → alten Key in der Cloud Console löschen und lokale Datei entfernen. Werte trägt ausschließlich Noel ein (Claude setzt keine Secret-Werte).
+
+### 2.7 Setup-Skript der Umgebung
+
+Gespeichert in der Umgebung „Claude-SEO-Agent“ (läuft bei jedem frischen Container-Aufbau, vor Claude-Start):
+
+```bash
+python3 -m pip install -q --disable-pip-version-check google-auth requests
+```
+
+Status: in dieser Session manuell ausgeführt und funktionsfähig; im frischen Container noch nicht beobachtet (wird beim nächsten Neuaufbau bestätigt).
+
+### 2.8 Ergebnis
 
 Nach Einrichtung ruft der Autopilot **selbstständig und ohne manuelle Exporte** Query-, Page-, Country-, Device- und Tages-Zeitreihen (16 Monate) sowie den Indexierungsstatus einzelner URLs ab. Neue Kunden: nur Dienstkonto in deren Property als Nutzer hinzufügen.
 

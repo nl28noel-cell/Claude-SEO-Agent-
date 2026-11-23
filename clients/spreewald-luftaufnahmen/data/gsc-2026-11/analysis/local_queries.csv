@@ -1,0 +1,78 @@
+query,cluster,places,nbo_signal,clicks,impressions,ctr,position,pos_bucket,exp_clicks,ctr_gap_clicks,top_page,n_pages
+drohnenvermessung berlin,vermessung_allgemein,berlin,False,1,1062,0.0009,10.06,4-10,19.1,18.1,/drohne-dach-vermessung/,5
+luftaufnahme haus berlin,haus_privat,berlin,False,0,823,0.0,3.44,1-3,82.3,82.3,/haus-grundstueck-luftbild/,2
+drohnenfotografie immobilien brandenburg,immobilien,brandenburg,False,0,785,0.0,5.55,4-10,31.4,31.4,/immobilien-fotografie-drohne/,6
+drohnenfotografie immobilien berlin,immobilien,berlin,False,0,761,0.0,8.31,4-10,19.0,19.0,/immobilien-fotografie-drohne/,2
+drohnenaufnahmen brandenburg,generisch_drohne,brandenburg,False,0,712,0.0,17.68,11-20,7.1,7.1,/,5
+3d-modell drohne berlin,vermessung_allgemein,berlin,True,0,479,0.0,12.12,11-20,4.8,4.8,/drohnen-baudokumentation/,2
+drohnenaufnahmen berlin,generisch_drohne,berlin,False,0,477,0.0,35.53,21-50,1.0,1.0,/drohnen-aufnahmen-firma/,6
+anbieter vermessung drohne berlin,vermessung_allgemein,berlin,False,0,472,0.0,10.6,11-20,4.7,4.7,/drohne-dach-vermessung/,3
+drohnendienstleister berlin,generisch_drohne,berlin,False,0,453,0.0,13.28,11-20,4.5,4.5,/,5
+drohnendienstleistungen immobilien berlin,immobilien,berlin,False,0,438,0.0,7.91,4-10,11.0,11.0,/immobilien-fotografie-drohne/,4
+drohnendienstleister 3d-modell berlin,vermessung_allgemein,berlin,True,0,238,0.0,16.24,11-20,2.4,2.4,/drohnen-baudokumentation/,2
+drohnendienstleistungen berlin,generisch_drohne,berlin,False,0,185,0.0,18.64,11-20,1.9,1.9,/drohne-dach-gebaeude-inspektion/,2
+drohnenfotografie berlin,generisch_drohne,berlin,False,0,175,0.0,20.94,21-50,0.4,0.4,/immobilien-fotografie-drohne/,4
+3d-modell immobilien drohne berlin,vermessung_allgemein,berlin,True,0,150,0.0,15.26,11-20,1.5,1.5,/drohnen-baudokumentation/,3
+anbieter 3d-modell drohne berlin,vermessung_allgemein,berlin,True,0,131,0.0,14.95,11-20,1.3,1.3,/drohne-dach-vermessung/,2
+luftaufnahmen immobilien berlin,immobilien,berlin,False,0,116,0.0,8.69,4-10,2.3,2.3,/immobilien-fotografie-drohne/,4
+dachinspektion per drohne berlin,dachinspektion,berlin,True,0,110,0.0,17.33,11-20,1.1,1.1,/dachinspektion-mit-drohne/,3
+drohnenvermessung brandenburg,vermessung_allgemein,brandenburg,False,0,110,0.0,4.21,4-10,7.7,7.7,/drohne-dach-vermessung/,5
+dachvermessung mit drohne berlin,dachvermessung,berlin,False,0,103,0.0,10.31,4-10,1.9,1.9,/drohne-dach-vermessung/,4
+dachinspektion drohne berlin,dachinspektion,berlin,True,1,100,0.01,26.57,21-50,0.2,-0.8,/drohne-dach-gebaeude-inspektion/,3
+fassadenvermessung drohne berlin,fassadenvermessung,berlin,False,0,99,0.0,10.06,4-10,1.8,1.8,/fassadenaufmass-drohnen-vermessung-fassade/,5
+baustellendokumentation drohne thüringen,baudokumentation,thüringen,False,0,87,0.0,27.74,21-50,0.2,0.2,/drohnen-baudokumentation/,1
+baudokumentation drohne berlin,baudokumentation,berlin,False,0,84,0.0,2.27,1-3,12.6,12.6,/drohnen-baudokumentation/,1
+vermessung drohne brandenburg,vermessung_allgemein,brandenburg,False,0,84,0.0,2.51,1-3,8.4,8.4,/drohne-dach-vermessung/,4
+3d-modell drohne immobilien berlin,vermessung_allgemein,berlin,True,0,83,0.0,16.04,11-20,0.8,0.8,/drohnen-baudokumentation/,3
+drohnenfotograf brandenburg,generisch_drohne,brandenburg,False,0,76,0.0,14.38,11-20,0.8,0.8,/drohne-luftaufnahmen-hochzeit/,4
+hochzeitsvideo brandenburg,hochzeit_event,brandenburg,False,0,75,0.0,81.49,>50,0.1,0.1,/drohne-luftaufnahmen-hochzeit/,1
+luftbilder grundstück berlin,immobilien,berlin,False,0,68,0.0,9.41,4-10,1.4,1.4,/haus-grundstueck-luftbild/,2
+luftbilder mit drohne berlin,generisch_drohne,berlin,False,0,65,0.0,36.12,21-50,0.1,0.1,/,4
+dachinspektion sachsen,dachinspektion,sachsen,True,0,58,0.0,17.66,11-20,0.6,0.6,/drohne-dach-gebaeude-inspektion/,1
+drohnenfotos berlin,generisch_drohne,berlin,False,1,51,0.0196,20.29,11-20,0.1,-0.9,/immobilien-fotografie-drohne/,3
+luftaufnahmen brandenburg,generisch_drohne,brandenburg,False,0,26,0.0,67.12,>50,0.1,0.1,/,5
+drohnenaufnahmen neuruppin,generisch_drohne,neuruppin,False,0,24,0.0,43.54,21-50,0.0,0.0,/,3
+drohnenaufnhamen berlin,generisch_drohne,berlin,False,0,21,0.0,44.05,21-50,0.0,0.0,/immobilien-fotografie-drohne/,4
+drone service 3d-model berlin,vermessung_allgemein,berlin,True,0,19,0.0,17.63,11-20,0.2,0.2,/drohne-dach-vermessung/,1
+luftaufnahmen münchen,generisch_drohne,münchen,False,0,19,0.0,47.47,21-50,0.0,0.0,/,2
+vogelperspektive berlin,generisch_drohne,berlin,False,0,16,0.0,22.25,21-50,0.0,0.0,/drohnen-aufnahmen-firma/,1
+drohnenaufnahmen cottbus,generisch_drohne,cottbus,False,0,11,0.0,57.36,>50,0.0,0.0,/,1
+drohnenservice berlin,generisch_drohne,berlin,False,0,11,0.0,48.18,21-50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+luftaufnahmen drohnen inspektion münchen,inspektion_allgemein,münchen,True,0,10,0.0,73.3,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,2
+luftaufnahmen drohne berlin,generisch_drohne,berlin,False,0,8,0.0,25.38,21-50,0.0,0.0,/,2
+berlin von oben,generisch_drohne,berlin,False,0,7,0.0,3.0,1-3,0.7,0.7,/drohnen-aufnahmen-firma/,1
+drohnenaufnahmen potsdam,generisch_drohne,potsdam,False,0,7,0.0,44.86,21-50,0.0,0.0,/,1
+drohnenaufnahmen in der nähe,generisch_drohne,in der nähe,False,0,6,0.0,4.67,4-10,0.3,0.3,/,2
+brandenburg,sonstiges,brandenburg,False,0,4,0.0,1.0,1-3,1.1,1.1,/drohne-dach-gebaeude-inspektion/,1
+dachinspektion mit drohne köln,dachinspektion,köln,True,0,4,0.0,60.0,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+drohne über berlin,generisch_drohne,berlin,False,0,4,0.0,73.5,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+luftaufnahmen deutschland,generisch_drohne,deutschland,False,0,4,0.0,1.0,1-3,1.1,1.1,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen hamburg,generisch_drohne,hamburg,False,0,4,0.0,84.75,>50,0.0,0.0,/,1
+drohnenaufnahme berlin,generisch_drohne,berlin,False,0,3,0.0,35.67,21-50,0.0,0.0,/drohnen-aufnahmen-firma/,2
+fotos hochzeit brandenburg,hochzeit_event,brandenburg,False,0,3,0.0,92.33,>50,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+luftaufnahmen berlin,generisch_drohne,berlin,False,0,3,0.0,50.67,>50,0.0,0.0,/,1
+dachdecker berlin mariendorf,sonstiges,berlin,False,0,2,0.0,1.0,1-3,0.6,0.6,/drohne-dach-vermessung/,1
+drohnenfotograf berlin,generisch_drohne,berlin,False,0,2,0.0,55.0,>50,0.0,0.0,/drohnen-aufnahmen-firma/,1
+drohnenfotograf potsdam,generisch_drohne,potsdam,False,0,2,0.0,86.5,>50,0.0,0.0,/,1
+drone service berlin,generisch_drohne,berlin,False,0,2,0.0,23.5,21-50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+grundstück vermessen lassen berlin,vermessung_allgemein,berlin,False,0,2,0.0,91.0,>50,0.0,0.0,/drohne-dach-vermessung/,1
+luftaufnahmen drohne frankfurt,generisch_drohne,frankfurt,False,0,2,0.0,21.0,21-50,0.0,0.0,/,1
+luftbild haus berlin,haus_privat,berlin,False,0,2,0.0,3.0,1-3,0.2,0.2,/haus-grundstueck-luftbild/,2
+unternehmenslösungen berlin,firma_imagefilm,berlin,False,0,2,0.0,89.5,>50,0.0,0.0,/drohnen-aufnahmen-firma/,1
+3d modell drohne berlin,vermessung_allgemein,berlin,True,0,1,0.0,28.0,21-50,0.0,0.0,/drohne-dach-vermessung/,1
+dachdecker berlin tempelhof,sonstiges,berlin|tempelhof,False,0,1,0.0,2.0,1-3,0.1,0.1,/fassadenaufmass-drohnen-vermessung-fassade/,1
+dachdecker tempelhof,sonstiges,tempelhof,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohne-dach-gebaeude-inspektion/,1
+drohne brandenburg,generisch_drohne,brandenburg,False,0,1,0.0,97.0,>50,0.0,0.0,/,1
+drohnen brandenburg,generisch_drohne,brandenburg,False,0,1,0.0,10.0,4-10,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+drohnen show deutschland,generisch_drohne,deutschland,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+drohnen über deutschland fotos,generisch_drohne,deutschland,False,0,1,0.0,1.0,1-3,0.3,0.3,/immobilien-fotografie-drohne/,1
+drohnenaufnahmen köln,generisch_drohne,köln,False,0,1,0.0,8.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+drohnendienstleister in der nähe,generisch_drohne,in der nähe,False,0,1,0.0,7.0,4-10,0.0,0.0,/,1
+drohnenflug münchen,generisch_drohne,münchen,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+in berlin,sonstiges,berlin,False,0,1,0.0,5.0,4-10,0.1,0.1,/drohne-dach-vermessung/,1
+luftaufnahmen-drohne thüringen,generisch_drohne,thüringen,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+luftbild münchen,generisch_drohne,münchen,False,0,1,0.0,7.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+luftbilder brandenburg kostenlos,preis,brandenburg,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohnen-aufnahmen-firma/,1
+münchen luftaufnahme,generisch_drohne,münchen,False,0,1,0.0,11.0,11-20,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+münchen luftaufnahmen,generisch_drohne,münchen,False,0,1,0.0,8.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+spreewald,sonstiges,spreewald,True,0,1,0.0,5.0,4-10,0.1,0.1,/,1

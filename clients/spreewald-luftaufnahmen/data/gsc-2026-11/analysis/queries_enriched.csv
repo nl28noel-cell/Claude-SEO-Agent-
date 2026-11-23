@@ -1,0 +1,531 @@
+query,cluster,places,nbo_signal,clicks,impressions,ctr,position,pos_bucket,exp_clicks,ctr_gap_clicks,top_page,n_pages
+drohnenaufnahmen preise,preis,,False,1,4990,0.0002,9.12,4-10,99.8,98.8,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnahmen kosten,preis,,False,6,3983,0.0015,5.61,4-10,159.3,153.3,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen von ihrem haus,haus_privat,,False,0,2737,0.0,16.17,11-20,27.4,27.4,/haus-grundstueck-luftbild/,4
+drohnenfotografie kosten,preis,,False,0,2621,0.0,9.5,4-10,47.2,47.2,/drohnenaufnahmen-preis-kosten/,1
+drohnen aufnahmen kosten,preis,,False,0,2368,0.0,5.78,4-10,94.7,94.7,/drohnenaufnahmen-preis-kosten/,1
+kosten drohnenaufnahmen,preis,,False,1,1606,0.0006,7.01,4-10,48.2,47.2,/drohnenaufnahmen-preis-kosten/,1
+was kosten drohnenaufnahmen,preis,,False,5,1328,0.0038,5.25,4-10,66.4,61.4,/drohnenaufnahmen-preis-kosten/,1
+baudokumentation drohne,baudokumentation,,False,0,1144,0.0,28.2,21-50,2.3,2.3,/drohnen-baudokumentation/,1
+drohnenvermessung berlin,vermessung_allgemein,berlin,False,1,1062,0.0009,10.06,4-10,19.1,18.1,/drohne-dach-vermessung/,5
+preise für drohnenaufnahmen,preis,,False,3,1048,0.0029,6.89,4-10,31.4,28.4,/drohnenaufnahmen-preis-kosten/,1
+drohnenvideo kosten,video,,False,1,1045,0.001,7.92,4-10,26.1,25.1,/drohnenaufnahmen-preis-kosten/,1
+drohnen aufnahmen preise,preis,,False,0,1037,0.0,7.0,4-10,31.1,31.1,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen preise,preis,,False,0,1037,0.0,16.01,11-20,10.4,10.4,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahme von meinem haus,haus_privat,,False,2,986,0.002,10.06,4-10,17.7,15.7,/haus-grundstueck-luftbild/,3
+drohnen fotografie preise,preis,,False,7,926,0.0076,7.41,4-10,27.8,20.8,/drohnenaufnahmen-preis-kosten/,1
+luftbild haus,haus_privat,,False,0,852,0.0,21.69,21-50,1.7,1.7,/haus-grundstueck-luftbild/,1
+luftaufnahme haus berlin,haus_privat,berlin,False,0,823,0.0,3.44,1-3,82.3,82.3,/haus-grundstueck-luftbild/,2
+drohnenfotografie preise,preis,,False,0,799,0.0,7.77,4-10,20.0,20.0,/drohnenaufnahmen-preis-kosten/,1
+drohnenfotografie immobilien brandenburg,immobilien,brandenburg,False,0,785,0.0,5.55,4-10,31.4,31.4,/immobilien-fotografie-drohne/,6
+preis drohnenaufnahmen,preis,,False,0,769,0.0,7.22,4-10,23.1,23.1,/drohnenaufnahmen-preis-kosten/,1
+wie teuer sind drohnenaufnahmen,preis,,False,0,767,0.0,6.28,4-10,30.7,30.7,/drohnenaufnahmen-preis-kosten/,1
+kosten für luftbilder mit drohne,preis,,False,0,762,0.0,6.88,4-10,22.9,22.9,/drohnenaufnahmen-preis-kosten/,1
+drohnenfotografie immobilien berlin,immobilien,berlin,False,0,761,0.0,8.31,4-10,19.0,19.0,/immobilien-fotografie-drohne/,2
+luftaufnahmen haus,haus_privat,,False,0,744,0.0,21.44,21-50,1.5,1.5,/haus-grundstueck-luftbild/,3
+luftaufnahmen mit drohne preis,preis,,False,0,716,0.0,10.18,4-10,12.9,12.9,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnahmen brandenburg,generisch_drohne,brandenburg,False,0,712,0.0,17.68,11-20,7.1,7.1,/,5
+drohnen hochzeit,hochzeit_event,,False,0,705,0.0,7.1,4-10,21.1,21.1,/drohne-luftaufnahmen-hochzeit/,1
+baustellendokumentation drohne,baudokumentation,,False,0,704,0.0,24.88,21-50,1.4,1.4,/drohnen-baudokumentation/,1
+luftaufnahmen preis,preis,,False,0,693,0.0,11.14,11-20,6.9,6.9,/drohnenaufnahmen-preis-kosten/,2
+luftaufnahmen machen lassen,generisch_drohne,,False,0,660,0.0,49.5,21-50,1.3,1.3,/,5
+luftaufnahmen vom eigenen haus,haus_privat,,False,0,660,0.0,15.72,11-20,6.6,6.6,/haus-grundstueck-luftbild/,4
+preise drohnenaufnahmen,preis,,False,2,648,0.0031,8.26,4-10,16.2,14.2,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen mit drohne pauschalpreis,preis,,False,0,640,0.0,8.87,4-10,12.8,12.8,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen drohne,generisch_drohne,,False,0,631,0.0,54.03,>50,1.3,1.3,/,2
+drohnenaufnahmen für immobilien kosten,immobilien,,False,0,607,0.0,11.66,11-20,6.1,6.1,/drohnenaufnahmen-preis-kosten/,1
+professionelle drohnenaufnahmen,generisch_drohne,,False,0,591,0.0,63.5,>50,1.2,1.2,/drohnen-aufnahmen-firma/,2
+was kosten luftaufnahmen vom haus,haus_privat,,False,0,546,0.0,9.65,4-10,9.8,9.8,/drohnenaufnahmen-preis-kosten/,3
+drohnenaufnahmen preis,preis,,False,1,542,0.0018,6.35,4-10,21.7,20.7,/drohnenaufnahmen-preis-kosten/,1
+professionelle drohnenaufnahmen kosten,preis,,False,0,533,0.0,13.91,11-20,5.3,5.3,/drohnenaufnahmen-preis-kosten/,1
+drohnenflug mit video was kostet das,video,,False,0,525,0.0,14.56,11-20,5.2,5.2,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen von meinem haus,haus_privat,,False,0,521,0.0,18.12,11-20,5.2,5.2,/haus-grundstueck-luftbild/,3
+gebäudeinspektion drohne,inspektion_allgemein,,True,0,495,0.0,33.03,21-50,1.0,1.0,/drohne-dach-gebaeude-inspektion/,1
+drohnenfotos kosten,preis,,False,0,494,0.0,6.51,4-10,14.8,14.8,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahme grundstück,immobilien,,False,2,492,0.0041,5.78,4-10,19.7,17.7,/haus-grundstueck-luftbild/,3
+3d-modell drohne berlin,vermessung_allgemein,berlin,True,0,479,0.0,12.12,11-20,4.8,4.8,/drohnen-baudokumentation/,2
+drohnenaufnahmen berlin,generisch_drohne,berlin,False,0,477,0.0,35.53,21-50,1.0,1.0,/drohnen-aufnahmen-firma/,6
+anbieter vermessung drohne berlin,vermessung_allgemein,berlin,False,0,472,0.0,10.6,11-20,4.7,4.7,/drohne-dach-vermessung/,3
+luftbild von meinem haus,haus_privat,,False,0,462,0.0,8.01,4-10,11.6,11.6,/haus-grundstueck-luftbild/,4
+was kostet ein drohnenvideo,video,,False,0,457,0.0,7.53,4-10,11.4,11.4,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnahmen hochzeit,hochzeit_event,,False,0,454,0.0,25.13,21-50,0.9,0.9,/drohne-luftaufnahmen-hochzeit/,1
+drohnendienstleister berlin,generisch_drohne,berlin,False,0,453,0.0,13.28,11-20,4.5,4.5,/,5
+drohnendienstleistungen immobilien berlin,immobilien,berlin,False,0,438,0.0,7.91,4-10,11.0,11.0,/immobilien-fotografie-drohne/,4
+drohnenfotos preis,preis,,False,0,424,0.0,18.62,11-20,4.2,4.2,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen drohne preis,preis,,False,0,423,0.0,19.75,11-20,4.2,4.2,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen hochzeit,hochzeit_event,,False,0,412,0.0,9.66,4-10,7.4,7.4,/drohne-luftaufnahmen-hochzeit/,2
+luftaufnahmen immobilien,immobilien,,False,0,408,0.0,51.39,>50,0.8,0.8,/immobilien-fotografie-drohne/,4
+drohnenflug kosten,preis,,False,0,407,0.0,13.5,11-20,4.1,4.1,/drohnenaufnahmen-preis-kosten/,1
+drohnenbilder kosten,preis,,False,0,406,0.0,6.12,4-10,16.2,16.2,/drohnenaufnahmen-preis-kosten/,1
+drohnen dienstleistungen preise,preis,,False,6,405,0.0148,16.23,11-20,4.0,-2.0,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnahmen angebot,preis,,False,0,396,0.0,4.24,4-10,27.7,27.7,/drohnenaufnahmen-preis-kosten/,1
+drohnenfotos immobilien,immobilien,,False,1,382,0.0026,14.82,11-20,3.8,2.8,/immobilien-fotografie-drohne/,1
+luftbilder von meinem haus,haus_privat,,False,0,378,0.0,8.47,4-10,9.5,9.5,/haus-grundstueck-luftbild/,2
+was kosten luftaufnahmen,preis,,False,0,378,0.0,7.75,4-10,9.5,9.5,/drohnenaufnahmen-preis-kosten/,1
+was kostet eine luftaufnahme?,preis,,False,0,370,0.0,8.55,4-10,7.4,7.4,/drohnenaufnahmen-preis-kosten/,2
+drohnenvideos preise,video,,False,0,363,0.0,9.87,4-10,6.5,6.5,/drohnenaufnahmen-preis-kosten/,1
+was kostet eine luftaufnahme von meinem haus?,haus_privat,,False,0,359,0.0,10.22,4-10,6.5,6.5,/haus-grundstueck-luftbild/,2
+luftaufnahme haus,haus_privat,,False,0,356,0.0,19.83,11-20,3.6,3.6,/haus-grundstueck-luftbild/,3
+baufortschritt mit drohnen dokumentieren,baudokumentation,,False,0,351,0.0,30.39,21-50,0.7,0.7,/drohnen-baudokumentation/,1
+luftbilder haus,haus_privat,,False,0,351,0.0,18.08,11-20,3.5,3.5,/haus-grundstueck-luftbild/,2
+luftbilder ihr zuhause von oben,generisch_drohne,,False,0,343,0.0,8.58,4-10,6.9,6.9,/haus-grundstueck-luftbild/,2
+luftaufnahmen kosten,preis,,False,0,337,0.0,8.74,4-10,6.7,6.7,/drohnenaufnahmen-preis-kosten/,2
+fassadenaufmaß,fassadenvermessung,,False,0,328,0.0,18.54,11-20,3.3,3.3,/fassadenaufmass-drohnen-vermessung-fassade/,1
+drohnenprofi,generisch_drohne,,False,0,308,0.0,15.7,11-20,3.1,3.1,/kontakt/,1
+drohnenbilder immobilien,immobilien,,False,0,295,0.0,52.07,>50,0.6,0.6,/immobilien-fotografie-drohne/,2
+hochzeit drohne,hochzeit_event,,False,1,285,0.0035,22.49,21-50,0.6,-0.4,/drohne-luftaufnahmen-hochzeit/,1
+luftaufnahme eigenes haus,haus_privat,,False,0,281,0.0,14.84,11-20,2.8,2.8,/haus-grundstueck-luftbild/,3
+drohnenvideos kosten,video,,False,0,269,0.0,11.25,11-20,2.7,2.7,/drohnenaufnahmen-preis-kosten/,1
+fassadeninspektion drohne,fassadeninspektion,,True,0,258,0.0,28.7,21-50,0.5,0.5,/fassadenaufmass-drohnen-vermessung-fassade/,3
+fassaden dokumentation drohne,bestandsaufnahme,,False,0,249,0.0,16.65,11-20,2.5,2.5,/fassadenaufmass-drohnen-vermessung-fassade/,2
+luftaufnahmen für unternehmen kostenübersicht,firma_imagefilm,,False,0,239,0.0,15.54,11-20,2.4,2.4,/drohnenaufnahmen-preis-kosten/,2
+drohnendienstleister 3d-modell berlin,vermessung_allgemein,berlin,True,0,238,0.0,16.24,11-20,2.4,2.4,/drohnen-baudokumentation/,2
+baubegleitung mit drohne,baudokumentation,,False,0,233,0.0,12.58,11-20,2.3,2.3,/drohnen-baudokumentation/,1
+dachvermessung,dachvermessung,,False,0,222,0.0,41.44,21-50,0.4,0.4,/drohne-dach-vermessung/,1
+drohnen hochzeitsfotografie,hochzeit_event,,False,0,216,0.0,53.12,>50,0.4,0.4,/drohne-luftaufnahmen-hochzeit/,1
+luftaufnahmen immobilie,immobilien,,False,0,216,0.0,6.01,4-10,8.6,8.6,/immobilien-fotografie-drohne/,3
+luftbildaufnahmen vom eigenen haus,haus_privat,,False,0,214,0.0,20.8,21-50,0.4,0.4,/haus-grundstueck-luftbild/,2
+drohnenvideo preis,video,,False,0,213,0.0,13.67,11-20,2.1,2.1,/drohnenaufnahmen-preis-kosten/,1
+luftbildfotografie für firmen,generisch_drohne,,False,0,210,0.0,56.21,>50,0.4,0.4,/drohnen-aufnahmen-firma/,1
+dachinspektion mit drohne,dachinspektion,,True,0,205,0.0,51.45,>50,0.4,0.4,/dachinspektion-mit-drohne/,2
+luftaufnahme drohne preis,preis,,False,0,203,0.0,22.69,21-50,0.4,0.4,/drohnenaufnahmen-preis-kosten/,1
+luftbilder haus preis,haus_privat,,False,1,202,0.005,14.94,11-20,2.0,1.0,/haus-grundstueck-luftbild/,3
+fassadenvermessung,fassadenvermessung,,False,1,201,0.005,13.46,11-20,2.0,1.0,/fassadenaufmass-drohnen-vermessung-fassade/,4
+luftaufnahmen für immobilien,immobilien,,False,0,198,0.0,60.71,>50,0.4,0.4,/immobilien-fotografie-drohne/,4
+drohnenaufnahmen immobilien,immobilien,,False,0,195,0.0,33.15,21-50,0.4,0.4,/immobilien-fotografie-drohne/,1
+fassadeninspektion,fassadeninspektion,,True,0,190,0.0,41.65,21-50,0.4,0.4,/fassadenaufmass-drohnen-vermessung-fassade/,3
+drohnenaufnahmen immobilien kosten,immobilien,,False,0,187,0.0,15.44,11-20,1.9,1.9,/drohnenaufnahmen-preis-kosten/,1
+drohnendienstleistungen berlin,generisch_drohne,berlin,False,0,185,0.0,18.64,11-20,1.9,1.9,/drohne-dach-gebaeude-inspektion/,2
+drohnenaufnahmen buchen,generisch_drohne,,False,0,178,0.0,20.09,11-20,0.4,0.4,/drohnenaufnahmen-preis-kosten/,1
+luftbilder grundstück erstellen,immobilien,,False,0,178,0.0,6.99,4-10,5.3,5.3,/haus-grundstueck-luftbild/,1
+luftbilder von unserem haus,haus_privat,,False,0,176,0.0,10.39,4-10,3.2,3.2,/haus-grundstueck-luftbild/,2
+drohnenfotografie berlin,generisch_drohne,berlin,False,0,175,0.0,20.94,21-50,0.4,0.4,/immobilien-fotografie-drohne/,4
+drohnenaufnahmen firma,firma_imagefilm,,False,0,174,0.0,40.43,21-50,0.3,0.3,/drohnen-aufnahmen-firma/,1
+drohnenfilm preis,video,,False,0,172,0.0,30.21,21-50,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+dachinspektion per drohne,dachinspektion,,True,1,171,0.0058,36.61,21-50,0.3,-0.7,/drohne-dach-gebaeude-inspektion/,2
+drohnendienstleister immobilien,immobilien,,False,0,167,0.0,15.32,11-20,1.7,1.7,/immobilien-fotografie-drohne/,3
+drohnen fotografie hochzeit,hochzeit_event,,False,0,165,0.0,26.36,21-50,0.3,0.3,/drohne-luftaufnahmen-hochzeit/,1
+luftaufnahmen,generisch_drohne,,False,0,162,0.0,18.17,11-20,1.6,1.6,/drohnenaufnahmen-preis-kosten/,3
+drohne dachinspektion,dachinspektion,,True,0,161,0.0,80.01,>50,0.3,0.3,/drohne-dach-gebaeude-inspektion/,2
+immobilienfotografie mit drohne,immobilien,,False,0,161,0.0,39.12,21-50,0.3,0.3,/immobilien-fotografie-drohne/,1
+dachaufmaß drohne,dachvermessung,,False,1,159,0.0063,28.16,21-50,0.3,-0.7,/drohne-dach-vermessung/,2
+luftbild vom eigenen haus,haus_privat,,False,0,156,0.0,9.33,4-10,3.1,3.1,/haus-grundstueck-luftbild/,2
+fassadenaufmaß drohne,fassadenvermessung,,False,0,155,0.0,17.48,11-20,1.6,1.6,/fassadenaufmass-drohnen-vermessung-fassade/,1
+auswertung und dokumentation mit drohnen,bestandsaufnahme,,False,0,151,0.0,36.65,21-50,0.3,0.3,/drohnen-baudokumentation/,1
+3d-modell immobilien drohne berlin,vermessung_allgemein,berlin,True,0,150,0.0,15.26,11-20,1.5,1.5,/drohnen-baudokumentation/,3
+dachinspektion drohne,dachinspektion,,True,0,150,0.0,61.77,>50,0.3,0.3,/drohne-dach-gebaeude-inspektion/,2
+drohnendienstleistungen immobilien,immobilien,,False,0,148,0.0,10.28,4-10,2.7,2.7,/immobilien-fotografie-drohne/,2
+luftaufnahmen angebot,preis,,False,0,147,0.0,8.52,4-10,2.9,2.9,/haus-grundstueck-luftbild/,2
+dachvermessung mit drohne,dachvermessung,,False,0,142,0.0,33.09,21-50,0.3,0.3,/drohne-dach-vermessung/,2
+drohnen aufnahmen buchen,generisch_drohne,,False,0,139,0.0,45.58,21-50,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+drohnen bilder machen lassen,generisch_drohne,,False,0,139,0.0,45.06,21-50,0.3,0.3,/drohnenaufnahmen-preis-kosten/,2
+luftaufnahmen vom haus,haus_privat,,False,0,139,0.0,14.44,11-20,1.4,1.4,/haus-grundstueck-luftbild/,2
+professionelle luftaufnahmen,generisch_drohne,,False,0,135,0.0,68.11,>50,0.3,0.3,/,3
+immobilienfotografie drohne,immobilien,,False,0,134,0.0,36.37,21-50,0.3,0.3,/immobilien-fotografie-drohne/,1
+dachinspektion mit drohnen,dachinspektion,,True,0,133,0.0,35.84,21-50,0.3,0.3,/drohne-dach-gebaeude-inspektion/,2
+anbieter 3d-modell drohne berlin,vermessung_allgemein,berlin,True,0,131,0.0,14.95,11-20,1.3,1.3,/drohne-dach-vermessung/,2
+luftbilder preis,preis,,False,0,130,0.0,33.44,21-50,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+baustellendokumentation mit drohne,baudokumentation,,False,0,128,0.0,30.3,21-50,0.3,0.3,/drohnen-baudokumentation/,1
+drohnen tour bau,baudokumentation,,False,0,126,0.0,10.56,11-20,1.3,1.3,/drohnen-baudokumentation/,1
+immobilien luftaufnahmen,immobilien,,False,0,126,0.0,49.22,21-50,0.3,0.3,/immobilien-fotografie-drohne/,4
+luftaufnahmen firma erstellen,firma_imagefilm,,False,0,120,0.0,11.55,11-20,1.2,1.2,/drohnen-aufnahmen-firma/,1
+luftaufnahmen immobilien berlin,immobilien,berlin,False,0,116,0.0,8.69,4-10,2.3,2.3,/immobilien-fotografie-drohne/,4
+luftbildaufnahme preise,preis,,False,0,112,0.0,15.82,11-20,1.1,1.1,/drohnenaufnahmen-preis-kosten/,2
+dachinspektion per drohne berlin,dachinspektion,berlin,True,0,110,0.0,17.33,11-20,1.1,1.1,/dachinspektion-mit-drohne/,3
+drohnenvermessung brandenburg,vermessung_allgemein,brandenburg,False,0,110,0.0,4.21,4-10,7.7,7.7,/drohne-dach-vermessung/,5
+drohnenfotograf angebot,preis,,False,0,109,0.0,17.01,11-20,1.1,1.1,/drohnenaufnahmen-preis-kosten/,1
+luftbilder kostenlos ihr zuhause von oben,preis,,False,0,109,0.0,22.78,21-50,0.2,0.2,/haus-grundstueck-luftbild/,2
+dachaufmaß,dachvermessung,,False,0,106,0.0,62.02,>50,0.2,0.2,/drohne-dach-vermessung/,1
+immobilie vermessen drohne,vermessung_allgemein,,False,0,104,0.0,32.82,21-50,0.2,0.2,/drohne-dach-vermessung/,3
+dachvermessung mit drohne berlin,dachvermessung,berlin,False,0,103,0.0,10.31,4-10,1.9,1.9,/drohne-dach-vermessung/,4
+aufmaß mit drohne,vermessung_allgemein,,False,0,102,0.0,27.48,21-50,0.2,0.2,/fassadenaufmass-drohnen-vermessung-fassade/,2
+luftaufnahmen für unternehmen & gewerbe,firma_imagefilm,,False,0,102,0.0,58.93,>50,0.2,0.2,/drohnen-aufnahmen-firma/,3
+luftbilder hochzeit,hochzeit_event,,False,0,101,0.0,13.31,11-20,1.0,1.0,/drohne-luftaufnahmen-hochzeit/,1
+dachinspektion drohne berlin,dachinspektion,berlin,True,1,100,0.01,26.57,21-50,0.2,-0.8,/drohne-dach-gebaeude-inspektion/,3
+fassadenvermessung drohne berlin,fassadenvermessung,berlin,False,0,99,0.0,10.06,4-10,1.8,1.8,/fassadenaufmass-drohnen-vermessung-fassade/,5
+3d-dachvermessung,dachvermessung,,True,0,98,0.0,59.31,>50,0.2,0.2,/drohne-dach-vermessung/,1
+luftaufnahmen drohne preise,preis,,False,0,95,0.0,21.93,21-50,0.2,0.2,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen von meinem grundstück,immobilien,,False,0,95,0.0,7.8,4-10,2.4,2.4,/haus-grundstueck-luftbild/,2
+baustellendokumentation luftbild,baudokumentation,,False,0,93,0.0,57.91,>50,0.2,0.2,/drohnen-baudokumentation/,1
+drohne dachvermessung,dachvermessung,,False,0,93,0.0,37.84,21-50,0.2,0.2,/drohne-dach-vermessung/,1
+bestandsdokumentation bau,baudokumentation,,False,0,92,0.0,77.75,>50,0.2,0.2,/drohnen-baudokumentation/,1
+drohnenaufnahmen für immobilien,immobilien,,False,0,92,0.0,44.29,21-50,0.2,0.2,/immobilien-fotografie-drohne/,2
+vermessung fassade,fassadenvermessung,,False,0,91,0.0,35.18,21-50,0.2,0.2,/fassadenaufmass-drohnen-vermessung-fassade/,1
+digitales dachaufmaß,dachvermessung,,False,0,90,0.0,82.12,>50,0.2,0.2,/drohne-dach-vermessung/,1
+fassadenvermessung drohne,fassadenvermessung,,False,0,90,0.0,5.7,4-10,3.6,3.6,/fassadenaufmass-drohnen-vermessung-fassade/,1
+drohnenfotos preise,preis,,False,0,89,0.0,5.78,4-10,3.6,3.6,/drohnenaufnahmen-preis-kosten/,1
+baustellendokumentation drohne thüringen,baudokumentation,thüringen,False,0,87,0.0,27.74,21-50,0.2,0.2,/drohnen-baudokumentation/,1
+baudokumentation drohne berlin,baudokumentation,berlin,False,0,84,0.0,2.27,1-3,12.6,12.6,/drohnen-baudokumentation/,1
+luftaufnahmen erstellen lassen,generisch_drohne,,False,0,84,0.0,63.65,>50,0.2,0.2,/haus-grundstueck-luftbild/,2
+vermessung drohne brandenburg,vermessung_allgemein,brandenburg,False,0,84,0.0,2.51,1-3,8.4,8.4,/drohne-dach-vermessung/,4
+3d-modell drohne immobilien berlin,vermessung_allgemein,berlin,True,0,83,0.0,16.04,11-20,0.8,0.8,/drohnen-baudokumentation/,3
+drohnenfotografie hochzeit,hochzeit_event,,False,0,83,0.0,23.64,21-50,0.2,0.2,/drohne-luftaufnahmen-hochzeit/,1
+luftaufnahmen von privatgrundstücken,immobilien,,False,0,83,0.0,11.01,11-20,0.8,0.8,/haus-grundstueck-luftbild/,2
+drohnenaufnahmen haus,haus_privat,,False,0,81,0.0,65.35,>50,0.2,0.2,/haus-grundstueck-luftbild/,2
+luftbild preis,preis,,False,0,80,0.0,70.69,>50,0.2,0.2,/drohnenaufnahmen-preis-kosten/,2
+dachvermessung mit der drohne,dachvermessung,,False,0,79,0.0,57.9,>50,0.2,0.2,/drohne-dach-vermessung/,1
+drohne hochzeit preis,hochzeit_event,,False,0,79,0.0,27.33,21-50,0.2,0.2,/drohne-luftaufnahmen-hochzeit/,2
+luftaufnahmen mit drohnen,generisch_drohne,,False,0,78,0.0,42.9,21-50,0.2,0.2,/,2
+aufmaß fassade,vermessung_allgemein,,False,0,77,0.0,23.52,21-50,0.2,0.2,/fassadenaufmass-drohnen-vermessung-fassade/,1
+luftfotografie fuer immobilien,immobilien,,False,0,77,0.0,38.69,21-50,0.2,0.2,/immobilien-fotografie-drohne/,1
+professionelles luftaufnahmen unternehmen,firma_imagefilm,,False,0,77,0.0,45.62,21-50,0.2,0.2,/drohnen-aufnahmen-firma/,2
+drohnen luftaufnahmen,generisch_drohne,,False,0,76,0.0,91.54,>50,0.2,0.2,/,2
+drohnenfotograf brandenburg,generisch_drohne,brandenburg,False,0,76,0.0,14.38,11-20,0.8,0.8,/drohne-luftaufnahmen-hochzeit/,4
+hochzeitsvideo brandenburg,hochzeit_event,brandenburg,False,0,75,0.0,81.49,>50,0.1,0.1,/drohne-luftaufnahmen-hochzeit/,1
+drohne baustelle,baudokumentation,,False,0,73,0.0,93.59,>50,0.1,0.1,/drohnen-baudokumentation/,1
+luftaufnahmen von immobilien,immobilien,,False,0,73,0.0,47.01,21-50,0.1,0.1,/immobilien-fotografie-drohne/,2
+hochzeitsfotograf mit drohnenaufnahmen buchen,hochzeit_event,,False,0,71,0.0,12.62,11-20,0.7,0.7,/drohne-luftaufnahmen-hochzeit/,1
+drohnenbild haus,haus_privat,,False,0,70,0.0,37.97,21-50,0.1,0.1,/haus-grundstueck-luftbild/,1
+luftaufnahmen drohnen,generisch_drohne,,False,0,70,0.0,53.26,>50,0.1,0.1,/,2
+drohnen aufmaß dach,vermessung_allgemein,,False,0,69,0.0,27.16,21-50,0.1,0.1,/drohne-dach-vermessung/,1
+drohnenaufnahmen unternehmen,firma_imagefilm,,False,0,69,0.0,68.45,>50,0.1,0.1,/drohnen-aufnahmen-firma/,3
+luftaufnahmen für unternehmen,firma_imagefilm,,False,0,69,0.0,14.59,11-20,0.7,0.7,/drohnen-aufnahmen-firma/,1
+luftbilder grundstück berlin,immobilien,berlin,False,0,68,0.0,9.41,4-10,1.4,1.4,/haus-grundstueck-luftbild/,2
+preise luftaufnahmen drohne,preis,,False,0,67,0.0,23.24,21-50,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnahme firma,firma_imagefilm,,False,0,66,0.0,37.64,21-50,0.1,0.1,/drohnen-aufnahmen-firma/,1
+baustellenführung per drohne,baudokumentation,,False,0,65,0.0,66.95,>50,0.1,0.1,/drohnen-baudokumentation/,1
+drohnen aufmaß,vermessung_allgemein,,False,0,65,0.0,30.77,21-50,0.1,0.1,/fassadenaufmass-drohnen-vermessung-fassade/,2
+drohnenaufmaß,vermessung_allgemein,,False,0,65,0.0,52.85,>50,0.1,0.1,/fassadenaufmass-drohnen-vermessung-fassade/,1
+drohnenvermessung kosten,vermessung_allgemein,,False,0,65,0.0,34.43,21-50,0.1,0.1,/fassadenaufmass-drohnen-vermessung-fassade/,3
+luftbilder mit drohne berlin,generisch_drohne,berlin,False,0,65,0.0,36.12,21-50,0.1,0.1,/,4
+hochzeitsfotograf mit drohne westerwald,hochzeit_event,,True,0,64,0.0,35.42,21-50,0.1,0.1,/drohne-luftaufnahmen-hochzeit/,1
+aufmaß drohne,vermessung_allgemein,,False,0,59,0.0,22.36,21-50,0.1,0.1,/fassadenaufmass-drohnen-vermessung-fassade/,2
+luftaufnahme kosten,preis,,False,0,59,0.0,12.05,11-20,0.6,0.6,/drohnenaufnahmen-preis-kosten/,1
+dachinspektion sachsen,dachinspektion,sachsen,True,0,58,0.0,17.66,11-20,0.6,0.6,/drohne-dach-gebaeude-inspektion/,1
+luftaufnahme preis,preis,,False,0,58,0.0,11.31,11-20,0.6,0.6,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnahmen für immobilien sinnvoll,immobilien,,False,0,56,0.0,67.07,>50,0.1,0.1,/immobilien-fotografie-drohne/,1
+hochzeitsfotograf mit drohne,hochzeit_event,,False,0,55,0.0,39.98,21-50,0.1,0.1,/drohne-luftaufnahmen-hochzeit/,1
+drohne luftaufnahmen,generisch_drohne,,False,0,53,0.0,40.4,21-50,0.1,0.1,/,2
+luftbilder grundstück,immobilien,,False,0,52,0.0,9.13,4-10,1.0,1.0,/haus-grundstueck-luftbild/,1
+drohnenfotos berlin,generisch_drohne,berlin,False,1,51,0.0196,20.29,11-20,0.1,-0.9,/immobilien-fotografie-drohne/,3
+drohnenvideo gewerbeimmobilie,immobilien,,False,0,49,0.0,80.29,>50,0.1,0.1,/immobilien-fotografie-drohne/,1
+luftaufnahmen mit drohne,generisch_drohne,,False,0,49,0.0,38.82,21-50,0.1,0.1,/,3
+preise für luftaufnahmen,preis,,False,0,49,0.0,13.22,11-20,0.5,0.5,/drohnenaufnahmen-preis-kosten/,1
+luftbilder immobilien,immobilien,,False,0,48,0.0,48.42,21-50,0.1,0.1,/immobilien-fotografie-drohne/,3
+luftbildaufnahme vom eigenen haus,haus_privat,,False,0,47,0.0,6.49,4-10,1.9,1.9,/haus-grundstueck-luftbild/,2
+drohnenfotograf kosten,preis,,False,0,46,0.0,17.43,11-20,0.5,0.5,/drohnenaufnahmen-preis-kosten/,1
+drohnenvermessung dach,dachvermessung,,False,0,46,0.0,33.0,21-50,0.1,0.1,/drohne-dach-vermessung/,1
+fassadeninspektion digital,fassadeninspektion,,True,0,45,0.0,87.44,>50,0.1,0.1,/drohne-dach-gebaeude-inspektion/,1
+firma für luftbilderstellung,firma_imagefilm,,False,0,45,0.0,39.47,21-50,0.1,0.1,/drohnen-aufnahmen-firma/,1
+hochzeitsvideo drohne,hochzeit_event,,False,0,45,0.0,34.33,21-50,0.1,0.1,/drohne-luftaufnahmen-hochzeit/,1
+baudokumentation drohne bamberg,baudokumentation,,False,0,43,0.0,34.79,21-50,0.1,0.1,/drohnen-baudokumentation/,2
+luftaufnahmen unternehmen,firma_imagefilm,,False,0,43,0.0,11.51,11-20,0.4,0.4,/drohnen-aufnahmen-firma/,1
+drohnen service preise,preis,,False,0,42,0.0,21.26,21-50,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+satellitenbild vom eigenen haus,haus_privat,,False,0,39,0.0,16.18,11-20,0.4,0.4,/haus-grundstueck-luftbild/,1
+dachaufmaß mit drohne,dachvermessung,,False,0,34,0.0,30.94,21-50,0.1,0.1,/drohne-dach-vermessung/,1
+drohnen-luftaufnahmen,generisch_drohne,,False,0,33,0.0,31.36,21-50,0.1,0.1,/,1
+drohnenvideo hochzeit,hochzeit_event,,False,0,33,0.0,20.76,21-50,0.1,0.1,/drohne-luftaufnahmen-hochzeit/,1
+gebäudeinspektionen mit drohne,inspektion_allgemein,,False,0,33,0.0,74.39,>50,0.1,0.1,/drohne-dach-gebaeude-inspektion/,1
+luftaufnahmen firma,firma_imagefilm,,False,0,33,0.0,13.82,11-20,0.3,0.3,/drohnen-aufnahmen-firma/,1
+hochzeitsfotografie drohne,hochzeit_event,,False,0,32,0.0,29.97,21-50,0.1,0.1,/drohne-luftaufnahmen-hochzeit/,1
+drohneninspektion kosten,inspektion_allgemein,,True,0,31,0.0,27.68,21-50,0.1,0.1,/drohne-dach-gebaeude-inspektion/,1
+luftfotografie immobilien,immobilien,,False,0,31,0.0,56.1,>50,0.1,0.1,/immobilien-fotografie-drohne/,1
+hochzeitsfoto luftaufnahme,hochzeit_event,,False,0,29,0.0,14.69,11-20,0.3,0.3,/drohne-luftaufnahmen-hochzeit/,1
+drohnenfotograf preis,preis,,False,0,28,0.0,18.64,11-20,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+hochzeitsvideo mit drohne,hochzeit_event,,False,0,28,0.0,36.64,21-50,0.1,0.1,/drohne-luftaufnahmen-hochzeit/,1
+drohnenvermessung genauigkeit,vermessung_allgemein,,False,0,26,0.0,96.0,>50,0.1,0.1,/fassadenaufmass-drohnen-vermessung-fassade/,1
+luftaufnahmen brandenburg,generisch_drohne,brandenburg,False,0,26,0.0,67.12,>50,0.1,0.1,/,5
+dach vermessen,dachvermessung,,False,0,25,0.0,38.28,21-50,0.1,0.1,/drohne-dach-vermessung/,1
+dachkontrolle mit drohne,dachinspektion,,False,0,25,0.0,12.88,11-20,0.2,0.2,/dachinspektion-mit-drohne/,1
+digitale dachvermessung,dachvermessung,,False,0,25,0.0,71.28,>50,0.1,0.1,/drohne-dach-vermessung/,1
+drohne hochzeit,hochzeit_event,,False,0,24,0.0,18.71,11-20,0.2,0.2,/drohne-luftaufnahmen-hochzeit/,1
+drohnen dachvermessung,dachvermessung,,False,0,24,0.0,24.54,21-50,0.0,0.0,/drohne-dach-vermessung/,1
+drohnenaufnahmen neuruppin,generisch_drohne,neuruppin,False,0,24,0.0,43.54,21-50,0.0,0.0,/,3
+dachvermessung mit drohne kosten,dachvermessung,,False,1,23,0.0435,22.22,21-50,0.0,-1.0,/drohne-dach-vermessung/,1
+drohnenaufnahmen preise niedersachsen,preis,,False,0,23,0.0,20.7,21-50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+fassadenaufmaß mit drohne,fassadenvermessung,,False,0,23,0.0,5.74,4-10,0.9,0.9,/fassadenaufmass-drohnen-vermessung-fassade/,1
+drohnenaufnahmen,generisch_drohne,,False,0,22,0.0,10.91,11-20,0.2,0.2,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnhamen berlin,generisch_drohne,berlin,False,0,21,0.0,44.05,21-50,0.0,0.0,/immobilien-fotografie-drohne/,4
+fassadenaufnahmen,sonstiges,,False,0,21,0.0,18.71,11-20,0.2,0.2,/fassadenaufmass-drohnen-vermessung-fassade/,1
+luftaufnahmen firmengelaende,generisch_drohne,,False,0,21,0.0,14.48,11-20,0.2,0.2,/drohnen-aufnahmen-firma/,1
+drone service 3d-model berlin,vermessung_allgemein,berlin,True,0,19,0.0,17.63,11-20,0.2,0.2,/drohne-dach-vermessung/,1
+immobilienfotografie per drohne,immobilien,,False,0,19,0.0,62.89,>50,0.0,0.0,/immobilien-fotografie-drohne/,1
+luftaufnahmen bau,baudokumentation,,False,0,19,0.0,17.37,11-20,0.2,0.2,/drohnen-baudokumentation/,2
+luftaufnahmen münchen,generisch_drohne,münchen,False,0,19,0.0,47.47,21-50,0.0,0.0,/,2
+vermessung drohne genauigkeit,vermessung_allgemein,,False,0,19,0.0,81.74,>50,0.0,0.0,/drohne-dach-vermessung/,2
+gebäudehülle vermessung,vermessung_allgemein,,False,0,18,0.0,27.33,21-50,0.0,0.0,/fassadenaufmass-drohnen-vermessung-fassade/,1
+drohnenbilder haus,haus_privat,,False,0,17,0.0,41.76,21-50,0.0,0.0,/haus-grundstueck-luftbild/,1
+dach vermessen mit drohne,dachvermessung,,False,0,16,0.0,27.56,21-50,0.0,0.0,/drohne-dach-vermessung/,1
+dachinspektion,dachinspektion,,True,0,16,0.0,41.12,21-50,0.0,0.0,/dachinspektion-mit-drohne/,1
+preis für drohnenbilder von solaranlage,preis,,True,0,16,0.0,49.38,21-50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+vogelperspektive berlin,generisch_drohne,berlin,False,0,16,0.0,22.25,21-50,0.0,0.0,/drohnen-aufnahmen-firma/,1
+bilder von drohnen aufgenommen,generisch_drohne,,False,0,15,0.0,86.13,>50,0.0,0.0,/immobilien-fotografie-drohne/,1
+dachinspektion drohne kosten,dachinspektion,,True,0,15,0.0,40.33,21-50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+drohnenbilder für firmen,generisch_drohne,,False,0,15,0.0,15.27,11-20,0.1,0.1,/drohnen-aufnahmen-firma/,1
+drohnenservice preise,preis,,False,0,15,0.0,37.53,21-50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+drohnenvideo für gewerbeimmobilien,immobilien,,False,0,15,0.0,89.2,>50,0.0,0.0,/immobilien-fotografie-drohne/,1
+drohnenfotografie,generisch_drohne,,False,0,13,0.0,3.15,1-3,1.3,1.3,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen buchen,generisch_drohne,,False,0,13,0.0,14.15,11-20,0.1,0.1,/haus-grundstueck-luftbild/,1
+vermessungen und inspektionen,vermessung_allgemein,,False,0,13,0.0,36.0,21-50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+baufortschrittsdokumentation drohne,baudokumentation,,False,0,12,0.0,26.5,21-50,0.0,0.0,/drohnen-baudokumentation/,1
+hochzeitsfotograf drohne,hochzeit_event,,False,0,12,0.0,24.33,21-50,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+luftbilder kosten,preis,,False,0,12,0.0,19.42,11-20,0.1,0.1,/drohnenaufnahmen-preis-kosten/,2
+drohnenaufnahmen cottbus,generisch_drohne,cottbus,False,0,11,0.0,57.36,>50,0.0,0.0,/,1
+drohnenaufnahmen wittstock,generisch_drohne,,False,0,11,0.0,36.45,21-50,0.0,0.0,/,1
+drohnenservice berlin,generisch_drohne,berlin,False,0,11,0.0,48.18,21-50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+haus mit drohne fotografieren,haus_privat,,False,0,11,0.0,88.73,>50,0.0,0.0,/haus-grundstueck-luftbild/,1
+dachinspektion mit drohne bonn,dachinspektion,,True,0,10,0.0,73.2,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,2
+drohnenaufnahmen preise einbeck,preis,,False,0,10,0.0,27.7,21-50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+gebäudeinspektion,inspektion_allgemein,,True,0,10,0.0,66.2,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+luftaufnahmen drohnen inspektion münchen,inspektion_allgemein,münchen,True,0,10,0.0,73.3,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,2
+bauprojekte dokumentation luftaufnahmen,bestandsaufnahme,,False,0,9,0.0,26.22,21-50,0.0,0.0,/drohnen-baudokumentation/,1
+dach- und gebäudeinspektion,inspektion_allgemein,,True,0,9,0.0,16.56,11-20,0.1,0.1,/drohne-dach-gebaeude-inspektion/,1
+drohnenbilder immobilie,immobilien,,False,0,9,0.0,40.44,21-50,0.0,0.0,/immobilien-fotografie-drohne/,1
+drohneneinsatz im bau,baudokumentation,,False,0,9,0.0,68.44,>50,0.0,0.0,/drohnen-baudokumentation/,1
+immobilien drohnenaufnahmen,immobilien,,False,0,9,0.0,40.22,21-50,0.0,0.0,/immobilien-fotografie-drohne/,1
+baufortschritt drohne,baudokumentation,,False,0,8,0.0,39.12,21-50,0.0,0.0,/drohnen-baudokumentation/,1
+dachinspektionen drohnen,dachinspektion,,False,0,8,0.0,44.62,21-50,0.0,0.0,/dachinspektion-mit-drohne/,1
+drohnen für luftaufnahmen,generisch_drohne,,False,0,8,0.0,66.88,>50,0.0,0.0,/,2
+drohnenaufnahmen kostenvoranschlag,preis,,False,0,8,0.0,9.0,4-10,0.2,0.2,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnahmen oldenburg niedersachsen luftaufnahmen,generisch_drohne,,False,0,8,0.0,67.25,>50,0.0,0.0,/,1
+drohnenfotografie bauunternehmen,firma_imagefilm,,False,0,8,0.0,12.38,11-20,0.1,0.1,/drohnen-baudokumentation/,1
+drohnenfotografie immobilien,immobilien,,False,0,8,0.0,42.38,21-50,0.0,0.0,/immobilien-fotografie-drohne/,1
+local guide program,sonstiges,,False,0,8,0.0,1.0,1-3,2.2,2.2,/drohne-dach-vermessung/,1
+luftaufnahmen drohne berlin,generisch_drohne,berlin,False,0,8,0.0,25.38,21-50,0.0,0.0,/,2
+luftaufnahmen kostenvoranschlag,preis,,False,0,8,0.0,8.88,4-10,0.2,0.2,/drohnenaufnahmen-preis-kosten/,1
+was kosten drohnen,preis,,False,0,8,0.0,47.62,21-50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+berlin von oben,generisch_drohne,berlin,False,0,7,0.0,3.0,1-3,0.7,0.7,/drohnen-aufnahmen-firma/,1
+dachvermessung drohne,dachvermessung,,False,0,7,0.0,29.0,21-50,0.0,0.0,/drohne-dach-vermessung/,1
+drohnenaufnahmen erstellen lassen,generisch_drohne,,False,0,7,0.0,19.43,11-20,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnahmen grundstück,immobilien,,False,0,7,0.0,12.29,11-20,0.1,0.1,/immobilien-fotografie-drohne/,2
+drohnenaufnahmen potsdam,generisch_drohne,potsdam,False,0,7,0.0,44.86,21-50,0.0,0.0,/,1
+drohneninspektion dach,dachinspektion,,True,0,7,0.0,25.86,21-50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+drohnenshow preis,preis,,False,0,7,0.0,56.57,>50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen-drohne,generisch_drohne,,False,0,7,0.0,55.0,>50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,2
+luftbilder für exposé,immobilien,,False,0,7,0.0,14.57,11-20,0.1,0.1,/immobilien-fotografie-drohne/,1
+professionelle luftbilder,generisch_drohne,,False,0,7,0.0,44.43,21-50,0.0,0.0,/drohnen-aufnahmen-firma/,1
+welchen anbieter für drohnenfotografie beauftragt man am besten für luftaufnahmen von immobilienangeboten?,immobilien,,False,0,7,0.0,6.0,4-10,0.3,0.3,/immobilien-fotografie-drohne/,1
+drohne für luftaufnahmen,generisch_drohne,,False,0,6,0.0,99.83,>50,0.0,0.0,/,2
+drohnenaufnahmen für grundstück,immobilien,,False,0,6,0.0,13.83,11-20,0.1,0.1,/immobilien-fotografie-drohne/,1
+drohnenaufnahmen in der nähe,generisch_drohne,in der nähe,False,0,6,0.0,4.67,4-10,0.3,0.3,/,2
+drohnenbilder,generisch_drohne,,False,0,6,0.0,2.83,1-3,0.6,0.6,/drohnenaufnahmen-preis-kosten/,1
+drohnenfotografie calau,generisch_drohne,,False,0,6,0.0,26.67,21-50,0.0,0.0,/,1
+luftaufnahmen für webseiten,generisch_drohne,,False,0,6,0.0,1.0,1-3,1.7,1.7,/drohnenaufnahmen-preis-kosten/,1
+luftbildaufnahmen kosten,preis,,False,0,6,0.0,13.67,11-20,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+luftbilder angebot,preis,,False,0,6,0.0,27.67,21-50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+bauprojekte drohne,generisch_drohne,,False,0,5,0.0,44.4,21-50,0.0,0.0,/drohnen-baudokumentation/,1
+dach prüfen ohne gerüst lippe,dachinspektion,,False,0,5,0.0,6.8,4-10,0.1,0.1,/dachinspektion-mit-drohne/,1
+dachinspektion durchführen lassen,dachinspektion,,True,0,5,0.0,24.6,21-50,0.0,0.0,/dachinspektion-mit-drohne/,1
+drohne haus fotografieren,haus_privat,,False,0,5,0.0,80.2,>50,0.0,0.0,/haus-grundstueck-luftbild/,1
+drohne immobilien,immobilien,,False,0,5,0.0,73.6,>50,0.0,0.0,/immobilien-fotografie-drohne/,1
+drohne preise,preis,,False,0,5,0.0,79.8,>50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+drohnen baustellendokumentation,baudokumentation,,False,0,5,0.0,16.6,11-20,0.1,0.1,/drohnen-baudokumentation/,1
+drohnen fotos hochzeit,hochzeit_event,,False,0,5,0.0,2.8,1-3,0.5,0.5,/drohne-luftaufnahmen-hochzeit/,1
+drohnenaufnahme,generisch_drohne,,False,0,5,0.0,1.8,1-3,0.8,0.8,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnahmen gebäude,generisch_drohne,,False,0,5,0.0,85.4,>50,0.0,0.0,/immobilien-fotografie-drohne/,1
+drohnenaufnahmen günstig,preis,,False,0,5,0.0,7.8,4-10,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnendienstleistung bauprojekte,generisch_drohne,,False,0,5,0.0,46.6,21-50,0.0,0.0,/drohnen-baudokumentation/,1
+luftbilder erstellen lassen,generisch_drohne,,False,0,5,0.0,38.8,21-50,0.0,0.0,/haus-grundstueck-luftbild/,1
+was kostet eine drohnenaufnahme,preis,,False,0,5,0.0,6.8,4-10,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+aktuelle luftaufnahmen,generisch_drohne,,False,0,4,0.0,1.0,1-3,1.1,1.1,/drohnenaufnahmen-preis-kosten/,1
+baufortschritt dokumentation drohne,baudokumentation,,False,0,4,0.0,19.25,11-20,0.0,0.0,/drohnen-baudokumentation/,1
+brandenburg,sonstiges,brandenburg,False,0,4,0.0,1.0,1-3,1.1,1.1,/drohne-dach-gebaeude-inspektion/,1
+dachfläche vermessen,dachvermessung,,False,0,4,0.0,85.0,>50,0.0,0.0,/drohne-dach-vermessung/,1
+dachinspektion drohne vs manuell,dachinspektion,,True,0,4,0.0,10.75,11-20,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+dachinspektion mit drohne köln,dachinspektion,köln,True,0,4,0.0,60.0,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+drohne über berlin,generisch_drohne,berlin,False,0,4,0.0,73.5,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+drohnenaufnahmen für website,generisch_drohne,,False,0,4,0.0,78.75,>50,0.0,0.0,/,1
+drohnendienstleistung preise,preis,,False,0,4,0.0,46.5,21-50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+hochzeitsfotos drohne,hochzeit_event,,False,0,4,0.0,19.0,11-20,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+kosten drohne,preis,,False,0,4,0.0,76.25,>50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+kosten für drohnenaufnahmen,preis,,False,0,4,0.0,6.75,4-10,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen aktuell,generisch_drohne,,False,0,4,0.0,1.0,1-3,1.1,1.1,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen deutschland,generisch_drohne,deutschland,False,0,4,0.0,1.0,1-3,1.1,1.1,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen hamburg,generisch_drohne,hamburg,False,0,4,0.0,84.75,>50,0.0,0.0,/,1
+luftaufnamen,sonstiges,,False,0,4,0.0,10.5,4-10,0.1,0.1,/drohnenaufnahmen-preis-kosten/,3
+luftbild drohne,generisch_drohne,,False,0,4,0.0,93.25,>50,0.0,0.0,/,1
+luftbildaufnahmen immobilie,immobilien,,False,0,4,0.0,39.5,21-50,0.0,0.0,/haus-grundstueck-luftbild/,1
+professionelle luftaufnahme,generisch_drohne,,False,0,4,0.0,80.25,>50,0.0,0.0,/,2
+vermessen mit drohne,vermessung_allgemein,,False,0,4,0.0,95.75,>50,0.0,0.0,/fassadenaufmass-drohnen-vermessung-fassade/,1
+dachinspektion mittels drohne,dachinspektion,,True,0,3,0.0,48.0,21-50,0.0,0.0,/dachinspektion-mit-drohne/,1
+drohne bilder,generisch_drohne,,False,0,3,0.0,2.0,1-3,0.4,0.4,/drohnenaufnahmen-preis-kosten/,1
+drohnen aufnahme,generisch_drohne,,False,0,3,0.0,2.67,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+drohnen dokumentation bau,baudokumentation,,False,0,3,0.0,36.67,21-50,0.0,0.0,/drohnen-baudokumentation/,1
+drohnen vermessung kosten,vermessung_allgemein,,False,0,3,0.0,12.67,11-20,0.0,0.0,/drohnenaufnahmen-preis-kosten/,2
+drohnenaufnahme berlin,generisch_drohne,berlin,False,0,3,0.0,35.67,21-50,0.0,0.0,/drohnen-aufnahmen-firma/,2
+drohnenaufnahmen für bauprojekte,generisch_drohne,,False,0,3,0.0,17.67,11-20,0.0,0.0,/drohnen-baudokumentation/,1
+emotionale luftaufnahmen,generisch_drohne,,False,0,3,0.0,39.0,21-50,0.0,0.0,/haus-grundstueck-luftbild/,1
+fotos hochzeit brandenburg,hochzeit_event,brandenburg,False,0,3,0.0,92.33,>50,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+hochzeitsfotos mit drohne,hochzeit_event,,False,0,3,0.0,44.33,21-50,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+kosten drohnen,preis,,False,0,3,0.0,88.67,>50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahme haus preis,haus_privat,,False,0,3,0.0,7.0,4-10,0.1,0.1,/haus-grundstueck-luftbild/,1
+luftaufnahme mit drohne,generisch_drohne,,False,0,3,0.0,33.67,21-50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen berlin,generisch_drohne,berlin,False,0,3,0.0,50.67,>50,0.0,0.0,/,1
+luftaufnahmen für firmengebäude,generisch_drohne,,False,0,3,0.0,43.67,21-50,0.0,0.0,/drohnen-aufnahmen-firma/,2
+luftbilder für bauunternehmen,firma_imagefilm,,False,0,3,0.0,24.67,21-50,0.0,0.0,/drohnen-baudokumentation/,1
+marketing mit luftaufnahmen,generisch_drohne,,False,0,3,0.0,1.0,1-3,0.8,0.8,/drohnenaufnahmen-preis-kosten/,1
+preise drohnendienstleistung,preis,,False,0,3,0.0,40.0,21-50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+aufnahme aus der vogelperspektive,generisch_drohne,,False,0,2,0.0,28.0,21-50,0.0,0.0,/drohnen-aufnahmen-firma/,1
+dachdecker berlin mariendorf,sonstiges,berlin,False,0,2,0.0,1.0,1-3,0.6,0.6,/drohne-dach-vermessung/,1
+dachinspektion weg,dachinspektion,,True,0,2,0.0,84.0,>50,0.0,0.0,/dachinspektion-mit-drohne/,1
+dokumentation baufortschritt drohne,baudokumentation,,False,0,2,0.0,32.5,21-50,0.0,0.0,/drohnen-baudokumentation/,1
+drohne aufnahmen,generisch_drohne,,False,0,2,0.0,2.0,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+drohne fotografie,generisch_drohne,,False,0,2,0.0,2.0,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+drohne für dachvermessung,dachvermessung,,False,0,2,0.0,24.5,21-50,0.0,0.0,/drohne-dach-vermessung/,1
+drohne gebäudeinspektion,inspektion_allgemein,,True,0,2,0.0,20.0,11-20,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+drohne grundstück fotografieren,immobilien,,False,0,2,0.0,68.0,>50,0.0,0.0,/immobilien-fotografie-drohne/,1
+drohne kosten,preis,,False,0,2,0.0,69.0,>50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+drohnen bilder,generisch_drohne,,False,0,2,0.0,2.5,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+drohnen dienstleistungen,generisch_drohne,,False,0,2,0.0,4.5,4-10,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnen fotografie,generisch_drohne,,False,0,2,0.0,3.0,1-3,0.2,0.2,/drohnenaufnahmen-preis-kosten/,1
+drohnen fotos,generisch_drohne,,False,0,2,0.0,3.0,1-3,0.2,0.2,/drohnenaufnahmen-preis-kosten/,1
+drohnen vermessung,vermessung_allgemein,,False,0,2,0.0,3.0,1-3,0.2,0.2,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnahme haus,haus_privat,,False,0,2,0.0,25.0,21-50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,2
+drohnenaufnahme hochzeit,hochzeit_event,,False,0,2,0.0,9.0,4-10,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+drohnenaufnahme immobilie,immobilien,,False,0,2,0.0,38.5,21-50,0.0,0.0,/immobilien-fotografie-drohne/,1
+drohnenaufnahme kosten,preis,,False,0,2,0.0,5.0,4-10,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnenbilder wal,generisch_drohne,,False,0,2,0.0,17.0,11-20,0.0,0.0,/drohnen-aufnahmen-firma/,2
+drohnenfoto,generisch_drohne,,False,0,2,0.0,2.0,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+drohnenfotograf,generisch_drohne,,False,0,2,0.0,2.5,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+drohnenfotograf berlin,generisch_drohne,berlin,False,0,2,0.0,55.0,>50,0.0,0.0,/drohnen-aufnahmen-firma/,1
+drohnenfotograf potsdam,generisch_drohne,potsdam,False,0,2,0.0,86.5,>50,0.0,0.0,/,1
+drohnenfotos,generisch_drohne,,False,0,2,0.0,3.0,1-3,0.2,0.2,/drohnenaufnahmen-preis-kosten/,1
+drohneninspektion,inspektion_allgemein,,True,0,2,0.0,88.5,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+drone service berlin,generisch_drohne,berlin,False,0,2,0.0,23.5,21-50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+eindrucksvolle drohnenaufnahmen,generisch_drohne,,False,0,2,0.0,98.5,>50,0.0,0.0,/drohnen-aufnahmen-firma/,1
+fotografie mit drohnen,generisch_drohne,,False,0,2,0.0,1.0,1-3,0.6,0.6,/drohnenaufnahmen-preis-kosten/,1
+fpv luftaufnahmen,generisch_drohne,,True,0,2,0.0,65.0,>50,0.0,0.0,/,1
+gewerbliche luftaufnahmen,generisch_drohne,,False,0,2,0.0,1.0,1-3,0.6,0.6,/drohnenaufnahmen-preis-kosten/,1
+grundstück vermessen lassen berlin,vermessung_allgemein,berlin,False,0,2,0.0,91.0,>50,0.0,0.0,/drohne-dach-vermessung/,1
+"ich suche dienstleister, die professionelle drohnenvermessung und photogrammetrie im dach-raum anbieten. welche konkreten firmen und vermessungsbüros kannst du mir für solche befliegungen empfehlen?",dachvermessung,,True,0,2,0.0,1.0,1-3,0.6,0.6,/drohne-dach-vermessung/,1
+luftaufnahmen drohne frankfurt,generisch_drohne,frankfurt,False,0,2,0.0,21.0,21-50,0.0,0.0,/,1
+luftaufnahmen für unternehmen und gewerbe,firma_imagefilm,,False,0,2,0.0,37.0,21-50,0.0,0.0,/drohnen-aufnahmen-firma/,1
+luftaufnahmen grundstück,immobilien,,False,0,2,0.0,8.0,4-10,0.1,0.1,/haus-grundstueck-luftbild/,1
+luftaufnahmen produktion,generisch_drohne,,False,0,2,0.0,1.0,1-3,0.6,0.6,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen selber machen,generisch_drohne,,False,0,2,0.0,67.5,>50,0.0,0.0,/immobilien-fotografie-drohne/,1
+luftaufnahmen österreich,generisch_drohne,,False,0,2,0.0,1.0,1-3,0.6,0.6,/drohnenaufnahmen-preis-kosten/,1
+luftbild,generisch_drohne,,False,0,2,0.0,3.5,1-3,0.1,0.1,/drohnen-aufnahmen-firma/,2
+luftbild haus berlin,haus_privat,berlin,False,0,2,0.0,3.0,1-3,0.2,0.2,/haus-grundstueck-luftbild/,2
+luftbildaufnahmen archiv,generisch_drohne,,False,0,2,0.0,2.0,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+luftbilder online,generisch_drohne,,False,0,2,0.0,1.0,1-3,0.6,0.6,/drohnenaufnahmen-preis-kosten/,1
+luftbilder vom eigenen haus,haus_privat,,False,0,2,0.0,7.0,4-10,0.1,0.1,/haus-grundstueck-luftbild/,1
+satellitenbilder vom eigenen grundstück,immobilien,,False,0,2,0.0,10.5,4-10,0.0,0.0,/haus-grundstueck-luftbild/,1
+unternehmenslösungen berlin,firma_imagefilm,berlin,False,0,2,0.0,89.5,>50,0.0,0.0,/drohnen-aufnahmen-firma/,1
+luftaufnahme,generisch_drohne,,False,1,1,1.0,1.0,1-3,0.3,-0.7,/haus-grundstueck-luftbild/,1
+3d modell drohne berlin,vermessung_allgemein,berlin,True,0,1,0.0,28.0,21-50,0.0,0.0,/drohne-dach-vermessung/,1
+airteam dachvermessung,dachvermessung,,False,0,1,0.0,87.0,>50,0.0,0.0,/drohne-dach-vermessung/,1
+airteam preise,preis,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+anbieter vermessung drohne,vermessung_allgemein,,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohne-dach-vermessung/,1
+andere,sonstiges,,False,0,1,0.0,3.0,1-3,0.1,0.1,/haus-grundstueck-luftbild/,1
+aufmaß dach,vermessung_allgemein,,False,0,1,0.0,62.0,>50,0.0,0.0,/drohne-dach-vermessung/,1
+baudokumentation drohnen,baudokumentation,,False,0,1,0.0,36.0,21-50,0.0,0.0,/drohnen-baudokumentation/,1
+baudokumentation mit drohne,baudokumentation,,False,0,1,0.0,22.0,21-50,0.0,0.0,/drohnen-baudokumentation/,1
+beispiel bilder,sonstiges,,False,0,1,0.0,28.0,21-50,0.0,0.0,/haus-grundstueck-luftbild/,1
+bild von dem haus,haus_privat,,False,0,1,0.0,4.0,4-10,0.1,0.1,/immobilien-fotografie-drohne/,1
+bild von haus,haus_privat,,False,0,1,0.0,14.0,11-20,0.0,0.0,/immobilien-fotografie-drohne/,1
+bilder drohne,generisch_drohne,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+bilder vom haus,haus_privat,,False,0,1,0.0,1.0,1-3,0.3,0.3,/immobilien-fotografie-drohne/,1
+dachdecker berlin tempelhof,sonstiges,berlin|tempelhof,False,0,1,0.0,2.0,1-3,0.1,0.1,/fassadenaufmass-drohnen-vermessung-fassade/,1
+dachdecker lichtenrade,sonstiges,,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohne-dach-vermessung/,1
+dachdecker tempelhof,sonstiges,tempelhof,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohne-dach-gebaeude-inspektion/,1
+dachinspektion flachdach,dachinspektion,,True,0,1,0.0,42.0,21-50,0.0,0.0,/dachinspektion-mit-drohne/,1
+dachinspektion sicher mit drohne lemgo,dachinspektion,,True,0,1,0.0,37.0,21-50,0.0,0.0,/dachinspektion-mit-drohne/,1
+dachkontrolle,dachinspektion,,False,0,1,0.0,50.0,21-50,0.0,0.0,/dachinspektion-mit-drohne/,1
+dienstleistung drohne,generisch_drohne,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+dji mini 4 pro,sonstiges,,False,0,1,0.0,8.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+dji mini 4 pro fly more combo,sonstiges,,False,0,1,0.0,6.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+dji mini 4 pro zoom geht nicht,sonstiges,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+dji mini serie,sonstiges,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohne,generisch_drohne,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohne aufnahme,generisch_drohne,,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+drohne baudokumentation,baudokumentation,,False,0,1,0.0,50.0,21-50,0.0,0.0,/drohnen-baudokumentation/,1
+drohne brandenburg,generisch_drohne,brandenburg,False,0,1,0.0,97.0,>50,0.0,0.0,/,1
+drohne dach vermessen,dachvermessung,,False,0,1,0.0,22.0,21-50,0.0,0.0,/drohne-dach-vermessung/,1
+drohne dachdecker,generisch_drohne,,False,0,1,0.0,67.0,>50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+drohne foto,generisch_drohne,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohne für aufmaß,vermessung_allgemein,,False,0,1,0.0,34.0,21-50,0.0,0.0,/fassadenaufmass-drohnen-vermessung-fassade/,1
+drohne für dachvermessung kaufen,dachvermessung,,True,0,1,0.0,41.0,21-50,0.0,0.0,/drohne-dach-vermessung/,1
+drohne für hochzeit,hochzeit_event,,False,0,1,0.0,28.0,21-50,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+drohne videoaufnahmen,video,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnen anmeldung,generisch_drohne,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnen aufnahmen,generisch_drohne,,False,0,1,0.0,1.0,1-3,0.3,0.3,/immobilien-fotografie-drohne/,1
+drohnen baudokumentation,baudokumentation,,False,0,1,0.0,13.0,11-20,0.0,0.0,/drohnen-baudokumentation/,1
+drohnen brandenburg,generisch_drohne,brandenburg,False,0,1,0.0,10.0,4-10,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+drohnen expertise,generisch_drohne,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnen foto,generisch_drohne,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnen kurse,generisch_drohne,,True,0,1,0.0,7.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+drohnen show deutschland,generisch_drohne,deutschland,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+drohnen videos,video,,False,0,1,0.0,6.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+drohnen über deutschland fotos,generisch_drohne,deutschland,False,0,1,0.0,1.0,1-3,0.3,0.3,/immobilien-fotografie-drohne/,1
+drohnenabwehr rheinmetall,generisch_drohne,,False,0,1,0.0,12.0,11-20,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnahme buchen,generisch_drohne,,False,0,1,0.0,77.0,>50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+drohnenaufnahmen baustelle,baudokumentation,,False,0,1,0.0,17.0,11-20,0.0,0.0,/drohnen-baudokumentation/,1
+drohnenaufnahmen kyritz,generisch_drohne,,False,0,1,0.0,26.0,21-50,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+drohnenaufnahmen köln,generisch_drohne,köln,False,0,1,0.0,8.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+drohnenbild,generisch_drohne,,False,0,1,0.0,4.0,4-10,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnenbilder am himmel,generisch_drohne,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnenbilder und videobearbeitung,video,,False,0,1,0.0,66.0,>50,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+drohnendienstleister in der nähe,generisch_drohne,in der nähe,False,0,1,0.0,7.0,4-10,0.0,0.0,/,1
+drohnenflug buchen,generisch_drohne,,False,0,1,0.0,69.0,>50,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+drohnenflug münchen,generisch_drohne,münchen,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnenfotograf ulm,generisch_drohne,,False,0,1,0.0,7.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+drohnenführerschein,generisch_drohne,,True,0,1,0.0,4.0,4-10,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnengrafie,generisch_drohne,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohneninspektion fassade,fassadeninspektion,,True,0,1,0.0,28.0,21-50,0.0,0.0,/drohne-dach-gebaeude-inspektion/,1
+drohnenservice,generisch_drohne,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnenshot,generisch_drohne,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnenshow,generisch_drohne,,False,0,1,0.0,13.0,11-20,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+drohnenshow düsseldorf,generisch_drohne,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+drohnenvermessung beauftragen,vermessung_allgemein,,False,0,1,0.0,81.0,>50,0.0,0.0,/drohne-dach-vermessung/,1
+drohnenvideos bearbeiten,video,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+dronen bilder,generisch_drohne,,False,0,1,0.0,6.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+experte luftaufnahmen baudokumentation imagefilme,baudokumentation,,False,0,1,0.0,100.0,>50,0.0,0.0,/drohnen-baudokumentation/,1
+fassadenreinigung drohne preis,preis,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+fassadentechnik,sonstiges,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohne-dach-gebaeude-inspektion/,1
+foto drohnen,generisch_drohne,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+foto mit drohne,generisch_drohne,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+foto vom haus,haus_privat,,False,0,1,0.0,2.0,1-3,0.1,0.1,/haus-grundstueck-luftbild/,1
+fotograf drohnenaufnahmen,generisch_drohne,,False,0,1,0.0,4.0,4-10,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+fotos mit drohne,generisch_drohne,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+gebäudehüllenvermessung,vermessung_allgemein,,False,0,1,0.0,1.0,1-3,0.3,0.3,/fassadenaufmass-drohnen-vermessung-fassade/,1
+gewerbliche luftbilder,generisch_drohne,,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+grundstück expose erstellen,immobilien,,False,0,1,0.0,1.0,1-3,0.3,0.3,/immobilien-fotografie-drohne/,1
+haus von oben sehen,haus_privat,,False,0,1,0.0,5.0,4-10,0.1,0.1,/haus-grundstueck-luftbild/,1
+hausansicht von oben,generisch_drohne,,False,0,1,0.0,1.0,1-3,0.3,0.3,/haus-grundstueck-luftbild/,1
+hochwertige luftaufnahmen,generisch_drohne,,False,0,1,0.0,5.0,4-10,0.1,0.1,/drohnen-aufnahmen-firma/,1
+hochzeit,hochzeit_event,,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohne-luftaufnahmen-hochzeit/,1
+hochzeitsfotograf mit drohne braunschweig,hochzeit_event,,False,0,1,0.0,60.0,>50,0.0,0.0,/drohne-luftaufnahmen-hochzeit/,1
+immobilien drohnen,immobilien,,False,0,1,0.0,96.0,>50,0.0,0.0,/immobilien-fotografie-drohne/,1
+in berlin,sonstiges,berlin,False,0,1,0.0,5.0,4-10,0.1,0.1,/drohne-dach-vermessung/,1
+ja bitte,sonstiges,,False,0,1,0.0,1.0,1-3,0.3,0.3,/haus-grundstueck-luftbild/,1
+kosten für drohnenflug,preis,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+kosten nutzen drohneneinsatz,preis,,False,0,1,0.0,95.0,>50,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+luchtfotografie,sonstiges,,False,0,1,0.0,6.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen betrieb,generisch_drohne,,False,0,1,0.0,7.0,4-10,0.0,0.0,/drohnen-aufnahmen-firma/,1
+luftaufnahmen drohne kosten,preis,,False,0,1,0.0,5.0,4-10,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen für tourismusmarketing,generisch_drohne,,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+luftaufnahmen hubschrauber,generisch_drohne,,False,0,1,0.0,47.0,21-50,0.0,0.0,/,1
+luftaufnahmen mit drohne?,generisch_drohne,,False,0,1,0.0,89.0,>50,0.0,0.0,/,1
+luftaufnahmen von häusern,haus_privat,,False,0,1,0.0,20.0,11-20,0.0,0.0,/haus-grundstueck-luftbild/,1
+luftaufnahmen wesel,generisch_drohne,,False,0,1,0.0,89.0,>50,0.0,0.0,/,1
+luftaufnahmen-drohne thüringen,generisch_drohne,thüringen,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+luftbild erstellen,generisch_drohne,,False,0,1,0.0,102.0,>50,0.0,0.0,/haus-grundstueck-luftbild/,1
+luftbild münchen,generisch_drohne,münchen,False,0,1,0.0,7.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+luftbildaufnahme drohne,generisch_drohne,,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+luftbildaufnahmen drohne,generisch_drohne,,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohnenaufnahmen-preis-kosten/,1
+luftbilder,generisch_drohne,,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohnen-aufnahmen-firma/,1
+luftbilder brandenburg kostenlos,preis,brandenburg,False,0,1,0.0,1.0,1-3,0.3,0.3,/drohnen-aufnahmen-firma/,1
+luftbilder drohne,generisch_drohne,,False,0,1,0.0,164.0,>50,0.0,0.0,/,1
+luftbilder immobilie,immobilien,,False,0,1,0.0,50.0,21-50,0.0,0.0,/haus-grundstueck-luftbild/,1
+luftbilder maps,generisch_drohne,,False,0,1,0.0,4.0,4-10,0.1,0.1,/drohnen-aufnahmen-firma/,1
+luftfahrt bundesamt braunschweig,sonstiges,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+mit drohne fotografieren,generisch_drohne,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+mit drohne vermessen,vermessung_allgemein,,False,0,1,0.0,89.0,>50,0.0,0.0,/drohne-dach-vermessung/,1
+münchen luftaufnahme,generisch_drohne,münchen,False,0,1,0.0,11.0,11-20,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+münchen luftaufnahmen,generisch_drohne,münchen,False,0,1,0.0,8.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+photogrammetriedrohne,vermessung_allgemein,,False,0,1,0.0,81.0,>50,0.0,0.0,/drohne-dach-vermessung/,1
+quadrocopter für luftaufnahmen kaufen,generisch_drohne,,True,0,1,0.0,68.0,>50,0.0,0.0,/,1
+rehkitzrettung drohne kosten,preis,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+s159 drohne,generisch_drohne,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+schwerlast drohne 100 kg,generisch_drohne,,False,0,1,0.0,12.0,11-20,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+sind drohnen erlaubt,generisch_drohne,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+spreewald,sonstiges,spreewald,True,0,1,0.0,5.0,4-10,0.1,0.1,/,1
+unterwasserdrohne,generisch_drohne,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+vermessungsdrohne,vermessung_allgemein,,False,0,1,0.0,7.0,4-10,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+vogelperspektive bild,generisch_drohne,,False,0,1,0.0,4.0,4-10,0.1,0.1,/drohnen-aufnahmen-firma/,1
+was kann ich nutzen?,sonstiges,,False,0,1,0.0,4.0,4-10,0.1,0.1,/haus-grundstueck-luftbild/,1
+was kostet eine drohne,preis,,False,0,1,0.0,3.0,1-3,0.1,0.1,/drohnenaufnahmen-preis-kosten/,1
+welche firmen gibt es,sonstiges,,False,0,1,0.0,2.0,1-3,0.1,0.1,/drohne-dach-gebaeude-inspektion/,1
+wo befindet es sich,sonstiges,,False,0,1,0.0,1.0,1-3,0.3,0.3,/haus-grundstueck-luftbild/,1
+wärmebild drohne,inspektion_allgemein,,True,0,1,0.0,16.0,11-20,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
+zwischenfrucht saatgut preise,preis,,False,0,1,0.0,15.0,11-20,0.0,0.0,/drohnenaufnahmen-preis-kosten/,1
