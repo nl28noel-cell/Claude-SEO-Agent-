@@ -199,7 +199,11 @@ def render(src, out):
         if ln.lstrip().startswith("|"):
             rows = []
             while i < len(lines) and lines[i].lstrip().startswith("|"):
-                cells = [c.strip() for c in lines[i].strip().strip("|").split("|")]
+                # Zellen an nicht-maskierten "|" trennen; "\|" bleibt als Zeichen erhalten (z. B. im SEO-Title)
+                raw = lines[i].strip()
+                raw = raw[1:] if raw.startswith("|") else raw
+                raw = raw[:-1] if raw.endswith("|") and not raw.endswith("\\|") else raw
+                cells = [c.strip().replace("\\|", "|") for c in re.split(r"(?<!\\)\|", raw)]
                 if not all(re.fullmatch(r":?-{2,}:?", c) for c in cells):
                     rows.append(cells)
                 i += 1

@@ -246,9 +246,9 @@ class ArtifactQA(unittest.TestCase):
         import workflow
         with tempfile.TemporaryDirectory() as t:
             src, out = os.path.join(t, "d.md"), os.path.join(t, "d.html")
-            open(src, "w", encoding="utf-8").write("# H1\n\n## H2\nText **fett** <script>x</script>\n\n- a\n- b\n\n| A | B |\n|---|---|\n| 1 | 2 |\n")
+            open(src, "w", encoding="utf-8").write("# H1\n\n## H2\nText **fett** <script>x</script>\n\n- a\n- b\n\n| A | B |\n|---|---|\n| 1 | 2 |\n| Title | Baudoku \\| Berlin |\n")
             workflow.render(src, out); h = open(out, encoding="utf-8").read()
-        for frag in ("<h1>H1</h1>", "<h2>H2</h2>", "<b>fett</b>", "<li>a</li>", "<th>A</th>", "<td>2</td>", "&lt;script&gt;"):
+        for frag in ("<h1>H1</h1>", "<h2>H2</h2>", "<b>fett</b>", "<li>a</li>", "<th>A</th>", "<td>2</td>", "&lt;script&gt;", "<td>Baudoku | Berlin</td>"):
             self.assertIn(frag, h)
 
     def test_no_other_mcc_clients_or_personal_data(self):

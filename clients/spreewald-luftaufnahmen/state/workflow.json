@@ -1,5 +1,161 @@
 {
   "_doc": "Git-Spiegel der Artifact-db-Collection 'workflow' (SSOT ist die db). Vom Agenten nach jedem Workflow-Lauf geschrieben.",
   "updated": "2026-11-23",
-  "items": []
+  "items": [
+    {
+      "id": "OPP-01",
+      "client": "spreewald-luftaufnahmen",
+      "gate1": {
+        "at": "2026-11-23T15:09:38.569Z",
+        "comment": "",
+        "status": "approved"
+      },
+      "opp_id": "OPP-01",
+      "production": {
+        "attempt": 1,
+        "block_detail": "Lauf vom 23.11. (15:08–15:25) ohne Repository und ohne Google-Drive-Konnektor (alte Routine ohne hinterlegte Konnektoren). Gate 1 bleibt gültig.",
+        "block_reason": "drive_tool_unavailable",
+        "blocked_at": "2026-11-23T15:25:00Z",
+        "preflight": {
+          "google_drive_write": false,
+          "repository": false
+        },
+        "status": "blocked"
+      },
+      "review": {
+        "status": "none"
+      },
+      "schema": 1,
+      "title": "Dachinspektion",
+      "trigger": {
+        "blocked_at": "2026-11-23T15:25:00Z",
+        "requested_at": "2026-11-23T15:09:41.505Z",
+        "result": "Agentenlauf blockiert (2026-11-23): Session ohne Repository (docs/workflow.md, state/workflow.json fehlen) und Google-Drive-Connector in der Session nicht aktiviert – kein Entwurf erstellt. production bleibt 'waiting'; bitte Trigger erneut auslösen, sobald Repo + Drive-Zugriff in der Routine-Umgebung konfiguriert sind."
+      }
+    },
+    {
+      "id": "OPP-02",
+      "client": "spreewald-luftaufnahmen",
+      "gate1": {
+        "at": "2026-11-23T15:08:37.269Z",
+        "comment": "Bitte ein Hinweis darauf, ob die Seite neu sein soll oder überarbeitet und Keywords im text markieren",
+        "status": "approved"
+      },
+      "opp_id": "OPP-02",
+      "production": {
+        "attempt": 1,
+        "block_detail": "Lauf vom 23.11. (15:08–15:20) ohne Repository und ohne Google-Drive-Konnektor (alte Routine ohne hinterlegte Konnektoren). Gate 1 bleibt gültig.",
+        "block_reason": "drive_tool_unavailable",
+        "blocked_at": "2026-11-23T15:20:00Z",
+        "preflight": {
+          "google_drive_write": false,
+          "repository": false
+        },
+        "status": "blocked"
+      },
+      "review": {
+        "status": "none"
+      },
+      "schema": 1,
+      "title": "Baudokumentation",
+      "trigger": {
+        "blocked_at": "2026-11-23T15:20:00Z",
+        "requested_at": "2026-11-23T15:08:43.596Z",
+        "result": "Agentenlauf blockiert (2026-11-23): Session ohne Repository (docs/workflow.md, state/workflow.json fehlen) und ohne Google-Drive-Connector – kein Entwurf erstellt. production bleibt 'waiting'; bitte Trigger erneut auslösen, sobald Repo + Drive-Zugriff in der Routine-Umgebung konfiguriert sind."
+      }
+    },
+    {
+      "id": "OPP-04",
+      "client": "spreewald-luftaufnahmen",
+      "gate1": {
+        "at": "2026-11-23T15:09:46.652Z",
+        "comment": "",
+        "status": "approved"
+      },
+      "opp_id": "OPP-04",
+      "production": {
+        "attempt": 1,
+        "block_detail": "Lauf vom 23.11. (15:09–15:25) ohne Repository und ohne Google-Drive-Konnektor (alte Routine ohne hinterlegte Konnektoren). Gate 1 bleibt gültig.",
+        "block_reason": "drive_tool_unavailable",
+        "blocked_at": "2026-11-23T15:25:00Z",
+        "preflight": {
+          "google_drive_write": false,
+          "repository": false
+        },
+        "status": "blocked"
+      },
+      "review": {
+        "status": "none"
+      },
+      "schema": 1,
+      "title": "Drohnenvermessung (Hub)",
+      "trigger": {
+        "blocked_at": "2026-11-23T15:25:00Z",
+        "requested_at": "2026-11-23T15:09:49.347Z",
+        "result": "Agentenlauf blockiert (2026-11-23): Session ohne Repository (docs/workflow.md, state/workflow.json fehlen) und Google-Drive-Connector in der Session nicht aktiviert – kein Entwurf erstellt. production bleibt 'waiting'; bitte Trigger erneut auslösen, sobald Repo + Drive-Zugriff in der Routine-Umgebung konfiguriert sind."
+      }
+    },
+    {
+      "id": "OPP-05",
+      "client": "spreewald-luftaufnahmen",
+      "gate1": {
+        "at": "2026-11-23T15:10:05.553Z",
+        "comment": "",
+        "status": "approved"
+      },
+      "opp_id": "OPP-05",
+      "production": {
+        "attempt": 2,
+        "block_detail": null,
+        "block_reason": null,
+        "blocked_at": null,
+        "created_at": "2026-11-23T15:39:51Z",
+        "doc_id": "1L38pK8SRcWTdFI1Oh2_WOS121uRLUjNCXOb1jzxS-PQ",
+        "doc_title": "OPP-05 – Bestandsaufnahme Gebäude / Beweissicherung – Entwurf",
+        "doc_url": "https://docs.google.com/document/d/1L38pK8SRcWTdFI1Oh2_WOS121uRLUjNCXOb1jzxS-PQ/edit",
+        "finished_at": "2026-11-23T15:39:59Z",
+        "history": [
+          {
+            "at": "2026-11-23T15:39:59Z",
+            "doc_id": "1L38pK8SRcWTdFI1Oh2_WOS121uRLUjNCXOb1jzxS-PQ",
+            "doc_url": "https://docs.google.com/document/d/1L38pK8SRcWTdFI1Oh2_WOS121uRLUjNCXOb1jzxS-PQ/edit",
+            "note": "Erstentwurf nach Gate 1 (Retry nach Blockade drive_tool_unavailable)",
+            "run_id": "run-20261123T153807Z-OPP-05",
+            "type": "produce",
+            "version": 1
+          }
+        ],
+        "preflight": {
+          "business_profile": true,
+          "content_style_guide": true,
+          "correct_branch": true,
+          "docs_workflow": true,
+          "google_drive_write": true,
+          "repository": true,
+          "target_folder": true,
+          "up_to_date": true,
+          "workflow_state": true
+        },
+        "qa_notes": "Profil §10/§8 und Style-Guide §6 eingehalten; Abgrenzung 'kein Gutachten / kein Beweisverfahren' an 3 Stellen. Offen für Noel: SERP-Check steht aus; bitte bestätigen, ob Bodenaufnahmen ergänzend angeboten werden; Referenzprojekt nur mit Beleg. Kosmetik: Im internen Block ist die Title-Zeile durch das '|' in zwei Zellen geteilt (Title-Text ist korrekt).",
+        "qa_status": "passed_with_notes",
+        "retry_requested_at": "2026-11-23T15:36:00Z",
+        "run_id": "run-20261123T153807Z-OPP-05",
+        "started_at": "2026-11-23T15:38:07Z",
+        "status": "draft_ready",
+        "strategy_summary": "Neue B2B-Leistungsseite (CREATE, Prio 8) /bestandsaufnahme-gebaeude-drohne/ (Vorschlag): Ist-Zustand dokumentieren als Planungsgrundlage und zur Beweissicherung vor Bauarbeiten. Grenzt sich von der Inspektion (Schäden) und der Baudokumentation (Fortschritt) ab. Zielgruppen: Hausverwaltungen, Bauträger, Bauunternehmen, Sachverständige. Keywords: bestandsaufnahme gebäude, beweissicherung bau, bestandsdokumentation. Vorlage: Inspektion.docx (10/2026).",
+        "updated_at": "2026-11-23T15:39:59Z",
+        "version": 1
+      },
+      "review": {
+        "status": "pending"
+      },
+      "schema": 1,
+      "title": "Bestandsaufnahme Gebäude / Beweissicherung",
+      "trigger": {
+        "blocked_at": "2026-11-23T15:25:00Z",
+        "requested_at": "2026-11-23T15:36:00Z",
+        "result": "Agentenlauf angestoßen (automatisch nach erfolgreichem Cold-Start-Test, Gate 1 vom 23.11. 15:10)"
+      }
+    }
+  ]
 }
