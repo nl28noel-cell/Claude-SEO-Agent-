@@ -14,3 +14,9 @@ secrets/
 # Python
 __pycache__/
 *.pyc
+
+# Generierte Dashboard-Daten (werden beim Start neu gebaut)
+dashboard/public/data/
+# QA-Artefakte
+qa-shots/
+node_modules/

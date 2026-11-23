@@ -1,0 +1,20 @@
+{
+  "_doc": "Agent-Aktivitäten. Ehrliche Zustände: completed | planned | blocked | monitoring | waiting_for_approval | needs_review. Es gibt KEINEN Hintergrundprozess – 'running' wird bewusst nicht verwendet.",
+  "updated": "2026-11-23",
+  "tasks": [
+    {"id": "T-001", "title": "Business-Profil v1.1", "state": "completed", "date": "2026-11-23", "detail": "Leistungen, Prioritäten, Content-Regeln, Erreichbarkeit (GBP), Airteam-Umfang."},
+    {"id": "T-002", "title": "Website-Inventar (17 URLs)", "state": "completed", "date": "2026-11-23", "detail": "Titles, Headings, interne Links, Schema, Alt-Texte (tools/site_inventory.py)."},
+    {"id": "T-003", "title": "Semrush-Baseline (Rankings + 77 Keyword-Messwerte)", "state": "completed", "date": "2026-11-23", "detail": "1.000 Units verbraucht; Ergebnisse im Keyword-Cache."},
+    {"id": "T-004", "title": "GSC-Anbindung (Service Account)", "state": "completed", "date": "2026-11-23", "detail": "check, Search Analytics, URL Inspection getestet."},
+    {"id": "T-005", "title": "GSC 16-Monats-Baseline", "state": "completed", "date": "2026-11-23", "detail": "9 Datensätze, 21.07.2025–20.11.2026; Cluster, Quick Wins, Kannibalisierung, Local, NBO."},
+    {"id": "T-006", "title": "Dachinspektion Index-Inspection (T+0)", "state": "completed", "date": "2026-11-23", "detail": "PASS, indexiert, Google-Canonical korrekt; letzter Crawl 26.10.2026."},
+    {"id": "T-007", "title": "Analyse Sichtbarkeitsrückgang Baudokumentation", "state": "completed", "date": "2026-11-23", "detail": "Beginn ~18.05.2026, vor Seitenänderung; überwiegend themenfremde Queries; echter Verlust: „baustellendokumentation drohne“. Ergebnis = Hypothese."},
+    {"id": "T-008", "title": "SEO Autopilot Dashboard MVP", "state": "completed", "date": "2026-11-23", "detail": "Control Center auf Basis der State-Dateien."},
+    {"id": "T-101", "title": "Dachinspektion Canonical-Monitoring (CL-001)", "state": "monitoring", "date": "2026-11-23", "next_check": "2026-11-30", "detail": "Nächster Check T+7: Crawl, Canonical, Sitemap."},
+    {"id": "T-102", "title": "Fassadeninspektion (neue Seite) beobachten", "state": "monitoring", "date": "2026-11-23", "next_check": "2026-11-29", "detail": "Übernimmt die Seite die Queries von Fassadenaufmaß? (30-Tage-Marke ab Livegang 30.10.2026)."},
+    {"id": "T-201", "title": "SERP-/Wettbewerbs-Check für 7 Kernbegriffe", "state": "blocked", "date": "2026-11-23", "blocked_reason": "Semrush API Units: zuletzt 250 verfügbar, benötigt ~700–1.000. Wartet auf Kontingent-Reset bzw. Freigabe.", "detail": "drohnenvermessung, baudokumentation drohne, baustellendokumentation drohne, gebäudeinspektion drohne, 3d-modell drohne, fassadenaufmaß, bestandsaufnahme gebäude."},
+    {"id": "T-202", "title": "Gezielte Keyword-Discovery für bestätigte Cluster", "state": "planned", "date": "2026-11-23", "detail": "Cache-first, Broad Match statt Related; nach SERP-Check."},
+    {"id": "T-203", "title": "Approval-Gate-1-Paket erstellen", "state": "planned", "date": "2026-11-23", "detail": "Nach SERP-Check; Kandidaten: OPP-02, OPP-04, OPP-05, OPP-07."},
+    {"id": "T-204", "title": "GSC-Credential dauerhaft hinterlegen", "state": "needs_review", "date": "2026-11-23", "detail": "Umgebungsvariable GSC_SERVICE_ACCOUNT_JSON_B64 durch Noel; bis dahin nur temporäre Datei im Container."}
+  ]
+}

@@ -1,0 +1,79 @@
+# SEMSHARKS SEO Autopilot
+
+Datengetriebenes SEO-Research-, Strategie- und Monitoring-System. Pilotkunde: **Spreewald Luftaufnahmen**.
+
+## Dashboard starten
+
+```bash
+python3 dashboard/serve.py
+```
+
+Dann im Browser öffnen: **http://127.0.0.1:8765/**
+
+Der Befehl baut zuerst die Dashboard-Daten aus den aktuellen Quelldateien neu und startet dann einen lokalen Webserver (nur `localhost`). Voraussetzung: Python 3.10+ (keine weiteren Pakete nötig). Beenden mit `Strg+C`.
+
+Optionen: `--port 9000`, `--no-build` (nur Server, vorhandene Daten verwenden).
+
+## Wie die Daten ins Dashboard kommen
+
+```
+Raw Sources                      Normalisierung / Analyse          Dashboard Data Layer                  UI
+─────────────────────────        ──────────────────────────        ──────────────────────────────        ─────────────────
+GSC-Exporte (CSV)          ─┐
+Semrush-Ergebnisse + Cache ─┤──▶  tools/build_dashboard_data.py ──▶ dashboard/public/data/<client>/    ──▶ dashboard/public/
+Website-Inventar (JSON)    ─┤     (Cluster, Segmente, Zeiträume,      dashboard.json                       (index.html, app.js,
+State-Dateien (JSON)       ─┘      Joins, Attention-Regeln)                                                styles.css)
+```
+
+| Quelle | Datei(en) | Aktualisierung |
+|---|---|---|
+| Google Search Console | `clients/<client>/data/gsc-YYYY-MM/gsc_*.csv` | `tools/gsc_client.py query …` (API, automatisierbar) |
+| GSC URL Inspection | Ergebnis in `state/changes.json` (Checkpoint) | `tools/gsc_client.py inspect …` |
+| Semrush | `data/keyword-cache.csv`, `clients/<client>/data/baseline-*/semrush-*.csv` | Semrush-MCP-Connector im Claude-Chat, danach `tools/keyword_cache.py import …` |
+| Website-Inventar | `clients/<client>/data/baseline-*/inventory.json` | `tools/site_inventory.py <url> <dir>` |
+| Technisches Monitoring | `state/sources.json` | `tools/monitor_url.py <url>` |
+| Opportunities, Findings, Changes, Tasks, Market, Local, Approvals | `clients/<client>/state/*.json` | vom Agenten gepflegt (**Single Source of Truth**) |
+
+`seo-findings.md` und `seo-change-log.md` werden aus den State-Dateien **generiert** (`python3 tools/render_state_md.py`) – nicht von Hand ändern.
+
+Neue GSC-Daten → `python3 dashboard/serve.py` → Dashboard zeigt sie. Kein Code-Änderungsbedarf.
+
+## Was automatisch ist – und was (noch) nicht
+
+| Bereich | Stand |
+|---|---|
+| Daten-Build, KPIs, Zeiträume, Vergleiche, Segmente, Attention-Liste | automatisch bei jedem Start |
+| GSC-Abruf | per Skript, ausgelöst vom Agenten (noch kein Zeitplan) |
+| Semrush-Abruf | nur über den Connector im Claude-Chat (kein eigener API-Key) |
+| Opportunity-Bewertung, Findings, Change Log | vom Agenten in `state/*.json` gepflegt |
+| Approval-Buttons | **nur lokale Notiz im Browser**, kein Sync zum Agenten, keine Website-Aktion |
+| Website-/WordPress-Aktionen | **nicht vorhanden** (bewusst) |
+| Live-Agentenstatus | nicht vorhanden – es werden nur echte Zustände gezeigt (Completed, Planned, Monitoring, Blocked, Needs review) |
+
+## QA
+
+```bash
+python3 -m unittest tests/test_dashboard.py -v      # Daten- und Security-Checks
+node dashboard/qa/smoke.js                           # alle Routen, Console-Fehler, Screenshots (Server muss laufen)
+node dashboard/qa/functional.js                      # Filter, Suche, Tabs, Detailansichten, KPI-Abgleich
+```
+
+## Sicherheit
+
+- Credentials (GSC Service Account) liegen **nie** im Repo: Umgebungsvariable `GSC_SERVICE_ACCOUNT_JSON_B64` oder Datei außerhalb des Repos (`~/.config/semsharks/`). `.gitignore` blockiert Credential-Dateien.
+- Der Dashboard-Build liest keine Credentials; der Server liefert ausschließlich `dashboard/public/` aus.
+- Details: `docs/integrations.md`.
+
+## Struktur
+
+```
+clients/index.json                    Kunden-Registry (Client Switcher)
+clients/<client>/client.json          Kunden-Konfiguration (Property, Segmente, Prioritäten)
+clients/<client>/business-profile.md  Business-Profil
+clients/<client>/state/*.json         Single Source of Truth (Opportunities, Findings, Changes, …)
+clients/<client>/data/                Rohdaten + Analysen
+clients/<client>/reports/             Reports (Erklärung, nicht Datenquelle)
+tools/                                Fetch-, Analyse- und Build-Skripte
+dashboard/                            Control Center (serve.py, public/, qa/)
+docs/integrations.md                  Semrush, GSC, Secrets, Setup-Skript
+```

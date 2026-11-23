@@ -1,0 +1,188 @@
+{
+  "_doc": "New Business Opportunities. Zahlen werden beim Build aus Semrush-Cache (semrush_keywords) und GSC (gsc_pattern = Regex auf Queries) gezogen.",
+  "updated": "2026-11-23",
+  "capability_classes": {
+    "A": "heute selbst leistbar",
+    "B": "über bestehenden Partner leistbar",
+    "C": "benötigt Investition/Technik/Qualifikation/neuen Partner",
+    "D": "strategisch uninteressant"
+  },
+  "items": [
+    {
+      "id": "NBO-01",
+      "name": "Gebäude-Thermografie per Drohne",
+      "capability": "C",
+      "business_fit": "high",
+      "semrush_keywords": [
+        "thermografie drohne",
+        "thermografie gebäude",
+        "pv thermografie",
+        "wärmebildkamera haus"
+      ],
+      "gsc_pattern": "thermo|wärmebild",
+      "segments": [
+        "Hausverwaltungen",
+        "Wohnungswirtschaft",
+        "Gewerbeimmobilien"
+      ],
+      "coverage": "Keine Seite, keine Leistung",
+      "recommendation": "Höchstes NBO-Potenzial (sehr niedrige KD). Benötigt Wärmebildsensor und Fachkunde. Business-Entscheidung durch Noel.",
+      "status": "Awaiting business decision",
+      "note": "Saisonal (Heizperiode)."
+    },
+    {
+      "id": "NBO-02",
+      "name": "Beweissicherung am Bau",
+      "capability": "A",
+      "business_fit": "high",
+      "semrush_keywords": [
+        "beweissicherung bau",
+        "beweissicherungsverfahren"
+      ],
+      "gsc_pattern": "beweissicher",
+      "segments": [
+        "Bauunternehmen",
+        "Bauträger"
+      ],
+      "coverage": "Keine Seite",
+      "recommendation": "Passt zu Baudoku-Retainern. Juristische Abgrenzung (kein Gutachten) nötig. Teil von OPP-05.",
+      "status": "Candidate (OPP-05)",
+      "note": "„beweissicherungsverfahren“ überwiegend juristischer Intent."
+    },
+    {
+      "id": "NBO-03",
+      "name": "3D-Gebäudemodell / 3D-Scan",
+      "capability": "B",
+      "business_fit": "medium",
+      "semrush_keywords": [
+        "3d scan gebäude",
+        "photogrammetrie drohne",
+        "3d modell gebäude"
+      ],
+      "gsc_pattern": "3d",
+      "segments": [
+        "Architekten/Planer",
+        "Bauträger",
+        "Dachdecker"
+      ],
+      "coverage": "Teil von Dach-/Fassadenvermessung (Airteam: 3D-Modell); keine eigene Seite",
+      "recommendation": "Aufgewertet durch GSC. Nur im Rahmen Dach/Fassade anbieten (Airteam-Umfang) – im Vermessungs-Hub (OPP-04) abdecken.",
+      "status": "Linked to OPP-04",
+      "note": "Ein Teil der GSC-Impressionen ist verdächtig (F-018)."
+    },
+    {
+      "id": "NBO-05",
+      "name": "Industrie-/Anlageninspektion",
+      "capability": "A/C",
+      "business_fit": "medium",
+      "semrush_keywords": [
+        "industrie inspektion drohne",
+        "industriedrohne",
+        "brückeninspektion drohne"
+      ],
+      "gsc_pattern": "industrie|anlageninspektion|brücke|bruecke",
+      "segments": [
+        "Industrie",
+        "Energie",
+        "Logistik"
+      ],
+      "coverage": "Keine Seite (Profil-Prio 8)",
+      "recommendation": "Kleines, wachsendes Signal; je Objekt A oder C. Beobachten.",
+      "status": "Watch",
+      "note": null
+    },
+    {
+      "id": "NBO-04",
+      "name": "Drohnenpilot mieten (B2B-Dienstleistung)",
+      "capability": "A",
+      "business_fit": "low",
+      "semrush_keywords": [
+        "drohnenpilot mieten",
+        "drohne mieten"
+      ],
+      "gsc_pattern": "mieten",
+      "segments": [
+        "Agenturen",
+        "Film/Produktion"
+      ],
+      "coverage": "Keine Seite",
+      "recommendation": "Bedingt hochpreisig; „drohne mieten“ meist Gerätemiete. Niedrige Priorität.",
+      "status": "Watch",
+      "note": null
+    },
+    {
+      "id": "NBO-06",
+      "name": "Dachflächen-Ermittlung (Ratgeber → Dachvermessung)",
+      "capability": "A/B",
+      "business_fit": "medium",
+      "semrush_keywords": [
+        "dachfläche berechnen"
+      ],
+      "gsc_pattern": "dachfläche|dachflaeche",
+      "segments": [
+        "PV-Planer",
+        "Dachdecker",
+        "Eigentümer"
+      ],
+      "coverage": "Keine Ratgeberseite",
+      "recommendation": "Kein Lead-Keyword, aber großer Zubringer zur Dachvermessung. Supporting-Content-Kandidat.",
+      "status": "Watch",
+      "note": "Info-Intent."
+    },
+    {
+      "id": "NBO-07",
+      "name": "Orthofotos / Geländevermessung / Volumen",
+      "capability": "C",
+      "business_fit": "medium",
+      "semrush_keywords": [
+        "orthofoto",
+        "orthofoto drohne",
+        "geländevermessung",
+        "erdmassenberechnung"
+      ],
+      "gsc_pattern": "orthofoto|gelände|volumen|halde",
+      "segments": [
+        "Erdbau",
+        "Bauunternehmen"
+      ],
+      "coverage": "Keine Leistung (nicht Teil des Airteam-Umfangs)",
+      "recommendation": "Geringe messbare Nachfrage, Wettbewerb durch Vermessungsbüros. Beobachten.",
+      "status": "Watch",
+      "note": null
+    },
+    {
+      "id": "NBO-08",
+      "name": "PV-Inspektion",
+      "capability": "C",
+      "business_fit": "low",
+      "semrush_keywords": [
+        "pv anlage inspektion",
+        "photovoltaik inspektion drohne",
+        "solaranlage prüfen"
+      ],
+      "gsc_pattern": "\\bpv\\b|photovoltaik|solar",
+      "segments": [
+        "PV-Betreiber"
+      ],
+      "coverage": "Keine Leistung",
+      "recommendation": "Nur zusammen mit NBO-01 sinnvoll.",
+      "status": "Watch",
+      "note": null
+    },
+    {
+      "id": "NBO-09",
+      "name": "Landwirtschaft",
+      "capability": "D",
+      "business_fit": "low",
+      "semrush_keywords": [
+        "landwirtschaft drohne"
+      ],
+      "gsc_pattern": "landwirtschaft",
+      "segments": [],
+      "coverage": "–",
+      "recommendation": "Strategisch uninteressant (Spritz-/Agrardrohnen).",
+      "status": "Not pursued",
+      "note": null
+    }
+  ]
+}

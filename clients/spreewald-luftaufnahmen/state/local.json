@@ -1,0 +1,31 @@
+{
+  "_doc": "Local-Matrix Service × Location. GSC-Signal und Semrush-Werte werden beim Build ermittelt; hier stehen nur Definitionen und dokumentierte Empfehlungen. Leere Empfehlung = 'Not assessed'. Suchvolumen 0 ≠ IGNORE.",
+  "updated": "2026-11-23",
+  "services": [
+    {"key": "baudokumentation", "label": "Baudokumentation", "priority": 10, "gsc_pattern": "baudoku|baustell|baufortschritt|baubegleit", "semrush_stem": "baudokumentation drohne", "page": "/drohnen-baudokumentation/"},
+    {"key": "dachinspektion", "label": "Dachinspektion", "priority": 9, "gsc_pattern": "dach.?inspektion|dachkontroll|dachcheck", "semrush_stem": "dachinspektion drohne", "page": "/dachinspektion-mit-drohne/"},
+    {"key": "fassadeninspektion", "label": "Fassadeninspektion", "priority": 9, "gsc_pattern": "fassad\\w*.?inspektion", "semrush_stem": "fassadeninspektion", "page": "/fassadeninspektion-mit-drohne-berlin-brandenburg/"},
+    {"key": "gebaeudeinspektion", "label": "Gebäudeinspektion", "priority": 9, "gsc_pattern": "gebäudeinspektion|drohneninspektion", "semrush_stem": "gebäudeinspektion drohne", "page": "/drohne-dach-gebaeude-inspektion/"},
+    {"key": "vermessung", "label": "Drohnenvermessung (Dach/Fassade)", "priority": 8, "gsc_pattern": "vermess|aufmaß|aufmass|3d", "semrush_stem": "drohnenvermessung", "page": "/drohne-dach-vermessung/"}
+  ],
+  "locations": [
+    {"key": "berlin", "label": "Berlin", "pattern": "berlin", "coverage_regional": true, "population": "~3,8 Mio.", "distance_km": "0–40"},
+    {"key": "brandenburg", "label": "Brandenburg (Land)", "pattern": "brandenburg", "coverage_regional": true, "population": "–", "distance_km": "–"},
+    {"key": "potsdam", "label": "Potsdam", "pattern": "potsdam", "coverage_regional": false, "population": "~185 Tsd.", "distance_km": "~45"},
+    {"key": "cottbus", "label": "Cottbus", "pattern": "cottbus", "coverage_regional": false, "population": "~98 Tsd.", "distance_km": "~110"},
+    {"key": "kw_ber", "label": "Königs Wusterhausen / BER", "pattern": "königs wusterhausen|wildau|schönefeld|\\bber\\b", "coverage_regional": false, "population": "~38 Tsd. + Gewerbe", "distance_km": "~15–25"},
+    {"key": "ffo", "label": "Frankfurt (Oder) / Eisenhüttenstadt", "pattern": "frankfurt.{0,3}oder|eisenhüttenstadt", "coverage_regional": false, "population": "~57 / 24 Tsd.", "distance_km": "~90–110"},
+    {"key": "sachsen", "label": "Sachsen (überregional)", "pattern": "sachsen|dresden|leipzig", "coverage_regional": false, "population": "–", "distance_km": "160+"}
+  ],
+  "population_note": "Einwohnerzahlen/Entfernungen gerundet aus Allgemeinwissen – vor Nutzung verifizieren.",
+  "recommendations": [
+    {"service": "baudokumentation", "location": "berlin", "text": "OPTIMIZE bestehende Seite (rankt Pos. 2–3 für „… berlin“)"},
+    {"service": "dachinspektion", "location": "berlin", "text": "Bestehende Seite (Freeze)"},
+    {"service": "vermessung", "location": "berlin", "text": "Über Vermessungs-Hub (OPP-04)"},
+    {"service": "baudokumentation", "location": "potsdam", "text": "Pilot-Kandidat (Hypothese) – SERP-Check offen"},
+    {"service": "baudokumentation", "location": "cottbus", "text": "Pilot-Kandidat (Hypothese) – SERP-Check offen"},
+    {"service": "gebaeudeinspektion", "location": "potsdam", "text": "Pilot-Kandidat (Hypothese) – SERP-Check offen"},
+    {"service": "gebaeudeinspektion", "location": "cottbus", "text": "Pilot-Kandidat (Hypothese) – SERP-Check offen"},
+    {"service": "dachinspektion", "location": "sachsen", "text": "Überregionale Nachfrage sichtbar – beobachten"}
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "slug": "spreewald-luftaufnahmen",
+  "name": "Spreewald Luftaufnahmen",
+  "region": "Berlin & Brandenburg",
+  "domain": "www.spreewald-luftaufnahmen.de",
+  "website": "https://www.spreewald-luftaufnahmen.de/",
+  "gsc": {
+    "property": "https://www.spreewald-luftaufnahmen.de/",
+    "property_type": "URL prefix",
+    "permission": "Full user",
+    "service_account": "seo-autopilot@claude-seo-agent-515611.iam.gserviceaccount.com",
+    "data_dir": "data/gsc-2026-11"
+  },
+  "semrush": {"access": "Official Semrush MCP connector", "database": "de", "baseline_dir": "data/baseline-2026-11"},
+  "website_inventory_dir": "data/baseline-2026-11",
+  "business_profile": "business-profile.md",
+  "segments": {
+    "strategic_b2b_clusters": ["baudokumentation", "dachinspektion", "fassadeninspektion", "dachvermessung", "fassadenvermessung", "vermessung_allgemein", "inspektion_allgemein", "bestandsaufnahme"],
+    "b2c_clusters": ["haus_privat", "hochzeit_event"],
+    "brand_clusters": ["brand"],
+    "price_pattern": "preis|kost|teuer|günstig|guenstig|angebot|pauschal|tarif",
+    "note": "Strategic B2B = Cluster der Leistungen mit Profil-Prio ≥ 8. Price = Preis-/Kostenfragen ohne strategische Leistung. B2C = private Anlässe (Prio ≤ 2). Alles andere (Immobilien, Firma, Video, generisch) = Unknown/Mixed, weil die Daten B2B und B2C nicht trennen."
+  },
+  "service_priorities": {
+    "baudokumentation": 10, "dachinspektion": 9, "fassadeninspektion": 9, "inspektion_allgemein": 9,
+    "dachvermessung": 8, "fassadenvermessung": 8, "vermessung_allgemein": 8, "bestandsaufnahme": 8,
+    "immobilien": 6, "firma_imagefilm": 5, "video": 4, "haus_privat": 2, "hochzeit_event": 1
+  }
+}

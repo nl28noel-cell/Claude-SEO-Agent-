@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEO Autopilot · SEMSHARKS</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div><div class="brand-name">SEMSHARKS</div><div class="brand-sub">SEO Autopilot</div></div>
+    </div>
+    <nav id="nav">
+      <a href="#/overview" data-route="overview"><span class="ic">◧</span>Overview</a>
+      <a href="#/performance" data-route="performance"><span class="ic">↗</span>Performance</a>
+      <a href="#/opportunities" data-route="opportunities"><span class="ic">◎</span>Opportunities</a>
+      <a href="#/approvals" data-route="approvals"><span class="ic">✓</span>Approvals<span class="nav-badge" id="nav-approvals"></span></a>
+      <a href="#/changes" data-route="changes"><span class="ic">⟲</span>Changes &amp; Impact</a>
+      <a href="#/market" data-route="market"><span class="ic">◇</span>Market Opportunities</a>
+      <a href="#/local" data-route="local"><span class="ic">⌖</span>Local SEO</a>
+      <a href="#/findings" data-route="findings"><span class="ic">!</span>Findings<span class="nav-badge muted" id="nav-findings"></span></a>
+      <a href="#/activity" data-route="activity"><span class="ic">≡</span>Agent Activity</a>
+      <a href="#/sources" data-route="sources"><span class="ic">⛁</span>Data Sources</a>
+    </nav>
+    <div class="client-box">
+      <div class="label">Client</div>
+      <select id="client-switch" aria-label="Client"></select>
+      <div class="client-region" id="client-region"></div>
+    </div>
+  </aside>
+  <main>
+    <header class="topbar">
+      <div class="crumbs" id="crumbs"></div>
+      <div class="topbar-right" id="topbar-right"></div>
+    </header>
+    <div class="content" id="view"><div class="loading">Loading…</div></div>
+  </main>
+</div>
+<div class="tooltip" id="tooltip" role="tooltip"></div>
+<script src="app.js"></script>
+</body>
+</html>

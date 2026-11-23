@@ -1,0 +1,27 @@
+{
+  "_doc": "Metadaten der Datenquellen (Abrufzeitpunkte, Status). Wird von den Fetch-Skripten bzw. vom Agenten nach jedem Abruf aktualisiert. Frische wird im Dashboard zur Laufzeit aus dem Datum berechnet.",
+  "updated": "2026-11-23",
+  "gsc": {
+    "status": "connected",
+    "last_fetch": "2026-11-23",
+    "data_from": "2025-07-21",
+    "data_to": "2026-11-20",
+    "datasets": ["query", "page", "query×page", "date", "country", "device", "page×date", "query×date", "searchAppearance"],
+    "last_inspection": {"url": "/dachinspektion-mit-drohne/", "date": "2026-11-23", "verdict": "PASS"},
+    "credential": "Temporäre Datei außerhalb des Repos (~/.config/semsharks). Persistente Umgebungsvariable noch nicht gesetzt."
+  },
+  "semrush": {
+    "status": "connected",
+    "access": "Official Semrush MCP connector",
+    "database": "de",
+    "last_query": "2026-11-23",
+    "last_known_units": 250,
+    "units_checked": "2026-11-23",
+    "units_note": "Account-weites Kontingent (Pro/Guru: 50.000 je Abrechnungsperiode, Erneuerung zum Abo-Verlängerungsdatum – Plan nicht bestätigt)."
+  },
+  "website": {
+    "status": "monitoring",
+    "last_inventory": "2026-11-22",
+    "monitors": [{"url": "/dachinspektion-mit-drohne/", "type": "technical (status/canonical/sitemap/robots)", "last_check": "2026-11-23", "result": "OK", "next_check": "2026-11-30"}]
+  }
+}
