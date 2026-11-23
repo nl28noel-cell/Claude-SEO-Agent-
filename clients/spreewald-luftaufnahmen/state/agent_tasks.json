@@ -80,6 +80,13 @@
       "detail": "Entscheidung Noel: kein Basic Access. Semrush bleibt primäre Keyword-Quelle, GSC ergänzt. Planner-Code bleibt deaktiviert bestehen."
     },
     {
+      "id": "T-012",
+      "title": "Workflow Gate 1 → Drive-Entwurf → Review → Gate 2",
+      "state": "completed",
+      "date": "2026-11-23",
+      "detail": "Board im Artifact, db-Collection workflow als SSOT, Agenten-Anstoß über geplante Aufgabe; End-to-End mit TEST-Eintrag getestet (Trigger, Drive-Doc v1/v2, Revision, Gate 2), Testdaten entfernt."
+    },
+    {
       "id": "T-101",
       "title": "Dachinspektion Canonical-Monitoring (CL-001)",
       "state": "monitoring",

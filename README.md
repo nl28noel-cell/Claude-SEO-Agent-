@@ -54,7 +54,8 @@ Neue GSC-Daten → `python3 dashboard/serve.py` → Dashboard zeigt sie. Kein Co
 | GSC-Abruf | per Skript, ausgelöst vom Agenten (noch kein Zeitplan) |
 | Semrush-Abruf | nur über den Connector im Claude-Chat (kein eigener API-Key) |
 | Opportunity-Bewertung, Findings, Change Log | vom Agenten in `state/*.json` gepflegt |
-| Approvals | im Artifact-`db` gespeichert (Collection `decisions`), vom Agenten in der nächsten Session verarbeitet; Spiegel in `state/approvals.json → decision_log`; **keine Website-Aktion** |
+| Workflow (Gate 1 → Drive-Entwurf → Review → Gate 2) | Board im Artifact, SSOT = Artifact-`db` Collection `workflow`, Anstoß des Agenten über geplante Aufgabe; Ablauf: [`docs/workflow.md`](docs/workflow.md) |
+| Approvals (Protokoll) | im Artifact-`db` gespeichert (Collection `decisions`), vom Agenten in der nächsten Session verarbeitet; Spiegel in `state/approvals.json → decision_log`; **keine Website-Aktion** |
 | Website-/WordPress-Aktionen | **nicht vorhanden** (bewusst) |
 | Live-Agentenstatus | nicht vorhanden – es werden nur echte Zustände gezeigt (Completed, Planned, Monitoring, Blocked, Needs review) |
 

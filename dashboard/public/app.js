@@ -679,7 +679,9 @@ const WF_COLS = [
   ["final", "Final freigegeben", "Gate 2 · bereit für WordPress-Draft"],
 ];
 const WF = { items: {}, live: false, trigger: { state: "unknown", note: "" } };
-const wfDoc = id => (WF.live ? WF.items[id] : WF.items[id] || (S.d.workflow?.items || []).find(x => x.id === id)) || null;
+/** Live-db hat Vorrang; ohne Live-Verbindung (lokal, offline) gilt der vom Agenten geschriebene Git-Spiegel */
+const wfAll = () => WF.live ? WF.items : { ...Object.fromEntries((S.d.workflow?.items || []).map(x => [x.id, x])), ...WF.items };
+const wfDoc = id => wfAll()[id] || null;
 function wfCol(w) {
   if (!w || w.gate1?.status !== "approved") return "review";
   if (w.gate2?.status === "approved") return "final";
@@ -700,7 +702,7 @@ function wfLabel(w) {
 /** Karten: alle CREATE/OPTIMIZE/MERGE-Opportunities + TEST-Einträge aus der db (nur für technische Tests, deutlich markiert) */
 function wfCards() {
   const opps = S.d.opportunities.filter(o => ["CREATE", "OPTIMIZE", "MERGE"].includes(o.type)).map(o => ({ id: o.id, o }));
-  const tests = Object.values(WF.items).filter(w => w.test).map(w => ({ id: w.opp_id || w._id, o: { id: w.opp_id || w._id, name: w.title || "TEST", type: w.card?.type || "CREATE", priority: "low", confidence: "low", business_fit: 0, primary_keyword: w.card?.primary_keyword || "test", gsc_cluster: null, why: "Technischer Workflow-Test – kein echter Content.", recommendation: "TEST", reasoning: [], risks: [], gsc: { queries: [] }, semrush: { keywords: [] }, test: true } }));
+  const tests = Object.entries(wfAll()).filter(([, w]) => w.test).map(([k, w]) => ({ id: w.opp_id || k, o: { id: w.opp_id || k, name: w.title || "TEST", type: w.card?.type || "CREATE", priority: "low", confidence: "low", business_fit: 0, primary_keyword: w.card?.primary_keyword || "test", gsc_cluster: null, why: "Technischer Workflow-Test – kein echter Content.", recommendation: "TEST", reasoning: [], risks: [], gsc: { queries: [] }, semrush: { keywords: [] }, test: true } }));
   return [...opps, ...tests];
 }
 function wfSignals(o) {

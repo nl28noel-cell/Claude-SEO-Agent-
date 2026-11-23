@@ -224,6 +224,33 @@ class ArtifactQA(unittest.TestCase):
         self.assertNotEqual(r.returncode, 0); self.assertIn("bewusst deaktiviert", r.stdout + r.stderr)
         self.assertNotIn("Basic Access", open(os.path.join(ROOT, "dashboard", "public", "app.js"), encoding="utf-8").read())
 
+    def test_workflow_queue_only_explicit_approvals(self):
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import workflow
+        docs = {
+            "OPP-A": {},                                                                # kein Gate 1 → nichts tun
+            "OPP-B": {"gate1": {"status": "approved"}, "production": {"status": "waiting"}},
+            "OPP-C": {"gate1": {"status": "approved"}, "production": {"status": "draft_ready", "version": 1}, "review": {"status": "revision_requested", "comment": "x"}},
+            "OPP-D": {"gate1": {"status": "approved"}, "production": {"status": "draft_ready"}, "gate2": {"status": "approved"}},
+            "OPP-E": {"gate1": {"status": "approved"}, "production": {"status": "in_progress"}},
+        }
+        acts = {a["doc"]: a["action"] for a in workflow.actions(docs)}
+        self.assertEqual(acts, {"OPP-B": "produce", "OPP-C": "revise"})
+        # alle echten Opportunities starten ohne Workflow-Eintrag (= Zur Prüfung)
+        wf = json.load(open(os.path.join(CDIR, "state", "workflow.json"), encoding="utf-8"))
+        self.assertFalse([x for x in wf["items"] if not x.get("test") and (x.get("gate1") or {}).get("status") == "approved"])
+
+    def test_workflow_render_html(self):
+        import tempfile
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import workflow
+        with tempfile.TemporaryDirectory() as t:
+            src, out = os.path.join(t, "d.md"), os.path.join(t, "d.html")
+            open(src, "w", encoding="utf-8").write("# H1\n\n## H2\nText **fett** <script>x</script>\n\n- a\n- b\n\n| A | B |\n|---|---|\n| 1 | 2 |\n")
+            workflow.render(src, out); h = open(out, encoding="utf-8").read()
+        for frag in ("<h1>H1</h1>", "<h2>H2</h2>", "<b>fett</b>", "<li>a</li>", "<th>A</th>", "<td>2</td>", "&lt;script&gt;"):
+            self.assertIn(frag, h)
+
     def test_no_other_mcc_clients_or_personal_data(self):
         txt = json.dumps(self.d, ensure_ascii=False)
         for bad in ("FIRO", "K&M Cover", "9578550074", "3001574868", "9195667966", "creatorEmailAddress"):
