@@ -83,6 +83,13 @@ def validate(doc):
             err.append(f"research_competitors dürfen keine Rankingposition tragen: {r.get('domain')}")
     if C.get("quality") == "validated" and not C.get("serp_competitors"):
         err.append("C_serp.quality=validated ohne serp_competitors (Semrush)")
+    web = (C.get("validation") or {}).get("independent_web") or {}
+    if web and web.get("status") not in ("completed", "pending"):
+        err.append(f"validation.independent_web.status ungültig: {web.get('status')}")
+    if web.get("status") == "completed" and (not web.get("keywords") or not web.get("date")):
+        err.append("Independent Web Research ohne Keywords/Datum")
+    if web.get("positions"):
+        err.append("Independent Web Research darf keine Rankingpositionen enthalten")
     if "results" in C:
         err.append("C_serp.results ist veraltet → serp_competitors / research_competitors")
     return err
@@ -101,6 +108,9 @@ def missing_sections(doc):
     C = doc.get("C_serp") or {}
     if C and _empty(C.get("serp_competitors")) and _empty(C.get("research_competitors")):
         out.append("C · Live SERP (keine Wettbewerber)")
+    # Standard: Independent Web Research je Primary Keyword (kostet keine Units) – auch wenn Semrush vorliegt
+    if C and ((C.get("validation") or {}).get("independent_web") or {}).get("status") != "completed":
+        out.append("Independent Web Research ausstehend")
     return out
 
 

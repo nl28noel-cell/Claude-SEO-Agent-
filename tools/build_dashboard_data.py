@@ -318,7 +318,8 @@ def build_client(slug, today):
         o["research_status"] = {**r["status"], **{k: r["summary"][k] for k in ("version", "updated", "decision", "serp_quality", "units", "serp_competitors")}}
         if r["doc"]:  # Semrush-SERP-Plan (führt nichts aus): Keywords, Kosten, Budget-Urteil
             p = serp.plan(slug, rid)
-            o["research_status"]["serp_plan"] = {k: p[k] for k in ("items", "units_needed", "units_balance", "reserve_units", "verdict", "why", "balance_checked_at", "display_limit", "database")}
+            o["research_status"]["serp_plan"] = {k: p[k] for k in ("items", "web_research", "units_needed", "units_balance", "reserve_units", "verdict", "why", "balance_checked_at", "display_limit", "database")}
+            o["research_status"]["serp_validation"] = serp.validation(slug, rid)
         if r["doc"]:
             for e in research.validate(r["doc"]):
                 warnings.append(f"Research {rid}: {e}")

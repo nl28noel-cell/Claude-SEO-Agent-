@@ -56,7 +56,7 @@ Semrush ist die **primäre Quelle für echte SERP-Rankings**. Ablauf je Opportun
 1. `python3 tools/serp.py plan <client> <OPP>` – Abfrageplan, führt nichts aus
    - **Primary Keyword zuerst.** Secondary nur mit `serp_check: true` im Dossier (B), d. h. wenn ein anderer Intent möglich ist oder eine Konsolidierungsfrage nur so zu klären ist.
    - Ähnliche Keywords werden auf einen Schlüssel normalisiert (Umlaute, Stoppwörter, Plural, Wortreihenfolge) und nur einmal abgefragt.
-   - Frischer Cache (`data/serp-cache/<db>/`, TTL 60 Tage) → keine Abfrage.
+   - Frischer Cache (`data/serp-cache/<db>/`, **TTL 30 Tage** für SERP-Rankings; Keyword-/Volumendaten bis 180 Tage) → keine Abfrage.
    - Urteil: `run` · `budget_hold` · `none` (Cache) · `approval_required`.
 2. Nur bei `run`: Semrush-Konnektor `get_report_schema("phrase_organic")` (kostenlos, `price` prüfen) → `execute_report("phrase_organic", {phrase, database: "de", display_limit: 10})`.
 3. `python3 tools/serp.py ingest "<keyword>" <ergebnis.csv|json>` → Cache, Units verbuchen (`config/semrush_budget.json`, Log `data/serp-cache/usage-log.csv`).
@@ -72,11 +72,31 @@ Semrush ist die **primäre Quelle für echte SERP-Rankings**. Ablauf je Opportun
 | Formel | Kosten = Keywords × Zeilen × 10 |
 | Beispiel OPP-02 | Primary only: 1 × 10 × 10 = **100 Units**; mit Secondary: 200 Units |
 
+## SERP Validation: zwei unabhängige Quellen
+
+| | Source A – **Semrush SERP** | Source B – **Independent Web Research** |
+|---|---|---|
+| Was | Echte Google-Rankingdaten (`phrase_organic`, DE) | Eigenständige Suche durch Claude (WebSearch) + Live-Abruf der gefundenen Seiten |
+| Liefert | Position, Domain, Ranking-URL, SERP Features | Sichtbare Anbieter, Seitentypen, Inhalte der gefundenen Seiten |
+| Liefert nicht | – | **Keine Google.de-SERP, keine Positionen.** Der Suchindex ist US-basiert, ohne Standort-/Sprachsteuerung, und je nach Modus (Standard/Extended) unterschiedlich – nicht reproduzierbar |
+| Kosten | 10 Units je Zeile | 0 Units |
+| Rolle | Ranking-Wahrheit; nur hier „Position“ oder „Dominanz“ | Discovery- und Validierungsquelle |
+| Im Dossier | `C_serp.serp_competitors` | `C_serp.research_competitors` + `C_serp.validation.independent_web` |
+
+**Standard:** Independent Web Research läuft für jedes Primary Keyword (Pflicht: ohne sie ist das Dossier `incomplete`). Secondary Keywords nur mit `serp_check: true` (erkennbar anderer Intent); ähnliche Keywords werden über denselben Normalisierungsschlüssel wie bei Semrush nicht wiederholt (`serp.py plan` → `web_research`).
+
+**Cross-Validation** (`python3 tools/serp.py validate <client> <OPP>`, im Artifact Abschnitt C), vergleicht Domains, nie Positionen:
+- In beiden Quellen · nur Semrush · nur Web Research
+- **Cross-source agreement:** Anteil der Semrush-Top-10-Domains, die die Web Research auch gefunden hat: ≥ 50 % High, 25–50 % Medium, < 25 % Low; weicht der dominante Seitentyp ab (z. B. Semrush: Software, Web: Dienstleister), eine Stufe tiefer.
+- **Auffälligkeiten (⚑, manuell prüfen):** rankende Business-Wettbewerber, die die Web Research nicht gefunden hat; abweichender Seitentyp-Mix/Intent; viele Web-Funde, die nicht ranken.
+- Ohne Semrush: „Semrush SERP: Pending – budget hold · Independent Web Research: Completed · Agreement: nicht bewertbar“.
+
 ### Budget (`config/semrush_budget.json`)
 
 - `units_balance` (Kontostand), `reserve_units` (aktuell 250 = gesamter Bestand als Reserve), `max_units_per_opportunity` (200), `auto_use`.
 - Automatische Nutzung nur, wenn `units_balance − Kosten ≥ reserve_units`; sonst `budget_hold`, Research bleibt `complete_with_limits`.
-- Nach dem Aufladen: `units_balance` (und ggf. `reserve_units`) aktualisieren. Danach führt der nächste Research-Lauf die geplanten SERP-Abfragen automatisch aus.
+- **Kontostand (geprüft 23.11.2026):** Über die vorhandene Semrush-Anbindung **nicht automatisch lesbar**. Der Claude-Konnektor (OAuth) stellt nur Report-/Projekt-Werkzeuge bereit, keinen Kontostand. Der offizielle kostenlose Endpunkt `countapiunits` braucht einen API-Key, der bewusst nicht eingerichtet wird.
+- Deshalb Ledger: Jede Abfrage bucht ihre Units über `serp.py ingest` automatisch ab (Log `data/serp-cache/usage-log.csv`). Meldet der Konnektor `no_api_units` → `serp.py no-units` (Kontostand 0). Manuell nur nach Aufladung/Abgleich mit Semrush (Subscription info → API units): `python3 tools/serp.py set-balance <units>`. Danach führt der nächste Research-Lauf die geplanten SERP-Abfragen automatisch aus.
 - Das Artifact zeigt in Abschnitt C den Plan, die Kosten und das Budget-Urteil.
 
 ## Kostenbewusste Reihenfolge

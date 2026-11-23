@@ -322,6 +322,37 @@ class ArtifactQA(unittest.TestCase):
         finally:
             serp.BUDGET, serp.CACHE = orig_b, orig_c; shutil.rmtree(tmp)
 
+    def test_serp_validation_dual_source(self):
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import serp, research
+        b = serp.budget()
+        self.assertEqual(b["serp"]["cache_ttl_days"], 30)                       # SERP frischer als Keyword-Daten
+        self.assertGreater(b["keyword_cache_ttl_days"], b["serp"]["cache_ttl_days"])
+        self.assertFalse(b["balance_tracking"]["automatic_read"])               # Konnektor liefert keinen Kontostand
+        v = serp.validation("spreewald-luftaufnahmen", "OPP-02")
+        self.assertEqual(v["semrush"]["label"], "Pending – budget hold")
+        self.assertEqual(v["independent_web"]["label"], "Completed")
+        self.assertEqual(v["cross"]["agreement"], "n/a")                         # ohne Semrush keine Übereinstimmung
+        # Web Research je Primary Keyword ist Pflicht
+        R = research.load("spreewald-luftaufnahmen", "OPP-02")
+        x = json.loads(json.dumps(R)); x["C_serp"]["validation"]["independent_web"]["status"] = "pending"
+        self.assertEqual(research.derive(x)["state"], "incomplete")
+        x = json.loads(json.dumps(R)); x["C_serp"]["validation"]["independent_web"]["positions"] = [1, 2]
+        self.assertTrue(research.validate(x))                                    # keine erfundenen Positionen
+        # Cross-Validation über Domains
+        biz = lambda d, r="business_competitor": {"domain": d, "relevance": r}  # noqa: E731
+        C = {"serp_competitors": [biz("a.de"), biz("b.de"), biz("c.de"), biz("d.de")], "research_competitors": [biz("a.de"), biz("b.de"), biz("x.de")]}
+        c = serp.cross_validate(C)
+        self.assertEqual((c["agreement"], c["both"], c["semrush_only"], c["web_only"]), ("high", ["a.de", "b.de"], ["c.de", "d.de"], ["x.de"]))
+        self.assertTrue(any("c.de" in f for f in c["flags"]))                   # rankende, nicht gefundene Wettbewerber → profilieren
+        C2 = {"serp_competitors": [biz("s1.de", "software"), biz("s2.de", "software"), biz("a.de")], "research_competitors": [biz("a.de"), biz("y.de")]}
+        c2 = serp.cross_validate(C2)
+        self.assertEqual(c2["agreement"], "low")                                 # 1/3 = medium, Intent-Abweichung → low
+        self.assertTrue(any("Seitentyp" in f for f in c2["flags"]))
+        # Web-Research-Plan: Primary immer, ähnliche Keywords nicht doppelt
+        p = serp.plan("spreewald-luftaufnahmen", "OPP-02")
+        self.assertEqual([(w["keyword"], w["action"]) for w in p["web_research"]], [("baudokumentation drohne", "done")])
+
     def test_workflow_render_html(self):
         import tempfile
         sys.path.insert(0, os.path.join(ROOT, "tools"))

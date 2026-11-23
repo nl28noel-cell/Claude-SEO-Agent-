@@ -12,6 +12,11 @@ Ablauf je Opportunity (docs/research-strategy.md):
     python3 tools/serp.py ingest <keyword> <datei.csv|json> [--units N] [--db de]   -> Cache + Budget
     python3 tools/serp.py show   <keyword> [--db de]                     -> Cache-Eintrag
     python3 tools/serp.py cost   <anzahl_keywords> [--lines 10]          -> Kostenrechnung
+    python3 tools/serp.py set-balance <units>                            -> Kontostand nach Aufladung/Abgleich setzen
+    python3 tools/serp.py no-units                                       -> Konnektor meldete no_api_units → Kontostand 0
+    python3 tools/serp.py validate <client> <OPP>                        -> SERP Validation (Semrush × Independent Web Research)
+Kontostand: Die Semrush-Anbindung liefert keinen Kontostand (siehe config/semrush_budget.json balance_tracking);
+er wird per Verbrauchslog fortgeschrieben, Aufladungen werden mit set-balance eingetragen.
 Dieses Skript ruft Semrush nie selbst auf.
 """
 import csv, datetime as dt, json, os, re, sys, unicodedata
@@ -99,7 +104,17 @@ def plan(client, opp):
         verdict, why = "approval_required", "Automatische Nutzung ausgeschaltet"
     else:
         verdict, why = "run", f"Budget reicht: {b['units_balance']} − {need} = {after} ≥ Reserve {b['reserve_units']}"
-    return {"opp": opp, "report": s["report"], "database": s["database"], "display_limit": s["display_limit"],
+    web = []
+    done = {norm(k) for k in (((R.get("C_serp") or {}).get("validation") or {}).get("independent_web") or {}).get("keywords", [])}
+    wseen = {}
+    for k in cand:
+        key = norm(k["keyword"])
+        if key in wseen:
+            web.append({"keyword": k["keyword"], "action": "skip_similar", "same_as": wseen[key]})
+            continue
+        wseen[key] = k["keyword"]
+        web.append({"keyword": k["keyword"], "action": "done" if key in done else "research"})
+    return {"opp": opp, "report": s["report"], "web_research": web, "database": s["database"], "display_limit": s["display_limit"],
             "items": items, "not_queried": skipped, "units_needed": need, "units_balance": b["units_balance"],
             "balance_checked_at": b.get("balance_checked_at"), "reserve_units": b["reserve_units"], "verdict": verdict, "why": why,
             "call": {"tool": "Semrush execute_report", "report": s["report"],
@@ -120,6 +135,71 @@ def _rows(path):
         out.append({"position": int(g("Po", "Position", "position") or i), "domain": g("Dn", "Domain", "domain"),
                     "url": g("Ur", "Url", "URL", "url"), "serp_features": g("Fk", "SERP Features", "Fp")})
     return out
+
+
+def set_balance(units, source):
+    b = budget()
+    b["units_balance"] = int(units)
+    b["balance_checked_at"] = dt.date.today().isoformat()
+    b["balance_source"] = source
+    json.dump(b, open(BUDGET, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    return b
+
+
+AGREE = {"high": "Hoch", "medium": "Mittel", "low": "Niedrig", "n/a": "Nicht bewertbar"}
+
+
+def cross_validate(C):
+    """SERP Validation: Source A = Semrush (serp_competitors), Source B = Independent Web Research (research_competitors).
+    Vergleicht Domains, nie Positionen (Web Research hat keine). Ergebnis: Übereinstimmung + Auffälligkeiten."""
+    dom = lambda x: (x.get("domain") or "").lower().replace("www.", "").split(" ")[0]  # noqa: E731
+    a = [x for x in C.get("serp_competitors") or [] if x.get("relevance") != "own"]
+    bl = [x for x in C.get("research_competitors") or [] if x.get("relevance") not in ("own",)]
+    A, B = {dom(x) for x in a}, {dom(x) for x in bl}
+    out = {"both": sorted(A & B), "semrush_only": sorted(A - B), "web_only": sorted(B - A), "flags": []}
+    if not A:
+        out.update(agreement="n/a", reason="Semrush-SERP liegt noch nicht vor – keine Übereinstimmung bewertbar. Independent Web Research dient bis dahin als Discovery-Quelle.")
+        return out
+    biz_a = {dom(x) for x in a if x.get("relevance") == "business_competitor"}
+    share = len(A & B) / len(A)
+    level = "high" if share >= 0.5 else "medium" if share >= 0.25 else "low"
+    ia = {x.get("relevance") for x in a}
+    ib = {x.get("relevance") for x in bl}
+    major = lambda s, rel: max(rel, key=lambda r: sum(1 for x in s if x.get("relevance") == r)) if rel else None  # noqa: E731
+    intent_a, intent_b = major(a, ia), major(bl, ib)
+    if intent_a != intent_b:
+        level = {"high": "medium", "medium": "low", "low": "low"}[level]
+        out["flags"].append(f"Unterschiedlicher dominanter Seitentyp: Semrush {intent_a} vs. Web Research {intent_b} → Intent manuell prüfen")
+    if biz_a - B:
+        out["flags"].append(f"Rankende Business-Wettbewerber, die die Web Research nicht gefunden hat: {', '.join(sorted(biz_a - B))} → profilieren")
+    if len(B - A) > len(A):
+        out["flags"].append("Viele Web-Research-Anbieter ranken nicht in den Semrush-Top-10 → Wettbewerbsbild nicht auf sie stützen")
+    out.update(agreement=level, share=round(share, 2), intent_semrush=intent_a, intent_web=intent_b,
+               reason=f"{len(A & B)} von {len(A)} Semrush-Domains auch in der Web Research gefunden ({round(share * 100)} %)" + ("; Seitentyp-Mix weicht ab" if intent_a != intent_b else "; gleicher dominanter Seitentyp"))
+    return out
+
+
+def validation(client, opp):
+    """Statuszeile „SERP Validation“ für das Dossier/Artifact."""
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import research
+    R = research.load(client, opp) or {}
+    C = R.get("C_serp") or {}
+    v = C.get("validation") or {}
+    p = plan(client, opp)
+    if C.get("serp_competitors"):
+        sem = {"status": "confirmed", "label": "Confirmed"}
+    elif p["verdict"] == "budget_hold":
+        sem = {"status": "pending_budget_hold", "label": "Pending – budget hold"}
+    elif p["verdict"] == "run":
+        sem = {"status": "pending_run", "label": "Pending – wird beim nächsten Lauf abgefragt"}
+    else:
+        sem = {"status": "pending", "label": "Pending"}
+    web = v.get("independent_web") or {}
+    web_label = "Completed" if web.get("status") == "completed" else "Pending"
+    return {"semrush": {**sem, "plan_units": p["units_needed"], "why": p["why"]},
+            "independent_web": {**web, "label": web_label},
+            "cross": cross_validate(C)}
 
 
 def ingest(kw, path, units=None, db="de"):
@@ -156,6 +236,12 @@ if __name__ == "__main__":
         ingest(a[1], a[2], int(a[a.index("--units") + 1]) if "--units" in a else None, db)
     elif a[0] == "show":
         print(json.dumps(cached(a[1], db, ttl_days=10**6), ensure_ascii=False, indent=2))
+    elif a[0] == "set-balance":
+        b = set_balance(a[1], "manuell (Aufladung/Abgleich Subscription info)"); print(f"✓ Kontostand {b['units_balance']}")
+    elif a[0] == "no-units":
+        b = set_balance(0, "Konnektor meldete no_api_units"); print("✓ Kontostand 0 – keine weiteren Abfragen")
+    elif a[0] == "validate":
+        print(json.dumps(validation(a[1], a[2]), ensure_ascii=False, indent=2))
     elif a[0] == "cost":
         n = int(a[1]); lines = int(a[a.index("--lines") + 1]) if "--lines" in a else None
         print(f"{n} Keyword(s) × {lines or budget()['serp']['display_limit']} Zeilen × {budget()['serp']['cost_per_line']} Units = {cost(n, lines)} Units")

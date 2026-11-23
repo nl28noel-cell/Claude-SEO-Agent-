@@ -327,3 +327,5 @@ textarea{width:100%;min-height:64px;resize:vertical}
 .sec-h{margin:28px 0 12px;font-size:15px;color:var(--text-2)}
 .wf-res{margin-top:6px}
 .path{overflow-wrap:anywhere}
+.rs-val{border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:12px 0;background:var(--panel-2)}
+.rs-val h4{margin-top:0}

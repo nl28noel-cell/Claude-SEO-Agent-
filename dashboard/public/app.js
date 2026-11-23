@@ -692,6 +692,20 @@ function researchBanner(o) {
     ${o.research?.status?.optional_validation ? `<div class="s mt">Optional: ${esc(o.research.status.optional_validation)}</div>` : ""}
     ${legacy ? `<div class="mt"><b>Gate 1 vom ${fmtDateTime(w.gate1.at)}</b> wurde vor der Research-Stufe erteilt und gilt nicht als Strategie-Freigabe. Bitte Strategie neu freigeben.</div>` : ""}</div>`;
 }
+/** SERP Validation: Source A Semrush SERP × Source B Independent Web Research (keine zweite Google-SERP) */
+function serpValidation(o) {
+  const v = o.research_status?.serp_validation; if (!v) return "";
+  const sc = { confirmed: "green", pending_budget_hold: "amber", pending_run: "blue", pending: "amber" }[v.semrush.status] || "";
+  const ag = { high: ["High", "green"], medium: ["Medium", "blue"], low: ["Low", "red"], "n/a": ["Nicht bewertbar", ""] }[v.cross.agreement] || [v.cross.agreement, ""];
+  const w = v.independent_web || {};
+  const list = a => a?.length ? esc(a.join(", ")) : "–";
+  return `<div class="rs-val"><h4>SERP Validation</h4><div class="kv">
+    <div class="k">Semrush SERP</div><div>${chip(v.semrush.label, sc, true)} <span class="s">${esc(v.semrush.why || "")}</span></div>
+    <div class="k">Independent Web Research</div><div>${chip(w.label || "Pending", w.status === "completed" ? "green" : "amber", true)} ${w.date ? `<span class="s">${fmtDate(w.date)} · ${esc((w.keywords || []).join(", "))}</span>` : ""}${w.tool ? `<div class="s">${esc(w.tool)} – Discovery-/Validierungsquelle, keine Google.de-SERP, keine Positionen</div>` : ""}</div>
+    <div class="k">Cross-source agreement</div><div>${chip(ag[0], ag[1], true)} <span class="s">${esc(v.cross.reason || "")}</span>
+      ${v.cross.agreement !== "n/a" ? `<div class="s">In beiden: ${list(v.cross.both)} · nur Semrush: ${list(v.cross.semrush_only)} · nur Web Research: ${list(v.cross.web_only)}</div>` : ""}
+      ${(v.cross.flags || []).map(f => `<div class="down s">⚑ ${esc(f)}</div>`).join("")}</div></div></div>`;
+}
 function researchView(o) {
   const R = o.research;
   if (!R) return `<div class="card"><div class="card-h"><h2>Research & Strategy (A–J)</h2></div><div class="card-b"><div class="rs-toc">${RS_TITLES.map(([k, t]) => `<span class="chip">${k} · ${esc(t)}</span>`).join("")}</div><p class="mini mt">Noch kein Dossier. Der Agent erstellt es in der Kostenreihenfolge Cache → GSC → Website → vorhandene Semrush-Daten → Web/SERP → Semrush nur nach Freigabe.</p></div></div>`;
@@ -710,10 +724,11 @@ function researchView(o) {
     ${rows.map(x => `<tr><td>${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.domain)}</a>` : esc(x.domain)}</td>${withPos ? `<td class="num">${esc(x.position)}</td><td class="s">${esc(x.keyword)}</td>` : ""}<td class="s">${esc(x.page_type || "–")}</td><td>${chip(...(REL[x.relevance] || [x.relevance, ""]))}</td><td class="s">${esc(x.region || "–")}</td><td class="s">${esc(x.note || "")}${x.found_via ? `<div>Gefunden: ${esc(x.found_via)}</div>` : ""}</td></tr>`).join("")}</tbody></table></div>` : "";
   out.push(rsCard("C", "C · Live SERP", `<div class="callout ${C.quality === "validated" ? "green" : "amber"}"><b>Quelle:</b> ${esc(C.source)} · ${chip(C.quality === "validated" ? "Validiert (Semrush)" : C.quality === "indicative" ? "Indikativ" : "Fehlt", C.quality === "validated" ? "green" : "amber")}${C.quality_note ? `<div class="s">${esc(C.quality_note)}</div>` : ""}</div>
     <p><b>Intent:</b> ${esc(C.intent_verdict)}</p>${C.own_position ? `<p class="s">Eigene Position: ${esc(C.own_position)}</p>` : ""}
+    ${serpValidation(o)}
     <h4>SERP competitors · von Semrush als rankend bestätigt</h4>${compTable(C.serp_competitors, true) || `<div class="notice">Noch keine echte SERP. ${esc(C.serp_status || "")}</div>`}
     ${sp ? `<div class="kv mt"><div class="k">SERP-Plan</div><div>${sp.items.map(i => `<div>${esc(i.keyword)} · ${esc({ query: "Abfrage", cache: "aus Cache", skip_similar: "ähnlich → übersprungen" }[i.action] || i.action)}${i.units ? ` · ${fmtN(i.units)} Units` : ""}</div>`).join("") || "–"}<div class="s">Semrush Organic Results · ${esc(sp.database)} · Top ${esc(sp.display_limit)} · 10 Units je Ergebniszeile</div></div>
       <div class="k">Budget</div><div>${chip({ run: "Wird ausgeführt", budget_hold: "Budget-Reserve – wartet", none: "Cache aktuell", approval_required: "Freigabe nötig" }[sp.verdict] || sp.verdict, { run: "green", budget_hold: "amber", none: "green", approval_required: "amber" }[sp.verdict] || "")} <span class="s">${esc(sp.why)} · Stand ${fmtDate(sp.balance_checked_at)}</span></div></div>` : ""}
-    <h4>Research competitors · über Web-/Marktrecherche gefunden (keine Positionen)</h4>${compTable(C.research_competitors, false) || `<span class="mini">–</span>`}`));
+    <h4>Research competitors · Independent Web Research (gefunden, keine Positionen)</h4>${compTable(C.research_competitors, false) || `<span class="mini">–</span>`}`));
   out.push(rsCard("D", "D · Competitor Insights", `${R.D_pattern ? `<div class="callout">${esc(R.D_pattern)}</div>` : ""}<div class="mt">${(R.D_competitors || []).map(c => `<details class="rs-comp"><summary><b>${esc(c.domain)}</b> <span class="s">${esc(c.location || "")} · ${esc(c.h1 || "")}</span></summary>
     <div class="kv"><div class="k">Positionierung</div><div>${esc(c.positioning)}</div><div class="k">Themen</div><div>${esc((c.topics || []).join(" · "))}</div><div class="k">Zielgruppe</div><div>${esc((c.audience || []).join(" · "))}</div>
     <div class="k">FAQ</div><div>${esc(c.faq || "–")}</div><div class="k">Trust / Proof</div><div>${esc(c.trust || "–")}</div><div class="k">Lokaler Fokus</div><div>${esc(c.local || "–")}</div><div class="k">Conversion</div><div>${esc(c.conversion || "–")}</div></div>

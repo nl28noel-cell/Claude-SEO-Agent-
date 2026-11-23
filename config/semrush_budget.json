@@ -16,7 +16,16 @@
     "cost_per_line_historical": 50,
     "billing": "per zurückgegebener Zeile; display_limit begrenzt die Zeilen und damit die Kosten. Weniger Ergebnisse = weniger Kosten. Historische Daten (display_date) nie verwenden.",
     "max_cost_per_keyword": 100,
-    "cache_ttl_days": 60,
+    "cache_ttl_days": 30,
     "verified": "developer.semrush.com/api/v3/analytics/keyword-reports/ (Organic Results: 10 Units/Zeile, historisch 50) – geprüft 23.11.2026. Über den Semrush-MCP-Konnektor vor der Abfrage zusätzlich das Feld 'price' aus get_report_schema prüfen (kostenlos) und bei Abweichung hier anpassen."
+  },
+  "keyword_cache_ttl_days": 180,
+  "balance_tracking": {
+    "mode": "ledger",
+    "automatic_read": false,
+    "limitation": "Der Kontostand kann über die vorhandene Semrush-Anbindung nicht gelesen werden: Der Claude-Konnektor (OAuth) stellt nur Report-/Projekt-Werkzeuge bereit (Discovery, get_report_schema, execute_report, Actions, get_context), keinen Kontostand. Der offizielle kostenlose Endpunkt GET https://www.semrush.com/users/countapiunits.html?key=… erfordert einen API-Key, der hier bewusst nicht eingerichtet wird. Geprüft 23.11.2026.",
+    "what_is_automatic": "Jede Abfrage über tools/serp.py ingest bucht die verbrauchten Units automatisch ab (data/serp-cache/usage-log.csv). Meldet der Konnektor den Fehler no_api_units, setzt tools/serp.py no-units den Kontostand auf 0.",
+    "what_is_manual": "Nur Aufladungen bzw. Abgleich mit dem Semrush-Konto (Subscription info → API units): python3 tools/serp.py set-balance <units>.",
+    "would_enable_automatic": "Wenn der Konnektor künftig einen Kontostand liefert oder ein API-Key ohnehin vorhanden ist: countapiunits (0 Units) vor jedem Plan abfragen."
   }
 }

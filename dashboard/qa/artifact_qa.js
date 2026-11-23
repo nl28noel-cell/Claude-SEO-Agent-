@@ -191,7 +191,8 @@ const MOCK = () => {
       const tx = await p.locator('#view, main, body').first().innerText();
       check('detail: research status banner', tx.includes(rOpp.research_status.label));
       check('detail: SERP quality labelled', /Indikativ|Validiert/.test(tx));
-      check('detail: SERP competitors vs. research competitors separated', /SERP competitors · von Semrush als rankend bestätigt/.test(tx) && /Research competitors · über Web-\/Marktrecherche gefunden/.test(tx));
+      check('detail: SERP competitors vs. research competitors separated', /SERP competitors · von Semrush als rankend bestätigt/.test(tx) && /Research competitors · Independent Web Research/.test(tx));
+      check('detail: SERP Validation block (Semrush × Independent Web Research)', /SERP Validation/.test(tx) && /Semrush SERP/.test(tx) && /Independent Web Research/.test(tx) && /Cross-source agreement/.test(tx) && /keine Google\.de-SERP/.test(tx));
       check('detail: Semrush SERP plan + budget shown', /Semrush Organic Results/.test(tx) && /(Budget-Reserve – wartet|Wird ausgeführt|Cache aktuell|Freigabe nötig)/.test(tx));
       check('detail: IA current vs. recommended', /Current Architecture/.test(tx) && /Recommended Architecture/.test(tx));
       check('detail: no SERP dominance claim without real SERP', rOpp.research.C_serp.serp_competitors?.length || !/dominier/i.test(tx));
