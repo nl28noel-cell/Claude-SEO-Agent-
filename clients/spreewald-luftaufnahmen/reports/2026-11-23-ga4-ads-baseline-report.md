@@ -8,7 +8,7 @@ Nur lesend. Keine Änderungen an GA4, GTM, Tracking, Google Ads oder der Website
 |---|---|
 | Google Ads API (v26) | Service Account funktioniert über das MCC **SemSharks (5474466547)**, Berechtigung „Nur lesen“. 4 Kundenkonten (3 aktiv, 1 gekündigt). |
 | Spreewald-Ads-Konto | **1935597794 · Status CANCELED** – bewusst gekündigt, wird nicht reaktiviert. API liefert dafür keine Daten (`CUSTOMER_NOT_ENABLED`); Paid-Historie über GA4. |
-| Keyword Planner | KeywordPlanIdeaService mit der Zugriffsstufe **Explorer** des Cloud-Projekts gesperrt. Benötigt **Basic Access** – seit dem Developer-Token-Sunset (09.09.2026) beantragt in der **Google Cloud Console → Google Ads API Overview**, Voraussetzung **Brand Verification**. Planning Customer künftig ein aktives MCC-Konto (nur Planner-Zugang). |
+| Keyword Planner | **Bewusst nicht genutzt** (Entscheidung 23.11.2026). Kein Basic Access, Zugriffsstufe bleibt Explorer. Semrush = primäre Keyword-Quelle, GSC ergänzt. |
 | GA4 | Data API + Admin API aktiv; Service Account hat bereits Lesezugriff auf **Property 321987676** („Spreewald-Luftaufnahmen – GA4“). Keine manuelle Aktion nötig. |
 | GA4 ↔ Ads | Verknüpfung zum Konto 1935597794 vorhanden → Paid-Historie 06/2023–12/2024 über GA4 auswertbar. |
 
@@ -51,6 +51,7 @@ Join-Schlüssel: **Themencluster** (gleiche Regex-Cluster für GSC-Queries, Semr
 
 Beispiel aus den Daten – **Dachvermessung**: 1.970 Suchen/Monat (Semrush), organisch Ø Position 42 (schwach), 840 € Paid-Historie für 123 Klicks, passende Seite `/drohne-dach-vermessung` vorhanden, 3 Leads (2 Formulare + 1 direkter Kontakt) und Funnel Intent in ≈ 4 Sitzungen in 16 Monaten, Priorität 8/10. Genau das Muster „Nachfrage + bezahlte Klicks + Conversions + schwache organische Sichtbarkeit + vorhandene Seite + hohe Priorität“.
 
-## Offene Entscheidungen
+## Entscheidungen
 
-1. Brand Verification + Basic Access für das Cloud-Projekt beantragen (Keyword Planner). Danach testet der Agent den Planner über das aktive Planning-Customer-Konto und vergleicht die Genauigkeit mit einem Konto ohne Spend.
+- Spreewald-Ads-Konto bleibt gekündigt: „Account intentionally canceled · historical paid data via GA4 where reliable“.
+- Keyword Planner wird nicht integriert (F-023 closed – not pursued). Semrush bleibt primäre Quelle für Volumen, KD, CPC; 0/geringes Volumen ≠ IGNORE.

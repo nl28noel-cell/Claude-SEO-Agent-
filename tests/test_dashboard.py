@@ -211,6 +211,19 @@ class ArtifactQA(unittest.TestCase):
         self.assertNotEqual(r.returncode, 0)
         self.assertIn("nur als Keyword-Planner-Zugang", r.stdout + r.stderr)
 
+    def test_keyword_planner_intentionally_not_used(self):
+        kp = self.d["sources"]["keyword_planner"]
+        self.assertEqual(kp["status"], "not_used")
+        f = {x["id"]: x for x in self.d["findings"]}["F-023"]
+        self.assertTrue(f["status"].startswith("closed"))
+        self.assertNotIn("blocked", json.dumps(self.d["sources"]["google_ads"]["capabilities"]))
+        self.assertFalse(any(t["id"] == "T-206" for t in self.d["tasks"]))
+        cfg = json.load(open(os.path.join(ROOT, "config", "keyword_planner.json"), encoding="utf-8"))
+        self.assertFalse(cfg["enabled"])
+        r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "ads_client.py"), "history", "planner", "x", "/dev/null"], capture_output=True, text=True)
+        self.assertNotEqual(r.returncode, 0); self.assertIn("bewusst deaktiviert", r.stdout + r.stderr)
+        self.assertNotIn("Basic Access", open(os.path.join(ROOT, "dashboard", "public", "app.js"), encoding="utf-8").read())
+
     def test_no_other_mcc_clients_or_personal_data(self):
         txt = json.dumps(self.d, ensure_ascii=False)
         for bad in ("FIRO", "K&M Cover", "9578550074", "3001574868", "9195667966", "creatorEmailAddress"):

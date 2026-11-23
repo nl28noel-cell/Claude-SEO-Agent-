@@ -73,6 +73,13 @@
       "detail": "GA4-Baseline 07/2022–11/2026, Event-Klassifizierung; Ads: MCC-Discovery, Spreewald-Konto gekündigt, Paid-Historie über GA4."
     },
     {
+      "id": "T-011",
+      "title": "Keyword Planner bewusst nicht integriert",
+      "state": "completed",
+      "date": "2026-11-23",
+      "detail": "Entscheidung Noel: kein Basic Access. Semrush bleibt primäre Keyword-Quelle, GSC ergänzt. Planner-Code bleibt deaktiviert bestehen."
+    },
+    {
       "id": "T-101",
       "title": "Dachinspektion Canonical-Monitoring (CL-001)",
       "state": "monitoring",
@@ -123,13 +130,6 @@
       "state": "needs_review",
       "date": "2026-11-23",
       "detail": "Noel prüft das Artifact und gibt Änderungswünsche."
-    },
-    {
-      "id": "T-206",
-      "title": "Basic Access für Google Ads API beantragen (Keyword Planner)",
-      "state": "needs_review",
-      "date": "2026-11-23",
-      "detail": "Noel: Brand Verification + Basic-Antrag in der Cloud Console (Google Ads API Overview). Danach testet der Agent den Planner über ein aktives MCC-Konto als Planning Customer (nur Planner-Zugang)."
     }
   ]
 }

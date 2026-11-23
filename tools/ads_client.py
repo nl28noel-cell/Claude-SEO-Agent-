@@ -37,6 +37,7 @@ KP_CFG = json.load(open(KP_CFG_PATH, encoding="utf-8")) if os.path.exists(KP_CFG
 PLANNER_ONLY = {KP_CFG.get("planning_customer_id")} - {None}
 KP_CACHE = os.path.join(ROOT, "data", "keyword-planner-cache.csv")
 KP_METHODS = (":generateKeywordIdeas", ":generateKeywordHistoricalMetrics")
+KP_ENABLED = bool(KP_CFG.get("enabled", False))  # bewusst deaktiviert (Entscheidung 23.11.2026)
 
 
 def _session():
@@ -55,6 +56,8 @@ def _session():
 def _post(s, path, body):
     if any(f in path.lower() for f in _FORBIDDEN):
         raise SystemExit(f"Schreibender Endpunkt blockiert: {path}")
+    if path.endswith(KP_METHODS) and not KP_ENABLED:
+        raise SystemExit("Keyword Planner ist bewusst deaktiviert (config/keyword_planner.json: enabled=false) – keine Abfrage ausgeführt")
     cid = path.split("/customers/")[-1].split(":")[0].split("/")[0] if "/customers/" in path else None
     if cid in PLANNER_ONLY and not path.endswith(KP_METHODS):
         raise SystemExit(f"Konto {cid} ist nur als Keyword-Planner-Zugang freigegeben – {path} blockiert")
@@ -140,9 +143,11 @@ def discover(name_match, out):
             search(s, tgt["id"], "SELECT customer.id FROM customer"); res["tests"]["gaql_account"] = "ok"
         except SystemExit as e:
             res["tests"]["gaql_account"] = str(e).split(": ", 2)[-1]
-    probe = KP_CFG.get("planning_customer_id") or next((c["id"] for c in others if c.get("status") == "ENABLED" and not c.get("manager")), None)
-    for meth, body in (("generateKeywordIdeas", {"language": LANG_DE, "geoTargetConstants": [GEO_DE], "keywordSeed": {"keywords": ["drohne"]}}),
-                       ("generateKeywordHistoricalMetrics", {"language": LANG_DE, "geoTargetConstants": [GEO_DE], "keywords": ["drohne"]})):
+    if not KP_ENABLED:
+        res["tests"]["keyword_planner"] = "not used (intentionally disabled)"
+    probe = KP_CFG.get("planning_customer_id") if KP_ENABLED else None
+    for meth, body in ([] if not probe else  (("generateKeywordIdeas", {"language": LANG_DE, "geoTargetConstants": [GEO_DE], "keywordSeed": {"keywords": ["drohne"]}}),
+                       ("generateKeywordHistoricalMetrics", {"language": LANG_DE, "geoTargetConstants": [GEO_DE], "keywords": ["drohne"]}))):
         try:
             _post(s, f"/customers/{probe}:{meth}", body); res["tests"][meth] = "ok"
         except SystemExit as e:

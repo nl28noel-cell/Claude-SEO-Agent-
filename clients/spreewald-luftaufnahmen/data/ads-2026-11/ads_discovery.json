@@ -1,13 +1,12 @@
 {
-  "checked_at": "2026-11-23T14:05:26Z",
+  "checked_at": "2026-11-23T14:36:46Z",
   "api_version": "v26",
   "access_level": "Explorer (laut Nutzer; API-Antworten bestätigen Explorer-Grenzen)",
   "tests": {
     "list_accessible_customers": "ok",
     "gaql_mcc": "ok",
     "gaql_account": "The customer account can't be accessed because it is not yet enabled or has been deactivated.",
-    "generateKeywordIdeas": "This method is not allowed for use with explorer access. Please apply for basic or standard access.",
-    "generateKeywordHistoricalMetrics": "This method is not allowed for use with explorer access. Please apply for basic or standard access."
+    "keyword_planner": "not used (intentionally disabled)"
   },
   "mcc": {
     "id": "5474466547",

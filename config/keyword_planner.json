@@ -3,6 +3,8 @@
   "login_customer_id": "5474466547",
   "planning_customer_id": "9578550074",
   "planning_customer_role": "planner_access_only",
-  "reason": "Aktiv werbendes Konto – laut Erfahrung genauere Volumen als Konten ohne Spend; wird nach Freischaltung empirisch geprüft (Vergleich mit inaktivem Konto).",
-  "status": "waiting_for_basic_access"
+  "reason": "Vorbereitet für eine mögliche spätere Nutzung; aktuell deaktiviert.",
+  "status": "intentionally_disabled",
+  "enabled": false,
+  "decision": "Noel 23.11.2026: Basic Access / Brand Verification wird nicht beantragt (öffentliche Startseite, App-Datenschutzerklärung, Compliance-Aufwand unverhältnismäßig). Planning Customer wird nicht abgefragt. Code bleibt als optionale, deaktivierte Integration bestehen."
 }

@@ -22,7 +22,8 @@
       "date": "2026-11-23",
       "verdict": "PASS"
     },
-    "credential": "Temporäre Datei außerhalb des Repos (~/.config/semsharks). Persistente Umgebungsvariable noch nicht gesetzt."
+    "credential": "Temporäre Datei außerhalb des Repos (~/.config/semsharks). Persistente Umgebungsvariable noch nicht gesetzt.",
+    "role": "Tatsächliche Queries, Impressionen, Klicks, Rankings, Landingpages"
   },
   "semrush": {
     "status": "connected",
@@ -31,7 +32,9 @@
     "last_query": "2026-11-23",
     "last_known_units": 250,
     "units_checked": "2026-11-23",
-    "units_note": "Account-weites Kontingent (Pro/Guru: 50.000 je Abrechnungsperiode, Erneuerung zum Abo-Verlängerungsdatum – Plan nicht bestätigt)."
+    "units_note": "Account-weites Kontingent (Pro/Guru: 50.000 je Abrechnungsperiode, Erneuerung zum Abo-Verlängerungsdatum – Plan nicht bestätigt).",
+    "role": "Primary keyword research source (Search Volume, KD, CPC, Keyword Research)",
+    "rule": "0 oder sehr niedriges Volumen ≠ IGNORE – GSC-Signale, Business Fit, Kundenprojekte, CPC, Intent und strategische Relevanz fließen in die Bewertung ein."
   },
   "website": {
     "status": "monitoring",
@@ -87,8 +90,8 @@
     ]
   },
   "google_ads": {
-    "status": "account_canceled_intended",
-    "access": "Service Account im MCC, Berechtigung „Nur lesen“; Zugriffsstufe des Cloud-Projekts: Explorer",
+    "status": "connected_account_canceled",
+    "access": "Service Account im MCC, Berechtigung „Nur lesen“; Zugriffsstufe des Cloud-Projekts: Explorer (bleibt unverändert)",
     "api_version": "v26",
     "mcc": {
       "id": "5474466547",
@@ -108,9 +111,9 @@
     "capabilities": {
       "account_discovery": "ok",
       "reporting_gaql_mcc": "ok",
-      "reporting_gaql_account": "blocked – Konto gekündigt (CUSTOMER_NOT_ENABLED)",
-      "keyword_planner_ideas": "blocked – Explorer-Zugang; benötigt Basic Access (Cloud Console → Google Ads API Overview, Brand Verification)",
-      "keyword_planner_historical_metrics": "blocked – Explorer-Zugang (s. o.)"
+      "reporting_gaql_account": "nicht verfügbar – Spreewald-Konto bewusst gekündigt (CUSTOMER_NOT_ENABLED)",
+      "keyword_planner_ideas": "nicht genutzt (bewusste Entscheidung)",
+      "keyword_planner_historical_metrics": "nicht genutzt (bewusste Entscheidung)"
     },
     "paid_history_via_ga4": {
       "source": "GA4 ↔ Google-Ads-Verknüpfung (Konto 1935597794)",
@@ -124,15 +127,15 @@
       "Spreewald-Konto gekündigt (gewollt): keine Kampagnen-/Search-Term-/Conversion-Action-Daten über die API",
       "Paid-Historie nur über die GA4-Verknüpfung; Kampagnenebene unplausibel, Keyword-Ebene nutzbar",
       "Nur lesend – keine Mutate-Endpunkte im Client"
-    ]
+    ],
+    "status_label": "Account intentionally canceled · historical paid data via GA4 where reliable"
   },
   "keyword_planner": {
-    "status": "blocked_access_level",
-    "access_needed": "Basic Access für das Google-Cloud-Projekt claude-seo-agent-515611",
-    "apply_at": "Google Cloud Console → Projekt claude-seo-agent-515611 → Google Ads API Overview → Upgrade access level (Voraussetzung: Brand Verification unter APIs & Services → OAuth consent screen → Branding)",
-    "planning_customer": "aktives Konto im MCC, nur als Planner-Zugang (ID in config/keyword_planner.json, nie im Dashboard)",
-    "last_check": "2026-11-23",
-    "cache": "data/keyword-planner-cache.csv",
-    "verified_against": "developers.google.com/google-ads/api/docs/api-policy/access-levels und /developer-token (Stand 23.11.2026)"
+    "status": "not_used",
+    "label": "Intentionally not used",
+    "reason": "Keyword Planner integration intentionally not pursued; Semrush remains primary keyword-demand source.",
+    "decided": "2026-11-23",
+    "access_level": "Explorer (unverändert, kein Basic-Antrag)",
+    "planning_customer": "nicht aktiv (keine Abfragen)"
   }
 }

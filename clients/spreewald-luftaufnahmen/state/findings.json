@@ -292,14 +292,16 @@
       "id": "F-023",
       "severity": "low",
       "category": "Integration",
-      "title": "Keyword Planner über API noch nicht freigeschaltet",
-      "description": "KeywordPlanIdeaService ist mit dem Explorer-Zugang des Cloud-Projekts gesperrt (DEVELOPER_TOKEN_NOT_APPROVED). Benötigt Basic Access, beantragt in der Google Cloud Console (Google Ads API Overview), Voraussetzung Brand Verification. Unabhängig davon: das Spreewald-Ads-Konto ist bewusst gekündigt (kein Problem; Paid-Historie über GA4).",
+      "title": "Keyword-Planner-Integration nicht weiterverfolgt",
+      "description": "Keyword Planner integration intentionally not pursued; Semrush remains primary keyword-demand source. Basic Access / Brand Verification wird bewusst nicht beantragt; Zugriffsstufe bleibt Explorer. Das Spreewald-Ads-Konto bleibt gekündigt (gewollt).",
       "evidence": "ads_discovery.json; developers.google.com/google-ads/api/docs/api-policy/access-levels (Stand 23.11.2026)",
       "url": null,
-      "status": "open",
+      "status": "closed – not pursued",
       "related_opportunity": null,
       "related_change": null,
-      "date": "2026-11-23"
+      "date": "2026-11-23",
+      "resolution": "Keyword Planner integration intentionally not pursued; Semrush remains primary keyword-demand source.",
+      "closed": "2026-11-23"
     }
   ]
 }

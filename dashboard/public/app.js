@@ -199,7 +199,7 @@ pages.overview = () => {
     ${chip("GSC " + (src.gsc.status === "connected" ? "Connected" : src.gsc.status), src.gsc.status === "connected" ? "green" : "red", true)}
     ${chip("Semrush " + (src.semrush.status === "connected" ? "Connected" : src.semrush.status), src.semrush.status === "connected" ? "green" : "red", true)}
     ${chip("GA4 " + (src.ga4?.status === "connected" ? "Connected" : src.ga4?.status || "Unknown"), src.ga4?.status === "connected" ? "green" : "red", true)}
-    <a href="#ads">${chip("Google Ads " + (src.google_ads?.status === "account_canceled_intended" ? "Connected (Historie via GA4)" : src.google_ads?.status || "Unknown"), src.google_ads?.status === "connected" || src.google_ads?.status === "account_canceled_intended" ? "green" : "amber", true)}</a>
+    <a href="#ads">${chip("Google Ads Connected · Historie via GA4", src.google_ads?.status?.startsWith("connected") ? "green" : "amber", true)}</a>
     ${chip("Website Monitoring " + (src.website.monitors?.length ? "Active" : "Off"), src.website.monitors?.length ? "green" : "", true)}
     <a href="#changes">${chip(`${h.freezes} Change Freeze`, h.freezes ? "amber" : "")}</a>
     <a href="#approvals">${chip(`${h.pending_approvals} Pending Approvals`, h.pending_approvals ? "red" : "")}</a>
@@ -352,6 +352,7 @@ pages.opportunities = () => {
       { key: "gsc_imp", label: "GSC cluster impr.", num: true, value: o => o.gsc.cluster_total?.impressions ?? null, tip: "Impressionen aller Queries des Clusters, 16 Monate", render: o => fmtN(o.gsc.cluster_total?.impressions) },
       { key: "sem_vol", label: "Semrush vol.", num: true, value: sv, tip: "Suchvolumen des ersten gemessenen Keywords (DE)", render: o => sv(o) === null ? `<span class="s">Not measured</span>` : fmtN(sv(o)) },
       { key: "cur_pos", label: "GSC pos.", num: true, value: o => o.gsc.queries.find(q => !q.missing)?.position ?? null, tip: "Position der Primary-Query (16 Monate)", render: o => { const q = o.gsc.queries.find(q => q.query === o.primary_keyword) || o.gsc.queries.find(q => !q.missing); return q && !q.missing ? fmtD(q.position) : "–"; } },
+      { key: "leads", label: "Leads (Cluster)", num: true, tip: "Leads/Contacts auf den Haupt-Landingpages des Clusters, 16 Monate (GA4); darunter Funnel-Intent-Sitzungen", value: o => { const f = S.d.funnel?.clusters.find(c => c.cluster === o.gsc_cluster); return f ? leadsOf(f.engagement) : null; }, render: o => { const f = S.d.funnel?.clusters.find(c => c.cluster === o.gsc_cluster); return f ? `${fmtN(leadsOf(f.engagement))}<div class="s">Intent ${fmtN(f.engagement.micro_sessions)}</div>` : "–"; } },
       { key: "existing_page", label: "Existing page", render: o => o.existing_page ? `<span class="s">${esc(o.existing_page)}</span>` : `<span class="chip blue">New page</span>` },
     ] }));
 };
@@ -388,6 +389,7 @@ pages.opportunity = id => {
           <div class="k">Impr. 90d</div><div>${fmtN(p.imp_90d)} ${delta(p.imp_90d, p.imp_prev90d)}</div></div>`
           : `<div class="callout">No existing page – this is a <b>new page</b> candidate.</div>`}
         ${o.competing_pages_info?.length ? `<div class="mt"><b>Pages currently ranking for the topic</b>${o.competing_pages_info.map(c => `<div class="s">${esc(c.page)} · ${fmtN(c.impressions)} impr. · pos ${fmtD(c.position)}</div>`).join("")}</div>` : ""}</div></div>
+      ${oppBusinessCard(o)}
       <div class="card"><div class="card-h"><h2>Agent reasoning</h2></div><div class="card-b"><ul class="list">${o.reasoning.map(r => `<li>${esc(r)}</li>`).join("")}</ul></div></div>
       <div class="card"><div class="card-h"><h2>Risks</h2></div><div class="card-b">${o.risks.length ? `<ul class="list">${o.risks.map(r => `<li>${esc(r)}</li>`).join("")}</ul>` : `<span class="mini">None documented.</span>`}</div></div>
       <div class="card"><div class="card-h"><h2>Technical findings</h2></div><div class="card-b">${o.findings_detail.length ? o.findings_detail.map(f => `<div style="margin-bottom:8px"><div class="row">${sevChip(f.severity)}<b>${esc(f.id)}</b> ${esc(f.title)} ${statusChip(f.status)}</div><div class="s">${esc(f.description)}</div></div>`).join("") : `<span class="mini">None linked.</span>`}
@@ -448,7 +450,7 @@ function renderFunnelDetail(x) {
   const stage = (n, t, body) => `<div class="fstage"><div class="fnum">${n}</div><div><div class="ft">${t}</div><div class="s">${body}</div></div></div>`;
   el.innerHTML = `<div class="card-b" style="border-top:1px solid var(--border);padding-top:14px"><div class="row"><h2>${esc(CL_LABEL(x.cluster))}</h2>${x.priority ? chip("Business-Priorität " + x.priority + "/10", x.priority >= 8 ? "blue" : "") : ""}${x.opportunities.map(o => `<a href="#opp-${esc(o)}">${chip(o, "outline")}</a>`).join("")}</div>
     <div class="grid g2 mt"><div class="funnel">
-      ${stage("1", "Search Demand", (x.demand.keywords ? `Semrush: ${fmtN(x.demand.semrush_volume)} Suchen/Monat · ${x.demand.top.map(k => `${esc(k.keyword)} (${fmtN(k.volume)}, KD ${fmtD(k.kd, 0)})`).join(" · ")}` : "Semrush: nicht gemessen") + `<br>Google Keyword Planner: ${x.demand.google_kp_volume === null || x.demand.google_kp_volume === undefined ? "Not available (API-Zugang Basic ausstehend)" : fmtN(x.demand.google_kp_volume) + " Suchen/Monat · " + x.demand.google_kp_keywords + " Keywords"}`)}
+      ${stage("1", "Search Demand", (x.demand.keywords ? `Semrush: ${fmtN(x.demand.semrush_volume)} Suchen/Monat · ${x.demand.top.map(k => `${esc(k.keyword)} (${fmtN(k.volume)}, KD ${fmtD(k.kd, 0)})`).join(" · ")}` : "Semrush: nicht gemessen") + (x.demand.semrush_volume === 0 || !x.demand.keywords ? "<br>Kein/geringes Volumen ≠ IGNORE – GSC, Business Fit und Intent zählen mit" : ""))}
       ${stage("2", "Organische Sichtbarkeit", `${fmtN(x.organic.impressions)} Impressionen · Ø Position ${fmtD(x.organic.position)} · ${x.organic.queries} Queries`)}
       ${stage("2b", "Paid-Sichtbarkeit (historisch)", x.paid.keyword_cost ? `${fmtEur(x.paid.keyword_cost)} für ${x.paid.keyword_clicks} Klicks · ${x.paid.keywords.map(esc).join(", ")}` : x.paid.campaigns.length ? "Kampagnen: " + x.paid.campaigns.map(esc).join(", ") + " (Kampagnenwerte unplausibel, s. Google Ads)" : "Keine Paid-Daten")}
       ${stage("3", "Clicks", `${fmtN(x.organic.clicks)} organische Klicks (GSC) · CTR ${fmtPct(x.organic.ctr)}`)}
@@ -532,13 +534,13 @@ pages.ads = () => {
   const st = (k, label) => { const v = t[k]; return `<tr><td>${label}</td><td>${v === "ok" ? chip("Verfügbar", "green", true) : v ? chip("Nicht verfügbar", "red", true) : chip("Unknown", "")}</td><td class="s">${v && v !== "ok" ? esc(v) : ""}</td></tr>`; };
   view().innerHTML = `<div class="page-head"><div><h1>Google Ads</h1><div class="sub">Read-only über das MCC ${esc(dsc.mcc?.name || "")} (${esc(dsc.mcc?.id || "")}) · API ${esc(dsc.api_version || "")} · geprüft ${fmtDateTime(dsc.checked_at)}</div></div></div>
   <div class="grid g2">
-    <div class="card"><div class="card-h"><h2>Konto Spreewald Luftaufnahmen</h2>${chip(acc.status === "ENABLED" ? "Aktiv" : acc.status === "CANCELED" ? "Gekündigt" : (acc.status || "Unknown"), acc.status === "ENABLED" ? "green" : "red", true)}</div><div class="card-b"><div class="kv">
+    <div class="card"><div class="card-h"><h2>Konto Spreewald Luftaufnahmen</h2>${chip(acc.status === "ENABLED" ? "Aktiv" : acc.status === "CANCELED" ? "Bewusst gekündigt" : (acc.status || "Unknown"), acc.status === "ENABLED" ? "green" : "", true)}</div><div class="card-b"><div class="kv">
       <div class="k">Customer ID</div><div>${esc(acc.id || "–")}</div><div class="k">Status</div><div>${esc(acc.status || "–")}</div><div class="k">Währung / Zeitzone</div><div>${esc(acc.currency || "–")} · ${esc(acc.time_zone || "–")}</div>
       <div class="k">MCC</div><div>${esc(dsc.mcc?.name || "–")} · ${fmtN(dsc.client_accounts?.total)} Kundenkonten · Berechtigung ${esc(dsc.mcc?.permission || "–")}</div>
-      <div class="k">Bedeutung</div><div>Bewusst gekündigt und nicht reaktiviert. Über die API daher keine Kampagnen-, Search-Term- und Conversion-Action-Daten (<b>Not available</b>); historische Paid-Daten kommen aus GA4 (unten, mit Qualitätskennzeichnung).</div></div></div></div>
-    <div class="card"><div class="card-h"><h2>API-Fähigkeiten (Cloud-Projekt: Explorer)</h2></div><div class="card-b flush"><div class="tbl-wrap"><table><thead><tr><th>Funktion</th><th>Status</th><th>Hinweis</th></tr></thead><tbody>
-      ${st("list_accessible_customers", "Account Discovery")}${st("gaql_mcc", "Reporting (GAQL) im MCC")}${st("gaql_account", "Reporting Spreewald-Konto")}${st("generateKeywordIdeas", "Keyword Planner: Keyword-Ideen (Planning Customer)")}${st("generateKeywordHistoricalMetrics", "Keyword Planner: Suchvolumen (Planning Customer)")}
-      </tbody></table></div><div class="card-b mini" style="padding-top:10px">Keyword Planner ist unabhängig vom Spreewald-Konto: Er läuft künftig über ein aktives MCC-Konto als Planning Customer – nur als Planner-Zugang, ohne dessen Kampagnen- oder Performance-Daten. Voraussetzung: <b>Basic Access</b> für das Google-Cloud-Projekt (Cloud Console → Google Ads API Overview, nach Brand Verification). Developer Tokens gibt es seit 09.09.2026 nicht mehr.</div></div></div>
+      <div class="k">Bedeutung</div><div>Account intentionally canceled · historical paid data via GA4 where reliable. Bewusst gekündigt und nicht reaktiviert. Über die API daher keine Kampagnen-, Search-Term- und Conversion-Action-Daten (<b>Not available</b>); historische Paid-Daten kommen aus GA4 (unten, mit Qualitätskennzeichnung).</div></div></div></div>
+    <div class="card"><div class="card-h"><h2>API-Fähigkeiten (Explorer, read-only)</h2></div><div class="card-b flush"><div class="tbl-wrap"><table><thead><tr><th>Funktion</th><th>Status</th><th>Hinweis</th></tr></thead><tbody>
+      ${st("list_accessible_customers", "Account Discovery")}${st("gaql_mcc", "Reporting (GAQL) im MCC")}<tr><td>Reporting Spreewald-Konto</td><td>${chip("Nicht verfügbar", "", true)}</td><td class="s">Konto bewusst gekündigt – Paid-Historie über GA4</td></tr><tr><td>Keyword Planner</td><td>${chip("Nicht genutzt", "", true)}</td><td class="s">Bewusste Entscheidung – Semrush ist die primäre Keyword-Quelle</td></tr>
+      </tbody></table></div><div class="card-b mini" style="padding-top:10px">Zugriffsstufe des Cloud-Projekts: Explorer (Reporting und Account-Funktionen, nur lesend). Keyword-Daten kommen aus Semrush und GSC.</div></div></div>
   </div>
   ${a.available ? `<div class="card mt"><div class="card-h"><div><h2>Paid-Historie über GA4</h2><div class="hint">${esc(a.source)} · ${esc(a.range?.[0])} – ${esc(a.range?.[1])}</div></div></div><div class="card-b">
     <div class="kpis k4" style="margin-bottom:10px">${kpi("Kosten (Keyword-Ebene)", fmtEur(a.totals.keyword_level_cost), `<span class="flat">${fmtN(a.totals.keyword_level_clicks)} Klicks · plausibel</span>`)}${kpi("Ø CPC (Keyword-Ebene)", a.totals.keyword_level_clicks ? (a.totals.keyword_level_cost / a.totals.keyword_level_clicks).toLocaleString("de-DE", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) + " €" : "–", `<span class="flat">Search-Kampagnen</span>`)}${kpi("Paid-Sitzungen (GA4)", fmtN(a.totals.paid_sessions), `<span class="flat">Search + P-Max</span>`)}${kpi("Kampagnen-Ebene", fmtEur(a.totals.campaign_level_cost), `<span class="down">${a.totals.flagged_rows} von ${a.history_months.length} Zeilen auffällig – nicht verwenden</span>`)}</div>
@@ -619,10 +621,11 @@ function ga4Card() {
 }
 function adsCard() {
   const src = S.d.sources.google_ads || {}, a = S.d.ads, acc = src.account || {};
-  const c = src.status === "account_canceled_intended" ? ["Connected · Spreewald-Konto gekündigt (gewollt)", "amber"] : src.status === "connected" ? ["Connected", "green"] : [src.status || "Unknown", ""];
+  const c = src.status === "connected_account_canceled" ? ["Connected", "green"] : src.status === "connected" ? ["Connected", "green"] : [src.status || "Unknown", ""];
   return `<div class="card"><div class="card-h"><h2>Google Ads</h2>${chip(c[0], c[1], true)}</div><div class="card-b"><div class="kv">
     <div class="k">Zugriff</div><div>${esc(src.access || "–")} · API ${esc(src.api_version || "–")}</div>
     <div class="k">MCC</div><div>${esc(src.mcc?.name || "–")} · ${esc(src.mcc?.id || "–")} · ${fmtN(src.client_accounts_total)} Kundenkonten</div>
+    <div class="k">Spreewald</div><div>${esc(src.status_label || "")}</div>
     <div class="k">Konto</div><div>${esc(acc.name || "–")} · ${esc(acc.id || "–")} · <b>${esc(acc.status || "–")}</b>${acc.note ? `<div class="s">${esc(acc.note)}</div>` : ""}</div>
     <div class="k">Last check</div><div>${fmtDate(src.last_check)} ${freshness(src.last_check, 30)}</div>
     <div class="k">Last successful sync</div><div>${src.last_fetch ? fmtDate(src.last_fetch) : "Not available – Konto liefert keine API-Daten"}</div>
@@ -632,14 +635,10 @@ function adsCard() {
 }
 function kpCard() {
   const k = S.d.sources.keyword_planner || {};
-  const c = k.status === "connected" ? ["Connected", "green"] : k.status === "blocked_access_level" ? ["Wartet auf Basic Access", "amber"] : [k.status || "Not configured", ""];
-  return `<div class="card"><div class="card-h"><h2>Google Keyword Planner</h2>${chip(c[0], c[1], true)}</div><div class="card-b"><div class="kv">
-    <div class="k">Rolle</div><div>Separate Keyword-Quelle neben Semrush (Research-Daten)</div>
-    <div class="k">Benötigt</div><div>${esc(k.access_needed || "–")}</div>
-    <div class="k">Beantragen</div><div>${esc(k.apply_at || "–")}</div>
-    <div class="k">Planning Customer</div><div>${esc(k.planning_customer || "–")}</div>
-    <div class="k">Last check</div><div>${fmtDate(k.last_check)}</div>
-    <div class="k">Stand geprüft</div><div class="s">${esc(k.verified_against || "–")}</div></div></div></div>`;
+  return `<div class="card"><div class="card-h"><h2>Google Keyword Planner</h2>${chip(k.label || "Not used", "", true)}</div><div class="card-b"><div class="kv">
+    <div class="k">Status</div><div>Bewusst nicht genutzt (Entscheidung ${fmtDate(k.decided)})</div>
+    <div class="k">Begründung</div><div class="s">${esc(k.reason || "–")}</div>
+    <div class="k">Keyword-Quelle</div><div>Semrush (primär) + GSC (tatsächliche Queries)</div></div></div></div>`;
 }
 function decisionSummary() {
   if (DB.state !== "ready") return `<span class="mini">${esc(storeStatus()[2])}</span>`;
@@ -650,6 +649,19 @@ function updateBadges() {
   if (!S.d) return;
   const open = [...S.d.approvals.gate1, ...S.d.approvals.gate2].filter(x => x.status === "pending" && !latestDecision(x.id)).length;
   $("#nav-approvals").textContent = open || "";
+}
+/** Search → Business für eine Opportunity: Cluster-Funnel + eigene Landingpage (GA4/Ads), gleiche Zahlen wie auf der Funnel-Seite */
+function oppBusinessCard(o) {
+  const f = S.d.funnel?.clusters.find(c => c.cluster === o.gsc_cluster);
+  const norm = p => p ? (p.split("?")[0].toLowerCase().replace(/\/+$/, "") || "/") : null;
+  const lp = o.existing_page ? S.d.funnel.pages.find(p => p.page === norm(o.existing_page)) : null;
+  if (!f && !lp) return `<div class="card"><div class="card-h"><h2>Search → Business</h2></div><div class="card-b"><span class="mini">Kein passender Cluster mit GA4-/Ads-Daten.</span></div></div>`;
+  const e = f?.engagement;
+  return `<div class="card"><div class="card-h"><div><h2>Search → Business</h2><div class="hint">GA4 + Ads-Historie · ${fmtDate(S.d.funnel.window[0])} – ${fmtDate(S.d.funnel.window[1])}</div></div><a href="#funnel" class="mini">Funnel →</a></div><div class="card-b"><div class="kv">
+    ${f ? `<div class="k">Cluster „${esc(CL_LABEL(f.cluster))}“</div><div>${fmtN(e.sessions)} Sitzungen · ${fmtN(e.engaged)} engagiert · Funnel Intent ${fmtN(e.micro_sessions)} Sitz. · <b>${fmtN(leadsOf(e))} Leads</b> (${e.lead_form} Form · ${e.lead_contact} Kontakt)</div>
+    <div class="k">Paid-Historie</div><div>${f.paid.keyword_cost ? `${fmtEur(f.paid.keyword_cost)} für ${f.paid.keyword_clicks} Klicks (2023–24, Keyword-Ebene)` : f.paid.campaigns.length ? "nur Kampagnenwerte (unplausibel)" : "keine"}</div>` : ""}
+    ${lp ? `<div class="k">Diese Seite</div><div>${fmtN(lp.ga4_sessions)} Sitzungen (${fmtN(lp.ga4_organic)} organisch) · Engagement ${lp.eng_rate === null || lp.eng_rate === undefined ? "–" : fmtPct(lp.eng_rate, 0)} · Intent ${fmtN(lp.micro_sessions)} · <b>${fmtN(leadsOf(lp))} Leads</b> (${lp.lead_form} F · ${lp.lead_contact} K)${lp.paid_sessions_hist ? ` · ${fmtN(lp.paid_sessions_hist)} Paid-Sitzungen (hist.)` : ""}</div>` : o.existing_page ? `<div class="k">Diese Seite</div><div class="s">Keine GA4-Sitzungen im Zeitraum</div>` : ""}
+    </div>${f ? `<div class="row mt">${f.signals.filter(x => ["weak", "paid", "lead", "intent", "nolead"].includes(x.kind)).map(x => chip(SIG_LABEL[x.kind], SIG[x.kind])).join("")}</div>` : ""}</div></div>`;
 }
 pages.approvals = () => {
   const a = S.d.approvals;
@@ -802,8 +814,10 @@ pages.sources = () => {
       <div class="k">Last successful fetch</div><div>${fmtDate(s.gsc.last_fetch)} ${freshness(s.gsc.last_fetch)}</div><div class="k">Data range</div><div>${fmtDate(s.gsc.data_from)} – ${fmtDate(s.gsc.data_to)}</div>
       <div class="k">Rows</div><div>${fmtN(s.gsc.rows.queries)} queries · ${fmtN(s.gsc.rows.pages)} pages · ${fmtN(s.gsc.rows.days)} days · ${fmtN(s.gsc.rows.query_date)} query×day</div>
       <div class="k">Last inspection</div><div>${esc(s.gsc.last_inspection.url)} · ${esc(s.gsc.last_inspection.verdict)} · ${fmtDate(s.gsc.last_inspection.date)}</div>
+      <div class="k">Role</div><div>${esc(s.gsc.role || "–")}</div>
       <div class="k">Credential</div><div>${esc(s.gsc.credential)}</div></div></div></div>
     <div class="card"><div class="card-h"><h2>Semrush</h2>${statusChip(s.semrush.status === "connected" ? "Connected" : s.semrush.status)}</div><div class="card-b"><div class="kv">
+      <div class="k">Role</div><div><b>${esc(s.semrush.role || "Keyword research")}</b>${s.semrush.rule ? `<div class="s">${esc(s.semrush.rule)}</div>` : ""}</div>
       <div class="k">Access</div><div>${esc(s.semrush.access)}</div><div class="k">Database</div><div>${esc(s.semrush.database.toUpperCase())}</div>
       <div class="k">Last query</div><div>${fmtDate(s.semrush.last_query)} ${freshness(s.semrush.last_query, 30)}</div>
       <div class="k">Last known API units</div><div><b>${fmtN(s.semrush.last_known_units)}</b> <span class="mini">(as of ${fmtDate(s.semrush.units_checked)})</span></div>
