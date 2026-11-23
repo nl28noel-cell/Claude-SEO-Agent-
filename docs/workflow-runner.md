@@ -25,7 +25,7 @@ Ein Klick im Artifact (Gate 1, „Änderungen anfordern“, „Erneut versuchen�
 
 1. **Tools laden**: `ArtifactData`, Google-Drive-Tools (`create_file`, `search_files`, `get_file_metadata`, `read_file_content`) per ToolSearch.
 2. **Workflow-State** (SSOT) aus der Artifact-db exportieren: `ArtifactData list collection=workflow out_dir=/tmp/wf`. Git (`state/workflow.json`) ist nur Spiegel und wird nie als Quelle gelesen.
-3. **Repository**: `/home/user/Claude-SEO-Agent-` prüfen; fehlt es → `add_repo(nl28noel-cell, Claude-SEO-Agent-, access=push)`, Klon-Befehl ausführen, `register_repo_root`; dann `git fetch origin claude/semsharks-seo-autopilot-6j1cxc && git checkout … && git pull --ff-only`.
+3. **Repository**: `/home/user/Claude-SEO-Agent-` prüfen; fehlt es → `add_repo(nl28noel-cell, Claude-SEO-Agent-, access=push)` + Klon-Befehl, oder – falls das Tool im Lauf nicht verfügbar ist – `git clone -b <branch> https://github.com/nl28noel-cell/Claude-SEO-Agent-` (im Cold-Start-Test 23.11. so erfolgreich); dann `git fetch origin claude/semsharks-seo-autopilot-6j1cxc && git checkout … && git pull --ff-only`.
 4. **Drive-Check**: Tool `create_file` geladen = `--drive-ok`; `get_file_metadata` des Zielordners `1x0fEXsxRh_xcxKFaCjh_jw9dcFQILpY9` mit `capabilities.canAddChildren = true` = `--folder-ok`.
 5. **Preflight**: `python3 tools/workflow.py preflight /tmp/wf [--drive-ok] [--folder-ok]`. Exit 2 → alle wartenden Einträge auf `blocked` setzen (mit `if_version`), Lauf beenden. **Nie** selbst erneut anstoßen.
 6. **Claim** je Eintrag aus `queue`: `production.status=running`, `run_id`, `started_at`, `attempt` (+1) mit `if_version` – scheitert der Claim (Version geändert), Eintrag überspringen.
@@ -35,3 +35,16 @@ Ein Klick im Artifact (Gate 1, „Änderungen anfordern“, „Erneut versuchen�
 10. **Spiegel**: `python3 tools/workflow.py mirror /tmp/wf` (nach erneutem Export), committen, `git pull --rebase` und pushen.
 
 Eine Opportunity hat genau einen Workflow-Eintrag und eine Produktionshistorie (`production.history`); ein technischer Fehler setzt nie Gate 1 zurück.
+
+## Cold-Start-Test 23.11.2026, 15:18 UTC (Session `session_01ACEsmK9gecbqhAG46XmMfD`)
+
+| Prüfpunkt | Ergebnis |
+|---|---|
+| Frische Session in Umgebung `Claude-SEO-Agent` | ✓ |
+| Repository selbst hergestellt (`git clone`, Branch korrekt, aktuell) | ✓ |
+| Runbook, Business-Profil, Style-Guide, Workflow-State (Artifact-db) | ✓ |
+| Google Drive (create_file, Zielordner) | ✗ – Routine ohne hinterlegten Konnektor |
+| Ehrlicher Status zurück ins Artifact (`blocked` / `drive_tool_unavailable`, Preflight-Checks) | ✓ |
+| Bereits blockierte Echt-Einträge unverändert | ✓ |
+
+**Technische Grenze:** Konnektoren einer Routine können über die API dieser Organisation nicht gesetzt werden (`connectors`-Parameter nicht verfügbar). Der Google-Drive-Konnektor muss einmalig in der claude.ai-Oberfläche an der Routine „SEO Autopilot – Workflow-Runner“ hinterlegt werden. Danach: „Erneut versuchen“ auf der TEST-Karte = echter End-to-End-Test.
