@@ -18,12 +18,12 @@ STAGE_TYPES = ("CREATE", "OPTIMIZE", "MERGE")
 SECTIONS = {
     "A_decision": ("A · Executive Decision", ["decision", "summary", "why", "gate1_question"]),
     "B_demand": ("B · Search Demand", ["keywords"]),
-    "C_serp": ("C · Live SERP", ["source", "quality", "intent_verdict", "results"]),
+    "C_serp": ("C · Live SERP", ["source", "quality", "intent_verdict"]),
     "D_competitors": ("D · Competitor Insights", None),
     "E_gap": ("E · Content Gap", ["competitors_cover", "we_cover", "we_miss", "outperform"]),
     "F_scope": ("F · Recommended Page Scope", ["core_message", "search_intent", "audience", "key_questions", "service_info", "trust_proof", "conversion_goal", "not_on_page"]),
     "G_structure": ("G · Proposed Structure", ["h1", "sections"]),
-    "H_ia": ("H · Information Architecture", ["parent", "target", "siblings", "keyword_ownership", "internal_links", "cannibalization", "decision"]),
+    "H_ia": ("H · Information Architecture", ["current", "recommended", "consolidation", "keyword_ownership", "internal_links", "cannibalization", "decision"]),
     "I_win": ("I · How We Can Win", None),
     "J_risks": ("J · Risks / Unknowns", None),
 }
@@ -69,9 +69,22 @@ def validate(doc):
     m = doc.get("method") or {}
     if m.get("semrush_units_used", 0) and not m.get("semrush_approved_by"):
         err.append("Semrush-Units verbraucht ohne Freigabevermerk (method.semrush_approved_by)")
-    for r in (doc.get("C_serp") or {}).get("results") or []:
-        if r.get("relevance") not in ("business_competitor", "platform", "software", "guide", "directory", "partner", "own", "other"):
-            err.append(f"C_serp.results relevance ungültig: {r.get('domain')}")
+    C = doc.get("C_serp") or {}
+    rel = ("business_competitor", "platform", "software", "guide", "directory", "partner", "own", "other", "unclassified")
+    for r in (C.get("serp_competitors") or []) + (C.get("research_competitors") or []):
+        if r.get("relevance") not in rel:
+            err.append(f"C_serp relevance ungültig: {r.get('domain')}")
+    # SERP competitors = von Semrush als rankend bestätigt: Quelle + Position + Keyword Pflicht
+    for r in C.get("serp_competitors") or []:
+        if not str(r.get("source", "")).startswith("semrush") or not isinstance(r.get("position"), int) or not r.get("keyword"):
+            err.append(f"serp_competitors ohne Semrush-Quelle/Position/Keyword: {r.get('domain')}")
+    for r in C.get("research_competitors") or []:
+        if r.get("position") not in (None, "", "–"):
+            err.append(f"research_competitors dürfen keine Rankingposition tragen: {r.get('domain')}")
+    if C.get("quality") == "validated" and not C.get("serp_competitors"):
+        err.append("C_serp.quality=validated ohne serp_competitors (Semrush)")
+    if "results" in C:
+        err.append("C_serp.results ist veraltet → serp_competitors / research_competitors")
     return err
 
 
@@ -85,6 +98,9 @@ def missing_sections(doc):
             gaps = [f for f in req if _empty(v.get(f))]
             if gaps:
                 out.append(f"{title} ({', '.join(gaps)})")
+    C = doc.get("C_serp") or {}
+    if C and _empty(C.get("serp_competitors")) and _empty(C.get("research_competitors")):
+        out.append("C · Live SERP (keine Wettbewerber)")
     return out
 
 
@@ -99,7 +115,8 @@ def derive(doc):
     state = st.get("state", "incomplete")
     if state in READY and (miss or pending):
         state = "incomplete"
-    if state == "complete" and (doc.get("C_serp") or {}).get("quality") != "validated":
+    C = doc.get("C_serp") or {}
+    if state == "complete" and (C.get("quality") != "validated" or not C.get("serp_competitors")):
         state = "complete_with_limits"
         if not limits:
             limits = ["SERP nicht validiert (indikativ)"]
@@ -135,7 +152,8 @@ def summary(doc):
     return {"state": d["state"], "label": d["label"], "version": (doc or {}).get("version"), "updated": (doc or {}).get("updated"),
             "decision": a.get("decision"), "confidence": a.get("confidence"), "summary": a.get("summary"),
             "serp_quality": ((doc or {}).get("C_serp") or {}).get("quality"),
-            "units": ((doc or {}).get("method") or {}).get("semrush_units_used", 0)}
+            "units": ((doc or {}).get("method") or {}).get("semrush_units_used", 0),
+            "serp_competitors": len(((doc or {}).get("C_serp") or {}).get("serp_competitors") or [])}
 
 
 def all_for(client, opportunities):

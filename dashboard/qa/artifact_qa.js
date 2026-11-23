@@ -191,6 +191,10 @@ const MOCK = () => {
       const tx = await p.locator('#view, main, body').first().innerText();
       check('detail: research status banner', tx.includes(rOpp.research_status.label));
       check('detail: SERP quality labelled', /Indikativ|Validiert/.test(tx));
+      check('detail: SERP competitors vs. research competitors separated', /SERP competitors · von Semrush als rankend bestätigt/.test(tx) && /Research competitors · über Web-\/Marktrecherche gefunden/.test(tx));
+      check('detail: Semrush SERP plan + budget shown', /Semrush Organic Results/.test(tx) && /(Budget-Reserve – wartet|Wird ausgeführt|Cache aktuell|Freigabe nötig)/.test(tx));
+      check('detail: IA current vs. recommended', /Current Architecture/.test(tx) && /Recommended Architecture/.test(tx));
+      check('detail: no SERP dominance claim without real SERP', rOpp.research.C_serp.serp_competitors?.length || !/dominier/i.test(tx));
       check('detail: "Gate 1 – Strategie freigeben" after A–J', (await p.locator('.rs-gate').count()) === 1 && await p.evaluate(() => { const a = [...document.querySelectorAll('section.rs')].pop(), g = document.querySelector('.rs-gate'); return !!(a.compareDocumentPosition(g) & Node.DOCUMENT_POSITION_FOLLOWING); }));
       await p.click('.rs-toc [data-rs="H"]'); await p.waitForTimeout(400);
       check('detail: TOC jumps without changing route', (await p.evaluate(() => location.hash)) === '#opp-' + rOpp.id);

@@ -15,22 +15,22 @@ Rohdaten der Recherche (Seitenprofile, Notizen) liegen unter `clients/<client>/d
 |---|---|---|
 | A · Executive Decision | CREATE/OPTIMIZE/MERGE/MONITOR/IGNORE, Ziel-URL, Begründung, geprüfte Alternativen, Gate-1-Frage | decision, summary, why, gate1_question |
 | B · Search Demand | Keywords mit Rolle (primary/secondary/supporting/do_not_target), Volumen/KD/CPC (Semrush), GSC-Impressionen/Positionen, Intent | keywords |
-| C · Live SERP | Quelle + Qualität (`validated`/`indicative`/`missing`), Intent-Urteil, Ergebnisse mit Seitentyp und Einordnung (Wettbewerber, Plattform, Software, Ratgeber, Verzeichnis, Partner) | source, quality, intent_verdict, results |
+| C · Live SERP | Quelle + Qualität (`validated`/`indicative`/`missing`), Intent-Urteil, **SERP competitors** (von Semrush als rankend bestätigt: Keyword, Position, URL) und **Research competitors** (Web-/Marktrecherche, ohne Positionen) | source, quality, intent_verdict, ≥ 1 Wettbewerberliste |
 | D · Competitor Insights | Je relevantem Business-Wettbewerber: H1/Positionierung, Themen, Zielgruppe, FAQ, Trust/Proof, lokaler Fokus, Conversion, Takeaway | ≥ 1 Eintrag |
 | E · Content Gap | Competitors cover · We already cover · We are missing · Opportunity to outperform | alle vier |
 | F · Recommended Page Scope | Kernbotschaft, Intent, Zielgruppe, Key Questions, Leistungsinfos, Trust/Proof, Conversion-Ziel, **bewusst nicht auf dieser Seite** (mit Zielseite) | alle |
 | G · Proposed Structure | Title-Vorschlag, H1, H2/H3 mit Zweck, Herleitung – keine ausformulierten Texte | h1, sections |
-| H · Information Architecture | Parent, Target, Children, Siblings, Keyword Ownership + Do-not-target, interne Links, Kannibalisierung (mit GSC-Evidenz), Entscheidung | alle |
+| H · Information Architecture | **Current** und **Recommended Architecture** (Parent, Target, Children, Siblings; Hub-Prüfung; Child-Kandidaten nur bei eigenständigem Intent), Konsolidierung (welche Begriffe auf eine URL und warum), Keyword Ownership + Do-not-target, interne Links, Kannibalisierung (GSC-Evidenz), Entscheidung | current, recommended, consolidation, keyword_ownership, internal_links, cannibalization, decision |
 | I · How We Can Win | Hebel aus belegten Business-Assets | ≥ 1 |
 | J · Risks / Unknowns | Risiken und offene Fragen mit Umgang | ≥ 1 |
 
-Regeln: Wettbewerbertexte werden analysiert, nie übernommen. Wortzahlen sind Kontext, kein Ziel. Vorteile nur aus dem Business-Profil (§8), nichts erfinden (§10).
+Regeln: Von Rankingpositionen oder SERP-Dominanz darf nur bei **SERP competitors** gesprochen werden. Research competitors sind „gefunden“, nicht „rankend“. Wettbewerbertexte werden analysiert, nie übernommen. Wortzahlen sind Kontext, kein Ziel. Vorteile nur aus dem Business-Profil (§8), nichts erfinden (§10).
 
 ## Research-Status (`tools/research.py derive`)
 
 | Status | Bedeutung | Gate 1 |
 |---|---|---|
-| `complete` | Alle Abschnitte gefüllt, SERP validiert | normal |
+| `complete` | Alle Abschnitte gefüllt, echte SERP über Semrush (SERP competitors vorhanden) | normal |
 | `complete_with_limits` | Alle Abschnitte gefüllt, dokumentierte Grenzen (z. B. SERP nur indikativ) | normal, Grenzen sichtbar |
 | `incomplete` | Abschnitt fehlt oder offener Punkt in `status.pending` (z. B. „SERP validation pending“) | nur mit **Override** (protokolliert) |
 | `not_started` | Kein Dossier | nur mit **Override** |
@@ -49,16 +49,46 @@ Gate-1-Freigaben **vor** Einführung dieser Stufe (ohne `research_version`) gelt
 
 Ändert sich das Dossier wesentlich, wird `version` erhöht – eine frühere Freigabe gilt dann nicht mehr für die neue Strategie.
 
+## Echte SERP: Semrush Organic Results (`tools/serp.py`)
+
+Semrush ist die **primäre Quelle für echte SERP-Rankings**. Ablauf je Opportunity:
+
+1. `python3 tools/serp.py plan <client> <OPP>` – Abfrageplan, führt nichts aus
+   - **Primary Keyword zuerst.** Secondary nur mit `serp_check: true` im Dossier (B), d. h. wenn ein anderer Intent möglich ist oder eine Konsolidierungsfrage nur so zu klären ist.
+   - Ähnliche Keywords werden auf einen Schlüssel normalisiert (Umlaute, Stoppwörter, Plural, Wortreihenfolge) und nur einmal abgefragt.
+   - Frischer Cache (`data/serp-cache/<db>/`, TTL 60 Tage) → keine Abfrage.
+   - Urteil: `run` · `budget_hold` · `none` (Cache) · `approval_required`.
+2. Nur bei `run`: Semrush-Konnektor `get_report_schema("phrase_organic")` (kostenlos, `price` prüfen) → `execute_report("phrase_organic", {phrase, database: "de", display_limit: 10})`.
+3. `python3 tools/serp.py ingest "<keyword>" <ergebnis.csv|json>` → Cache, Units verbuchen (`config/semrush_budget.json`, Log `data/serp-cache/usage-log.csv`).
+4. Ranking-URLs mit `tools/page_profile.py` abrufen → C (`serp_competitors`), D, E, I aktualisieren, `C_serp.quality = validated` → Status `complete`.
+
+### Kostenlogik (geprüft 23.11.2026, developer.semrush.com → Keyword reports → Organic Results)
+
+| Größe | Wert |
+|---|---|
+| Report | `phrase_organic` (Organic Results) |
+| Preis | **10 Units je zurückgegebener Ergebniszeile**; historische Daten (`display_date`) 50 Units je Zeile – nie verwenden |
+| Begrenzung | `display_limit=10` → Top 10 = **max. 100 Units je Keyword**; weniger Zeilen = weniger Units |
+| Formel | Kosten = Keywords × Zeilen × 10 |
+| Beispiel OPP-02 | Primary only: 1 × 10 × 10 = **100 Units**; mit Secondary: 200 Units |
+
+### Budget (`config/semrush_budget.json`)
+
+- `units_balance` (Kontostand), `reserve_units` (aktuell 250 = gesamter Bestand als Reserve), `max_units_per_opportunity` (200), `auto_use`.
+- Automatische Nutzung nur, wenn `units_balance − Kosten ≥ reserve_units`; sonst `budget_hold`, Research bleibt `complete_with_limits`.
+- Nach dem Aufladen: `units_balance` (und ggf. `reserve_units`) aktualisieren. Danach führt der nächste Research-Lauf die geplanten SERP-Abfragen automatisch aus.
+- Das Artifact zeigt in Abschnitt C den Plan, die Kosten und das Budget-Urteil.
+
 ## Kostenbewusste Reihenfolge
 
 1. **Cache** (Semrush-Keyword-Cache, frühere Dossiers, Drive-Notizen)
 2. **Google Search Console** (Queries, Query×Seite → Kannibalisierung, 90-Tage-Trend)
 3. **Bestehende Website** (Live-Abruf, Inventar, interne Links)
-4. **Vorhandene Semrush-Daten**
-5. **Web-/SERP-Recherche**: Websuche + `python3 tools/page_profile.py <urls> --out clients/<c>/data/research/<OPP>/pages` (Hosts müssen im Netzwerk der Umgebung erlaubt sein)
-6. **Semrush kostenpflichtig** nur, wenn entscheidungsrelevant **und** von Noel freigegeben (`method.semrush_approved_by`). Aktuell ~250 Units geschützt.
+4. **Vorhandene Semrush-Daten** (Keyword-Cache, SERP-Cache)
+5. **Semrush Organic Results** für die echte SERP – nach Plan und Budget (siehe oben)
+6. **Web-/Marktrecherche** ergänzend bzw. solange keine SERP vorliegt: Websuche + `python3 tools/page_profile.py <urls> --out clients/<c>/data/research/<OPP>/pages` (Hosts müssen im Netzwerk der Umgebung erlaubt sein) → Research competitors
 
-Eine fehlende Semrush-SERP heißt nicht „keine Wettbewerbsanalyse“: Die Websuche liefert keine Google.de-Positionen, aber die Anbieter- und Seitentyp-Landschaft. Das wird als `quality: indicative` gekennzeichnet. Ist die Validierung für die Entscheidung nötig, kommt sie in `status.pending` → Status `incomplete` → kein stiller Entwurf.
+Eine fehlende Semrush-SERP heißt nicht „keine Wettbewerbsanalyse“: Research competitors liefern die Anbieter- und Seitentyp-Landschaft, ohne Positionen (`quality: indicative`). Ist die echte SERP für die Entscheidung nötig, kommt sie in `status.pending` → Status `incomplete` → kein stiller Entwurf. Verbrauchte Units ohne Budget-Regel brauchen einen Freigabevermerk (`method.semrush_approved_by`).
 
 ## Befehle
 

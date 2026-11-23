@@ -200,13 +200,20 @@ def _research_brief(R, g1):
     L = ["", f"## Freigegebene Strategie (Research v{R.get('version')}{' · OVERRIDE ohne vollständige Research' if g1.get('research_override') else ''})",
          f"- Entscheidung: {A.get('decision')} · Ziel-URL: {A.get('target_url') or '–'}", f"- Zusammenfassung: {A.get('summary')}",
          f"- Kernbotschaft: {F.get('core_message')}", f"- Search Intent: {F.get('search_intent')}", f"- Zielgruppe: {', '.join(F.get('audience', []))}",
-         f"- Conversion-Ziel: {F.get('conversion_goal')}", "- Key Questions (müssen beantwortet werden):"] + [f"  - {x}" for x in F.get("key_questions", [])]
-    L += ["- Notwendige Leistungsinformationen:"] + [f"  - {x}" for x in F.get("service_info", [])]
+         f"- Conversion-Ziel: {F.get('conversion_goal')}", "- Fachliche Fragen (müssen beantwortet werden):"]
+    for q in F.get("key_questions", []):
+        L += [f"  - {q}"] if isinstance(q, str) else [f"  - {q.get('group')}:"] + [f"    - {x}" for x in q.get("questions", [])]
+    L += ["- Notwendige Leistungsinformationen (nur belegt):"] + [f"  - {x}" if isinstance(x, str) else f"  - {x['text']} (Beleg: {x.get('evidence', '–')})" for x in F.get("service_info", [])]
+    if F.get("delimitation"):
+        L += ["- Abgrenzung:"] + [f"  - {x['service']}: {x['question']} · {x['timing']} · {x['output']} → {x['page']}" for x in F["delimitation"]]
     L += ["- Trust/Proof (nur diese, alle belegt):"] + [f"  - {x}" for x in F.get("trust_proof", [])]
     L += ["- Bewusst NICHT auf dieser Seite:"] + [f"  - {x['topic']} → {x['goes_to']}" for x in F.get("not_on_page", [])]
     L += ["", "### Struktur (Grobgliederung, im Entwurf ausformulieren)", f"- Title-Vorschlag: {G.get('title_proposal') or '–'} · Meta: {G.get('meta_note') or '–'}", f"- H1: {G.get('h1')}"]
     for x in G.get("sections", []):
         L += [f"- H2: {x['h2']} – {x['purpose']}"] + [f"  - H3: {h}" for h in x.get("h3", [])]
+    if H.get("consolidation"):
+        L += ["", "### Architektur", f"- Konsolidierung: {H['consolidation'].get('decision')}",
+              f"- Parent (empfohlen): {((H.get('recommended') or {}).get('parent') or {}).get('url')} · Ziel-URL bleibt: {((H.get('recommended') or {}).get('target') or {}).get('url')}"]
     L += ["", "### Keyword Ownership", f"- Diese Seite: {', '.join(ko.get('owns', []))}"] + [f"- NICHT targeten: {x['keyword']} ({x['reason']} → {x['owner']})" for x in ko.get("do_not_target", [])]
     L += ["- Interne Links (Empfehlung):"] + [f"  - {x['from']} → {x['to']} „{x['anchor']}“ ({x['type']})" for x in H.get("internal_links", [])]
     L += ["", "### Offene Punkte / Risiken (nicht erfinden, im Zweifel weglassen)"] + [f"- [{x['type']}] {x['item']} → {x['mitigation']}" for x in R.get("J_risks", [])]

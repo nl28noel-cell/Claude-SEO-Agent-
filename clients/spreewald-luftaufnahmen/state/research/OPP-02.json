@@ -2,307 +2,385 @@
   "schema": 1,
   "opp_id": "OPP-02",
   "client": "spreewald-luftaufnahmen",
-  "version": 1,
-  "updated": "2026-11-23T18:30:00Z",
+  "version": 2,
+  "updated": "2026-11-23T20:30:00Z",
   "author": "agent",
+  "changelog": [
+    { "version": 1, "date": "2026-11-23", "note": "Erstes Dossier A–J" },
+    { "version": 2, "date": "2026-11-23", "note": "SERP-Aussagen an Datenlage angepasst (SERP competitors vs. Research competitors); How We Can Win, Page Scope und Struktur auf strukturierte, wiederholbare Baufortschrittsdokumentation ausgerichtet; IA in Current/Recommended getrennt; Leistungsfragen nach Antwort Noel 23.11. eingearbeitet" }
+  ],
   "status": {
     "state": "complete_with_limits",
     "limits": [
-      "Keine validierten Google.de-Positionen: Die SERP-Landschaft stammt aus Web-Recherche (Suchindex ohne Google.de-Ranking) und aus Live-Abrufen der Anbieterseiten. Sie ist indikativ und keine Positionsliste.",
-      "Ein bezahlter Semrush-SERP-Abruf wurde bewusst nicht gemacht (ca. 100 Units je Keyword bei 10 Ergebnissen; ~250 Units sind geschützt). Für die OPTIMIZE-Entscheidung ist er nicht entscheidungsrelevant, weil nur eine eigene URL im Cluster rankt."
+      "Keine echte Google.de-SERP: Semrush Organic Results (Top 10) noch nicht abgefragt, weil das Unit-Budget (~250) als Reserve gehalten wird. Aussagen zu Rankingpositionen oder SERP-Dominanz anderer Anbieter sind deshalb nicht möglich.",
+      "Die Wettbewerbsanalyse (D/E) beruht auf Research competitors: über Web-Recherche gefundene, relevante Anbieterseiten, live abgerufen am 23.11.2026. Ob sie für die Kern-Keywords ranken, ist offen."
     ],
     "pending": [],
-    "optional_validation": "Kostenlos: Noel prüft „baudokumentation drohne“ und „baustellendokumentation drohne“ einmal manuell in Google.de (privates Fenster, Standort Berlin) und notiert die Top 10 im Gate-1-Kommentar. Kostenpflichtig nur nach Freigabe: Semrush SERP für 2 Keywords (~200 Units)."
+    "optional_validation": "Semrush Organic Results für das Primary Keyword „baudokumentation drohne“ (Top 10, DE, 100 Units) – läuft automatisch, sobald der Kontostand die Reserve um mindestens 100 Units übersteigt. Danach: Ranking-URLs profilieren, C/D/E/I aktualisieren → Research complete."
   },
   "method": {
     "cost_order": [
-      { "step": "Cache (Semrush-Keyword-Cache 23.11., Termlabs-Wettbewerbernotiz 2024 in Drive)", "used": true, "units": 0, "note": "Volumen/KD/CPC aus dem Cache; Wettbewerberliste 2024: schicker-allmedia, drohnen-luftbild360, capmo, airclip" },
-      { "step": "Google Search Console", "used": true, "units": 0, "note": "27 Cluster-Queries, Query×Seite, 90-Tage-Vergleich; Kannibalisierungsprüfung" },
-      { "step": "Bestehende Website", "used": true, "units": 0, "note": "Live-Abruf /drohnen-baudokumentation/ (23.11.), Inventar + interne Links (Crawl 22.11.)" },
-      { "step": "Vorhandene Semrush-Daten", "used": true, "units": 0, "note": "Keine neuen Abfragen" },
-      { "step": "Web-/SERP-Recherche", "used": true, "units": 0, "note": "6 Websuchen (Standard/Extended), 8 Anbieterseiten live profiliert mit tools/page_profile.py; dronext.de nicht abrufbar (SSL)" },
-      { "step": "Semrush kostenpflichtig", "used": false, "units": 0, "note": "Nicht nötig für die Entscheidung; nicht freigegeben" }
+      { "step": "Cache (Semrush-Keyword-Cache, SERP-Cache, Termlabs-Notiz 2024)", "used": true, "units": 0, "note": "Volumen/KD/CPC aus dem Keyword-Cache; kein SERP-Cache vorhanden" },
+      { "step": "Google Search Console", "used": true, "units": 0, "note": "27 Cluster-Queries, Query×Seite, 90-Tage-Vergleich, Kannibalisierung" },
+      { "step": "Bestehende Website", "used": true, "units": 0, "note": "Live-Text /drohnen-baudokumentation/ (23.11.), Inventar + interne Links (22.11.)" },
+      { "step": "Business-Profil + Angaben Noel", "used": true, "units": 0, "note": "Belegte Leistungen, Trust-Elemente; Antworten zu Zeitraffer/Formaten/Boden/Wiederkehr vom 23.11." },
+      { "step": "Semrush Organic Results (echte SERP)", "used": false, "units": 0, "note": "Plan: nur Primary Keyword, Top 10 = 100 Units. Status budget_hold (Kontostand 250 = Reserve)" },
+      { "step": "Web-/Marktrecherche", "used": true, "units": 0, "note": "6 Websuchen, 8 Anbieterseiten live profiliert (tools/page_profile.py); dronext.de nicht abrufbar (SSL)" }
     ],
     "semrush_units_used": 0,
-    "serp_source": "Web-Recherche + Live-Seitenprofile (indikativ, keine Google.de-Positionen)",
+    "serp_source": "Keine echte SERP. Research competitors aus Web-/Marktrecherche.",
     "serp_quality": "indicative"
   },
   "A_decision": {
     "decision": "OPTIMIZE",
     "confidence": "high",
     "target_url": "/drohnen-baudokumentation/",
-    "summary": "Bestehende Seite optimieren, keine neue URL. Die Seite ist die einzige eigene URL im Cluster (3.289 von 3.291 Impressionen), passt zum Intent (Dienstleister für Baufortschritts-/Baustellendokumentation per Drohne) und rankt für die Berlin-Variante auf Platz 2. Die Lücken liegen im Inhalt, nicht in der Architektur: Begriff „Baustellendokumentation“, Leistungsumfang (Intervalle, Ergebnisse, Lieferzeit), Ablauf, FAQ und belegbare Vertrauenselemente.",
+    "summary": "Bestehende Seite optimieren, keine neue URL – und dabei fachlich weiterentwickeln: von einer Seite über Drohnenaufnahmen einer Baustelle zur Referenzseite für strukturierte, wiederholbare Baufortschrittsdokumentation in Berlin und Brandenburg. Die Seite ist die einzige eigene URL im Cluster (3.289 von 3.291 Impressionen) und rankt für die Berlin-Variante auf Pos. 2,3; die Lücke liegt im Inhalt: Methode (Perspektiven, Turnus, Bauphasen), Nutzung durch Projektbeteiligte, Übergabe, Abgrenzung zu Nachbarleistungen und der Begriff „Baustellendokumentation“.",
     "why": [
-      "Intent der Kern-Keywords ist kommerziell-lokal: Wer „baudokumentation drohne“ sucht, sucht einen Anbieter. Relevante Wettbewerber sind Dienstleisterseiten, keine Software.",
+      "Intent der „… drohne“-Keywords ist laut GSC-Queries und Keyword-Muster kommerziell: Auftraggeber suchen einen Dienstleister. Ob die Google-SERP das bestätigt, ist noch offen (keine echte SERP).",
       "Keine Kannibalisierung: Nur /drohnen-baudokumentation/ erhält Impressionen im Cluster.",
-      "Positionen sind schwach (Ø 30, „baustellendokumentation drohne“ 24,9 / 90 Tage 14,5) bei KD 0–5 → Inhalt und Vokabular sind der Hebel.",
-      "Strategische Priorität 10/10, Quartals-Retainer als belegtes Referenzmuster."
+      "Positionen schwach (Ø 30; „baustellendokumentation drohne“ 24,9, 90 Tage 14,5) bei KD 0–5 → Inhalt und Vokabular sind der Hebel, nicht die Architektur.",
+      "Strategische Priorität 10/10; wiederkehrende, mehrjährige Projektdokumentation ist als Erfahrung vorhanden und genau das Geschäftsmodell, das die Seite verkaufen soll."
     ],
     "alternatives": [
-      { "option": "CREATE eigene Seite „Baustellendokumentation Drohne“", "verdict": "verworfen", "reason": "Gleicher Intent wie Baudokumentation → zwei Seiten würden sich kannibalisieren." },
-      { "option": "CREATE Stadtseite „Baudokumentation Drohne Berlin“", "verdict": "verworfen", "reason": "Die bestehende Seite rankt bereits auf Pos. 2,3 für die Berlin-Variante; eine Stadtseite wäre eine Doorway-Page." },
+      { "option": "CREATE eigene Seite „Baustellendokumentation Drohne“", "verdict": "verworfen", "reason": "Gleicher Auftrag, gleiche Zielgruppe, gleiche Leistung → zwei Seiten würden sich kannibalisieren (siehe H · Konsolidierung)." },
+      { "option": "CREATE Seite „Baufortschrittsdokumentation“", "verdict": "verworfen", "reason": "Geringe Nachfrage (20/Monat), gleicher Intent; als Begriff auf der Zielseite abdecken." },
+      { "option": "CREATE Stadtseite „Baudokumentation Drohne Berlin“", "verdict": "verworfen", "reason": "Zielseite rankt bereits auf Pos. 2,3 für die Berlin-Variante; eine Stadtseite wäre eine Doorway-Page." },
       { "option": "MERGE", "verdict": "nicht nötig", "reason": "Keine konkurrierende eigene Seite." }
     ],
-    "gate1_question": "Strategie freigeben: /drohnen-baudokumentation/ mit Scope F und Struktur G optimieren (Entwurf als Google Doc, keine Website-Änderung)?"
+    "gate1_question": "Strategie freigeben: /drohnen-baudokumentation/ zur Seite für strukturierte, wiederholbare Baufortschrittsdokumentation weiterentwickeln (Scope F, Struktur G, Architektur H) – Entwurf als Google Doc, keine Website-Änderung?"
   },
   "B_demand": {
     "keywords": [
       { "keyword": "baudokumentation drohne", "role": "primary", "volume": 140, "kd": 5, "cpc": 2.30, "gsc_impr": 1144, "gsc_pos": 28.2, "gsc_pos_90d": 9.2, "intent": "Dienstleister (kommerziell)" },
-      { "keyword": "baustellendokumentation drohne", "role": "secondary", "volume": 110, "kd": 0, "cpc": 2.11, "gsc_impr": 704, "gsc_pos": 24.9, "gsc_pos_90d": 14.5, "intent": "Dienstleister (kommerziell)" },
+      { "keyword": "baustellendokumentation drohne", "role": "secondary", "volume": 110, "kd": 0, "cpc": 2.11, "gsc_impr": 704, "gsc_pos": 24.9, "gsc_pos_90d": 14.5, "intent": "Dienstleister (kommerziell) – Annahme: gleicher Intent wie Primary", "serp_check": false, "serp_check_reason": "Nur prüfen, wenn die Primary-SERP gemischten Intent zeigt oder die Konsolidierung (H) bestätigt werden muss" },
       { "keyword": "baufortschritt mit drohnen dokumentieren", "role": "secondary", "volume": null, "kd": null, "cpc": null, "gsc_impr": 351, "gsc_pos": 30.4, "gsc_pos_90d": 21.0, "intent": "Gemischt: Methode/Anbieter" },
       { "keyword": "baubegleitung mit drohne", "role": "secondary", "volume": null, "kd": null, "cpc": null, "gsc_impr": 233, "gsc_pos": 12.6, "gsc_pos_90d": null, "intent": "Dienstleister" },
       { "keyword": "baudokumentation drohne berlin", "role": "secondary", "volume": null, "kd": null, "cpc": null, "gsc_impr": 84, "gsc_pos": 2.3, "gsc_pos_90d": 2.5, "intent": "Lokaler Anbieter" },
-      { "keyword": "drohne baustelle", "role": "supporting", "volume": 70, "kd": 15, "cpc": 1.59, "gsc_impr": 73, "gsc_pos": 93.6, "gsc_pos_90d": null, "intent": "Gemischt (Regeln, Technik, Anbieter)" },
+      { "keyword": "drohne baustelle", "role": "supporting", "volume": 70, "kd": 15, "cpc": 1.59, "gsc_impr": 73, "gsc_pos": 93.6, "gsc_pos_90d": null, "intent": "Gemischt (Regeln, Technik, Anbieter) – nicht primär targeten" },
       { "keyword": "baufortschrittsdokumentation (drohne)", "role": "supporting", "volume": 20, "kd": 0, "cpc": 0, "gsc_impr": 12, "gsc_pos": 26.5, "gsc_pos_90d": 22.7, "intent": "Dienstleister" },
       { "keyword": "baustellendokumentation luftbild", "role": "supporting", "volume": null, "kd": null, "cpc": null, "gsc_impr": 93, "gsc_pos": 57.9, "gsc_pos_90d": null, "intent": "Dienstleister" },
-      { "keyword": "baudokumentation", "role": "do_not_target", "volume": 720, "kd": 25, "cpc": 5.13, "gsc_impr": null, "gsc_pos": null, "gsc_pos_90d": null, "intent": "Überwiegend Software/Ratgeber" },
-      { "keyword": "baustellendokumentation", "role": "do_not_target", "volume": 880, "kd": 19, "cpc": 8.37, "gsc_impr": null, "gsc_pos": null, "gsc_pos_90d": null, "intent": "Überwiegend Software/Vorlagen" }
+      { "keyword": "baudokumentation", "role": "do_not_target", "volume": 720, "kd": 25, "cpc": 5.13, "gsc_impr": null, "gsc_pos": null, "gsc_pos_90d": null, "intent": "Vermutlich Software/Ratgeber (CPC-/Keyword-Muster; nicht SERP-geprüft)" },
+      { "keyword": "baustellendokumentation", "role": "do_not_target", "volume": 880, "kd": 19, "cpc": 8.37, "gsc_impr": null, "gsc_pos": null, "gsc_pos_90d": null, "intent": "Vermutlich Software/Vorlagen (nicht SERP-geprüft)" }
     ],
     "cluster": { "queries": 27, "impressions": 3291, "clicks": 0, "avg_position": 30 },
     "ga4": "Cluster 16 Monate: 2 Sitzungen, 1 Lead (Kontaktaktion). Kleine Zahl, zeigt Richtung, keine Statistik.",
     "notes": [
       "Messbare Nachfrage der Kern-Keywords zusammen ca. 250–350 Suchen/Monat (Semrush), plus Long Tail aus GSC.",
-      "Die großen Volumen ohne „Drohne“ (720/880) sind keine Zielgruppe für diese Seite: Dort ranken Bausoftware und Vorlagen.",
-      "„baustellendokumentation drohne“ ist der echte Verlust aus der Investigation (seit Juni kaum ausgespielt) → muss im Title/H2 und Text klar abgedeckt werden."
+      "„baustellendokumentation drohne“ ist der echte Verlust aus der Investigation (seit Juni kaum ausgespielt) → im Title, einer H2 und der FAQ klar abdecken.",
+      "Long-Tail-Queries wie „baufortschritt mit drohnen dokumentieren“ (351 Impr.) fragen nach dem Wie – ein Hinweis, dass Methodeninhalte gefragt sind."
     ]
   },
   "C_serp": {
-    "source": "Web-Recherche (6 Suchen) + Live-Abruf der Anbieterseiten am 23.11.2026",
+    "source": "Keine Semrush-SERP (budget_hold). Research competitors aus 6 Websuchen + Live-Abruf der Anbieterseiten am 23.11.2026.",
     "quality": "indicative",
-    "quality_note": "Reihenfolge und Positionen sind NICHT Google.de. Die Liste zeigt, welche Seitentypen und Anbieter für die Keyword-Familie sichtbar sind.",
-    "intent_verdict": "„… drohne“-Varianten: kommerzieller Dienstleister-Intent (Anbieter-Landingpages dominieren). Varianten ohne „Drohne“: Software-/Ratgeber-Intent. Gemischte Varianten („drohne baustelle“, „baufortschritt mit drohnen dokumentieren“) enthalten auch Ratgeber, Regeln und Technik.",
-    "results": [
-      { "domain": "berlinskycrew.de", "url": "https://berlinskycrew.de/baudokumentation/", "page_type": "Dienstleister-Landingpage", "intent": "kommerziell-lokal", "relevance": "business_competitor", "region": "Berlin", "note": "Direkter Berliner Wettbewerber, gleiches Keyword im Title" },
-      { "domain": "bondar-sky-images.de", "url": "https://www.bondar-sky-images.de/bau-architektur/", "page_type": "Dienstleister-Landingpage", "intent": "kommerziell", "relevance": "business_competitor", "region": "überregional", "note": "Paketlogik, FAQ, umfangreiches Schema" },
-      { "domain": "techpic.de", "url": "https://techpic.de/baustellendokumentation-mit-baufortschrittsverfolgung/", "page_type": "Dienstleister-Landingpage (lang)", "intent": "kommerziell + informativ", "relevance": "business_competitor", "region": "NRW", "note": "Stärkste inhaltliche Tiefe zu Baustellendokumentation" },
-      { "domain": "drohnenflugvismann.de", "url": "https://drohnenflugvismann.de/landingpage-baufirmen/", "page_type": "Dienstleister-Landingpage", "intent": "kommerziell", "relevance": "business_competitor", "region": "Schleswig-Holstein", "note": "Problem→Lösung, Vermessung + Doku" },
-      { "domain": "skynamic.net", "url": "https://www.skynamic.net/drohnenaufnahmen-baustelle/", "page_type": "Dienstleister-Landingpage", "intent": "kommerziell", "relevance": "business_competitor", "region": "überregional", "note": "Medien-/Broadcast-Teams, Industrie-Referenzen" },
-      { "domain": "luftbild-drohne-360.de", "url": "https://www.luftbild-drohne-360.de/luftbilder/luftaufnahmen-baufortschrittsdokumentation-bauueberwachung.htm", "page_type": "Dienstleister-Landingpage", "intent": "kommerziell", "relevance": "business_competitor", "region": "Bochum/NRW", "note": "In der Termlabs-Liste 2024 als Hauptwettbewerber geführt" },
-      { "domain": "dronext.de", "url": "https://www.dronext.de/baustellendokumentation-drohne", "page_type": "Dienstleister-Landingpage", "intent": "kommerziell", "relevance": "business_competitor", "region": "unbekannt", "note": "Nicht profiliert (SSL-Fehler beim Abruf)" },
-      { "domain": "drone-connect.de", "url": "https://drone-connect.de/einsatzbereiche/baustellendokumentation", "page_type": "Vermittlungsplattform", "intent": "kommerziell (Marktplatz)", "relevance": "platform", "region": "bundesweit", "note": "Indirekter Wettbewerb um die Anfrage, kein Dienstleister" },
-      { "domain": "schicker-allmedia.de", "url": null, "page_type": "Dienstleister", "intent": "kommerziell", "relevance": "business_competitor", "region": "unbekannt", "note": "Aus Termlabs-Liste 2024, nicht neu profiliert" },
-      { "domain": "airclip.de", "url": null, "page_type": "Hardware/Software/BIM-Anbieter", "intent": "Produkt", "relevance": "software", "region": "–", "note": "Kein Wettbewerber um Dienstleistungsaufträge" },
-      { "domain": "capmo.com", "url": null, "page_type": "Bausoftware-Blog", "intent": "informativ/Software", "relevance": "software", "region": "–", "note": "Dominiert Varianten ohne „Drohne“" },
-      { "domain": "airteam.ai", "url": null, "page_type": "Vermessungsplattform", "intent": "Produkt/Service", "relevance": "partner", "region": "–", "note": "Partner von Spreewald Luftaufnahmen (Vermessung), kein Wettbewerber" },
-      { "domain": "bau.de / baulinks.de / DJI Enterprise", "url": null, "page_type": "Ratgeber/Fachartikel", "intent": "informativ", "relevance": "guide", "region": "–", "note": "Erscheinen bei gemischten Varianten; kein Wettbewerb um Anfragen" }
+    "quality_note": "SERP competitors = von Semrush als rankend bestätigt (aktuell keine). Research competitors = über Web-/Marktrecherche gefundene relevante Anbieter – ohne Positionen, ohne Aussage zur SERP-Dominanz.",
+    "serp_status": "pending – Semrush Organic Results (Primary Keyword, Top 10, 100 Units) wartet auf Budget über der Reserve",
+    "intent_verdict": "Hypothese, nicht SERP-bestätigt: Für die „… drohne“-Varianten waren in der Web-Recherche fast ausschließlich Dienstleister-Landingpages auffindbar; zusammen mit den GSC-Queries spricht das für kommerziellen Dienstleister-Intent. Varianten ohne „Drohne“ zeigen in der Recherche und im CPC-Muster eher Software-/Ratgeber-Intent. Gemischte Varianten („drohne baustelle“) führten auch zu Ratgebern, Regeln und Technik.",
+    "serp_competitors": [],
+    "research_competitors": [
+      { "domain": "berlinskycrew.de", "url": "https://berlinskycrew.de/baudokumentation/", "page_type": "Dienstleister-Landingpage", "intent": "kommerziell-lokal", "relevance": "business_competitor", "region": "Berlin", "found_via": "Websuche (extended)", "note": "Direkter Berliner Anbieter, gleiches Keyword im Title" },
+      { "domain": "bondar-sky-images.de", "url": "https://www.bondar-sky-images.de/bau-architektur/", "page_type": "Dienstleister-Landingpage", "intent": "kommerziell", "relevance": "business_competitor", "region": "überregional", "found_via": "Websuche (extended)", "note": "Paketlogik einmalig/laufend, FAQ, umfangreiches Schema" },
+      { "domain": "techpic.de", "url": "https://techpic.de/baustellendokumentation-mit-baufortschrittsverfolgung/", "page_type": "Dienstleister-Landingpage (lang)", "intent": "kommerziell + informativ", "relevance": "business_competitor", "region": "NRW", "found_via": "Websuche (extended)", "note": "Einzige profilierte Seite, die Wiederholbarkeit und Lieferformate ausführlich behandelt" },
+      { "domain": "drohnenflugvismann.de", "url": "https://drohnenflugvismann.de/landingpage-baufirmen/", "page_type": "Dienstleister-Landingpage", "intent": "kommerziell", "relevance": "business_competitor", "region": "Schleswig-Holstein", "found_via": "Websuche (extended)", "note": "Problem→Lösung, Doku + Vermessung kombiniert" },
+      { "domain": "skynamic.net", "url": "https://www.skynamic.net/drohnenaufnahmen-baustelle/", "page_type": "Dienstleister-Landingpage", "intent": "kommerziell", "relevance": "business_competitor", "region": "überregional", "found_via": "Websuche (extended)", "note": "Medien-/Broadcast-Winkel" },
+      { "domain": "luftbild-drohne-360.de", "url": "https://www.luftbild-drohne-360.de/luftbilder/luftaufnahmen-baufortschrittsdokumentation-bauueberwachung.htm", "page_type": "Dienstleister-Landingpage", "intent": "kommerziell", "relevance": "business_competitor", "region": "Bochum/NRW", "found_via": "Websuche + Termlabs-Liste 2024", "note": "2024 als Hauptwettbewerber geführt" },
+      { "domain": "dronext.de", "url": "https://www.dronext.de/baustellendokumentation-drohne", "page_type": "Dienstleister-Landingpage", "intent": "kommerziell", "relevance": "business_competitor", "region": "unbekannt", "found_via": "Websuche (extended)", "note": "Nicht profiliert (SSL-Fehler beim Abruf)" },
+      { "domain": "drone-connect.de", "url": "https://drone-connect.de/einsatzbereiche/baustellendokumentation", "page_type": "Vermittlungsplattform", "intent": "kommerziell (Marktplatz)", "relevance": "platform", "region": "bundesweit", "found_via": "Websuche (extended)", "note": "Indirekter Wettbewerb um die Anfrage" },
+      { "domain": "schicker-allmedia.de", "url": null, "page_type": "Dienstleister", "intent": "kommerziell", "relevance": "business_competitor", "region": "unbekannt", "found_via": "Termlabs-Liste 2024", "note": "Nicht neu profiliert" },
+      { "domain": "airclip.de", "url": null, "page_type": "Hardware/Software/BIM-Anbieter", "intent": "Produkt", "relevance": "software", "region": "–", "found_via": "Websuche (Domainfilter) + Termlabs 2024", "note": "Kein Wettbewerber um Dienstleistungsaufträge" },
+      { "domain": "capmo.com", "url": null, "page_type": "Bausoftware-Blog", "intent": "informativ/Software", "relevance": "software", "region": "–", "found_via": "Websuche (Domainfilter) + Termlabs 2024", "note": "Relevant für Varianten ohne „Drohne“ (vermutet)" },
+      { "domain": "airteam.ai", "url": null, "page_type": "Vermessungsplattform", "intent": "Produkt/Service", "relevance": "partner", "region": "–", "found_via": "Websuche (Domainfilter)", "note": "Partner (Vermessung), kein Wettbewerber" },
+      { "domain": "bau.de / baulinks.de / DJI Enterprise", "url": null, "page_type": "Ratgeber/Fachartikel", "intent": "informativ", "relevance": "guide", "region": "–", "found_via": "Websuche (Standard)", "note": "Bei gemischten Varianten gefunden; kein Wettbewerb um Anfragen" }
     ],
-    "own_position": "GSC: „baudokumentation drohne berlin“ Ø 2,3 · „baudokumentation drohne“ 90 Tage Ø 9,2 · „baustellendokumentation drohne“ 90 Tage Ø 14,5"
+    "own_position": "GSC (eigene Daten, real): „baudokumentation drohne berlin“ Ø 2,3 · „baudokumentation drohne“ 90 Tage Ø 9,2 · „baustellendokumentation drohne“ 90 Tage Ø 14,5"
   },
   "D_competitors": [
     {
       "domain": "berlinskycrew.de", "location": "Berlin", "h1": "Baudokumentation mit Drohne – lückenloser Baufortschritt aus der Luft",
-      "positioning": "Lückenloser Baufortschritt, Zeitraffer und stationäre Kamera; ausdrücklich für Bauträger, GU und Architekten",
+      "positioning": "Lückenloser Baufortschritt, Zeitraffer und stationäre Kamera; für Bauträger, GU und Architekten",
       "topics": ["Nutzen der Baudokumentation", "Drohnenvideos zum Baufortschritt", "Zeitraffer / stationäre Kamera", "4-Schritte-Ablauf", "FPV-Videos", "Marketing / Immobilienverkauf", "3D-Visualisierung"],
       "audience": ["Bauträger & Projektentwickler", "GU & Bauunternehmen", "Architekten", "Projektsteuerer & Bauüberwacher", "Eigentümer & private Bauherren"],
-      "faq": "keine echte FAQ", "trust": "Kundenlogos, Datenschutzhinweis, Genehmigungen", "local": "Berlin im Title und Text", "conversion": "Angebot anfragen (CTA), keine Telefon-Verlinkung erkannt",
-      "takeaway": "Stärke: klare Zielgruppen-Abschnitte und Nachweis-Argument (Mängel, Nachträge). Kein Lieferzeit- oder Versicherungs-Versprechen erkannt."
+      "faq": "keine echte FAQ", "trust": "Kundenlogos, Datenschutzhinweis, Genehmigungen", "local": "Berlin", "conversion": "Angebot anfragen",
+      "takeaway": "Zielgruppen-Abschnitte und Nachweis-Argument (Mängel, Nachträge). Methode (wie werden Aufnahmen vergleichbar?) kaum erklärt."
     },
     {
       "domain": "bondar-sky-images.de", "location": "überregional", "h1": "Bauprojekte dokumentieren. Gebäude digital erfassen.",
-      "positioning": "Benannte Pakete von einmaliger Aufnahme bis laufende Doku (BauSnapshot, BauProgress, BauProgress Plus, BauChronik)",
-      "topics": ["Lösungen je Projektphase", "Einmalig vs. laufend", "Ablauf von Anfrage bis Doku", "Expertentipp des Inhabers", "FAQ"],
+      "positioning": "Benannte Pakete von einmaliger Aufnahme bis laufende Doku",
+      "topics": ["Lösungen je Projektphase", "Einmalig vs. laufend", "Ablauf", "Expertentipp", "FAQ"],
       "audience": ["Bauunternehmen", "Architekten", "Projektentwickler"],
-      "faq": "ja (FAQPage-Schema)", "trust": "Inhaber mit Foto/Bio, Schema LocalBusiness/Offer", "local": "schwach", "conversion": "Formular + Telefon",
-      "takeaway": "Stärke: Paketlogik macht wiederkehrende Aufträge greifbar. Schwäche: viele Leistungen (3D-Aufmaß, Inspektion) auf einer Seite."
+      "faq": "ja (FAQPage-Schema)", "trust": "Inhaber mit Bio, Schema LocalBusiness/Offer", "local": "schwach", "conversion": "Formular + Telefon",
+      "takeaway": "Paketlogik macht wiederkehrende Aufträge greifbar; mischt aber Doku mit 3D-Aufmaß und Inspektion auf einer Seite."
     },
     {
       "domain": "techpic.de", "location": "NRW", "h1": "Baustellendokumentation mit Baufortschrittsverfolgung",
       "positioning": "Wiederholbare Flüge als objektive Fortschrittsverfolgung; Nachweise bei Behinderungen",
-      "topics": ["Für wen geeignet", "Arten der Dokumentation (Übersicht/Detail/Montage/Vergleich)", "Wiederholbarkeit gleicher Perspektiven", "Behinderungen nachweisen", "schwer zugängliche Bereiche", "Lieferformate & Ergebnisse"],
+      "topics": ["Für wen", "Arten der Dokumentation", "Wiederholbarkeit", "Behinderungen nachweisen", "schwer zugängliche Bereiche", "Lieferformate & Ergebnisse"],
       "audience": ["Bauunternehmen", "Architekten/Planer", "Versicherer/Sachverständige", "Bauherren"],
-      "faq": "teilweise", "trust": "Genehmigungen, Versicherung, Datenschutz ausführlich", "local": "NRW", "conversion": "Formular + Telefon",
-      "takeaway": "Stärke: Tiefe beim Thema „Baustellendokumentation“ und klare Lieferformate. Sehr lang – Länge selbst ist kein Ziel."
+      "faq": "teilweise", "trust": "Genehmigungen, Versicherung, Datenschutz", "local": "NRW", "conversion": "Formular + Telefon",
+      "takeaway": "Am nächsten an „Dokumentation als System“. Technische Wiederholbarkeits-Versprechen, die wir nicht belegt haben, nicht übernehmen."
     },
     {
       "domain": "drohnenflugvismann.de", "location": "Schleswig-Holstein", "h1": "Drohne Baustellen Dokumentation für Baufirmen?",
-      "positioning": "Problem → Lösung für Baufirmen, Doku + Vermessung kombiniert",
-      "topics": ["Zeitaufwand klassischer Doku", "Lösungen (Orthofoto, Vermessung, Marketing)", "3-Schritte-Ablauf"],
-      "audience": ["Baufirmen", "Investoren/Bauherren als Empfänger"],
-      "faq": "nein", "trust": "Bewertungen", "local": "regional SH", "conversion": "Telefon",
-      "takeaway": "Kurz, klar auf den Schmerz ausgerichtet. Vermessung/Orthofoto ist bei uns keine Leistung für diese Seite."
+      "positioning": "Problem → Lösung für Baufirmen, Doku + Vermessung",
+      "topics": ["Zeitaufwand klassischer Doku", "Orthofoto, Vermessung, Marketing", "3-Schritte-Ablauf"],
+      "audience": ["Baufirmen"], "faq": "nein", "trust": "Bewertungen", "local": "SH", "conversion": "Telefon",
+      "takeaway": "Kurz und schmerzorientiert. Vermessung/Orthofoto ist bei uns keine Leistung dieser Seite."
     },
     {
       "domain": "skynamic.net", "location": "überregional", "h1": "Drohnenaufnahmen für Bauprojekte und Baustellen",
-      "positioning": "Broadcast-/Werbeteams und Industrie-Referenzen",
+      "positioning": "Broadcast-/Werbeteams, Industrie-Referenzen",
       "topics": ["Projektgröße aus der Luft", "Industrieanlagen", "Wann sich Aufnahmen lohnen", "FAQ"],
-      "audience": ["Bauunternehmen", "Industrie", "Marketing"],
-      "faq": "ja (FAQPage-Schema)", "trust": "Namhafte Referenzen, Lieferzeit, Datenschutz", "local": "kaum", "conversion": "Formular + Telefon",
-      "takeaway": "Eher Marketing-/Imagefilm-Winkel als laufende Dokumentation."
+      "audience": ["Bauunternehmen", "Industrie", "Marketing"], "faq": "ja (FAQPage-Schema)", "trust": "Referenzen, Lieferzeit, Datenschutz", "local": "kaum", "conversion": "Formular + Telefon",
+      "takeaway": "Einzelaufnahmen/Marketing statt laufender Dokumentation."
     },
     {
       "domain": "luftbild-drohne-360.de", "location": "Bochum", "h1": "Luftbilder mit Drohne für Baufortschrittsdokumentation und Bauüberwachung",
       "positioning": "Luftbilder/Videos für Baufortschritt und Bauüberwachung",
-      "topics": ["Projektbeispiele", "Live-Übertragung", "Angebot"],
-      "audience": ["Bauunternehmen", "Architekten"],
+      "topics": ["Projektbeispiele", "Live-Übertragung", "Angebot"], "audience": ["Bauunternehmen", "Architekten"],
       "faq": "nein", "trust": "Versicherung", "local": "NRW", "conversion": "Telefon",
-      "takeaway": "Inhaltlich dünn gegliedert (1 H2) – trotzdem langjährig sichtbar."
+      "takeaway": "Dünn gegliedert (1 H2), Fokus auf Einzelaufnahmen."
     },
     {
       "domain": "drone-connect.de", "location": "bundesweit", "h1": "Baustellendokumentation mit Drohne regional und nach Verfügbarkeit.",
-      "positioning": "Vermittlungsplattform für Piloten",
+      "positioning": "Vermittlungsplattform",
       "topics": ["Wofür eignet sich Baustellendokumentation", "Regelmäßige Dokumentation", "Angaben für die Anfrage", "FAQ (6)"],
-      "audience": ["Bau allgemein"],
-      "faq": "ja (6, FAQPage)", "trust": "Plattform", "local": "nach Verfügbarkeit", "conversion": "Anfrage",
-      "takeaway": "Gute Frage-Formulierungen zur Anfrage („Was sollte ich angeben?“) – zeigt typische Nutzerfragen."
+      "audience": ["Bau allgemein"], "faq": "ja (6, FAQPage)", "trust": "Plattform", "local": "nach Verfügbarkeit", "conversion": "Anfrage",
+      "takeaway": "Zeigt typische Nutzerfragen („Kann man regelmäßig dokumentieren?“, „Was sollte ich angeben?“)."
     }
   ],
+  "D_pattern": "Muster der Research competitors (nicht SERP-bestätigt): Die meisten Seiten verkaufen Drohnenaufnahmen einer Baustelle (Bilder, Videos, Marketing). Nur einzelne Seiten erklären, wie eine Dokumentation über die Bauzeit vergleichbar und nutzbar wird (techpic: Wiederholbarkeit, Lieferformate; bondar: einmalig vs. laufend). Keine der profilierten Seiten verbindet Planung (Perspektiven, Turnus, Bauphasen), Nutzung je Projektbeteiligtem, Übergabe und Abgrenzung zu Nachbarleistungen zu einem durchgängigen Vorgehen.",
   "E_gap": {
     "competitors_cover": [
-      "Begriff „Baustellendokumentation“ prominent (Title/H1/H2) – techpic, drone-connect, vismann",
-      "Regelmäßige Intervalle bzw. Paketlogik einmalig vs. laufend – bondar, berlinskycrew, drone-connect",
-      "Konkrete Ergebnisse/Lieferformate – techpic",
-      "Ablauf in 3–4 Schritten – berlinskycrew, bondar, vismann",
-      "FAQ mit FAQPage-Schema – bondar, skynamic, drone-connect",
-      "Zielgruppen-Abschnitte mit konkretem Nutzen – berlinskycrew, techpic",
-      "Nachvollziehbarkeit bei Mängeln/Nachträgen/Behinderungen – berlinskycrew, techpic",
-      "Zeitraffer/stationäre Kamera – berlinskycrew (wir: nicht bestätigt)"
+      "Begriff „Baustellendokumentation“ prominent in Title/H1/H2 (techpic, drone-connect, vismann)",
+      "Einmalige vs. laufende Dokumentation bzw. Paketlogik (bondar, berlinskycrew, drone-connect)",
+      "Wiederholbarkeit gleicher Perspektiven und konkrete Lieferformate (techpic)",
+      "Ablauf in 3–4 Schritten (berlinskycrew, bondar, vismann)",
+      "FAQ mit FAQPage-Schema (bondar, skynamic, drone-connect)",
+      "Zielgruppen-Abschnitte mit Nutzen (berlinskycrew, techpic)",
+      "Nachvollziehbarkeit bei Mängeln/Nachträgen/Behinderungen (berlinskycrew, techpic)",
+      "Zeitraffer/stationäre Kamera (berlinskycrew) – bei uns keine Standardleistung, wird nicht aufgenommen"
     ],
     "we_cover": [
-      "Baudokumentation per Drohne in Berlin & Brandenburg (H1, lokal stark: Pos. 2,3 für Berlin)",
-      "Mehrjährige Projektbegleitung, abgestimmter Turnus, einheitliche Perspektiven",
-      "Kombination Luft- und Bodenaufnahmen",
-      "Komplette Abwicklung inkl. Genehmigungen, Flug-Briefing, Risikomanagement, fester Ansprechpartner",
-      "Nutzen für Projektberichte, Bauherrentermine, Investoren, Marketing",
-      "Kundenlogos, Kundenstimmen, rbb-Bekanntheit"
+      "Baudokumentation per Drohne in Berlin & Brandenburg (lokal stark: Pos. 2,3 für Berlin)",
+      "Mehrjährige Projektbegleitung „vom Baustart bis zur Fertigstellung“",
+      "Regelmäßige Befliegungen „in einem gemeinsam abgestimmten Turnus“, „einheitliche Perspektiven“",
+      "Luft- und ergänzende Bodenaufnahmen, Fotos und Videos",
+      "Komplette Abwicklung inkl. Genehmigungen, Flug-Briefing, Risikomanagement, digitale Bereitstellung, fester Ansprechpartner",
+      "Nutzung für Projektberichte, Bauherrentermine, Investoren, Abstimmung mit Architekten/Fachplanern/GU, Marketing"
     ],
     "we_miss": [
-      "„Baustellendokumentation“ nur im Title und einmal im Text – keine H2, obwohl das der verlorene Begriff ist",
-      "Keine FAQ (und kein FAQPage-Schema)",
-      "Kein sichtbarer Ablauf in Schritten",
-      "Keine Aussagen zu Ergebnissen/Lieferung: was genau geliefert wird, Lieferung i. d. R. in 5–7 Werktagen (belegt, fehlt)",
-      "Keine Intervall-Beispiele (z. B. wöchentlich, monatlich, zu Meilensteinen) und kein Hinweis auf Rahmenvereinbarung/Stammkundenrabatt (belegt)",
-      "Berufshaftpflicht R+V, wetterbedingte Verschiebung ohne Zusatzkosten, Angebotspreis = Endpreis fehlen (alle belegt)",
-      "Zielgruppen nur als Aufzählung, ohne Nutzen je Gruppe",
-      "Meta Description verspricht „3D-Modellierung“ – für Baudokumentation nicht als Leistung belegt (Risiko) – und endet mit „Jetzt buchen!“ statt Anfrage",
-      "Kein Link zu Preisen, Inspektion oder (künftig) Bestandsaufnahme"
+      "Die Methode ist nur behauptet, nicht erklärt: wie Perspektiven festgelegt werden, wie der Turnus an Bauphasen gekoppelt wird, warum das vergleichbare Projektstände ergibt",
+      "„Baustellendokumentation“ ohne eigene H2 (verlorener Begriff)",
+      "Keine Entscheidungshilfe einmalig vs. laufend",
+      "Übergabe kaum beschrieben (digital, Lieferung i. d. R. 5–7 Werktage – belegt, fehlt) und keine Hinweise zur langfristigen Nutzung der Aufnahmen als Projektarchiv",
+      "Nutzen je Projektbeteiligtem nur als Aufzählung",
+      "Keine Abgrenzung zu Bestandsaufnahme, Inspektion und Vermessung",
+      "Kein Ablauf, keine FAQ, keine Kostenlogik",
+      "Meta Description verspricht „3D-Modellierung“ (nicht belegt) und „Jetzt buchen!“"
     ],
     "outperform": [
-      "Einziger der profilierten Anbieter mit klarer Ausrichtung Berlin UND Brandenburg plus Ausgangspunkt Schönefeld",
-      "Belegbare Verbindlichkeit bündeln, die Wettbewerber so nicht zeigen: Lieferung i. d. R. 5–7 Werktage, Wetterverschiebung ohne Zusatzkosten, Angebotspreis = Endpreis, Berufshaftpflicht",
-      "Wiederkehrende Doku als Kernangebot (Quartals-Retainer-Muster) mit nachvollziehbarer Intervall-Logik – ohne erfundene Paketnamen oder Preise",
-      "Luft + Boden aus einer Hand – bei Wettbewerbern selten",
-      "Sauber abgegrenzt: keine Vermessung/3D/Orthofoto versprechen, sondern dorthin verlinken, wo es belegt ist"
+      "Die einzige Seite im Vergleich werden, die Baufortschrittsdokumentation als planbares Vorgehen erklärt: Perspektiven festlegen → Turnus an Bauphasen koppeln → Luft (+ optional Boden) → Übergabe je Termin → vergleichbare Zeitreihe über die Bauzeit",
+      "Entscheidungsfragen der Auftraggeber beantworten, die Wettbewerber offenlassen: einmalig oder laufend, welcher Turnus, welche Perspektiven, wer nutzt die Aufnahmen wofür",
+      "Abgrenzung Baudokumentation / Bestandsaufnahme / Inspektion / Vermessung als eigener Abschnitt – schafft thematische Klarheit und interne Verlinkung, die keine der profilierten Seiten bietet",
+      "Erfahrung mit mehrjähriger, wiederkehrender Dokumentation als Prozesskompetenz zeigen (ohne Kundennamen/Projektdetails)",
+      "Region Berlin UND Brandenburg mit organisatorischer Abwicklung (Genehmigungen in den jeweiligen Bundesländern)"
     ]
   },
   "F_scope": {
-    "core_message": "Wir dokumentieren den Baufortschritt Ihres Projekts in Berlin und Brandenburg regelmäßig aus der Luft und vom Boden – aus gleichen Perspektiven, termintreu und vollständig organisiert, damit alle Beteiligten jederzeit den aktuellen Stand sehen.",
-    "search_intent": "Kommerziell: Auftraggeber sucht einen Dienstleister für Bau- bzw. Baustellendokumentation per Drohne (einmalig oder laufend).",
-    "audience": ["Bauträger / Projektentwickler", "Bauunternehmen / Generalunternehmer", "Architekten / Projektsteuerer", "Gewerbliche Bauherren und Investoren (als Empfänger der Berichte)"],
+    "core_message": "Wir machen den Baufortschritt Ihres Projekts über die gesamte Bauzeit vergleichbar: geplante Perspektiven, ein Turnus passend zu Ihren Bauphasen, Luftaufnahmen (auf Wunsch ergänzt um Bodenaufnahmen) und eine digitale Übergabe nach jedem Termin – organisiert von uns, nutzbar für alle Projektbeteiligten.",
+    "search_intent": "Kommerziell: Bauträger, Projektentwickler oder Bauunternehmen suchen einen Dienstleister für die Dokumentation des Baufortschritts per Drohne – meist mit der Frage, wie das über die Bauzeit zuverlässig und brauchbar funktioniert.",
+    "audience": ["Bauträger / Projektentwickler", "Bauunternehmen / Generalunternehmer", "Architekten / Projektsteuerer", "Empfänger der Dokumentation: Bauherren, Investoren, Eigentümer"],
     "key_questions": [
-      "Was ist in einer Baudokumentation per Drohne enthalten?",
-      "In welchen Intervallen wird dokumentiert – und wer legt sie fest?",
-      "Was bekomme ich geliefert, in welcher Form und wie schnell?",
-      "Wer kümmert sich um Genehmigungen, Flugverbote und Sicherheit auf der Baustelle?",
-      "Was passiert bei schlechtem Wetter?",
-      "Was kostet es – einmalig vs. laufend?",
-      "Wo sind Sie im Einsatz (Berlin, Brandenburg, darüber hinaus)?"
+      { "group": "Verständnis & Entscheidung", "questions": [
+        "Was unterscheidet eine Baudokumentation von einzelnen Drohnenaufnahmen der Baustelle?",
+        "Brauche ich eine einmalige Aufnahme oder eine laufende Dokumentation über die Bauzeit?",
+        "Ist das dasselbe wie Baustellendokumentation bzw. Baufortschrittsdokumentation?" ] },
+      { "group": "Methode & Planung", "questions": [
+        "Wie werden Aufnahmen über Monate vergleichbar (feste Perspektiven, gleiche Blickwinkel)?",
+        "Welcher Turnus ist sinnvoll – und wie wird er an Bauphasen und Projektdauer gekoppelt?",
+        "Wann lohnen sich ergänzende Bodenaufnahmen?" ] },
+      { "group": "Ergebnis & Übergabe", "questions": [
+        "Was bekomme ich nach jedem Termin – Fotos, Videos – und wie schnell?",
+        "Wie wird die Dokumentation übergeben und wie kann ich sie langfristig als Projektarchiv nutzen?" ] },
+      { "group": "Nutzung im Projekt", "questions": [
+        "Wofür nutzen Bauträger, Bauunternehmen und Architekten die Aufnahmen konkret (Berichte, Besprechungen, Abstimmung, Vermarktung)?",
+        "Kann ich die Aufnahmen an Bauherren, Investoren oder Käufer weitergeben?" ] },
+      { "group": "Organisation & Risiko", "questions": [
+        "Wer kümmert sich um Genehmigungen und die Abstimmung auf der Baustelle?",
+        "Was passiert bei schlechtem Wetter mit dem Termin?",
+        "Sind Sie versichert?" ] },
+      { "group": "Abgrenzung", "questions": [
+        "Brauche ich eine Baudokumentation, eine Bestandsaufnahme, eine Inspektion oder eine Vermessung?" ] },
+      { "group": "Kosten & Anfrage", "questions": [
+        "Wovon hängen die Kosten ab, gibt es Konditionen für laufende Projekte?",
+        "Welche Angaben braucht ihr für ein Angebot?",
+        "Arbeitet ihr nur in Berlin und Brandenburg?" ] }
     ],
     "service_info": [
-      "Einmalige Aufnahme vs. laufende Dokumentation über die gesamte Bauzeit",
-      "Turnus nach Absprache (Beispiele nennen, keine Pflichtintervalle behaupten)",
-      "Luftaufnahmen (Fotos/Videos) + optionale Bodenaufnahmen",
-      "Gleiche Perspektiven je Flug für vergleichbare Projektstände",
-      "Organisation inkl. Genehmigungen, Flug-Briefing, Risikomanagement",
-      "Digitale Übergabe, Lieferung i. d. R. in 5–7 Werktagen",
-      "Preis: individuelles Festpreisangebot, Rabatte bei laufenden Projekten/Stammkunden"
+      { "text": "Einmalige Aufnahme (z. B. Baustart, Meilenstein, Fertigstellung) oder laufende Dokumentation vom Baustart bis zur Fertigstellung", "evidence": "Website (mehrjährige Begleitung), Erfahrung wiederkehrende Projektdokumentation (Noel 23.11.)" },
+      { "text": "Turnus wird gemeinsam abgestimmt – nach Bauphasen/Meilensteinen oder in festen Abständen; keine Pflichtintervalle behaupten", "evidence": "Website („gemeinsam abgestimmter Turnus“)" },
+      { "text": "Einheitliche Perspektiven für vergleichbare Projektstände", "evidence": "Website („einheitliche Perspektiven“)" },
+      { "text": "Luftaufnahmen als Fotos und Videos", "evidence": "Business-Profil, Website, Noel 23.11." },
+      { "text": "Ergänzende Bodenaufnahmen möglich – nicht pauschal Teil jedes Auftrags", "evidence": "Projekte belegt (Noel 23.11.)" },
+      { "text": "Digitale Bereitstellung, Lieferung i. d. R. in 5–7 Werktagen; keine Dateiformate nennen", "evidence": "Business-Profil §8, Noel 23.11." },
+      { "text": "Komplette Organisation: Einsatzplanung, Genehmigungen, Flug-Briefing, Risikomanagement, fester Ansprechpartner", "evidence": "Website, Business-Profil §8" },
+      { "text": "Individuelles Festpreisangebot; Rabatte bei größeren Projekten/Stammkunden", "evidence": "Business-Profil §7/§8" }
     ],
     "trust_proof": [
-      "Kundenlogos (nur als Logos, keine Projektdetails) und bestehende Kundenstimmen (5/5, bereits auf der Seite)",
+      "Erfahrung mit mehrjähriger, wiederkehrender Baudokumentation – als Prozesskompetenz, ohne Kunden- oder Projektnamen",
+      "Kundenlogos (nur als Logos) und bestehende Kundenstimmen",
       "Bekannt aus dem rbb",
       "Berufshaftpflicht R+V, weltweit",
-      "Zertifizierte Drohnenpiloten (allgemein, ohne Zertifikatsbezeichnungen)",
-      "Wetterbedingte Verschiebung ohne Zusatzkosten · Angebotspreis = Endpreis",
-      "Fester Ansprechpartner"
+      "Zertifizierte Drohnenpiloten (allgemein)",
+      "Wetterbedingte Verschiebung ohne Zusatzkosten · Angebotspreis = Endpreis"
     ],
-    "conversion_goal": "Unverbindliche Projektanfrage (Formular) und Anruf; CTA-Formulierung „Projekt anfragen“ statt „Jetzt buchen“. Abfrage hilfreicher Angaben (Ort, Bauzeit, gewünschter Turnus).",
+    "conversion_goal": "Unverbindliche Projektanfrage (Formular) oder Anruf. CTA „Dokumentation für Ihr Bauprojekt anfragen“ statt „Jetzt buchen“. Hilfreiche Angaben abfragen: Ort, Baubeginn und Bauzeit, gewünschter Turnus, nur Luft oder auch Boden.",
+    "delimitation": [
+      { "service": "Baudokumentation (diese Seite)", "question": "Wie entwickelt sich das Bauprojekt?", "timing": "während der Bauzeit, wiederkehrend", "output": "Vergleichbare Foto-/Videoserie je Termin", "page": "/drohnen-baudokumentation/" },
+      { "service": "Bestandsaufnahme", "question": "In welchem Zustand ist ein bestehendes Gebäude/Grundstück jetzt?", "timing": "einmalig, z. B. vor Baubeginn, Ankauf, Sanierung", "output": "Zustandsdokumentation eines Zeitpunkts", "page": "/bestandsaufnahme-gebaeude-drohne/ (geplant, OPP-05)" },
+      { "service": "Inspektion", "question": "Gibt es sichtbare Schäden an Dach oder Fassade?", "timing": "anlassbezogen", "output": "Visuelle Inspektion (ersetzt kein Gutachten)", "page": "/drohne-dach-gebaeude-inspektion/" },
+      { "service": "Vermessung (Partner)", "question": "Welche Maße hat Dach oder Fassade?", "timing": "anlassbezogen", "output": "Vermessungsbericht/3D-Modell – nur Dach und Fassade", "page": "/drohne-dach-vermessung/, /fassadenaufmass-drohnen-vermessung-fassade/" }
+    ],
     "not_on_page": [
-      { "topic": "Bausoftware, Vorlagen, Bautagebuch-Apps", "reason": "Anderer Intent", "goes_to": "nirgends (kein Angebot)" },
-      { "topic": "Bestandsaufnahme / Beweissicherung vor Baubeginn (Nachbargebäude)", "reason": "Eigene Leistung, OPP-05", "goes_to": "/bestandsaufnahme-gebaeude-drohne/ (geplant, OPP-05)" },
-      { "topic": "Vermessung, Aufmaß, Volumen, Orthofoto, 3D-Modell", "reason": "Für Baudokumentation nicht als Leistung belegt; Vermessung nur Dach/Fassade über Partner", "goes_to": "/drohne-dach-vermessung/, /fassadenaufmass-drohnen-vermessung-fassade/ (bzw. OPP-04)" },
-      { "topic": "Dach-/Fassadeninspektion, Schadenserkennung", "reason": "Eigener Cluster", "goes_to": "/drohne-dach-gebaeude-inspektion/" },
-      { "topic": "Imagefilm/Marketingvideo als Hauptleistung", "reason": "Eigene Seite", "goes_to": "/drohnen-aufnahmen-firma/" },
-      { "topic": "Zeitraffer/stationäre Baukamera, Live-Stream, Cloud-Portal", "reason": "Nicht als Leistung bestätigt", "goes_to": "erst nach Bestätigung durch Noel" },
-      { "topic": "Rechtliche Pflichten/Normen zur Baudokumentation", "reason": "Keine Rechtsbehauptungen (Profil §10)", "goes_to": "nirgends" }
+      { "topic": "Zeitraffer, stationäre Baukamera, Online-Portal/Live-Zugang", "reason": "Keine Standardleistung (Noel 23.11.)", "goes_to": "nicht aufnehmen" },
+      { "topic": "Konkrete Dateiformate, Auflösungen, Datenübergabe-Wege", "reason": "Nicht dokumentiert", "goes_to": "nicht nennen" },
+      { "topic": "Kundennamen, Projektdetails, Laufzeiten konkreter Projekte", "reason": "Keine dokumentierte Freigabe", "goes_to": "nicht nennen" },
+      { "topic": "Archivierung/Hosting der Daten durch uns", "reason": "Nicht belegt – Archiv entsteht beim Kunden", "goes_to": "nicht versprechen" },
+      { "topic": "Bausoftware, Bautagebuch-Apps, Vorlagen", "reason": "Anderer Intent", "goes_to": "keine Seite" },
+      { "topic": "Bestandsaufnahme/Beweissicherung vor Baubeginn als Hauptthema", "reason": "Eigene Leistung (OPP-05)", "goes_to": "Abgrenzungsabschnitt + Link, sobald OPP-05 live" },
+      { "topic": "Vermessung, Aufmaß, Volumen, Orthofoto, 3D-Modell", "reason": "Für Baudokumentation nicht belegt; Vermessung nur Dach/Fassade über Partner", "goes_to": "Abgrenzungsabschnitt + Links" },
+      { "topic": "Rechtliche Pflichten/Normen zur Baudokumentation, Beweiskraft vor Gericht", "reason": "Keine Rechtsbehauptungen (Profil §10)", "goes_to": "nicht behaupten" }
     ]
   },
   "G_structure": {
     "title_proposal": "Baudokumentation & Baustellendokumentation mit Drohne | Berlin & Brandenburg",
-    "meta_note": "Ohne „3D-Modellierung“ und ohne „Jetzt buchen“; Nutzen + Region + Anfrage.",
+    "meta_note": "Nutzen „Baufortschritt vergleichbar dokumentieren“ + Region + Anfrage; ohne „3D-Modellierung“, ohne „Jetzt buchen“.",
     "h1": "Baudokumentation mit Drohne in Berlin und Brandenburg",
     "sections": [
-      { "h2": "Baustellendokumentation per Drohne: Baufortschritt lückenlos im Blick", "purpose": "Intent bestätigen, Begriff „Baustellendokumentation“ abdecken, Kernnutzen", "h3": [] },
-      { "h2": "Einmalige Aufnahme oder laufende Dokumentation über die Bauzeit", "purpose": "Leistungsumfang, Turnus-Beispiele, Rahmenvereinbarung/Stammkunden", "h3": ["Einmalig: Baustart, Meilenstein, Fertigstellung", "Laufend: Turnus nach Absprache aus gleichen Perspektiven"] },
-      { "h2": "Was Sie erhalten", "purpose": "Ergebnisse, Formate, digitale Übergabe, Lieferzeit 5–7 Werktage, Luft + Boden", "h3": [] },
-      { "h2": "Für wen sich die Baudokumentation mit Drohne lohnt", "purpose": "Nutzen je Zielgruppe statt Aufzählung", "h3": ["Bauträger & Projektentwickler", "Bauunternehmen & Generalunternehmer", "Architekten & Projektsteuerer"] },
-      { "h2": "So läuft Ihre Baudokumentation ab", "purpose": "4 Schritte: Anfrage → Planung/Genehmigung → Flüge im Turnus → Übergabe", "h3": [] },
-      { "h2": "Warum Bauunternehmen mit uns dokumentieren", "purpose": "Belegte Trust-Elemente bündeln (rbb, R+V, Wetter, Festpreis, Ansprechpartner), Logos, Kundenstimmen", "h3": [] },
-      { "h2": "Kosten der Baudokumentation", "purpose": "Kurz: individuelles Festpreisangebot, Faktoren, Rabatt bei laufenden Projekten; Link zur Preisseite", "h3": [] },
-      { "h2": "Häufige Fragen zur Baustellendokumentation mit Drohne", "purpose": "Key Questions aus F; FAQPage-Schema als Empfehlung", "h3": [] },
-      { "h2": "Projekt anfragen", "purpose": "CTA mit hilfreichen Angaben (Ort, Bauzeit, Turnus)", "h3": [] }
+      { "h2": "Baustellendokumentation per Drohne: Baufortschritt strukturiert und vergleichbar festhalten", "purpose": "Intent bestätigen, Begriffe Baudokumentation/Baustellendokumentation/Baufortschrittsdokumentation einordnen, Unterschied zu Einzelaufnahmen", "covers": ["Verständnis & Entscheidung"], "h3": [] },
+      { "h2": "Einmalige Aufnahme oder Dokumentation über die gesamte Bauzeit", "purpose": "Entscheidungshilfe mit typischen Anlässen; laufende Begleitung als Kernangebot", "covers": ["Verständnis & Entscheidung"], "h3": [] },
+      { "h2": "So wird Ihre Baudokumentation vergleichbar", "purpose": "Methode: Planung vor dem ersten Flug", "covers": ["Methode & Planung"], "h3": ["Feste Perspektiven für vergleichbare Projektstände", "Ein Turnus, der zu Ihren Bauphasen passt", "Luftaufnahmen und ergänzende Bodenaufnahmen"] },
+      { "h2": "Was Sie nach jedem Termin erhalten", "purpose": "Fotos und Videos, digitale Übergabe, i. d. R. 5–7 Werktage; Aufnahmen als fortlaufendes Projektarchiv beim Kunden", "covers": ["Ergebnis & Übergabe"], "h3": [] },
+      { "h2": "Wofür Projektbeteiligte die Dokumentation nutzen", "purpose": "Nutzen je Rolle statt Aufzählung", "covers": ["Nutzung im Projekt"], "h3": ["Bauträger und Projektentwickler", "Bauunternehmen und Generalunternehmer", "Architekten und Projektsteuerer"] },
+      { "h2": "Ablauf: von der Anfrage bis zur letzten Übergabe", "purpose": "Schritte inkl. Genehmigungen, Abstimmung, Wetter-Regel, fester Ansprechpartner", "covers": ["Organisation & Risiko"], "h3": [] },
+      { "h2": "Baudokumentation, Bestandsaufnahme, Inspektion oder Vermessung?", "purpose": "Abgrenzungstabelle mit Links zu Nachbarleistungen", "covers": ["Abgrenzung"], "h3": [] },
+      { "h2": "Warum Bauunternehmen ihre Projekte mit uns dokumentieren", "purpose": "Prozesserfahrung mit mehrjähriger Dokumentation + belegte Trust-Elemente, Logos, Kundenstimmen", "covers": ["Organisation & Risiko"], "h3": [] },
+      { "h2": "Kosten einer Baudokumentation mit Drohne", "purpose": "Festpreisangebot, Einflussfaktoren (Anzahl Termine, Umfang, Lage), Konditionen für laufende Projekte; Link Preisseite", "covers": ["Kosten & Anfrage"], "h3": [] },
+      { "h2": "Häufige Fragen zur Baustellendokumentation mit Drohne", "purpose": "Restliche Key Questions (Wetter, Versicherung, Weitergabe der Aufnahmen, Einsatzgebiet); FAQPage-Schema als Empfehlung", "covers": ["Organisation & Risiko", "Nutzung im Projekt", "Kosten & Anfrage"], "h3": [] },
+      { "h2": "Dokumentation für Ihr Bauprojekt anfragen", "purpose": "CTA mit hilfreichen Angaben (Ort, Bauzeit, Turnus, Luft/Boden)", "covers": ["Kosten & Anfrage"], "h3": [] }
     ],
-    "derivation": "Intent (Anbieter, kommerziell) + SERP-Muster (Ablauf, Ergebnisse, Zielgruppen, FAQ bei den stärksten Seiten) + bestehende Inhalte (Mehrjährige Begleitung, Luft+Boden, Abwicklung bleiben) + Business Fit (wiederkehrende B2B-Aufträge)."
+    "scope_check": "Jede Fragengruppe aus F ist mindestens einer H2 zugeordnet (Feld „covers“). Gegenüber v1 neu: Methodenabschnitt (Perspektiven, Turnus, Boden), Übergabe/Archiv, Abgrenzung. Reihenfolge folgt der Entscheidung des Auftraggebers (Was ist das? → einmalig/laufend → wie wird es gut? → was bekomme ich? → was nützt es mir? → wie läuft es? → passt das? → Vertrauen → Kosten → Anfrage), nicht dem Aufbau einer Wettbewerberseite.",
+    "derivation": "Search Intent (Dienstleister + „wie funktioniert das“-Long-Tail in GSC) + Scope F + bestehende Inhalte (Mehrjährige Begleitung, Turnus, einheitliche Perspektiven, Luft+Boden bleiben und werden konkretisiert) + Business Fit (wiederkehrende B2B-Aufträge)."
   },
   "H_ia": {
-    "parent": { "url": "/", "label": "Startseite (Leistungsübersicht)", "note": "Baudokumentation ist eine Top-Leistung (Prio 10). Heute einziger interner Link: Startseite." },
-    "target": { "url": "/drohnen-baudokumentation/", "label": "Baudokumentation mit Drohne" },
-    "children": [],
-    "children_note": "Keine Unterseiten empfohlen. Eine Stadtseite (z. B. Berlin) wäre Doorway: Die Zielseite rankt für die Berlin-Variante bereits auf Pos. 2,3. Lokale Kindseiten nur bei eigener Evidenz (z. B. belegte Projekte in einer Stadt).",
-    "siblings": [
-      { "url": "/bestandsaufnahme-gebaeude-drohne/", "label": "Bestandsaufnahme / Beweissicherung (OPP-05, geplant)", "relation": "Vor Baubeginn / Bestand – grenzt an, eigener Intent" },
-      { "url": "/drohne-dach-gebaeude-inspektion/", "label": "Gebäudeinspektion (Hub)", "relation": "Inspektion statt Fortschritt" },
-      { "url": "/drohne-dach-vermessung/", "label": "Dachvermessung (Partner)", "relation": "Messdaten statt Dokumentation" },
-      { "url": "/drohnen-aufnahmen-firma/", "label": "Firmen-/Imageaufnahmen", "relation": "Marketing-Nutzung der Aufnahmen" },
-      { "url": "/drohnenaufnahmen-preis-kosten/", "label": "Preise", "relation": "Conversion-Unterstützung" }
-    ],
+    "current": {
+      "parent": { "url": "/", "label": "Startseite", "note": "Keine Leistungs-Hub-Ebene; Baudokumentation hängt direkt an der Startseite" },
+      "target": { "url": "/drohnen-baudokumentation/", "label": "Baudokumentation Drohne" },
+      "children": [],
+      "siblings": [
+        { "url": "/drohne-dach-gebaeude-inspektion/", "label": "Gebäudeinspektion (Hub)", "relation": "eigener Inspektions-Cluster" },
+        { "url": "/drohne-dach-vermessung/", "label": "Dachvermessung (Partner)", "relation": "Vermessung" },
+        { "url": "/fassadenaufmass-drohnen-vermessung-fassade/", "label": "Fassadenaufmaß (Partner)", "relation": "Vermessung" },
+        { "url": "/drohnen-aufnahmen-firma/", "label": "Drohnenaufnahmen vom eigenen Unternehmen", "relation": "Firmen-/Imageaufnahmen" },
+        { "url": "/drohnenaufnahmen-preis-kosten/", "label": "Preise", "relation": "Conversion" }
+      ],
+      "inbound_links": [ { "from": "/", "anchor": "Baudokumentation" } ],
+      "outbound_links": "Nur /kontakt/ (6 CTAs)"
+    },
+    "recommended": {
+      "parent": { "url": "/", "label": "Startseite (vorerst unverändert)", "note": "Für OPP-02 keine URL-/Strukturänderung nötig" },
+      "target": { "url": "/drohnen-baudokumentation/", "label": "Baudokumentation mit Drohne (URL bleibt)" },
+      "hub_assessment": {
+        "option": "B2B-/Leistungs-Hub, z. B. „Drohnenleistungen für Bau- und Immobilienprojekte“ (Alternative: „Drohnenleistungen für Unternehmen“)",
+        "verdict": "Langfristig sinnvoll – als eigene, spätere Entscheidung, nicht Teil von OPP-02",
+        "reasoning": [
+          "Mehrere B2B-Leistungen bilden einen zusammenhängenden Projektzyklus: Bestandsaufnahme (vor Baubeginn) → Baudokumentation (während der Bauzeit) → Inspektion und Vermessung (Bestand/Instandhaltung). Ein Hub macht diese Abfolge für Bauträger, Bauunternehmen und Hausverwaltungen navigierbar und bündelt interne Links.",
+          "„Für Bau- und Immobilienprojekte“ passt besser zu den Zielkunden (Profil §5) als „für Unternehmen“, das sich mit /drohnen-aufnahmen-firma/ (Firmen-/Imageaufnahmen) überschneidet.",
+          "Eigene Suchnachfrage für eine Hub-Seite ist nicht gemessen; der Nutzen läge vor allem in Navigation und interner Verlinkung. Vor Umsetzung Nachfrage prüfen und mit OPP-04 (Vermessungs-Hub) und OPP-05 abstimmen.",
+          "Die Baudoku-URL bleibt in jedem Fall bestehen (kein Umzug unter einen Hub-Pfad, keine Redirects nötig)."
+        ]
+      },
+      "children": [],
+      "child_candidates": [
+        { "topic": "Baudokumentation Drohne Berlin (Stadtseite)", "intent": "gleich wie Zielseite (lokal)", "verdict": "nein – Zielseite rankt bereits Pos. 2,3; wäre Doorway" },
+        { "topic": "Baustellendokumentation / Baufortschrittsdokumentation", "intent": "gleich", "verdict": "nein – konsolidieren (siehe consolidation)" },
+        { "topic": "Bauvideo / Imagefilm für Bauprojekte", "intent": "Marketing statt Dokumentation", "verdict": "kein Child – gehört zu Firmen-/Videoseite" },
+        { "topic": "Beweissicherung Nachbarbebauung vor Baubeginn", "intent": "eigenständig (Zustand zu einem Zeitpunkt)", "verdict": "kein Child – Sibling unter OPP-05 Bestandsaufnahme" }
+      ],
+      "children_note": "Aktuell keine Child Page mit eigenständigem Intent. Erst neu prüfen, wenn die echte SERP oder GSC einen klar abweichenden Intent zeigt (z. B. ein Branchensegment wie Infrastruktur/Industriebau mit eigener Nachfrage und belegten Projekten).",
+      "siblings": [
+        { "url": "/bestandsaufnahme-gebaeude-drohne/", "label": "Bestandsaufnahme (OPP-05, geplant)", "relation": "vor Baubeginn / Bestand – angrenzend" },
+        { "url": "/drohne-dach-gebaeude-inspektion/", "label": "Gebäudeinspektion (Hub)", "relation": "Schäden/Zustand" },
+        { "url": "/drohnenvermessung-berlin-brandenburg/", "label": "Vermessungs-Hub (OPP-04, Vorschlag)", "relation": "Messdaten" },
+        { "url": "/drohnenaufnahmen-preis-kosten/", "label": "Preise", "relation": "Conversion" }
+      ]
+    },
+    "consolidation": {
+      "decision": "Baudokumentation, Baustellendokumentation und Baufortschrittsdokumentation (jeweils mit Drohne) auf EINER URL",
+      "reasoning": [
+        "Gleicher Auftrag: Ein Dienstleister dokumentiert den Fortschritt eines Bauprojekts aus der Luft. Zielgruppe, Leistung, Ergebnis und Conversion sind identisch.",
+        "GSC: Alle Varianten landen bereits auf derselben URL; keine zweite Seite erhält nennenswerte Impressionen.",
+        "Nachfrage pro Variante ist klein (140 / 110 / 20 Suchen/Monat). Getrennte Seiten würden dünn, sich gegenseitig kannibalisieren und Linksignale aufteilen.",
+        "In der Recherche verwenden Anbieter die Begriffe austauschbar und kombinieren sie in Title/H1 – ein Indiz für gleichen Intent (noch nicht SERP-bestätigt)."
+      ],
+      "revisit_if": "Die Semrush-SERP von „baudokumentation drohne“ zeigt gemischten Intent – dann einmalig auch „baustellendokumentation drohne“ abfragen (100 Units). Teilen sich beide Top 10 weniger als ~3 URLs, Trennung neu bewerten."
+    },
     "keyword_ownership": {
-      "owns": ["baudokumentation drohne", "baustellendokumentation drohne", "baudokumentation drohne berlin", "baubegleitung mit drohne", "baufortschritt mit drohnen dokumentieren", "baufortschrittsdokumentation drohne", "baustellendokumentation luftbild", "drohnen tour bau"],
+      "owns": ["baudokumentation drohne", "baustellendokumentation drohne", "baufortschrittsdokumentation drohne", "baufortschritt mit drohnen dokumentieren", "baubegleitung mit drohne", "baudokumentation drohne berlin", "baustellendokumentation luftbild", "drohnen tour bau"],
       "do_not_target": [
-        { "keyword": "baudokumentation / baustellendokumentation (ohne Drohne)", "reason": "Software-/Vorlagen-Intent", "owner": "keine Seite" },
+        { "keyword": "baudokumentation / baustellendokumentation (ohne Drohne)", "reason": "Vermutlich Software-/Vorlagen-Intent", "owner": "keine Seite" },
         { "keyword": "bestandsdokumentation bau / bestandsaufnahme gebäude / beweissicherung bau", "reason": "Gehört zu OPP-05", "owner": "/bestandsaufnahme-gebaeude-drohne/ (OPP-05)" },
         { "keyword": "drohnenvermessung / aufmaß / 3d-modell drohne", "reason": "Vermessungs-Cluster", "owner": "OPP-04 bzw. Dach-/Fassadenvermessung" },
-        { "keyword": "baudokumentation drohne <Stadt außerhalb Kernmarkt> (z. B. thüringen, bamberg)", "reason": "Kein eigener Seitenbedarf; Zielseite deckt „bundesweit möglich“ im Text ab", "owner": "Zielseite, ohne Stadtseiten" }
+        { "keyword": "zeitraffer baustelle / baukamera", "reason": "Keine Standardleistung", "owner": "keine Seite" },
+        { "keyword": "baudokumentation drohne <Stadt außerhalb Kernmarkt>", "reason": "Keine Stadtseiten; „bundesweit auf Anfrage“ im Text", "owner": "Zielseite, ohne Stadtseiten" }
       ]
     },
     "internal_links": [
       { "from": "/", "to": "/drohnen-baudokumentation/", "anchor": "Baudokumentation", "type": "exists" },
-      { "from": "/drohnen-baudokumentation/", "to": "/drohnenaufnahmen-preis-kosten/", "anchor": "Preise für Drohnenaufnahmen", "type": "add" },
       { "from": "/drohnen-baudokumentation/", "to": "/drohne-dach-gebaeude-inspektion/", "anchor": "Gebäudeinspektion mit Drohne", "type": "add" },
-      { "from": "/drohnen-aufnahmen-firma/", "to": "/drohnen-baudokumentation/", "anchor": "Baudokumentation mit Drohne", "type": "add" },
+      { "from": "/drohnen-baudokumentation/", "to": "/drohne-dach-vermessung/", "anchor": "Dachvermessung", "type": "add" },
+      { "from": "/drohnen-baudokumentation/", "to": "/drohnenaufnahmen-preis-kosten/", "anchor": "Preise für Drohnenaufnahmen", "type": "add" },
       { "from": "/drohne-dach-gebaeude-inspektion/", "to": "/drohnen-baudokumentation/", "anchor": "Baustellendokumentation", "type": "add" },
+      { "from": "/drohnen-aufnahmen-firma/", "to": "/drohnen-baudokumentation/", "anchor": "Baudokumentation mit Drohne", "type": "add" },
       { "from": "/drohnen-baudokumentation/", "to": "/bestandsaufnahme-gebaeude-drohne/", "anchor": "Bestandsaufnahme vor Baubeginn", "type": "later (wenn OPP-05 live)" }
     ],
     "cannibalization": {
       "risk": "low",
-      "evidence": "GSC 16 Monate: 27 Cluster-Queries, 3.289 Impressionen auf /drohnen-baudokumentation/, je 1 Impression auf /drohnenaufnahmen-preis-kosten/ und /. Einzige Mehrfach-URL-Queries mit Minimalvolumen („baudokumentation drohne bamberg“, „luftaufnahmen bau“).",
-      "watch": "Künftige OPP-05-Seite darf nicht auf „Bestandsdokumentation von Bauabschnitten“ zielen; diese Seite nicht auf „Bestandsaufnahme Gebäude“."
+      "evidence": "GSC 16 Monate: 27 Cluster-Queries, 3.289 Impressionen auf /drohnen-baudokumentation/, je 1 Impression auf /drohnenaufnahmen-preis-kosten/ und /.",
+      "watch": "OPP-05 darf nicht auf „Dokumentation von Bauphasen“ zielen; diese Seite nicht auf „Bestandsaufnahme Gebäude“ – der Abgrenzungsabschnitt hält das sauber."
     },
     "decision": "OPTIMIZE"
   },
   "I_win": [
-    "Vokabular schließen: „Baustellendokumentation (mit) Drohne“ in Title, einer H2 und der FAQ – natürlich, ohne Stuffing.",
-    "Leistung greifbar machen: einmalig vs. laufend, Turnus-Beispiele, Ergebnisse, Lieferzeit – das beantwortet die Fragen, die die besten Wettbewerberseiten beantworten.",
-    "Verbindlichkeit als Differenzierung: 5–7 Werktage, Wetterverschiebung kostenlos, Festpreis = Endpreis, R+V – alles belegt, bei Wettbewerbern kaum gebündelt.",
-    "Region klar besetzen: Berlin UND Brandenburg mit Ausgangspunkt Schönefeld, bundesweit auf Anfrage.",
-    "FAQ + FAQPage-Schema (Empfehlung) für die Key Questions.",
-    "Interne Links stärken: von Firmen-/Inspektionsseite und Startseite mit beschreibendem Anker.",
-    "Snippet: Title mit beiden Begriffen, Meta Description ohne unbelegtes 3D-Versprechen, CTA „anfragen“."
+    "Methode statt Motive: Die Seite erklärt Baufortschrittsdokumentation als planbares Vorgehen – Perspektiven festlegen, Turnus an Bauphasen koppeln, Luft (+ optional Boden), Übergabe je Termin – und beantwortet damit das „wie“, das Long-Tail-Queries wie „baufortschritt mit drohnen dokumentieren“ stellen und das die meisten recherchierten Anbieterseiten nur behaupten.",
+    "Vergleichbarkeit als Kernnutzen: Wert entsteht durch die Serie, nicht durch das einzelne Bild – vergleichbare Projektstände über die gesamte Bauzeit. Das stützt das wiederkehrende Geschäftsmodell (laufende Begleitung) direkt.",
+    "Nutzen je Projektbeteiligtem: konkrete Verwendung für Bauträger/Projektentwickler, Bauunternehmen/GU und Architekten/Projektsteuerer – mit den Empfängern (Bauherren, Investoren) – statt einer Zielgruppen-Aufzählung.",
+    "Entscheidungshilfe einmalig vs. laufend und Turnus-Logik: Fragen, die Auftraggeber vor der Anfrage haben, werden auf der Seite beantwortet.",
+    "Thematische Klarheit durch Abgrenzung: Baudokumentation vs. Bestandsaufnahme vs. Inspektion vs. Vermessung als eigener Abschnitt mit Links – stärkt die Seite als Antwort auf genau diesen Intent und das gesamte B2B-Leistungscluster.",
+    "Prozesskompetenz aus mehrjähriger Erfahrung sichtbar machen (ohne Kunden-/Projektnamen).",
+    "Vokabular vollständig: Baudokumentation, Baustellendokumentation, Baufortschrittsdokumentation natürlich in Title, H2 und FAQ.",
+    "Trust/Conversion als Verstärker (nicht als Differenzierung): 5–7 Werktage, Wetterverschiebung ohne Zusatzkosten, Festpreis = Endpreis, R+V, fester Ansprechpartner."
   ],
   "J_risks": [
-    { "type": "risk", "item": "Meta Description verspricht heute „3D-Modellierung“ – nicht als Baudoku-Leistung belegt.", "mitigation": "Im Entwurf entfernen bzw. nur bestätigt formulieren." },
-    { "type": "risk", "item": "„Bereits zahlreiche Bauunternehmen …“ im bestehenden Text ist eine Mengenaussage ohne Beleg.", "mitigation": "Neutral formulieren (Profil §10)." },
-    { "type": "risk", "item": "Positionsverlust bei „baustellendokumentation drohne“ ist in der Ursache nicht bewiesen.", "mitigation": "Nach Umsetzung 6–8 Wochen GSC beobachten; Erfolgskriterium: Pos. < 10 für beide Kern-Keywords." },
-    { "type": "unknown", "item": "Google.de-SERP nicht validiert (indikative Landschaft).", "mitigation": "Optional manueller Check durch Noel oder Semrush-SERP nach Freigabe (~200 Units)." },
-    { "type": "unknown", "item": "Werden Zeitraffer, stationäre Kamera oder ein Online-Zugang angeboten?", "mitigation": "Bis zur Bestätigung nicht erwähnen. Antwort gern im Gate-1-Kommentar." },
-    { "type": "unknown", "item": "Welche Formate werden konkret übergeben (z. B. Fotos/Videos in welcher Auflösung, Datenübergabe-Weg)?", "mitigation": "Allgemein „hochauflösende Fotos und Videos, digitale Übergabe“ bis zur Bestätigung." },
-    { "type": "unknown", "item": "Darf das Quartals-Retainer-Muster als Beispiel genannt werden (ohne Kundennamen)?", "mitigation": "Ohne Bestätigung nur „regelmäßige Begleitung über die gesamte Bauzeit“." },
-    { "type": "risk", "item": "GA4-Lead-Basis sehr klein (1 Lead im Cluster).", "mitigation": "Erfolg zuerst an Rankings/Klicks messen, Leads als Richtung." }
+    { "type": "resolved", "item": "Zeitraffer, stationäre Kamera, Online-Portal", "mitigation": "Keine Standardleistung → nicht aufnehmen (Noel 23.11.)" },
+    { "type": "resolved", "item": "Foto und Video als Deliverables", "mitigation": "Belegt; Dateiformate nur, wenn dokumentiert (derzeit nicht) (Noel 23.11.)" },
+    { "type": "resolved", "item": "Bodenaufnahmen", "mitigation": "Möglich und belegt, aber optional – nicht als fester Bestandteil formulieren (Noel 23.11.)" },
+    { "type": "resolved", "item": "Wiederkehrende/mehrjährige Dokumentation", "mitigation": "Als Erfahrung/Prozesskompetenz nutzen; keine Kundenreferenz, keine Projektbehauptung (Noel 23.11.)" },
+    { "type": "risk", "item": "Meta Description verspricht „3D-Modellierung“; Text enthält „Bereits zahlreiche Bauunternehmen …“ (Mengenaussage ohne Beleg)", "mitigation": "Im Entwurf entfernen bzw. neutral formulieren" },
+    { "type": "unknown", "item": "Wie genau wird übergeben (Ordnerstruktur, Benennung nach Termin/Perspektive, Übergabeweg)?", "mitigation": "Nur „digitale Übergabe nach jedem Termin“ formulieren, bis Details bestätigt sind" },
+    { "type": "unknown", "item": "Welche Intervall-Beispiele dürfen genannt werden?", "mitigation": "Vorschlag: „nach Bauphasen/Meilensteinen oder in festen Abständen, z. B. quartalsweise“ – bei Gate 1 bestätigen oder korrigieren" },
+    { "type": "unknown", "item": "Echte Google.de-SERP fehlt (Intent-Urteil ist Hypothese)", "mitigation": "Semrush Organic Results läuft automatisch, sobald Budget über Reserve; bis dahin „complete with limits“" },
+    { "type": "risk", "item": "Ursache für den Verlust von „baustellendokumentation drohne“ nicht bewiesen", "mitigation": "Nach Umsetzung 6–8 Wochen GSC beobachten; Ziel Pos. < 10 für beide Kern-Keywords" },
+    { "type": "risk", "item": "GA4-Lead-Basis sehr klein (1 Lead im Cluster)", "mitigation": "Erfolg zuerst an Rankings/Klicks messen" }
   ],
   "sources": [
     { "label": "GSC 16 Monate (Query, Query×Seite)", "type": "gsc", "date": "2026-11-23", "path": "clients/spreewald-luftaufnahmen/data/gsc-2026-11/" },
-    { "label": "Semrush-Keyword-Cache (DE)", "type": "semrush_cache", "date": "2026-11-23", "path": "clients/spreewald-luftaufnahmen/data/baseline-2026-11/semrush-batch1-de-2026-11-23.csv" },
+    { "label": "Semrush-Keyword-Cache (DE)", "type": "semrush_cache", "date": "2026-11-23", "path": "data/keyword-cache.csv" },
     { "label": "Website-Inventar + interne Links", "type": "website", "date": "2026-11-22", "path": "clients/spreewald-luftaufnahmen/data/baseline-2026-11/" },
-    { "label": "Seitenprofile Wettbewerber + eigene Seite", "type": "web", "date": "2026-11-23", "path": "clients/spreewald-luftaufnahmen/data/research/OPP-02/pages/" },
+    { "label": "Seitenprofile Research competitors + eigene Seite", "type": "web", "date": "2026-11-23", "path": "clients/spreewald-luftaufnahmen/data/research/OPP-02/pages/" },
     { "label": "Termlabs-Wettbewerberliste 2024 (Drive-Vorlage)", "type": "drive", "date": "2024", "path": null },
-    { "label": "Business-Profil v1.1", "type": "profile", "date": "2026-11-23", "path": "clients/spreewald-luftaufnahmen/business-profile.md" }
+    { "label": "Business-Profil v1.1", "type": "profile", "date": "2026-11-23", "path": "clients/spreewald-luftaufnahmen/business-profile.md" },
+    { "label": "Antworten Noel zu Leistungsfragen", "type": "client", "date": "2026-11-23", "path": null }
   ]
 }

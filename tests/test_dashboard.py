@@ -277,6 +277,51 @@ class ArtifactQA(unittest.TestCase):
         # Kein Wettbewerbertext übernommen: Dossier enthält keine langen Zitate aus den Seitenprofilen
         self.assertNotIn("lückenloser Baufortschritt aus der Luft", json.dumps(R["F_scope"], ensure_ascii=False) + json.dumps(R["G_structure"], ensure_ascii=False))
 
+    def test_serp_plan_budget_and_cache(self):
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import serp, research
+        # Kostenlogik: 10 Units je Zeile, Top 10
+        self.assertEqual(serp.cost(1), 100); self.assertEqual(serp.cost(2), 200); self.assertEqual(serp.cost(1, 7), 70)
+        # ähnliche Keywords → gleicher Schlüssel
+        self.assertEqual(serp.norm("Baudokumentation Drohne"), serp.norm("drohnen baudokumentation"))
+        self.assertEqual(serp.norm("baustellendokumentation mit drohne"), serp.norm("baustellendokumentation drohne"))
+        self.assertNotEqual(serp.norm("baudokumentation drohne"), serp.norm("baustellendokumentation drohne"))
+        # OPP-02: nur Primary geplant, 100 Units, Reserve hält → budget_hold, nichts ausgeführt
+        p = serp.plan("spreewald-luftaufnahmen", "OPP-02")
+        self.assertEqual([i["keyword"] for i in p["items"] if i["action"] == "query"], ["baudokumentation drohne"])
+        self.assertEqual(p["units_needed"], 100)
+        self.assertEqual(p["verdict"], "budget_hold")
+        R = research.load("spreewald-luftaufnahmen", "OPP-02")
+        self.assertEqual(R["C_serp"]["serp_competitors"], [])
+        self.assertTrue(all(x.get("position") in (None, "", "–") for x in R["C_serp"]["research_competitors"]))
+        self.assertNotIn("dominier", json.dumps(R, ensure_ascii=False).lower())   # keine SERP-Dominanz ohne echte SERP
+        # Research competitors mit Position oder validated ohne SERP → Schemafehler
+        bad = json.loads(json.dumps(R)); bad["C_serp"]["research_competitors"][0]["position"] = 3
+        self.assertTrue(research.validate(bad))
+        bad = json.loads(json.dumps(R)); bad["C_serp"]["quality"] = "validated"
+        self.assertTrue(research.validate(bad))
+        # mit echter Semrush-SERP wird aus „with limits“ „complete“
+        ok = json.loads(json.dumps(R)); ok["C_serp"]["quality"] = "validated"; ok["status"]["state"] = "complete"; ok["status"]["limits"] = []
+        ok["C_serp"]["serp_competitors"] = [{"keyword": "baudokumentation drohne", "position": 1, "domain": "x.de", "url": "https://x.de/", "relevance": "business_competitor", "source": "semrush phrase_organic"}]
+        self.assertEqual(research.validate(ok), []); self.assertEqual(research.derive(ok)["state"], "complete")
+        # Plan führt bei Budget über Reserve aus; frischer Cache → keine Abfrage
+        import tempfile, shutil
+        orig_b, orig_c = serp.BUDGET, serp.CACHE
+        tmp = tempfile.mkdtemp()
+        try:
+            b = serp.budget(); b["units_balance"] = 1000
+            serp.BUDGET = os.path.join(tmp, "b.json"); json.dump(b, open(serp.BUDGET, "w"))
+            serp.CACHE = os.path.join(tmp, "cache")
+            self.assertEqual(serp.plan("spreewald-luftaufnahmen", "OPP-02")["verdict"], "run")
+            f = os.path.join(tmp, "r.csv"); open(f, "w").write("Dn;Ur\na.de;https://a.de/x\nb.de;https://b.de/y\n")
+            e = serp.ingest("baudokumentation drohne", f)
+            self.assertEqual((e["lines"], e["units_spent"], e["results"][1]["position"]), (2, 20, 2))
+            self.assertEqual(serp.budget()["units_balance"], 980)
+            p2 = serp.plan("spreewald-luftaufnahmen", "OPP-02")
+            self.assertEqual((p2["verdict"], p2["units_needed"], p2["items"][0]["action"]), ("none", 0, "cache"))
+        finally:
+            serp.BUDGET, serp.CACHE = orig_b, orig_c; shutil.rmtree(tmp)
+
     def test_workflow_render_html(self):
         import tempfile
         sys.path.insert(0, os.path.join(ROOT, "tools"))

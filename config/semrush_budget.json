@@ -1,0 +1,22 @@
+{
+  "_doc": "Unit-Budget und Kostenlogik für Semrush in der Research Engine (tools/serp.py). Vor jeder kostenpflichtigen Abfrage: Plan berechnen, gegen Budget prüfen, nur bei Freigabe/ausreichendem Budget ausführen. Kontostand von Hand (oder per kostenloser Kontostand-Abfrage) aktualisieren.",
+  "units_balance": 250,
+  "balance_checked_at": "2026-11-23",
+  "balance_source": "Angabe Noel 23.11.2026",
+  "reserve_units": 250,
+  "auto_use": true,
+  "auto_use_rule": "Automatisch nur, wenn units_balance - geplante Kosten >= reserve_units. Sonst Status 'budget_hold' (Research bleibt 'complete with limits'), keine Abfrage.",
+  "max_units_per_opportunity": 200,
+  "serp": {
+    "report": "phrase_organic",
+    "name": "Organic Results (Keyword reports)",
+    "database": "de",
+    "display_limit": 10,
+    "cost_per_line": 10,
+    "cost_per_line_historical": 50,
+    "billing": "per zurückgegebener Zeile; display_limit begrenzt die Zeilen und damit die Kosten. Weniger Ergebnisse = weniger Kosten. Historische Daten (display_date) nie verwenden.",
+    "max_cost_per_keyword": 100,
+    "cache_ttl_days": 60,
+    "verified": "developer.semrush.com/api/v3/analytics/keyword-reports/ (Organic Results: 10 Units/Zeile, historisch 50) – geprüft 23.11.2026. Über den Semrush-MCP-Konnektor vor der Abfrage zusätzlich das Feld 'price' aus get_report_schema prüfen (kostenlos) und bei Abweichung hier anpassen."
+  }
+}

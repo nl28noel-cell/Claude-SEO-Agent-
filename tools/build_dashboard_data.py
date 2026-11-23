@@ -17,6 +17,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 from gsc_analyze import cluster as classify_cluster, places as find_places  # noqa: E402
 import build_ga4_ads  # noqa: E402
 import research  # noqa: E402
+import serp  # noqa: E402
 
 OUT_ROOT = os.path.join(ROOT, "dashboard", "public", "data")
 
@@ -314,7 +315,10 @@ def build_client(slug, today):
     for rid, r in research.all_for(slug, opps).items():
         o = next(x for x in opps if x["id"] == rid)
         o["research"] = r["doc"]
-        o["research_status"] = {**r["status"], **{k: r["summary"][k] for k in ("version", "updated", "decision", "serp_quality", "units")}}
+        o["research_status"] = {**r["status"], **{k: r["summary"][k] for k in ("version", "updated", "decision", "serp_quality", "units", "serp_competitors")}}
+        if r["doc"]:  # Semrush-SERP-Plan (führt nichts aus): Keywords, Kosten, Budget-Urteil
+            p = serp.plan(slug, rid)
+            o["research_status"]["serp_plan"] = {k: p[k] for k in ("items", "units_needed", "units_balance", "reserve_units", "verdict", "why", "balance_checked_at", "display_limit", "database")}
         if r["doc"]:
             for e in research.validate(r["doc"]):
                 warnings.append(f"Research {rid}: {e}")
