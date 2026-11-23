@@ -55,11 +55,12 @@
     "hochzeit_event": 1
   },
   "workflow": {
-    "trigger_id": "trig_01A6i8RZsvN2hoZkXJnRuVyt",
+    "trigger_id": "trig_01RNrjTJmYFQFN3P85xNcQkp",
     "trigger_server": "Claude Code Remote",
     "drive_folder_id": "1x0fEXsxRh_xcxKFaCjh_jw9dcFQILpY9",
     "drive_folder_url": "https://drive.google.com/drive/folders/1x0fEXsxRh_xcxKFaCjh_jw9dcFQILpY9",
     "templates_folder_id": "1eJ-KPFDT0DHT6NWAvYDMVbOFASn4QrJJ",
-    "style_guide": "content-style-guide.md"
+    "style_guide": "content-style-guide.md",
+    "trigger_mode": "fresh session per run (create_new_session_on_fire), environment Claude-SEO-Agent"
   }
 }

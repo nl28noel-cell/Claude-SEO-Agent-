@@ -18,8 +18,8 @@ Artifact-db, Collection **`workflow`**, ein Dokument je Opportunity (Schema in `
 ## Was technisch passiert, wenn Noel freigibt
 
 1. Die Seite speichert die Entscheidung sofort persistent in `workflow/<OPP>` (+ Eintrag in `decisions`).
-2. Danach ruft die Seite über den Konnektor **„Claude Code Remote“** das Tool `fire_trigger` für die geplante Aufgabe `trig_01A6i8RZsvN2hoZkXJnRuVyt` auf (ohne Zeitplan, nur auf Anstoß; feuert in die SEO-Autopilot-Session). Ergebnis wird in `workflow/<OPP>.trigger` vermerkt.
-3. Die Session erhält den Auftrag als neue Nachricht und arbeitet die Queue ab. Läuft gerade ein anderer Turn, wartet der Auftrag, bis dieser fertig ist.
+2. Danach ruft die Seite über den Konnektor **„Claude Code Remote“** das Tool `fire_trigger` für die geplante Aufgabe **„SEO Autopilot – Workflow-Runner“** (`trig_01RNrjTJmYFQFN3P85xNcQkp`) auf. Ergebnis wird in `workflow/<OPP>.trigger` vermerkt.
+3. Jeder Anstoß startet eine **frische Cloud-Session** (Cold Start). Sie stellt Repository und Branch selbst her, liest den Workflow-State aus der Artifact-db, führt den Preflight aus und produziert oder meldet `blocked`. Details: [`workflow-runner.md`](workflow-runner.md).
 4. Ist der Konnektor in der Ansicht nicht verfügbar (z. B. Mobile-App ohne Konnektor, abgelehnte Berechtigung), bleibt der Status ehrlich „Approved · Waiting for agent“; die Freigabe wird beim nächsten Agentenlauf erkannt (`queue`).
 
 Gate 2 löst keinen Agentenlauf aus (es gibt nichts zu tun, außer später WordPress).

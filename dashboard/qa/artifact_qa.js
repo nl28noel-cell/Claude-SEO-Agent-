@@ -120,7 +120,7 @@ const MOCK = () => {
     check('trigger result recorded', /angestoßen/.test(w?.trigger?.result || ''), JSON.stringify(w?.trigger));
     check('decision event logged', await p.evaluate(id => Object.values(window.__all.decisions || {}).some(x => x.item_id === id && x.gate === 1), first));
     await p.click('#wf-panel-body [data-close]'); await p.waitForTimeout(100);
-    check('card moved to "Freigegeben / Produktion" with honest label', /Waiting for agent/.test(await p.locator(`.wf-col[data-col="production"] [data-card="${first}"]`).innerText()));
+    check('card moved to "Freigegeben / Produktion" with honest label', /Agent starting/.test(await p.locator(`.wf-col[data-col="production"] [data-card="${first}"]`).innerText()));
     // Gate 1 per Drag & Drop (öffnet Bestätigung)
     const second = dd.opportunities.filter(o => ['CREATE', 'OPTIMIZE', 'MERGE'].includes(o.type))[1].id;
     await p.dragAndDrop(`[data-card="${second}"]`, '.wf-col[data-col="production"]'); await p.waitForTimeout(200);
@@ -131,6 +131,19 @@ const MOCK = () => {
     // Reload → Status bleibt
     await p.reload({ waitUntil: 'networkidle' }); await p.waitForTimeout(300);
     check('persists across reload', (await p.locator('.wf-col[data-col="production"] .wf-card').count()) === 2);
+    // Runner blockiert (Preflight) → Anzeige + „Erneut versuchen“ ohne neue Gate-1-Freigabe
+    await p.evaluate(id => window.claude.use('db').then(db => db.collection('workflow').doc(id).update({ production: { status: 'blocked', block_reason: 'drive_tool_unavailable', block_detail: 'Drive fehlt', blocked_at: new Date().toISOString(), preflight: { repository: true, google_drive_write: false } } })), second);
+    await p.waitForTimeout(200);
+    check('blocked shows honest label', /Blocked – environment unavailable/.test(await p.locator(`[data-card="${second}"]`).innerText()));
+    await p.click(`[data-card="${second}"]`); await p.waitForTimeout(150);
+    check('blocked drawer shows reason + preflight', /drive_tool_unavailable/.test(await p.locator('#wf-panel-body').innerText()) && /✗ google_drive_write/.test(await p.locator('#wf-panel-body').innerText()));
+    const g1Before = await p.evaluate(id => JSON.stringify(window.__all.workflow[id].gate1), second);
+    await p.click('[data-act="retry"]'); await p.waitForTimeout(300);
+    const wr = await p.evaluate(id => window.__all.workflow[id], second);
+    check('retry → waiting, gate1 unchanged, trigger fired', wr.production.status === 'waiting' && JSON.stringify(wr.gate1) === g1Before && (await p.evaluate(() => (window.__fired || []).length)) === 1, JSON.stringify(wr.production));
+    check('retry shows "Agent starting"', /Agent starting/.test(await p.locator('#wf-panel-body').innerText()));
+    await p.click('#wf-panel-body [data-close]');
+    await p.evaluate(() => { window.__fired = []; });
     // Agent liefert Entwurf (simuliert wie ArtifactData-Update)
     await p.evaluate(id => window.claude.use('db').then(db => db.collection('workflow').doc(id).update({ production: { status: 'draft_ready', version: 1, doc_id: 'x', doc_url: 'https://docs.google.com/document/d/x/edit', doc_title: id + ' – Entwurf', created_at: new Date().toISOString(), updated_at: new Date().toISOString(), qa_status: 'PASS', strategy_summary: 'QA', history: [{ version: 1, doc_url: 'https://docs.google.com/document/d/x/edit' }] }, review: { status: 'pending' } })), first);
     await p.waitForTimeout(200);

@@ -567,7 +567,7 @@ function renderAdTab() {
    Der Agent liest sie in seiner nächsten Session (ArtifactData), verarbeitet sie und setzt agent_status = "processed".
    Keine Entscheidung löst hier eine Website-Aktion aus. Lokal (ohne Claude-Viewer) ist der Speicher nicht verfügbar. */
 const DB = { state: "loading", reason: "", ns: null, canWrite: false, decisions: [], fromCache: false, error: "" };
-const DEC = { approve: ["Approve", "green"], request_changes: ["Request changes", "amber"], reject: ["Reject", "red"] };
+const DEC = { approve: ["Approve", "green"], request_changes: ["Request changes", "amber"], reject: ["Reject", "red"], retry: ["Erneut versucht", "blue"] };
 const AGENT = { pending: ["Waiting for agent", "amber"], processed: ["Processed by agent", "green"], superseded: ["Superseded", ""] };
 async function initDb() {
   const fail = (reason, error = "") => { DB.state = "unavailable"; DB.reason = reason; DB.error = error; dbChanged(); };
@@ -679,6 +679,7 @@ const WF_COLS = [
   ["final", "Final freigegeben", "Gate 2 · bereit für WordPress-Draft"],
 ];
 const WF = { items: {}, live: false, trigger: { state: "unknown", note: "" } };
+const BLOCK_TEXT = { workflow_state_unavailable: "Workflow-State aus dem Artifact nicht lesbar", repository_unavailable: "Repository im Agentenlauf nicht verfügbar", wrong_branch: "Falscher Branch im Agentenlauf", repository_outdated: "Repository nicht aktuell", runbook_missing: "Ablaufbeschreibung fehlt", business_profile_missing: "Business-Profil fehlt", style_guide_missing: "Content-Style-Guide fehlt", drive_tool_unavailable: "Google Drive ist im Agentenlauf nicht verfügbar (Konnektor nicht an der Routine hinterlegt)", drive_folder_unavailable: "Kein Schreibzugriff auf den Ordner „Claude Landingpages“", production_error: "Fehler während der Produktion" };
 /** Live-db hat Vorrang; ohne Live-Verbindung (lokal, offline) gilt der vom Agenten geschriebene Git-Spiegel */
 const wfAll = () => WF.live ? WF.items : { ...Object.fromEntries((S.d.workflow?.items || []).map(x => [x.id, x])), ...WF.items };
 const wfDoc = id => wfAll()[id] || null;
@@ -694,9 +695,11 @@ function wfLabel(w) {
   if (c === "review") return ["Zur Prüfung", ""];
   if (c === "final") return ["Final approved · Ready for WordPress Draft", "green"];
   if (c === "draft") return [`Entwurf v${w.production.version || 1} · Review`, "blue"];
-  if (w.review?.status === "revision_requested") return [w.production?.status === "in_progress" ? "Revision in Arbeit" : "Revision requested · Waiting for agent", "amber"];
-  if (w.production?.status === "in_progress") return ["In Produktion", "blue"];
-  if (w.production?.status === "failed") return ["Produktion fehlgeschlagen", "red"];
+  if (w.review?.status === "revision_requested" && w.production?.status !== "blocked") return [w.production?.status === "running" ? "Revision in Arbeit" : "Revision requested · Waiting for agent", "amber"];
+  if (w.production?.status === "running" || w.production?.status === "in_progress") return ["Producing", "blue"];
+  if (w.production?.status === "blocked" || w.production?.status === "failed") return ["Blocked – environment unavailable", "red"];
+  const t = w.trigger?.requested_at && /angestoßen/.test(w.trigger?.result || "") ? (Date.now() - Date.parse(w.trigger.requested_at)) / 60000 : null;
+  if (t !== null && t < 20) return ["Agent starting", "blue"];
   return ["Approved · Waiting for agent", "amber"];
 }
 /** Karten: alle CREATE/OPTIMIZE/MERGE-Opportunities + TEST-Einträge aus der db (nur für technische Tests, deutlich markiert) */
@@ -771,8 +774,12 @@ function openCard(id, opts = {}) {
       <div class="kv"><div class="k">Gate 1</div><div>${fmtDateTime(w.gate1.at)}${w.gate1.comment ? ` · „${esc(w.gate1.comment)}“` : ""}</div>
       ${w.review?.status === "revision_requested" ? `<div class="k">Änderungswunsch</div><div>„${esc(w.review.comment)}“ · ${fmtDateTime(w.review.at)}</div>` : ""}
       <div class="k">Agentenlauf</div><div>${w.trigger?.requested_at ? `${fmtDateTime(w.trigger.requested_at)} · ${esc(w.trigger.result || "")}` : "Noch kein Anstoß – wird beim nächsten Agentenlauf verarbeitet"}</div>
-      ${w.production?.error ? `<div class="k">Fehler</div><div class="down">${esc(w.production.error)}</div>` : ""}</div>
-      <div class="row mt"><button class="btn" data-act="retrigger" ${canWrite ? "" : "disabled"}>Agentenlauf erneut anstoßen</button><span class="mini" data-msg></span></div></div>`;
+      ${w.production?.status === "running" ? `<div class="k">Lauf</div><div>gestartet ${fmtDateTime(w.production.started_at)} · Versuch ${esc(w.production.attempt || 1)}</div>` : ""}
+      ${w.production?.status === "blocked" ? `<div class="k">Blockiert</div><div class="down"><code>${esc(w.production.block_reason || "unknown")}</code> · ${fmtDateTime(w.production.blocked_at)}</div>
+        <div class="k">Ursache</div><div>${esc(w.production.block_detail || BLOCK_TEXT[w.production.block_reason] || "–")}</div>
+        ${w.production.preflight ? `<div class="k">Preflight</div><div class="s">${Object.entries(w.production.preflight).map(([k, v]) => `${v ? "✓" : "✗"} ${esc(k)}`).join(" · ")}</div>` : ""}` : ""}</div>
+      ${w.production?.status === "blocked" ? `<div class="row mt"><button class="btn primary" data-act="retry" ${canWrite ? "" : "disabled"}>Erneut versuchen</button><span class="mini" data-msg></span></div><p class="s">Stößt den Agenten erneut an. Deine Gate-1-Freigabe und dein Kommentar bleiben unverändert.</p>`
+        : w.production?.status === "running" ? "" : `<div class="row mt"><button class="btn" data-act="retrigger" ${canWrite ? "" : "disabled"}>Agentenlauf erneut anstoßen</button><span class="mini" data-msg></span></div>`}</div>`;
   else if (col === "draft" || col === "final") { const p = w.production || {};
     action = `<div class="wf-action"><h3>${esc(l)}</h3>
       <div class="row"><a class="btn primary" href="${esc(p.doc_url)}" target="_blank" rel="noopener">Entwurf öffnen ↗</a><span class="s">${esc(p.doc_title || "")}</span></div>
@@ -824,6 +831,10 @@ async function wfAct(act, c) {
     const comment = ($("#wf-c2")?.value || "").trim();
     patch = { gate2: { status: "approved", at: now, comment }, review: { status: "approved", at: now, comment } };
     ev = { gate: 2, decision: "approve", comment };
+  } else if (act === "retry") {
+    if (cur?.production?.status !== "blocked") return say("Nur blockierte Aufträge können erneut versucht werden.");
+    patch = { production: { status: "waiting", retry_requested_at: now, block_reason: null, block_detail: null } };
+    ev = { gate: 1, decision: "retry", comment: "" };
   } else if (act === "retrigger") { say("Stoße Agentenlauf an…"); await wfTrigger(id, "retrigger"); return say(WF.trigger.note); }
   say("Speichere…"); $("#wf-panel-body").querySelectorAll("[data-act]").forEach(b => b.disabled = true);
   try {
@@ -831,7 +842,7 @@ async function wfAct(act, c) {
     const eid = `${S.client}--${id}--g${ev.gate}--${Date.now()}`.replace(/[^A-Za-z0-9_.~:@+-]/g, "-");
     await DB.ns.collection("decisions").doc(eid).set({ schema: 1, client: S.client, item_id: id, item_title: o.name, gate: ev.gate, decision: ev.decision, comment: ev.comment, decided_at: now, agent_status: act === "final" ? "processed" : "pending", agent_processed_at: act === "final" ? now : null, agent_note: act === "final" ? "Gate 2 – keine Agentenaktion nötig (kein Publishing)" : null });
     say("Gespeichert.");
-    if (act === "approve" || act === "revise") { await wfTrigger(id, act); say("Gespeichert. " + WF.trigger.note); }
+    if (act === "approve" || act === "revise" || act === "retry") { await wfTrigger(id, act); say("Gespeichert. " + WF.trigger.note); }
   } catch (e) { say(`Nicht gespeichert (${e.code || "error"}): ${e.message || ""}`); $("#wf-panel-body").querySelectorAll("[data-act]").forEach(b => b.disabled = false); }
 }
 /** Agentenlauf anstoßen: geplante Aufgabe (nur auf Anstoß) über den Konnektor "Claude Code Remote". Ohne Konnektor bleibt die Freigabe gespeichert und wird beim nächsten Lauf verarbeitet. */

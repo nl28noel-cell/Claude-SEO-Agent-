@@ -19,6 +19,8 @@ Befehle (Export vorher per ArtifactData list collection=workflow out_dir=<dir>):
   python3 tools/workflow.py brief  <dir> <OPP-ID> <out.md> -> Produktionsbriefing (Fakten, Freigabe-/Revisionskommentar)
   python3 tools/workflow.py render <draft.md> <out.html>   -> Entwurf (Markdown-Subset) → HTML für Google-Doc-Konvertierung
   python3 tools/workflow.py mirror <dir> [--client SLUG]   -> state/workflow.json aktualisieren
+  python3 tools/workflow.py preflight <dir> [--drive-ok] [--folder-ok]  -> Preflight-Checks als JSON (Exit 0 = ok, 2 = blocked)
+  python3 tools/workflow.py doc-title <dir> <OPP-ID>        -> deterministischer Doc-Titel (Idempotenz: gleicher Titel = gleiches Dokument)
 Keine Website-, WordPress- oder URL-Aktion.
 """
 import glob, html, json, os, re, sys
@@ -40,6 +42,19 @@ def load_export(d):
     return docs
 
 
+EXPECTED_BRANCH = "claude/semsharks-seo-autopilot-6j1cxc"
+STALE_RUN_MIN = 45  # ein "running"-Eintrag ohne Fortschritt gilt danach als abgebrochen
+
+
+def _age_min(iso):
+    import datetime as dt
+    try:
+        t = dt.datetime.fromisoformat(str(iso).replace("Z", "+00:00"))
+        return (dt.datetime.now(dt.timezone.utc) - t).total_seconds() / 60
+    except Exception:
+        return 1e9
+
+
 def actions(docs):
     """Was ist zu tun? Nur explizite Freigaben – nie aus dem bloßen Vorhandensein einer Opportunity."""
     out = []
@@ -51,12 +66,58 @@ def actions(docs):
             continue
         if g1 != "approved":
             continue
-        if prod.get("status") in (None, "waiting", "failed"):
-            out.append({"doc": did, "action": "produce", "comment": (w.get("gate1") or {}).get("comment"), "test": bool(w.get("test")), "version": w.get("_version")})
-        elif rev.get("status") == "revision_requested" and prod.get("status") != "in_progress":
+        if prod.get("status") == "running" and _age_min(prod.get("started_at")) < STALE_RUN_MIN:
+            continue  # läuft bereits (anderer Lauf) – nicht doppelt bearbeiten
+        if prod.get("status") == "blocked":
+            continue  # technisch blockiert: nur Noels „Erneut versuchen“ setzt wieder auf waiting
+        if rev.get("status") == "revision_requested" and prod.get("status") in ("draft_ready", "running"):
             out.append({"doc": did, "action": "revise", "comment": rev.get("comment"), "for_version": rev.get("for_version") or prod.get("version"),
                         "test": bool(w.get("test")), "version": w.get("_version")})
+        elif prod.get("status") in (None, "waiting", "failed", "running"):
+            out.append({"doc": did, "action": "produce", "comment": (w.get("gate1") or {}).get("comment"), "test": bool(w.get("test")), "version": w.get("_version")})
     return out
+
+
+def doc_title(w, opp=None):
+    """Deterministischer Titel → vor dem Anlegen im Zielordner suchen; existiert er, wird kein zweites Dokument erzeugt."""
+    name = (opp or {}).get("name") or w.get("title") or w.get("opp_id")
+    typ = (opp or {}).get("type") or (w.get("card") or {}).get("type") or "CREATE"
+    v = ((w.get("production") or {}).get("version") or 0) + (1 if (w.get("review") or {}).get("status") == "revision_requested" else 0)
+    base = f"{w.get('opp_id')} – {name} – {'Optimierung' if typ == 'OPTIMIZE' else 'Entwurf'}"
+    return base if v <= 1 else f"{base} v{v}"
+
+
+def preflight(d, drive_ok=False, folder_ok=False):
+    import subprocess
+    def sh(*a):
+        r = subprocess.run(a, cwd=ROOT, capture_output=True, text=True)
+        return r.returncode, (r.stdout + r.stderr).strip()
+    checks, reason = {}, None
+    rc, top = sh("git", "rev-parse", "--show-toplevel")
+    checks["repository"] = rc == 0 and os.path.isdir(os.path.join(ROOT, "tools"))
+    rc, br = sh("git", "branch", "--show-current")
+    checks["correct_branch"] = br == EXPECTED_BRANCH
+    rc1, _ = sh("git", "fetch", "-q", "origin", EXPECTED_BRANCH)
+    rc2, behind = sh("git", "rev-list", "--count", f"HEAD..origin/{EXPECTED_BRANCH}")
+    checks["up_to_date"] = rc1 == 0 and rc2 == 0 and behind == "0"
+    checks["docs_workflow"] = os.path.exists(os.path.join(ROOT, "docs", "workflow.md"))
+    checks["business_profile"] = os.path.exists(os.path.join(ROOT, "clients", DEFAULT_CLIENT, "business-profile.md"))
+    checks["content_style_guide"] = os.path.exists(os.path.join(ROOT, "clients", DEFAULT_CLIENT, "content-style-guide.md"))
+    try:
+        docs = load_export(d); checks["workflow_state"] = True
+    except Exception:
+        docs = {}; checks["workflow_state"] = False
+    checks["google_drive_write"] = bool(drive_ok)
+    checks["target_folder"] = bool(folder_ok)
+    order = [("workflow_state", "workflow_state_unavailable"), ("repository", "repository_unavailable"), ("correct_branch", "wrong_branch"),
+             ("up_to_date", "repository_outdated"), ("docs_workflow", "runbook_missing"), ("business_profile", "business_profile_missing"),
+             ("content_style_guide", "style_guide_missing"), ("google_drive_write", "drive_tool_unavailable"), ("target_folder", "drive_folder_unavailable")]
+    for k, code in order:
+        if not checks[k]:
+            reason = code; break
+    res = {"ok": reason is None, "checks": checks, "block_reason": reason, "queue": actions(docs) if docs else []}
+    print(json.dumps(res, ensure_ascii=False, indent=2))
+    return res
 
 
 def _dash(client):
@@ -183,6 +244,15 @@ if __name__ == "__main__":
         brief(a[1], a[2], a[3])
     elif a[0] == "render":
         render(a[1], a[2])
+    elif a[0] == "preflight":
+        r = preflight(a[1], "--drive-ok" in a, "--folder-ok" in a); sys.exit(0 if r["ok"] else 2)
+    elif a[0] == "doc-title":
+        docs = load_export(a[1]); w = docs[a[2]]
+        try:
+            o = next((x for x in _dash(DEFAULT_CLIENT)["opportunities"] if x["id"] == a[2]), None)
+        except Exception:
+            o = None
+        print(doc_title(w, o))
     elif a[0] == "mirror":
         mirror(a[1], a[a.index("--client") + 1] if "--client" in a else DEFAULT_CLIENT)
     else:
