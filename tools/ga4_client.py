@@ -37,7 +37,7 @@ BASELINE = [
     ("keyevents_landing", "eventName,landingPage,sessionDefaultChannelGroup,yearMonth", "eventCount,keyEvents", "key"),
     ("keyevents_page", "eventName,pagePath", "eventCount", "key"),
     ("landing_date", "date,landingPage,sessionDefaultChannelGroup,sessionSource", "sessions,engagedSessions,userEngagementDuration,keyEvents", None),
-    ("conv_date", "date,eventName,landingPage,sessionDefaultChannelGroup,sessionSource", "eventCount,keyEvents", "conv"),
+    ("conv_date", "date,eventName,landingPage,sessionDefaultChannelGroup,sessionSource", "eventCount,keyEvents,sessions", "conv"),
     ("ads_month", "yearMonth,sessionGoogleAdsCampaignName", "advertiserAdImpressions,advertiserAdClicks,advertiserAdCost,sessions,keyEvents", None),
     ("ads_keyword", "sessionGoogleAdsKeyword", "advertiserAdClicks,advertiserAdCost,sessions,engagedSessions,keyEvents", None),
     ("ads_query", "sessionGoogleAdsQuery", "sessions,engagedSessions,keyEvents", None),

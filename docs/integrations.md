@@ -155,7 +155,9 @@ Benötigte Hosts (bereits freigegeben): `oauth2.googleapis.com`, `searchconsole.
 ## Google Ads (read-only)
 
 - Service Account im MCC 5474466547 mit „Nur lesen“; Header `login-customer-id`; API-Version über `ADS_API_VERSION` (Standard v26).
-- Ein Developer Token war für Discovery/GAQL nicht erforderlich; falls künftig nötig: Umgebungsvariable `GOOGLE_ADS_DEVELOPER_TOKEN` (nie ins Repo).
+- Kein Developer Token nötig (seit 09.09.2026 abgeschafft, wird ignoriert).
 - `tools/ads_client.py` implementiert keine Mutate-Endpunkte; schreibende Pfade werden zusätzlich blockiert.
-- Spreewald-Konto 1935597794 ist gekündigt → keine API-Daten. Keyword Planner erst mit Basic Access.
+- Spreewald-Konto 1935597794 ist bewusst gekündigt → keine API-Daten (Paid-Historie über GA4).
+- Keyword Planner: Basic Access für das Cloud-Projekt (Cloud Console → Google Ads API Overview; Voraussetzung Brand Verification). Developer Tokens wurden am 09.09.2026 abgeschafft; Zugriffsstufen hängen am Cloud-Projekt des Service Accounts.
+- Planning Customer (aktives MCC-Konto) in `config/keyword_planner.json`: nur Keyword-Planner-Aufrufe erlaubt, GAQL-Reports auf diesem Konto blockiert der Client. Ergebnisse → `data/keyword-planner-cache.csv` (separat von Semrush).
 - `discover` speichert nur MCC, Zielkonto und die Anzahl weiterer Konten – keine Namen anderer Kunden.

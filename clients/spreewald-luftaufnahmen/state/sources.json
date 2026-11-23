@@ -80,15 +80,15 @@
     "thresholding": false,
     "sampling": false,
     "limitations": [
-      "Sehr geringe Fallzahlen (2026: ~20 Sitzungen/Monat) – Kennzahlen je Seite/Monat statistisch schwach",
+      "Geringe Fallzahlen (2026: ~20 Sitzungen/Monat) – Werte je Seite/Monat statistisch schwach",
       "GA4 erfasst ~51 % der GSC-Klicks (Consent/Blocker) – nur relative Aussagen",
-      "Tag-Assistant-Testsitzungen in den Rohdaten (werden im Dashboard ausgeschlossen)",
-      "Keine Änderungen an GA4/GTM durch den Agenten"
+      "Tag-Assistant-Testsitzungen in den Rohdaten (im Dashboard ausgeschlossen)",
+      "Business-Klassifizierung über state/conversions.json; GA4-Key-Events werden nicht verändert"
     ]
   },
   "google_ads": {
-    "status": "account_canceled",
-    "access": "Service Account im MCC, Berechtigung „Nur lesen“; API-Zugriffsebene Explorer",
+    "status": "account_canceled_intended",
+    "access": "Service Account im MCC, Berechtigung „Nur lesen“; Zugriffsstufe des Cloud-Projekts: Explorer",
     "api_version": "v26",
     "mcc": {
       "id": "5474466547",
@@ -98,7 +98,8 @@
     "account": {
       "id": "1935597794",
       "name": "Spreewald Luftaufnahmen",
-      "status": "CANCELED"
+      "status": "CANCELED",
+      "note": "Bewusst gekündigt, wird nicht reaktiviert (Entscheidung Noel 23.11.2026)."
     },
     "last_check": "2026-11-23",
     "last_fetch": null,
@@ -108,8 +109,8 @@
       "account_discovery": "ok",
       "reporting_gaql_mcc": "ok",
       "reporting_gaql_account": "blocked – Konto gekündigt (CUSTOMER_NOT_ENABLED)",
-      "keyword_planner_ideas": "blocked – Explorer-Zugang (DEVELOPER_TOKEN_NOT_APPROVED), benötigt Basic/Standard Access",
-      "keyword_planner_historical_metrics": "blocked – Explorer-Zugang"
+      "keyword_planner_ideas": "blocked – Explorer-Zugang; benötigt Basic Access (Cloud Console → Google Ads API Overview, Brand Verification)",
+      "keyword_planner_historical_metrics": "blocked – Explorer-Zugang (s. o.)"
     },
     "paid_history_via_ga4": {
       "source": "GA4 ↔ Google-Ads-Verknüpfung (Konto 1935597794)",
@@ -120,9 +121,18 @@
       "quality": "Kampagnenebene unplausibel (identische Monatswerte, Klicks ≫ Sitzungen); Keyword-Ebene plausibel – nur als Richtwert"
     },
     "limitations": [
-      "Konto gekündigt: keine Kampagnen-, Search-Term-, Conversion-Action-Daten über die API",
-      "Keyword Planner erst mit Basic Access",
+      "Spreewald-Konto gekündigt (gewollt): keine Kampagnen-/Search-Term-/Conversion-Action-Daten über die API",
+      "Paid-Historie nur über die GA4-Verknüpfung; Kampagnenebene unplausibel, Keyword-Ebene nutzbar",
       "Nur lesend – keine Mutate-Endpunkte im Client"
     ]
+  },
+  "keyword_planner": {
+    "status": "blocked_access_level",
+    "access_needed": "Basic Access für das Google-Cloud-Projekt claude-seo-agent-515611",
+    "apply_at": "Google Cloud Console → Projekt claude-seo-agent-515611 → Google Ads API Overview → Upgrade access level (Voraussetzung: Brand Verification unter APIs & Services → OAuth consent screen → Branding)",
+    "planning_customer": "aktives Konto im MCC, nur als Planner-Zugang (ID in config/keyword_planner.json, nie im Dashboard)",
+    "last_check": "2026-11-23",
+    "cache": "data/keyword-planner-cache.csv",
+    "verified_against": "developers.google.com/google-ads/api/docs/api-policy/access-levels und /developer-token (Stand 23.11.2026)"
   }
 }

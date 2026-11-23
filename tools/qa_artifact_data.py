@@ -89,11 +89,20 @@ if d.get("ga4", {}).get("available"):
     dash = next((c["sessions"] for c in d["ga4"]["channels_window"] if c["channel"] == "Organic Search"), None)
     check("GA4 organic sessions (window, ohne Test)", org == dash, f"raw {org} vs dashboard {dash}")
     conv = json.load(open(os.path.join(cdir, "state", "conversions.json"), encoding="utf-8"))
-    prim = {e["event"] for e in conv["events"] if e["class"] == "primary"}
+    ev = {e["event"]: e for e in conv["events"]}
+    counted = lambda n, lvl, sub=None: n in ev and not ev[n].get("duplicate_of") and ev[n]["level"] == lvl and (sub is None or ev[n].get("subtype") == sub)  # noqa: E731
     cv = rd(os.path.join(ga, "ga4_conv_date.csv"))
-    rp = sum(int(x["eventCount"]) for x in cv if x["eventName"] in prim and x["sessionSource"] != "tagassistant.google.com" and lo <= iso(x["date"]) <= hi)
-    dp = sum(c["conv_primary"] for c in d["ga4"]["channels_window"])
-    check("GA4 primary conversions (window, ohne Test)", rp == dp, f"raw {rp} vs dashboard {dp}")
+    win = [x for x in cv if x["sessionSource"] != "tagassistant.google.com" and lo <= iso(x["date"]) <= hi]
+    for sub, key in (("form_submission", "lead_form"), ("contact_action", "lead_contact")):
+        r_ = sum(int(x["eventCount"]) for x in win if counted(x["eventName"], "lead", sub))
+        d_ = sum(c[key] for c in d["ga4"]["channels_window"])
+        check(f"GA4 {key} (window, ohne Test, ohne Duplikat)", r_ == d_, f"raw {r_} vs dashboard {d_}")
+    rm = sum(int(x["sessions"]) for x in win if counted(x["eventName"], "micro"))
+    dm = sum(c["micro_sessions"] for c in d["ga4"]["channels_window"])
+    check("GA4 funnel-intent sessions (window)", rm == dm, f"raw {rm} vs dashboard {dm}")
+    dup = sum(int(x["eventCount"]) for x in win if x["eventName"] == "click to chat")
+    check("Duplikat 'click to chat' nicht in Leads", all(not e["counted"] for e in d["ga4"]["events"] if e["event"] == "click to chat"), str(dup))
+    check("Heyflow-Interaktion nie als Lead", all(e["level"] == "micro" for e in d["ga4"]["events"] if e["event"].startswith("heyflow_") and e["event"] != "heyflow_formular_abgesendet"))
     tests = sum(int(x["eventCount"]) for x in cv if x["sessionSource"] == "tagassistant.google.com")
     check("GA4 test events excluded count", tests == d["ga4"]["quality"]["test_conversion_events_excluded"], str(tests))
     kw = rd(os.path.join(ga, "ga4_ads_keyword.csv"))
@@ -106,7 +115,7 @@ if d.get("ga4", {}).get("available"):
         s2 = sum(q["impressions"] for q in d["gsc"]["queries"] if q["cluster"] == f["cluster"])
         check(f"funnel {f['cluster']} GSC impressions", s2 == f["organic"]["impressions"], f"{s2} vs {f['organic']['impressions']}")
     # Datenschutz: keine anderen MCC-Kunden, keine Ersteller-E-Mail
-    for bad_txt in ("FIRO", "K&M Cover", "9578550074", "3001574868", "9195667966", "creatorEmailAddress", "@gmx.de"):
+    for bad_txt in ("FIRO", "K&M Cover", "9578550074", "3001574868", "9195667966", "creatorEmailAddress", "@gmx.de", "planning_customer_id"):
         check(f"no '{bad_txt}' in data", bad_txt not in txt)
 
 print("PASS", len(ok)); print("FAIL", len(bad)); [print("  ✗", b) for b in bad]

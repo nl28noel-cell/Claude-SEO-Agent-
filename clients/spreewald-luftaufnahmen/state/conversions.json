@@ -1,115 +1,171 @@
 {
-  "_doc": "Klassifizierung der GA4-Events als Business-Conversion. Nur Analyse – an GA4/GTM wird nichts geändert. Zählung im Dashboard ohne Tag-Assistant-Testverkehr. Klassen: primary = echte Anfrage, secondary = Kontaktabsicht, micro = Interaktion, none = keine Business-Conversion.",
+  "_doc": "SEO-Autopilot Business Classification der GA4-Events (eigene semantische Mapping-Schicht). Unabhängig von der GA4-Key-Event-Konfiguration, die bewusst von Noel gepflegt wird und nicht verändert wird. Key Event ≠ Business-Klasse. Zählung ohne Testverkehr (exclude_sources) und ohne Duplikate (duplicate_of).",
   "updated": "2026-11-23",
+  "schema": 2,
   "property": "321987676",
+  "defined_by": "Noel (fachliche Vorgabe 23.11.2026)",
+  "levels": {
+    "lead": {
+      "label": "Lead / Contact",
+      "description": "Anfrage oder direkte Kontaktaktion. Höchste Funnel-Stufe für die SEO-Business-Priorisierung.",
+      "subtypes": {
+        "form_submission": "Form Submission (Formular / Heyflow abgesendet)",
+        "contact_action": "Direct Contact Action (Telefon / E-Mail / Chat) – Kontakt technisch nicht bestätigt"
+      }
+    },
+    "micro": {
+      "label": "Micro Conversion / Funnel Intent",
+      "description": "Aktive Interaktion mit dem Anfrageprozess (Heyflow). Starke Kontaktabsicht, aber kein Lead – wird nie mit Leads addiert."
+    },
+    "engagement": {
+      "label": "Engagement",
+      "description": "Normales Nutzungssignal (Scrollen, Video). Keine Conversion."
+    },
+    "outbound": {
+      "label": "Outbound / sonstige",
+      "description": "Klicks zu externen Plattformen (Facebook, YouTube, ausgehende Links). Separat sichtbar, nicht für die Business-Priorisierung."
+    },
+    "system": {
+      "label": "System (automatisch)",
+      "description": "Automatisch erfasste GA4-Events."
+    },
+    "unused": {
+      "label": "Nicht genutzt",
+      "description": "Konfiguriert, aber nie ausgelöst."
+    }
+  },
   "exclude_sources": [
     "tagassistant.google.com"
   ],
   "events": [
     {
       "event": "kontakt_form_send",
-      "class": "primary",
-      "label": "Kontaktformular gesendet",
-      "reason": "Abgesendetes Formular = konkrete Anfrage. Aktiver Key Event seit 09/2023.",
-      "recommendation": "Als Haupt-Conversion nutzen."
-    },
-    {
-      "event": "kontaktformular_gesendet",
-      "class": "primary",
-      "label": "Kontaktformular gesendet (alt)",
-      "reason": "Vorgänger von kontakt_form_send (05–08/2023), heute kein Key Event; 14 von 17 Auslösungen stammen aus Tag-Assistant-Tests.",
-      "recommendation": "Historisch mit kontakt_form_send zusammenfassen."
+      "level": "lead",
+      "subtype": "form_submission",
+      "label": "Kontaktformular gesendet"
     },
     {
       "event": "heyflow_formular_abgesendet",
-      "class": "primary",
-      "label": "Heyflow-Anfrage gesendet",
-      "reason": "Abgeschlossener Heyflow-Funnel (Angebotsanfrage).",
-      "recommendation": "Als Haupt-Conversion nutzen."
+      "level": "lead",
+      "subtype": "form_submission",
+      "label": "Heyflow-Anfrage gesendet"
+    },
+    {
+      "event": "kontaktformular_gesendet",
+      "level": "lead",
+      "subtype": "form_submission",
+      "label": "Kontaktformular gesendet (historischer Event-Name, 05–08/2023)"
     },
     {
       "event": "tel_klick",
-      "class": "secondary",
-      "label": "Telefon-Klick",
-      "reason": "Klick auf Telefonnummer = starke Kontaktabsicht, aber kein bestätigtes Gespräch.",
-      "recommendation": "Als sekundäre Conversion werten."
+      "level": "lead",
+      "subtype": "contact_action",
+      "label": "Telefon-Klick"
     },
     {
       "event": "email_klick",
-      "class": "secondary",
-      "label": "E-Mail-Klick",
-      "reason": "Klick auf E-Mail-Link = Kontaktabsicht, Versand nicht messbar.",
-      "recommendation": "Als sekundäre Conversion werten."
+      "level": "lead",
+      "subtype": "contact_action",
+      "label": "E-Mail-Klick"
     },
     {
       "event": "click_to_chat",
-      "class": "secondary",
-      "label": "Chat-Klick",
-      "reason": "Kontaktabsicht. 2024 zu 76 % aus P-Max (Cross-network) – Qualität fraglich; seit 11/2024 keine Auslösung.",
-      "recommendation": "Sekundär; Paid-Anteil kritisch prüfen."
+      "level": "lead",
+      "subtype": "contact_action",
+      "label": "Chat-Klick"
     },
     {
       "event": "click to chat",
-      "class": "secondary",
+      "level": "lead",
+      "subtype": "contact_action",
       "label": "Chat-Klick (Duplikat)",
-      "reason": "Doppelte Variante mit Leerzeichen (05–11/2024), parallel zu click_to_chat – vermutlich doppelt erfasst.",
-      "recommendation": "Nicht zusätzlich zählen (Doppelzählung)."
+      "duplicate_of": "click_to_chat",
+      "note": "Feuerte 05–11/2024 nie ohne click_to_chat am selben Tag/Landingpage/Kanal (141 von 141) – wird nicht zusätzlich gezählt."
     },
     {
       "event": "heyflow_interaktion",
-      "class": "micro",
-      "label": "Heyflow-Interaktion",
-      "reason": "Start/Interaktion mit dem Funnel, keine Anfrage. Als Key Event markiert – überzeichnet Conversions.",
-      "recommendation": "Nur als Engagement-Signal nutzen."
+      "level": "micro",
+      "label": "Heyflow-Interaktion"
     },
     {
       "event": "heyflow_erste_interaktion",
-      "class": "micro",
-      "label": "Heyflow erste Interaktion",
-      "reason": "Nur am 22.11.2024 (Setup-Tests).",
-      "recommendation": "Ignorieren."
+      "level": "micro",
+      "label": "Heyflow erste Interaktion"
     },
     {
       "event": "heyflow_button_klick",
-      "class": "micro",
-      "label": "Heyflow-Button",
-      "reason": "Nur Setup-Tests.",
-      "recommendation": "Ignorieren."
+      "level": "micro",
+      "label": "Heyflow-Button-Klick"
     },
     {
       "event": "heyflow_exit",
-      "class": "none",
-      "label": "Heyflow verlassen",
-      "reason": "Abbruch.",
-      "recommendation": "Ignorieren."
-    },
-    {
-      "event": "fb_klick",
-      "class": "none",
-      "label": "Facebook-Klick",
-      "reason": "Verlässt die Website Richtung Social – keine Anfrage. Aktuell Key Event.",
-      "recommendation": "Nicht als Business-Conversion werten."
-    },
-    {
-      "event": "ytb_klick",
-      "class": "none",
-      "label": "YouTube-Klick",
-      "reason": "Wie fb_klick.",
-      "recommendation": "Nicht als Business-Conversion werten."
-    },
-    {
-      "event": "purchase",
-      "class": "none",
-      "label": "purchase (Standard)",
-      "reason": "GA4-Standard-Key-Event, nie ausgelöst (kein Shop).",
-      "recommendation": "Ignorieren."
+      "level": "micro",
+      "label": "Heyflow verlassen (Funnel betreten, dann abgebrochen)"
     },
     {
       "event": "scroll",
-      "class": "none",
-      "label": "Scroll (90 %)",
-      "reason": "War zeitweise als Key Event markiert (437 Key Events historisch) – verzerrt alte Conversion-Zahlen stark.",
-      "recommendation": "Nie als Conversion werten; historische Key-Event-Summen nicht verwenden."
+      "level": "engagement",
+      "label": "Scroll (90 %)"
+    },
+    {
+      "event": "video_start",
+      "level": "engagement",
+      "label": "Video gestartet"
+    },
+    {
+      "event": "video_progress",
+      "level": "engagement",
+      "label": "Video-Fortschritt"
+    },
+    {
+      "event": "video_complete",
+      "level": "engagement",
+      "label": "Video beendet"
+    },
+    {
+      "event": "user_engagement",
+      "level": "engagement",
+      "label": "User Engagement (automatisch)"
+    },
+    {
+      "event": "fb_klick",
+      "level": "outbound",
+      "label": "Facebook-Klick"
+    },
+    {
+      "event": "ytb_klick",
+      "level": "outbound",
+      "label": "YouTube-Klick"
+    },
+    {
+      "event": "click",
+      "level": "outbound",
+      "label": "Ausgehender Link (Enhanced Measurement)"
+    },
+    {
+      "event": "page_view",
+      "level": "system",
+      "label": "Seitenaufruf"
+    },
+    {
+      "event": "session_start",
+      "level": "system",
+      "label": "Sitzungsstart"
+    },
+    {
+      "event": "first_visit",
+      "level": "system",
+      "label": "Erster Besuch"
+    },
+    {
+      "event": "page_load_time",
+      "level": "system",
+      "label": "Ladezeit"
+    },
+    {
+      "event": "purchase",
+      "level": "unused",
+      "label": "purchase (GA4-Standard)"
     }
   ]
 }

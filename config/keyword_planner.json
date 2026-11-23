@@ -1,0 +1,8 @@
+{
+  "_doc": "Agentur-Konfiguration für Google Keyword Planner (KeywordPlanIdeaService). Das Planning-Customer-Konto dient AUSSCHLIESSLICH als Zugang zum Keyword Planner: keine Reports, keine Kampagnen-/Kosten-/Conversion-Daten dieses Kontos, keine Änderungen. Ergebnisse sind Research-Daten für den jeweiligen Kunden (data/keyword-planner-cache.csv). Die Konto-ID erscheint nie im Dashboard.",
+  "login_customer_id": "5474466547",
+  "planning_customer_id": "9578550074",
+  "planning_customer_role": "planner_access_only",
+  "reason": "Aktiv werbendes Konto – laut Erfahrung genauere Volumen als Konten ohne Spend; wird nach Freischaltung empirisch geprüft (Vergleich mit inaktivem Konto).",
+  "status": "waiting_for_basic_access"
+}

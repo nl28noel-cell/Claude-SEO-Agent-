@@ -189,6 +189,28 @@ class ArtifactQA(unittest.TestCase):
         for k in ("ga4_data_through", "ga4_fetched", "ads_checked"):
             self.assertIn(k, self.d["meta"]["freshness"])
 
+    def test_business_classification_semantics(self):
+        evs = {e["event"]: e for e in self.d["ga4"]["events"]}
+        self.assertEqual(evs["tel_klick"]["level"], "lead"); self.assertEqual(evs["tel_klick"]["subtype"], "contact_action")
+        self.assertEqual(evs["kontakt_form_send"]["subtype"], "form_submission")
+        self.assertEqual(evs["heyflow_interaktion"]["level"], "micro")
+        self.assertEqual(evs["scroll"]["level"], "engagement"); self.assertEqual(evs["fb_klick"]["level"], "outbound")
+        self.assertFalse(evs["click to chat"]["counted"])
+        # Key Event (GA4-Konfiguration) beeinflusst die Klassifizierung nicht
+        self.assertTrue(evs["heyflow_interaktion"]["key_event_now"]); self.assertEqual(evs["heyflow_interaktion"]["level"], "micro")
+        self.assertFalse(evs["kontaktformular_gesendet"]["key_event_now"]); self.assertEqual(evs["kontaktformular_gesendet"]["level"], "lead")
+        for c in self.d["ga4"]["channels_window"]:
+            self.assertEqual(c["leads"], c["lead_form"] + c["lead_contact"])  # Micro wird nie addiert
+        f = {x["id"]: x for x in self.d["findings"]}
+        self.assertNotIn("Key Events als Business-KPI unbrauchbar", f["F-019"]["description"])
+        self.assertIn("Tag-Assistant", f["F-019"]["title"])
+
+    def test_planner_account_is_planner_only(self):
+        r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "ads_client.py"), "query", "9578550074", "SELECT customer.id FROM customer", "/dev/null"],
+                           capture_output=True, text=True)
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("nur als Keyword-Planner-Zugang", r.stdout + r.stderr)
+
     def test_no_other_mcc_clients_or_personal_data(self):
         txt = json.dumps(self.d, ensure_ascii=False)
         for bad in ("FIRO", "K&M Cover", "9578550074", "3001574868", "9195667966", "creatorEmailAddress"):

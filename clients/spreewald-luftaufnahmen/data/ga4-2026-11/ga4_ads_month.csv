@@ -1,5 +1,5 @@
 yearMonth,sessionGoogleAdsCampaignName,advertiserAdImpressions,advertiserAdClicks,advertiserAdCost,sessions,keyEvents
-202411,Retargeting (P-Max) | Inspektion,1872108,49013,3886.0747329999986,319,32
+202411,Retargeting (P-Max) | Inspektion,1872108,49013,3886.074732999999,319,32
 202411,Retargeting (P-Max) | Dachvermessung,1815850,50761,5132.9181190000008,217,20
 202412,Retargeting (P-Max) | Inspektion,1790712,46882,3717.1149619999987,150,0
 202410,Retargeting (P-Max) | Dachvermessung,1736900,48554,4909.747766,168,24
@@ -8,10 +8,10 @@ yearMonth,sessionGoogleAdsCampaignName,advertiserAdImpressions,advertiserAdClick
 202412,Retargeting (P-Max) | Dachvermessung,1105300,30898,3124.384942,83,1
 202308,[GSN] Inspektion,28816,2672,9065.989056,18,0
 202307,[GSN] Inspektion,27015,2505,8499.36474,15,0
-202307,[GSN] Luftaufnahmen Gebäude,23526,3204,6136.0199999999995,22,0
-202308,[GSN] Luftaufnahmen Gebäude,23526,3204,6136.0200000000013,20,0
-202306,[GSN] Inspektion,23413,2171,7366.1161080000011,16,1
-202306,[GSN] Luftaufnahmen Gebäude,20912,2848,5454.24,19,0
+202307,[GSN] Luftaufnahmen Gebäude,23526,3204,6136.02,22,0
+202308,[GSN] Luftaufnahmen Gebäude,23526,3204,6136.0199999999995,20,0
+202306,[GSN] Inspektion,23413,2171,7366.116108000002,16,1
+202306,[GSN] Luftaufnahmen Gebäude,20912,2848,5454.2399999999989,19,0
 202410,[GSN] Dachvermessung,9828,1116,7614.0900000000011,10,0
 202411,[GSN] Dachvermessung,6552,744,5076.06,6,3
 202309,[GSN] Inspektion,5403,501,1699.8729480000002,4,0

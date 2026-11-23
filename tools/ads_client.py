@@ -11,8 +11,10 @@ Befehle:
   python3 tools/ads_client.py check                         -> zugängliche Konten + Hierarchie unter dem MCC (nur Konsole)
   python3 tools/ads_client.py discover "<name-regex>" <out.json> -> Connectivity, MCC, Zielkonto, Fähigkeitstests (speichert keine fremden Kundennamen)
   python3 tools/ads_client.py query <cid> "<GAQL>" <out.csv> -> GAQL-Report (paginiert) als CSV
-  python3 tools/ads_client.py ideas <cid> <kw1,kw2,..> <out.csv> [--url URL]  -> Keyword Planner Ideen (DE, Deutsch)
-  python3 tools/ads_client.py history <cid> <kw1,kw2,..> <out.csv>             -> historische Keyword-Metriken
+  python3 tools/ads_client.py ideas <cid|planner> <kw1,kw2,..> <out.csv> [--url URL] [--client SLUG]  -> Keyword-Ideen (DE)
+  python3 tools/ads_client.py history <cid|planner> <kw1,kw2,..> <out.csv> [--client SLUG]          -> historische Metriken
+      "planner" = Planning Customer aus config/keyword_planner.json (nur Planner-Zugang, keine Reports).
+      Mit --client werden die Ergebnisse als Research-Daten in data/keyword-planner-cache.csv übernommen.
 """
 import csv, json, os, sys
 
@@ -28,6 +30,13 @@ BASE = f"https://googleads.googleapis.com/{API_VERSION}"
 MCC = os.environ.get("ADS_LOGIN_CUSTOMER_ID", "5474466547")
 GEO_DE, LANG_DE = "geoTargetConstants/2276", "languageConstants/1001"
 _FORBIDDEN = ("mutate", ":upload", ":apply", ":remove", ":create")
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+KP_CFG_PATH = os.path.join(ROOT, "config", "keyword_planner.json")
+KP_CFG = json.load(open(KP_CFG_PATH, encoding="utf-8")) if os.path.exists(KP_CFG_PATH) else {}
+# Konten, die NUR als Keyword-Planner-Zugang dienen: keine GAQL-Reports, keine Performance-Daten
+PLANNER_ONLY = {KP_CFG.get("planning_customer_id")} - {None}
+KP_CACHE = os.path.join(ROOT, "data", "keyword-planner-cache.csv")
+KP_METHODS = (":generateKeywordIdeas", ":generateKeywordHistoricalMetrics")
 
 
 def _session():
@@ -46,6 +55,9 @@ def _session():
 def _post(s, path, body):
     if any(f in path.lower() for f in _FORBIDDEN):
         raise SystemExit(f"Schreibender Endpunkt blockiert: {path}")
+    cid = path.split("/customers/")[-1].split(":")[0].split("/")[0] if "/customers/" in path else None
+    if cid in PLANNER_ONLY and not path.endswith(KP_METHODS):
+        raise SystemExit(f"Konto {cid} ist nur als Keyword-Planner-Zugang freigegeben – {path} blockiert")
     r = s.post(BASE + path, json=body, timeout=120)
     if r.status_code != 200:
         try:
@@ -128,7 +140,7 @@ def discover(name_match, out):
             search(s, tgt["id"], "SELECT customer.id FROM customer"); res["tests"]["gaql_account"] = "ok"
         except SystemExit as e:
             res["tests"]["gaql_account"] = str(e).split(": ", 2)[-1]
-    probe = next((c["id"] for c in others if c.get("status") == "ENABLED" and not c.get("manager")), None)
+    probe = KP_CFG.get("planning_customer_id") or next((c["id"] for c in others if c.get("status") == "ENABLED" and not c.get("manager")), None)
     for meth, body in (("generateKeywordIdeas", {"language": LANG_DE, "geoTargetConstants": [GEO_DE], "keywordSeed": {"keywords": ["drohne"]}}),
                        ("generateKeywordHistoricalMetrics", {"language": LANG_DE, "geoTargetConstants": [GEO_DE], "keywords": ["drohne"]})):
         try:
@@ -173,6 +185,7 @@ def history(cid, kws, out):
     rows = [{"keyword": r.get("text"), "close_variants": "|".join(r.get("closeVariants", [])),
              "avg_monthly_searches": r.get("keywordMetrics", {}).get("avgMonthlySearches"),
              "competition": r.get("keywordMetrics", {}).get("competition"),
+             "competition_index": r.get("keywordMetrics", {}).get("competitionIndex"),
              "low_top_bid_eur": _micros(r.get("keywordMetrics", {}).get("lowTopOfPageBidMicros")),
              "high_top_bid_eur": _micros(r.get("keywordMetrics", {}).get("highTopOfPageBidMicros")),
              "monthly": json.dumps([[m.get("year"), m.get("month"), m.get("monthlySearches")] for m in r.get("keywordMetrics", {}).get("monthlySearchVolumes", [])])}
@@ -182,6 +195,28 @@ def history(cid, kws, out):
 
 def _micros(v):
     return round(int(v) / 1e6, 2) if v not in (None, "") else None
+
+
+def cache_kp(rows, client, seed_type, plan_cid):
+    """Keyword-Planner-Ergebnisse als Research-Daten cachen (ohne Konto-ID des Planning Customers)."""
+    import datetime as dt
+    today = dt.date.today().isoformat()
+    cols = ["keyword", "client", "geo", "language", "fetched", "source", "avg_monthly_searches", "competition", "competition_index",
+            "low_top_bid_eur", "high_top_bid_eur", "monthly", "planning_account_type"]
+    old = []
+    if os.path.exists(KP_CACHE):
+        with open(KP_CACHE, encoding="utf-8") as f:
+            old = list(csv.DictReader(f))
+    key = lambda r: (r["keyword"].lower(), r["client"], r["geo"])  # noqa: E731
+    idx = {key(r): r for r in old}
+    for r in rows:
+        n = {c: r.get(c) for c in cols}
+        n.update({"client": client, "geo": "DE", "language": "de", "fetched": today, "source": f"google_kp_{seed_type}",
+                  "planning_account_type": "active_ads_account" if plan_cid in PLANNER_ONLY else "other"})
+        idx[key(n)] = n
+    with open(KP_CACHE, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=cols); w.writeheader(); w.writerows(sorted(idx.values(), key=lambda r: r["keyword"]))
+    print(f"✓ Keyword-Planner-Cache: {len(idx)} Einträge → {KP_CACHE}")
 
 
 def _write_plain(rows, out):
@@ -204,7 +239,12 @@ if __name__ == "__main__":
         write_csv(search(_session(), a[1], a[2]), a[3])
     elif a[0] in ("ideas", "history"):
         url = a[a.index("--url") + 1] if "--url" in a else None
+        client = a[a.index("--client") + 1] if "--client" in a else None
+        cid = KP_CFG.get("planning_customer_id") if a[1] == "planner" else a[1]
         kws = [k.strip() for k in a[2].split(",") if k.strip()]
-        (ideas(a[1], kws, a[3], url) if a[0] == "ideas" else history(a[1], kws, a[3]))
+        (ideas(cid, kws, a[3], url) if a[0] == "ideas" else history(cid, kws, a[3]))
+        if client:
+            with open(a[3], encoding="utf-8") as f:
+                cache_kp(list(csv.DictReader(f)), client, a[0], cid)
     else:
         sys.exit(__doc__)

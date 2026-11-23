@@ -126,10 +126,10 @@
     },
     {
       "id": "T-206",
-      "title": "Google Ads Basic Access beantragen (Keyword Planner)",
+      "title": "Basic Access für Google Ads API beantragen (Keyword Planner)",
       "state": "needs_review",
       "date": "2026-11-23",
-      "detail": "Entscheidung Noel: Basic Access im API Center beantragen, damit Google-Keyword-Daten neben Semrush nutzbar werden."
+      "detail": "Noel: Brand Verification + Basic-Antrag in der Cloud Console (Google Ads API Overview). Danach testet der Agent den Planner über ein aktives MCC-Konto als Planning Customer (nur Planner-Zugang)."
     }
   ]
 }

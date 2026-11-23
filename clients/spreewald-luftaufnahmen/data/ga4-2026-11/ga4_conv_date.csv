@@ -1,298 +1,298 @@
-date,eventName,landingPage,sessionDefaultChannelGroup,sessionSource,eventCount,keyEvents
-20230829,kontaktformular_gesendet,/,Referral,tagassistant.google.com,12,12
-20241122,heyflow_erste_interaktion,/,Referral,tagassistant.google.com,12,0
-20260324,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,12,1
-20250414,heyflow_interaktion,/jetzt-anfragen,Direct,(direct),11,1
-20251020,heyflow_interaktion,/immobilien-fotografie-drohne,Organic Search,google,11,1
-20241117,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,10,0
-20241117,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,10,10
-20250429,heyflow_interaktion,/,Organic Social,linkedin.com,10,1
-20250512,heyflow_interaktion,/,Organic Search,google,9,1
-20241122,heyflow_button_klick,/,Referral,tagassistant.google.com,8,0
-20241122,heyflow_interaktion,/,Referral,tagassistant.google.com,8,8
-20240902,kontakt_form_send,/drohne-dach-vermessung,Referral,spreewald-luftaufnahmen.de,7,1
-20241204,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,7,1
-20250511,heyflow_interaktion,/immobilien-fotografie-drohne,Organic Search,google,7,1
-20251022,heyflow_interaktion,/immobilien-fotografie-drohne,Organic Search,google,7,1
-20260114,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,7,1
-20260504,heyflow_interaktion,/,Organic Search,google,7,1
-20260925,heyflow_interaktion,/drohne-dach-vermessung,Organic Search,google,7,1
-20241027,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,5,0
-20241027,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,5,4
-20241108,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,5,0
-20241127,heyflow_interaktion,/drohne-dach-vermessung,Paid Search,google,5,1
-20241213,heyflow_interaktion,/dach-vermessung-drohne-ads,Paid Search,google,5,1
-20241216,heyflow_interaktion,/drohne-dach-vermessung,Paid Search,google,5,1
-20241218,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Direct,(direct),5,1
-20250503,heyflow_interaktion,/immobilien-fotografie-drohne,Organic Search,google,5,1
-20250513,heyflow_interaktion,/drohne-dach-vermessung,Organic Search,google,5,1
-20250517,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Organic Search,google,5,1
-20250528,heyflow_interaktion,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,5,1
-20250531,heyflow_interaktion,/drohne-dach-vermessung,Organic Search,google,5,1
-20250602,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,5,1
-20250630,heyflow_interaktion,/drohne-dach-vermessung,Organic Search,google,5,1
-20250822,heyflow_interaktion,/immobilien-fotografie-drohne,Organic Search,google,5,1
-20250827,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,5,1
-20250908,heyflow_interaktion,/haus-grundstueck-luftbild,Organic Search,google,5,1
-20251019,heyflow_interaktion,/,Unassigned,chatgpt.com,5,1
-20251029,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Organic Search,google,5,1
-20251115,heyflow_interaktion,/drohne-dach-vermessung,Organic Search,duckduckgo,5,1
-20251128,heyflow_interaktion,/,Direct,(direct),5,1
-20251217,heyflow_interaktion,/haus-grundstueck-luftbild,Organic Search,de.search.yahoo.com,5,1
-20260102,heyflow_interaktion,/,Organic Search,google,5,1
-20260420,heyflow_interaktion,/drohne-dach-vermessung,Organic Search,google,5,1
-20260706,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,5,1
-20260921,heyflow_interaktion,/drohne-dach-vermessung,Direct,(direct),5,1
-20241024,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,4,0
-20241024,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,4,4
-20241031,click to chat,/drohne-dach-vermessung,Cross-network,google,4,0
-20241031,click_to_chat,/drohne-dach-vermessung,Cross-network,google,4,4
-20241102,click to chat,/drohne-dach-vermessung,Cross-network,google,4,0
-20241102,click_to_chat,/drohne-dach-vermessung,Cross-network,google,4,4
-20241108,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,4,4
-20241110,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,4,0
-20241110,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,4,4
-20241122,heyflow_interaktion,/drohne-dach-vermessung,Direct,(direct),4,4
-20241128,heyflow_interaktion,/drohne-dach-vermessung,Paid Search,google,4,1
-20241209,heyflow_interaktion,/drohne-dach-vermessung,Paid Search,google,4,1
-20250511,heyflow_interaktion,/haus-grundstueck-luftbild,Organic Search,google,4,1
-20250905,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,4,1
-20250924,heyflow_interaktion,/haus-grundstueck-luftbild,Organic Search,google,4,1
-20251205,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,4,1
-20260228,heyflow_interaktion,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,4,1
-20260905,heyflow_interaktion,/haus-grundstueck-luftbild,Organic Search,google,4,1
-20261112,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,4,1
-20230922,kontakt_form_send,/,Referral,tagassistant.google.com,3,2
-20240806,email_klick,/,Organic Search,google,3,3
-20241011,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,0
-20241011,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,3
-20241017,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,0
-20241017,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,3
-20241025,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,0
-20241025,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,3
-20241031,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,0
-20241031,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,3
-20241101,click to chat,/drohne-dach-vermessung,Cross-network,google,3,0
-20241101,click_to_chat,/drohne-dach-vermessung,Cross-network,google,3,2
-20241103,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,0
-20241103,click to chat,/drohne-dach-vermessung,Cross-network,google,3,0
-20241103,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,3
-20241103,click_to_chat,/drohne-dach-vermessung,Cross-network,google,3,3
-20241104,click to chat,/drohne-dach-vermessung,Cross-network,google,3,0
-20241104,click_to_chat,/drohne-dach-vermessung,Cross-network,google,3,3
-20241110,click to chat,/drohne-dach-vermessung,Cross-network,google,3,0
-20241110,click_to_chat,/drohne-dach-vermessung,Cross-network,google,3,3
-20241116,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,0
-20241116,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,3
-20241122,heyflow_formular_abgesendet,/,Referral,tagassistant.google.com,3,1
-20241125,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Paid Search,google,3,1
-20241209,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Paid Search,google,3,1
-20250727,heyflow_interaktion,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,3,1
-20250912,heyflow_interaktion,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,3,1
-20250923,heyflow_interaktion,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,3,1
-20260227,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Organic Search,bing,3,1
-20261012,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Organic Search,google,3,1
-20230531,kontaktformular_gesendet,,Referral,tagassistant.google.com,2,2
-20240214,click_to_chat,/drohnen-aufnahmen-firma,Unassigned,(not set),2,2
-20240222,fb_klick,/kontakt,Organic Search,google,2,2
-20240826,click to chat,/,Organic Search,google,2,0
-20240826,click_to_chat,/,Organic Search,google,2,1
-20240908,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0
-20240908,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2
-20240924,click to chat,(not set),Paid Search,google,2,0
-20240924,click_to_chat,(not set),Paid Search,google,2,1
-20240929,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0
-20240929,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2
-20241001,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0
-20241001,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2
-20241006,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,0
-20241006,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,2
-20241008,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0
-20241008,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2
-20241014,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,0
-20241014,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,2
-20241015,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0
-20241015,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2
-20241025,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0
-20241025,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2
-20241027,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0
-20241027,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2
-20241028,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0
-20241028,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2
-20241108,click to chat,/drohne-dach-gebaeude-inspektion,Direct,(direct),2,0
-20241109,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,0
-20241109,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,2
-20241114,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0
-20241114,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2
-20241123,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,1
-20250119,heyflow_interaktion,/,Organic Search,bing,2,1
-20260611,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,2,1
-20260826,kontakt_form_send,/,Organic Search,google,2,1
-20230531,kontaktformular_gesendet,/kontakt,Unassigned,(not set),1,0
-20230601,email_klick,,Referral,tagassistant.google.com,1,1
-20230601,email_klick,/kontakt,Referral,tagassistant.google.com,1,0
-20230608,kontaktformular_gesendet,,Organic Search,google,1,1
-20230622,kontaktformular_gesendet,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,1
-20230829,email_klick,/,Referral,tagassistant.google.com,1,1
-20230922,email_klick,/,Referral,tagassistant.google.com,1,1
-20230922,email_klick,/drohne-dach-gebaeude-inspektion,Organic Search,google,1,1
-20230922,fb_klick,/,Referral,tagassistant.google.com,1,0
-20230922,tel_klick,/,Referral,tagassistant.google.com,1,0
-20230922,ytb_klick,/,Referral,tagassistant.google.com,1,0
-20231020,click_to_chat,/,Direct,(direct),1,0
-20231118,click_to_chat,/drohnenaufnahmen-preis,Unassigned,(not set),1,1
-20231120,click_to_chat,(not set),Unassigned,(not set),1,1
-20231123,click_to_chat,(not set),Unassigned,(not set),1,1
-20231130,click_to_chat,/kontakt,Unassigned,(not set),1,1
-20231211,click_to_chat,/impressum,Organic Search,google,1,1
-20231211,fb_klick,/impressum,Organic Search,google,1,1
-20231211,ytb_klick,/impressum,Organic Search,google,1,1
-20231227,fb_klick,/,Organic Search,google,1,1
-20231227,ytb_klick,/,Organic Search,google,1,1
-20240111,kontakt_form_send,/,Referral,tagassistant.google.com,1,1
-20240123,ytb_klick,/drohnenaufnahmen-preis,Unassigned,(not set),1,1
-20240125,click_to_chat,/drohnenaufnahmen-preis,Unassigned,(not set),1,1
-20240125,click_to_chat,/kontakt,Unassigned,(not set),1,1
-20240128,click_to_chat,(not set),Unassigned,(not set),1,1
-20240128,click_to_chat,/drohnen-baudokumentation,Unassigned,(not set),1,1
-20240214,kontakt_form_send,/drohnen-aufnahmen-firma,Unassigned,(not set),1,1
-20240219,click_to_chat,/,Unassigned,(not set),1,1
-20240222,ytb_klick,/kontakt,Organic Search,google,1,1
-20240229,kontakt_form_send,/,Referral,tagassistant.google.com,1,1
-20240309,click_to_chat,/drohnenaufnahmen-preis,Unassigned,(not set),1,1
-20240328,click_to_chat,(not set),Unassigned,(not set),1,1
-20240330,click_to_chat,/haus-grundstueck-luftbild,Unassigned,(not set),1,1
-20240405,kontakt_form_send,/,Direct,(direct),1,1
-20240422,click_to_chat,/,Unassigned,(not set),1,1
-20240527,click to chat,/kontakt,Unassigned,(not set),1,0
-20240527,click_to_chat,/kontakt,Unassigned,(not set),1,1
-20240603,click to chat,(not set),Unassigned,(not set),1,0
-20240603,click_to_chat,(not set),Unassigned,(not set),1,1
-20240607,click to chat,/drohne-luftaufnahmen-hochzeit,Unassigned,(not set),1,0
-20240607,click_to_chat,/drohne-luftaufnahmen-hochzeit,Unassigned,(not set),1,1
-20240625,kontakt_form_send,/,Direct,(direct),1,1
-20240731,click to chat,/drohne-dach-vermessung,Organic Search,google,1,0
-20240731,click_to_chat,/drohne-dach-vermessung,Organic Search,google,1,1
-20240806,tel_klick,/,Organic Search,google,1,1
-20240807,tel_klick,/,Organic Search,google,1,1
-20240808,click to chat,/,Referral,tagassistant.google.com,1,0
-20240808,click_to_chat,/,Referral,tagassistant.google.com,1,1
-20240808,email_klick,/,Referral,tagassistant.google.com,1,1
-20240808,fb_klick,/,Referral,tagassistant.google.com,1,1
-20240808,kontakt_form_send,/,Referral,tagassistant.google.com,1,1
-20240808,tel_klick,/,Referral,tagassistant.google.com,1,1
-20240808,ytb_klick,/,Referral,tagassistant.google.com,1,1
-20240815,click to chat,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,1,0
-20240815,click to chat,/haus-grundstueck-luftbild,Organic Search,google,1,0
-20240815,click_to_chat,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,1,1
-20240815,click_to_chat,/haus-grundstueck-luftbild,Organic Search,google,1,1
-20240828,click to chat,/drohne-dach-vermessung,Paid Search,google,1,0
-20240828,click_to_chat,/drohne-dach-vermessung,Paid Search,google,1,1
-20240913,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20240913,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20240918,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20240918,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20240922,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20240922,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20240923,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20240923,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20240927,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20240927,click to chat,/drohnenaufnahmen-preis-kosten,Direct,(direct),1,0
-20240927,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20240927,click_to_chat,/drohnenaufnahmen-preis-kosten,Direct,(direct),1,1
-20240928,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20240928,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20241002,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241002,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241004,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241004,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241005,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20241005,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20241006,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20241006,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20241007,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20241007,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20241009,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241009,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241010,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20241010,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20241012,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241012,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20241012,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241012,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20241013,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241013,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20241013,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241013,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20241014,click to chat,/drohne-dach-vermessung,Direct,(direct),1,0
-20241014,click_to_chat,/drohne-dach-vermessung,Direct,(direct),1,1
-20241015,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241015,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241016,kontakt_form_send,/drohne-dach-vermessung,Paid Search,google,1,1
-20241017,kontakt_form_send,/drohne-dach-vermessung,Referral,tagassistant.google.com,1,1
-20241021,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241021,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241024,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20241024,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20241026,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241026,click to chat,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,0
-20241026,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20241026,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241026,click_to_chat,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,1
-20241026,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20241028,click to chat,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,0
-20241028,click_to_chat,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,1
-20241102,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241102,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241104,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241104,click to chat,/drohne-dach-gebaeude-inspektion,Direct,(direct),1,0
-20241104,click to chat,/drohne-dach-vermessung,Direct,(direct),1,0
-20241104,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241104,click_to_chat,/drohne-dach-gebaeude-inspektion,Direct,(direct),1,1
-20241104,click_to_chat,/drohne-dach-vermessung,Direct,(direct),1,1
-20241106,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241106,click to chat,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,0
-20241106,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20241106,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241106,click_to_chat,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,1
-20241106,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20241107,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241107,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20241107,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241107,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20241108,click_to_chat,/drohne-dach-gebaeude-inspektion,Direct,(direct),1,1
-20241111,click to chat,/drohne-luftaufnahmen-hochzeit,Organic Search,google,1,0
-20241111,click_to_chat,/drohne-luftaufnahmen-hochzeit,Organic Search,google,1,1
-20241111,tel_klick,/drohne-luftaufnahmen-hochzeit,Organic Search,google,1,1
-20241112,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0
-20241112,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1
-20241116,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0
-20241116,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1
-20241122,heyflow_exit,/,Referral,tagassistant.google.com,1,0
-20241127,heyflow_formular_abgesendet,/drohne-dach-vermessung,Paid Search,google,1,1
-20241212,fb_klick,/,Referral,provenexpert.com,1,1
-20241212,heyflow_interaktion,/dach-vermessung-drohne-ads,Cross-network,google,1,1
-20241218,heyflow_interaktion,/dach-vermessung-drohne-ads,Paid Search,google,1,1
-20241220,heyflow_interaktion,/drohne-dach-gebaeude-inspektion-ads,Direct,(direct),1,1
-20250204,tel_klick,/drohne-dach-gebaeude-inspektion,Organic Search,google,1,1
-20250209,ytb_klick,/,Organic Search,google,1,1
-20250224,kontakt_form_send,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,ecosia.org,1,1
-20250503,heyflow_formular_abgesendet,/immobilien-fotografie-drohne,Organic Search,google,1,1
-20250512,kontakt_form_send,/,Organic Search,google,1,1
-20250521,email_klick,/,Organic Search,google,1,1
-20250623,kontakt_form_send,/kontakt,Referral,spreewald-luftaufnahmen.de,1,1
-20250908,heyflow_formular_abgesendet,/haus-grundstueck-luftbild,Organic Search,google,1,1
-20251025,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,de.search.yahoo.com,1,1
-20251029,heyflow_formular_abgesendet,/drohne-dach-gebaeude-inspektion,Organic Search,google,1,1
-20251120,email_klick,/drohnen-baudokumentation,Referral,chatgpt.com,1,1
-20251201,tel_klick,/drohne-dach-vermessung,Organic Search,google,1,1
-20251217,email_klick,/haus-grundstueck-luftbild,Organic Search,de.search.yahoo.com,1,1
-20251224,kontakt_form_send,/,Direct,(direct),1,1
-20260111,kontakt_form_send,/fassadenaufmass-drohnen-vermessung-fassade,Direct,(direct),1,1
-20260121,heyflow_interaktion,/haus-grundstueck-luftbild,Organic Search,google,1,1
-20260202,heyflow_interaktion,/,Direct,(direct),1,1
-20260223,fb_klick,/,Referral,provenexpert.com,1,1
-20260420,heyflow_formular_abgesendet,/drohne-dach-vermessung,Organic Search,google,1,1
-20260512,email_klick,/drohne-dach-gebaeude-inspektion,Referral,chatgpt.com,1,1
-20260706,heyflow_interaktion,/,Organic Search,bing,1,1
-20260921,heyflow_formular_abgesendet,/drohne-dach-vermessung,Direct,(direct),1,1
+date,eventName,landingPage,sessionDefaultChannelGroup,sessionSource,eventCount,keyEvents,sessions
+20230829,kontaktformular_gesendet,/,Referral,tagassistant.google.com,12,12,1
+20241122,heyflow_erste_interaktion,/,Referral,tagassistant.google.com,12,0,1
+20260324,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,12,1,1
+20250414,heyflow_interaktion,/jetzt-anfragen,Direct,(direct),11,1,1
+20251020,heyflow_interaktion,/immobilien-fotografie-drohne,Organic Search,google,11,1,1
+20241117,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,10,0,10
+20241117,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,10,10,10
+20250429,heyflow_interaktion,/,Organic Social,linkedin.com,10,1,1
+20250512,heyflow_interaktion,/,Organic Search,google,9,1,1
+20241122,heyflow_button_klick,/,Referral,tagassistant.google.com,8,0,1
+20241122,heyflow_interaktion,/,Referral,tagassistant.google.com,8,8,1
+20240902,kontakt_form_send,/drohne-dach-vermessung,Referral,spreewald-luftaufnahmen.de,7,1,1
+20241204,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,7,1,1
+20250511,heyflow_interaktion,/immobilien-fotografie-drohne,Organic Search,google,7,1,1
+20251022,heyflow_interaktion,/immobilien-fotografie-drohne,Organic Search,google,7,1,1
+20260114,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,7,1,1
+20260504,heyflow_interaktion,/,Organic Search,google,7,1,1
+20260925,heyflow_interaktion,/drohne-dach-vermessung,Organic Search,google,7,1,1
+20241027,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,5,0,4
+20241027,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,5,4,4
+20241108,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,5,0,4
+20241127,heyflow_interaktion,/drohne-dach-vermessung,Paid Search,google,5,1,1
+20241213,heyflow_interaktion,/dach-vermessung-drohne-ads,Paid Search,google,5,1,1
+20241216,heyflow_interaktion,/drohne-dach-vermessung,Paid Search,google,5,1,1
+20241218,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Direct,(direct),5,1,1
+20250503,heyflow_interaktion,/immobilien-fotografie-drohne,Organic Search,google,5,1,1
+20250513,heyflow_interaktion,/drohne-dach-vermessung,Organic Search,google,5,1,1
+20250517,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Organic Search,google,5,1,1
+20250528,heyflow_interaktion,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,5,1,1
+20250531,heyflow_interaktion,/drohne-dach-vermessung,Organic Search,google,5,1,1
+20250602,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,5,1,1
+20250630,heyflow_interaktion,/drohne-dach-vermessung,Organic Search,google,5,1,1
+20250822,heyflow_interaktion,/immobilien-fotografie-drohne,Organic Search,google,5,1,1
+20250827,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,5,1,1
+20250908,heyflow_interaktion,/haus-grundstueck-luftbild,Organic Search,google,5,1,1
+20251019,heyflow_interaktion,/,Unassigned,chatgpt.com,5,1,1
+20251029,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Organic Search,google,5,1,1
+20251115,heyflow_interaktion,/drohne-dach-vermessung,Organic Search,duckduckgo,5,1,1
+20251128,heyflow_interaktion,/,Direct,(direct),5,1,1
+20251217,heyflow_interaktion,/haus-grundstueck-luftbild,Organic Search,de.search.yahoo.com,5,1,1
+20260102,heyflow_interaktion,/,Organic Search,google,5,1,1
+20260420,heyflow_interaktion,/drohne-dach-vermessung,Organic Search,google,5,1,1
+20260706,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,5,1,1
+20260921,heyflow_interaktion,/drohne-dach-vermessung,Direct,(direct),5,1,1
+20241024,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,4,0,4
+20241024,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,4,4,4
+20241031,click to chat,/drohne-dach-vermessung,Cross-network,google,4,0,4
+20241031,click_to_chat,/drohne-dach-vermessung,Cross-network,google,4,4,4
+20241102,click to chat,/drohne-dach-vermessung,Cross-network,google,4,0,4
+20241102,click_to_chat,/drohne-dach-vermessung,Cross-network,google,4,4,4
+20241108,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,4,4,4
+20241110,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,4,0,4
+20241110,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,4,4,4
+20241122,heyflow_interaktion,/drohne-dach-vermessung,Direct,(direct),4,4,1
+20241128,heyflow_interaktion,/drohne-dach-vermessung,Paid Search,google,4,1,1
+20241209,heyflow_interaktion,/drohne-dach-vermessung,Paid Search,google,4,1,1
+20250511,heyflow_interaktion,/haus-grundstueck-luftbild,Organic Search,google,4,1,1
+20250905,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,4,1,1
+20250924,heyflow_interaktion,/haus-grundstueck-luftbild,Organic Search,google,4,1,1
+20251205,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,4,1,1
+20260228,heyflow_interaktion,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,4,1,1
+20260905,heyflow_interaktion,/haus-grundstueck-luftbild,Organic Search,google,4,1,1
+20261112,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,4,1,1
+20230922,kontakt_form_send,/,Referral,tagassistant.google.com,3,2,1
+20240806,email_klick,/,Organic Search,google,3,3,1
+20241011,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,0,3
+20241011,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,3,3
+20241017,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,0,3
+20241017,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,3,3
+20241025,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,0,3
+20241025,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,3,3
+20241031,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,0,3
+20241031,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,3,3
+20241101,click to chat,/drohne-dach-vermessung,Cross-network,google,3,0,3
+20241101,click_to_chat,/drohne-dach-vermessung,Cross-network,google,3,2,3
+20241103,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,0,3
+20241103,click to chat,/drohne-dach-vermessung,Cross-network,google,3,0,3
+20241103,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,3,3
+20241103,click_to_chat,/drohne-dach-vermessung,Cross-network,google,3,3,3
+20241104,click to chat,/drohne-dach-vermessung,Cross-network,google,3,0,3
+20241104,click_to_chat,/drohne-dach-vermessung,Cross-network,google,3,3,3
+20241110,click to chat,/drohne-dach-vermessung,Cross-network,google,3,0,3
+20241110,click_to_chat,/drohne-dach-vermessung,Cross-network,google,3,3,3
+20241116,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,0,3
+20241116,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,3,3,3
+20241122,heyflow_formular_abgesendet,/,Referral,tagassistant.google.com,3,1,1
+20241125,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Paid Search,google,3,1,1
+20241209,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Paid Search,google,3,1,1
+20250727,heyflow_interaktion,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,3,1,1
+20250912,heyflow_interaktion,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,3,1,1
+20250923,heyflow_interaktion,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,3,1,1
+20260227,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Organic Search,bing,3,1,1
+20261012,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Organic Search,google,3,1,1
+20230531,kontaktformular_gesendet,,Referral,tagassistant.google.com,2,2,1
+20240214,click_to_chat,/drohnen-aufnahmen-firma,Unassigned,(not set),2,2,1
+20240222,fb_klick,/kontakt,Organic Search,google,2,2,1
+20240826,click to chat,/,Organic Search,google,2,0,1
+20240826,click_to_chat,/,Organic Search,google,2,1,1
+20240908,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0,2
+20240908,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2,2
+20240924,click to chat,(not set),Paid Search,google,2,0,1
+20240924,click_to_chat,(not set),Paid Search,google,2,1,1
+20240929,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0,2
+20240929,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2,2
+20241001,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0,2
+20241001,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2,2
+20241006,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,0,2
+20241006,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,2,2
+20241008,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0,2
+20241008,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2,2
+20241014,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,0,2
+20241014,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,2,2
+20241015,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0,2
+20241015,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2,2
+20241025,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0,2
+20241025,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2,2
+20241027,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0,2
+20241027,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2,2
+20241028,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0,2
+20241028,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2,2
+20241108,click to chat,/drohne-dach-gebaeude-inspektion,Direct,(direct),2,0,1
+20241109,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,0,2
+20241109,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,2,2
+20241114,click to chat,/drohne-dach-vermessung,Cross-network,google,2,0,2
+20241114,click_to_chat,/drohne-dach-vermessung,Cross-network,google,2,2,2
+20241123,heyflow_interaktion,/drohne-dach-gebaeude-inspektion,Cross-network,google,2,1,1
+20250119,heyflow_interaktion,/,Organic Search,bing,2,1,1
+20260611,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,google,2,1,1
+20260826,kontakt_form_send,/,Organic Search,google,2,1,1
+20230531,kontaktformular_gesendet,/kontakt,Unassigned,(not set),1,0,1
+20230601,email_klick,,Referral,tagassistant.google.com,1,1,1
+20230601,email_klick,/kontakt,Referral,tagassistant.google.com,1,0,1
+20230608,kontaktformular_gesendet,,Organic Search,google,1,1,1
+20230622,kontaktformular_gesendet,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,1,1
+20230829,email_klick,/,Referral,tagassistant.google.com,1,1,1
+20230922,email_klick,/,Referral,tagassistant.google.com,1,1,1
+20230922,email_klick,/drohne-dach-gebaeude-inspektion,Organic Search,google,1,1,1
+20230922,fb_klick,/,Referral,tagassistant.google.com,1,0,1
+20230922,tel_klick,/,Referral,tagassistant.google.com,1,0,1
+20230922,ytb_klick,/,Referral,tagassistant.google.com,1,0,1
+20231020,click_to_chat,/,Direct,(direct),1,0,1
+20231118,click_to_chat,/drohnenaufnahmen-preis,Unassigned,(not set),1,1,1
+20231120,click_to_chat,(not set),Unassigned,(not set),1,1,1
+20231123,click_to_chat,(not set),Unassigned,(not set),1,1,1
+20231130,click_to_chat,/kontakt,Unassigned,(not set),1,1,1
+20231211,click_to_chat,/impressum,Organic Search,google,1,1,1
+20231211,fb_klick,/impressum,Organic Search,google,1,1,1
+20231211,ytb_klick,/impressum,Organic Search,google,1,1,1
+20231227,fb_klick,/,Organic Search,google,1,1,1
+20231227,ytb_klick,/,Organic Search,google,1,1,1
+20240111,kontakt_form_send,/,Referral,tagassistant.google.com,1,1,1
+20240123,ytb_klick,/drohnenaufnahmen-preis,Unassigned,(not set),1,1,1
+20240125,click_to_chat,/drohnenaufnahmen-preis,Unassigned,(not set),1,1,1
+20240125,click_to_chat,/kontakt,Unassigned,(not set),1,1,1
+20240128,click_to_chat,(not set),Unassigned,(not set),1,1,1
+20240128,click_to_chat,/drohnen-baudokumentation,Unassigned,(not set),1,1,1
+20240214,kontakt_form_send,/drohnen-aufnahmen-firma,Unassigned,(not set),1,1,1
+20240219,click_to_chat,/,Unassigned,(not set),1,1,1
+20240222,ytb_klick,/kontakt,Organic Search,google,1,1,1
+20240229,kontakt_form_send,/,Referral,tagassistant.google.com,1,1,1
+20240309,click_to_chat,/drohnenaufnahmen-preis,Unassigned,(not set),1,1,1
+20240328,click_to_chat,(not set),Unassigned,(not set),1,1,1
+20240330,click_to_chat,/haus-grundstueck-luftbild,Unassigned,(not set),1,1,1
+20240405,kontakt_form_send,/,Direct,(direct),1,1,1
+20240422,click_to_chat,/,Unassigned,(not set),1,1,1
+20240527,click to chat,/kontakt,Unassigned,(not set),1,0,1
+20240527,click_to_chat,/kontakt,Unassigned,(not set),1,1,1
+20240603,click to chat,(not set),Unassigned,(not set),1,0,1
+20240603,click_to_chat,(not set),Unassigned,(not set),1,1,1
+20240607,click to chat,/drohne-luftaufnahmen-hochzeit,Unassigned,(not set),1,0,1
+20240607,click_to_chat,/drohne-luftaufnahmen-hochzeit,Unassigned,(not set),1,1,1
+20240625,kontakt_form_send,/,Direct,(direct),1,1,1
+20240731,click to chat,/drohne-dach-vermessung,Organic Search,google,1,0,1
+20240731,click_to_chat,/drohne-dach-vermessung,Organic Search,google,1,1,1
+20240806,tel_klick,/,Organic Search,google,1,1,1
+20240807,tel_klick,/,Organic Search,google,1,1,1
+20240808,click to chat,/,Referral,tagassistant.google.com,1,0,1
+20240808,click_to_chat,/,Referral,tagassistant.google.com,1,1,1
+20240808,email_klick,/,Referral,tagassistant.google.com,1,1,1
+20240808,fb_klick,/,Referral,tagassistant.google.com,1,1,1
+20240808,kontakt_form_send,/,Referral,tagassistant.google.com,1,1,1
+20240808,tel_klick,/,Referral,tagassistant.google.com,1,1,1
+20240808,ytb_klick,/,Referral,tagassistant.google.com,1,1,1
+20240815,click to chat,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,1,0,1
+20240815,click to chat,/haus-grundstueck-luftbild,Organic Search,google,1,0,1
+20240815,click_to_chat,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,google,1,1,1
+20240815,click_to_chat,/haus-grundstueck-luftbild,Organic Search,google,1,1,1
+20240828,click to chat,/drohne-dach-vermessung,Paid Search,google,1,0,1
+20240828,click_to_chat,/drohne-dach-vermessung,Paid Search,google,1,1,1
+20240913,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20240913,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20240918,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20240918,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20240922,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20240922,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20240923,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20240923,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20240927,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20240927,click to chat,/drohnenaufnahmen-preis-kosten,Direct,(direct),1,0,1
+20240927,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20240927,click_to_chat,/drohnenaufnahmen-preis-kosten,Direct,(direct),1,1,1
+20240928,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20240928,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20241002,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241002,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241004,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241004,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241005,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20241005,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20241006,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20241006,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20241007,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20241007,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20241009,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241009,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241010,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20241010,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20241012,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241012,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20241012,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241012,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20241013,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241013,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20241013,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241013,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20241014,click to chat,/drohne-dach-vermessung,Direct,(direct),1,0,1
+20241014,click_to_chat,/drohne-dach-vermessung,Direct,(direct),1,1,1
+20241015,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241015,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241016,kontakt_form_send,/drohne-dach-vermessung,Paid Search,google,1,1,1
+20241017,kontakt_form_send,/drohne-dach-vermessung,Referral,tagassistant.google.com,1,1,1
+20241021,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241021,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241024,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20241024,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20241026,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241026,click to chat,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,0,1
+20241026,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20241026,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241026,click_to_chat,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,1,1
+20241026,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20241028,click to chat,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,0,1
+20241028,click_to_chat,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,1,1
+20241102,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241102,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241104,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241104,click to chat,/drohne-dach-gebaeude-inspektion,Direct,(direct),1,0,1
+20241104,click to chat,/drohne-dach-vermessung,Direct,(direct),1,0,1
+20241104,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241104,click_to_chat,/drohne-dach-gebaeude-inspektion,Direct,(direct),1,1,1
+20241104,click_to_chat,/drohne-dach-vermessung,Direct,(direct),1,1,1
+20241106,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241106,click to chat,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,0,1
+20241106,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20241106,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241106,click_to_chat,/drohne-dach-gebaeude-inspektion,Paid Search,google,1,1,1
+20241106,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20241107,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241107,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20241107,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241107,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20241108,click_to_chat,/drohne-dach-gebaeude-inspektion,Direct,(direct),1,1,1
+20241111,click to chat,/drohne-luftaufnahmen-hochzeit,Organic Search,google,1,0,1
+20241111,click_to_chat,/drohne-luftaufnahmen-hochzeit,Organic Search,google,1,1,1
+20241111,tel_klick,/drohne-luftaufnahmen-hochzeit,Organic Search,google,1,1,1
+20241112,click to chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,0,1
+20241112,click_to_chat,/drohne-dach-gebaeude-inspektion,Cross-network,google,1,1,1
+20241116,click to chat,/drohne-dach-vermessung,Cross-network,google,1,0,1
+20241116,click_to_chat,/drohne-dach-vermessung,Cross-network,google,1,1,1
+20241122,heyflow_exit,/,Referral,tagassistant.google.com,1,0,1
+20241127,heyflow_formular_abgesendet,/drohne-dach-vermessung,Paid Search,google,1,1,1
+20241212,fb_klick,/,Referral,provenexpert.com,1,1,1
+20241212,heyflow_interaktion,/dach-vermessung-drohne-ads,Cross-network,google,1,1,1
+20241218,heyflow_interaktion,/dach-vermessung-drohne-ads,Paid Search,google,1,1,1
+20241220,heyflow_interaktion,/drohne-dach-gebaeude-inspektion-ads,Direct,(direct),1,1,1
+20250204,tel_klick,/drohne-dach-gebaeude-inspektion,Organic Search,google,1,1,1
+20250209,ytb_klick,/,Organic Search,google,1,1,1
+20250224,kontakt_form_send,/fassadenaufmass-drohnen-vermessung-fassade,Organic Search,ecosia.org,1,1,1
+20250503,heyflow_formular_abgesendet,/immobilien-fotografie-drohne,Organic Search,google,1,1,1
+20250512,kontakt_form_send,/,Organic Search,google,1,1,1
+20250521,email_klick,/,Organic Search,google,1,1,1
+20250623,kontakt_form_send,/kontakt,Referral,spreewald-luftaufnahmen.de,1,1,1
+20250908,heyflow_formular_abgesendet,/haus-grundstueck-luftbild,Organic Search,google,1,1,1
+20251025,heyflow_interaktion,/drohnenaufnahmen-preis-kosten,Organic Search,de.search.yahoo.com,1,1,1
+20251029,heyflow_formular_abgesendet,/drohne-dach-gebaeude-inspektion,Organic Search,google,1,1,1
+20251120,email_klick,/drohnen-baudokumentation,Referral,chatgpt.com,1,1,1
+20251201,tel_klick,/drohne-dach-vermessung,Organic Search,google,1,1,1
+20251217,email_klick,/haus-grundstueck-luftbild,Organic Search,de.search.yahoo.com,1,1,1
+20251224,kontakt_form_send,/,Direct,(direct),1,1,1
+20260111,kontakt_form_send,/fassadenaufmass-drohnen-vermessung-fassade,Direct,(direct),1,1,1
+20260121,heyflow_interaktion,/haus-grundstueck-luftbild,Organic Search,google,1,1,1
+20260202,heyflow_interaktion,/,Direct,(direct),1,1,1
+20260223,fb_klick,/,Referral,provenexpert.com,1,1,1
+20260420,heyflow_formular_abgesendet,/drohne-dach-vermessung,Organic Search,google,1,1,1
+20260512,email_klick,/drohne-dach-gebaeude-inspektion,Referral,chatgpt.com,1,1,1
+20260706,heyflow_interaktion,/,Organic Search,bing,1,1,1
+20260921,heyflow_formular_abgesendet,/drohne-dach-vermessung,Direct,(direct),1,1,1
