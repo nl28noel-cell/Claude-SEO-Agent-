@@ -1,0 +1,132 @@
+{
+  "url": "https://drohnenflugvismann.de/landingpage-baufirmen/",
+  "domain": "drohnenflugvismann.de",
+  "fetched": "2026-11-23T16:13:21Z",
+  "status": 200,
+  "final_url": "https://drohnenflugvismann.de/landingpage-baufirmen/",
+  "title": "Drohnenvermessung & Baustellendokumentation Für Baufirmen | Drohnenflug Vismann",
+  "meta_description": "Optimieren Sie Ihr Baustellen-Controlling, minimieren Sie Risiken und überzeugen Sie Investoren sowie Bauherren mit hochpräzisen Drohnendaten und",
+  "headings": [
+    [
+      "h3",
+      "Für Bauunternehmen, Projektentwickler & Architekten in Schleswig-Holstein & Umgebung"
+    ],
+    [
+      "h1",
+      "Drohne Baustellen Dokumentation für Baufirmen? Effiziente Vermessung & Dokumentation"
+    ],
+    [
+      "h2",
+      "Baudokumentation ist zeitaufwendig. Geht das nicht effizienter?"
+    ],
+    [
+      "h3",
+      "Lückenhafte Dokumentation & Streitpotenzial"
+    ],
+    [
+      "h3",
+      "Gefährliche und unübersichtliche Sichtprüfungen"
+    ],
+    [
+      "h3",
+      "Inflexibel bei der Vermarktung"
+    ],
+    [
+      "h2",
+      "Maßgeschneiderte Drohnen-Lösungen für Ihren Bau-Erfolg"
+    ],
+    [
+      "h3",
+      "Baufortschritts-Dokumentation"
+    ],
+    [
+      "h3",
+      "Orthofotografie & Geländemodelle"
+    ],
+    [
+      "h3",
+      "Mängelanalyse & Sicherheitsinspektion"
+    ],
+    [
+      "h3",
+      "Marketing, Image & Vertrieb"
+    ],
+    [
+      "h2",
+      "Warum Baufirmen auf Drohnenflug Vismann setzen"
+    ],
+    [
+      "h2",
+      "In 3 Schritten zu Ihren professionellen Baustellen-Daten"
+    ],
+    [
+      "h3",
+      "Bedarfsanalyse & Planung"
+    ],
+    [
+      "h3",
+      "Präziser Drohneneinsatz"
+    ],
+    [
+      "h3",
+      "Direkte Daten-Bereitstellung"
+    ],
+    [
+      "h2",
+      "Optimieren Sie Ihr nächstes Bauprojekt mit professionellen Luftdaten!"
+    ],
+    [
+      "h3",
+      "DROHNENFLUG VISMANN"
+    ]
+  ],
+  "h1": [
+    "Drohne Baustellen Dokumentation für Baufirmen? Effiziente Vermessung & Dokumentation"
+  ],
+  "words": 612,
+  "signals": {
+    "faq": 0,
+    "preis": 1,
+    "intervall_abo": 0,
+    "zeitraffer": 2,
+    "video": 1,
+    "orthofoto": 2,
+    "3d_modell": 4,
+    "bim_cad": 3,
+    "portal_cloud": 0,
+    "vermessung_volumen": 6,
+    "beweissicherung": 3,
+    "marketing": 6,
+    "referenzen": 3,
+    "bewertungen": 6,
+    "zertifikat_genehmigung": 2,
+    "versicherung": 1,
+    "lieferzeit": 0,
+    "datenschutz": 0,
+    "zielgruppe_bautraeger": 1,
+    "zielgruppe_bauunternehmen": 4,
+    "zielgruppe_architekt": 1,
+    "zielgruppe_hausverwaltung": 0,
+    "zielgruppe_privat": 1,
+    "lokal_berlin": 0,
+    "lokal_brandenburg": 0,
+    "cta_anfrage": 1
+  },
+  "faq_questions": [
+    "Baudokumentation ist zeitaufwendig. Geht das nicht effizienter?"
+  ],
+  "has_form": false,
+  "has_phone_link": true,
+  "schema_types": [
+    "Article",
+    "BreadcrumbList",
+    "GeoCoordinates",
+    "ImageObject",
+    "ListItem",
+    "Person",
+    "Place",
+    "PostalAddress",
+    "WebPage",
+    "WebSite"
+  ]
+}

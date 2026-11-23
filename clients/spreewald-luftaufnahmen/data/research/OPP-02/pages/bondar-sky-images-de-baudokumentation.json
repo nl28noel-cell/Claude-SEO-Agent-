@@ -1,0 +1,195 @@
+{
+  "url": "https://www.bondar-sky-images.de/baudokumentation/",
+  "domain": "bondar-sky-images.de",
+  "fetched": "2026-11-23T16:13:12Z",
+  "status": 200,
+  "final_url": "https://www.bondar-sky-images.de/bau-architektur/",
+  "title": "Drohnen für Bau & Architektur | Bondar Sky Images",
+  "meta_description": "Drohnenlösungen für Bauunternehmen, Architekten und Projektentwickler: Baudokumentation, 3D-Aufmaß, Inspektionen und Luftaufnahmen. Jetzt mehr entdecken.",
+  "headings": [
+    [
+      "h3",
+      "Eventfotografie & Drohnenaufnahmen"
+    ],
+    [
+      "h3",
+      "Drohne mieten"
+    ],
+    [
+      "h3",
+      "PV-Inspektionen"
+    ],
+    [
+      "h3",
+      "Thermografie"
+    ],
+    [
+      "h3",
+      "Dachinspektionen"
+    ],
+    [
+      "h3",
+      "3D-Aufmaß"
+    ],
+    [
+      "h3",
+      "Schulungen"
+    ],
+    [
+      "h1",
+      "Bauprojekte dokumentieren. Gebäude digital erfassen."
+    ],
+    [
+      "h2",
+      "Für jede Projektphase die passende Drohnenlösung."
+    ],
+    [
+      "h3",
+      "Baudokumentation"
+    ],
+    [
+      "h3",
+      "3D-Aufmaß"
+    ],
+    [
+      "h3",
+      "Dachinspektionen"
+    ],
+    [
+      "h3",
+      "Thermografie"
+    ],
+    [
+      "h3",
+      "PV-Inspektionen"
+    ],
+    [
+      "h2",
+      "Einmalinge Aufnahme oder laufende Baudokumentation."
+    ],
+    [
+      "h3",
+      "BauSnapshot"
+    ],
+    [
+      "h3",
+      "BauProgress"
+    ],
+    [
+      "h3",
+      "BauProgress Plus"
+    ],
+    [
+      "h3",
+      "BauChronik"
+    ],
+    [
+      "h2",
+      "Ihre Baudokumentation beginnt hier."
+    ],
+    [
+      "h3",
+      "Persönliche Projektabstimmung"
+    ],
+    [
+      "h3",
+      "Hochauflösende Baustellenaufnahmen"
+    ],
+    [
+      "h3",
+      "Einmalig oder regelmäßig"
+    ],
+    [
+      "h3",
+      "Dokumentation nach Projektbedarf"
+    ],
+    [
+      "h2",
+      "Expertentipp von Inhaber Marcel Bondar."
+    ],
+    [
+      "h2",
+      "Von der Anfrage bis zur Dokumentation."
+    ],
+    [
+      "h3",
+      "Projekt & Paket abstimmen"
+    ],
+    [
+      "h3",
+      "Flüge & Termine planen"
+    ],
+    [
+      "h3",
+      "Baufortschritt aufnehmen"
+    ],
+    [
+      "h3",
+      "Bilder & Dokumentation"
+    ],
+    [
+      "h2",
+      "Häufige Fragen zu Baudokumentationen mit Drohne."
+    ],
+    [
+      "h2",
+      "Baufortschritte festhalten. Für alle Beteiligten sichtar machen."
+    ],
+    [
+      "h2",
+      "Hallo, ich bin Marcel Bondar."
+    ]
+  ],
+  "h1": [
+    "Bauprojekte dokumentieren. Gebäude digital erfassen."
+  ],
+  "words": 1975,
+  "signals": {
+    "faq": 2,
+    "preis": 34,
+    "intervall_abo": 77,
+    "zeitraffer": 0,
+    "video": 0,
+    "orthofoto": 0,
+    "3d_modell": 9,
+    "bim_cad": 0,
+    "portal_cloud": 0,
+    "vermessung_volumen": 11,
+    "beweissicherung": 0,
+    "marketing": 0,
+    "referenzen": 8,
+    "bewertungen": 0,
+    "zertifikat_genehmigung": 1,
+    "versicherung": 0,
+    "lieferzeit": 0,
+    "datenschutz": 4,
+    "zielgruppe_bautraeger": 2,
+    "zielgruppe_bauunternehmen": 3,
+    "zielgruppe_architekt": 6,
+    "zielgruppe_hausverwaltung": 0,
+    "zielgruppe_privat": 3,
+    "lokal_berlin": 0,
+    "lokal_brandenburg": 0,
+    "cta_anfrage": 9
+  },
+  "faq_questions": [],
+  "has_form": true,
+  "has_phone_link": true,
+  "schema_types": [
+    "Answer",
+    "Audience",
+    "CollectionPage",
+    "ContactPoint",
+    "Country",
+    "FAQPage",
+    "LocalBusiness",
+    "Offer",
+    "OfferCatalog",
+    "OpeningHoursSpecification",
+    "Person",
+    "PostalAddress",
+    "Question",
+    "Service",
+    "WebSite"
+  ]
+}

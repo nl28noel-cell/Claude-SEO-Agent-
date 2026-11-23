@@ -7,7 +7,9 @@ Das Artifact schreibt Noels Entscheidungen hinein, der Agent schreibt Produktion
 
 Dokumentschema workflow/<OPP-ID>:
   opp_id, test(bool), title
-  gate1:      {status: "approved", at, comment}
+  gate1:      {status: "approved", at, comment, research_version, research_state, research_override}
+              Gate 1 = Strategie-Freigabe: produziert wird nur, wenn research_version der aktuellen
+              Research-Version entspricht (tools/research.py strategy_ok) oder research_override=true.
   production: {status: waiting|in_progress|draft_ready|failed, version, doc_id, doc_url, doc_title,
                created_at, updated_at, qa_status, qa_notes, strategy_summary, error, history:[...]}
   review:     {status: pending|revision_requested|approved, comment, at, for_version}
@@ -26,6 +28,8 @@ Keine Website-, WordPress- oder URL-Aktion.
 import glob, html, json, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, "tools"))
+import research  # noqa: E402
 DEFAULT_CLIENT = "spreewald-luftaufnahmen"
 
 
@@ -55,8 +59,9 @@ def _age_min(iso):
         return 1e9
 
 
-def actions(docs):
-    """Was ist zu tun? Nur explizite Freigaben – nie aus dem bloßen Vorhandensein einer Opportunity."""
+def actions(docs, client=DEFAULT_CLIENT):
+    """Was ist zu tun? Nur explizite Freigaben – nie aus dem bloßen Vorhandensein einer Opportunity.
+    Erstproduktion zusätzlich nur mit freigegebener Strategie (Research-Stufe); sonst Eintrag `hold` (nicht bearbeiten)."""
     out = []
     for did, w in sorted(docs.items()):
         g1 = (w.get("gate1") or {}).get("status")
@@ -74,6 +79,11 @@ def actions(docs):
             out.append({"doc": did, "action": "revise", "comment": rev.get("comment"), "for_version": rev.get("for_version") or prod.get("version"),
                         "test": bool(w.get("test")), "version": w.get("_version")})
         elif prod.get("status") in (None, "waiting", "failed", "running"):
+            if not w.get("test"):
+                ok, why = research.strategy_ok(w.get("gate1"), research.load(client, w.get("opp_id") or did))
+                if not ok:
+                    out.append({"doc": did, "action": "hold", "reason": why, "test": False, "version": w.get("_version")})
+                    continue
             out.append({"doc": did, "action": "produce", "comment": (w.get("gate1") or {}).get("comment"), "test": bool(w.get("test")), "version": w.get("_version")})
     return out
 
@@ -138,6 +148,12 @@ def brief(d, opp_id, out, client=DEFAULT_CLIENT):
     o = next((x for x in dash["opportunities"] if x["id"] == opp_id), None)
     if not o and not w.get("test"):
         sys.exit(f"{opp_id} nicht in den Opportunities.")
+    R = None
+    if not w.get("test"):
+        R = research.load(client, opp_id)
+        ok, why = research.strategy_ok(w.get("gate1"), R)
+        if not ok and (w.get("review") or {}).get("status") != "revision_requested":
+            sys.exit(f"{opp_id}: Strategie nicht freigegeben ({why}) – Produktion verweigert.")
     if not o:  # TEST-Eintrag: Karte aus dem db-Dokument
         o = {"id": opp_id, "name": w.get("title", opp_id), "type": (w.get("card") or {}).get("type", "CREATE"), "primary_keyword": (w.get("card") or {}).get("primary_keyword", "test"),
              "gsc": {"queries": [], "cluster": None}, "semrush": {"keywords": []}, "existing_page": None, "why": "Technischer Test", "recommendation": "Technischer Test", "reasoning": [], "risks": [], "findings_detail": []}
@@ -164,6 +180,8 @@ def brief(d, opp_id, out, client=DEFAULT_CLIENT):
         e = f["engagement"]
         L += ["", "## Search → Business (GA4/Ads)", f"- Sitzungen {e['sessions']} · engagiert {e['engaged']} · Funnel Intent {e['micro_sessions']} Sitz. · Leads {e['leads']} ({e['lead_form']} Form, {e['lead_contact']} Kontakt)",
               f"- Paid-Historie: {f['paid']['keyword_cost']} € / {f['paid']['keyword_clicks']} Klicks"] + [f"- Signal: {s['text']}" for s in f["signals"]]
+    if R:
+        L += _research_brief(R, (w.get("gate1") or {}))
     L += ["", "## Findings"] + [f"- {x['id']} {x['title']} ({x['status']})" for x in o.get("findings_detail", [])]
     L += ["", "## Verbindliche Regeln",
           "- clients/spreewald-luftaufnahmen/business-profile.md (insb. §8 belegte Vorteile, §10 Niemals erfinden)",
@@ -173,6 +191,26 @@ def brief(d, opp_id, out, client=DEFAULT_CLIENT):
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     open(out, "w", encoding="utf-8").write("\n".join(L) + "\n")
     print(f"✓ Briefing → {out}")
+
+
+def _research_brief(R, g1):
+    """Freigegebene Strategie (A–J) als verbindliche Vorgabe für den Entwurf."""
+    A, F, G, H = R.get("A_decision", {}), R.get("F_scope", {}), R.get("G_structure", {}), R.get("H_ia", {})
+    ko = H.get("keyword_ownership", {})
+    L = ["", f"## Freigegebene Strategie (Research v{R.get('version')}{' · OVERRIDE ohne vollständige Research' if g1.get('research_override') else ''})",
+         f"- Entscheidung: {A.get('decision')} · Ziel-URL: {A.get('target_url') or '–'}", f"- Zusammenfassung: {A.get('summary')}",
+         f"- Kernbotschaft: {F.get('core_message')}", f"- Search Intent: {F.get('search_intent')}", f"- Zielgruppe: {', '.join(F.get('audience', []))}",
+         f"- Conversion-Ziel: {F.get('conversion_goal')}", "- Key Questions (müssen beantwortet werden):"] + [f"  - {x}" for x in F.get("key_questions", [])]
+    L += ["- Notwendige Leistungsinformationen:"] + [f"  - {x}" for x in F.get("service_info", [])]
+    L += ["- Trust/Proof (nur diese, alle belegt):"] + [f"  - {x}" for x in F.get("trust_proof", [])]
+    L += ["- Bewusst NICHT auf dieser Seite:"] + [f"  - {x['topic']} → {x['goes_to']}" for x in F.get("not_on_page", [])]
+    L += ["", "### Struktur (Grobgliederung, im Entwurf ausformulieren)", f"- Title-Vorschlag: {G.get('title_proposal') or '–'} · Meta: {G.get('meta_note') or '–'}", f"- H1: {G.get('h1')}"]
+    for x in G.get("sections", []):
+        L += [f"- H2: {x['h2']} – {x['purpose']}"] + [f"  - H3: {h}" for h in x.get("h3", [])]
+    L += ["", "### Keyword Ownership", f"- Diese Seite: {', '.join(ko.get('owns', []))}"] + [f"- NICHT targeten: {x['keyword']} ({x['reason']} → {x['owner']})" for x in ko.get("do_not_target", [])]
+    L += ["- Interne Links (Empfehlung):"] + [f"  - {x['from']} → {x['to']} „{x['anchor']}“ ({x['type']})" for x in H.get("internal_links", [])]
+    L += ["", "### Offene Punkte / Risiken (nicht erfinden, im Zweifel weglassen)"] + [f"- [{x['type']}] {x['item']} → {x['mitigation']}" for x in R.get("J_risks", [])]
+    return L
 
 
 def _inline(t):

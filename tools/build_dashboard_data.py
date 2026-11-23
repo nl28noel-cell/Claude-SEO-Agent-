@@ -16,6 +16,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 from gsc_analyze import cluster as classify_cluster, places as find_places  # noqa: E402
 import build_ga4_ads  # noqa: E402
+import research  # noqa: E402
 
 OUT_ROOT = os.path.join(ROOT, "dashboard", "public", "data")
 
@@ -308,6 +309,15 @@ def build_client(slug, today):
         ch["impact"] = {"before_28d": before, "after": agg(after_rows) if after_rows else None,
                         "after_days": len({r["date"] for r in after_rows}),
                         "note": "Noch keine GSC-Daten nach dem Änderungsdatum." if not after_rows else "Korrelation ≠ Kausalität."}
+
+    # ---- Research-/Strategy-Stufe (vor Gate 1): Dossier A–J + abgeleiteter Status je CREATE/OPTIMIZE/MERGE
+    for rid, r in research.all_for(slug, opps).items():
+        o = next(x for x in opps if x["id"] == rid)
+        o["research"] = r["doc"]
+        o["research_status"] = {**r["status"], **{k: r["summary"][k] for k in ("version", "updated", "decision", "serp_quality", "units")}}
+        if r["doc"]:
+            for e in research.validate(r["doc"]):
+                warnings.append(f"Research {rid}: {e}")
 
     # ---- Approvals
     appr = st("approvals")

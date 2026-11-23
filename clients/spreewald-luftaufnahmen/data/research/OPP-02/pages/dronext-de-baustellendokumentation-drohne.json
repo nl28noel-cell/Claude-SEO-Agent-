@@ -1,0 +1,6 @@
+{
+  "url": "https://www.dronext.de/baustellendokumentation-drohne/",
+  "domain": "dronext.de",
+  "fetched": "2026-11-23T16:13:16Z",
+  "error": "HTTPSConnectionPool(host='www.dronext.de', port=443): Max retries exceeded with url: /baustellendokumentation-drohne/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] "
+}

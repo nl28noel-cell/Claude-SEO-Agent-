@@ -229,16 +229,53 @@ class ArtifactQA(unittest.TestCase):
         import workflow
         docs = {
             "OPP-A": {},                                                                # kein Gate 1 → nichts tun
-            "OPP-B": {"gate1": {"status": "approved"}, "production": {"status": "waiting"}},
+            "OPP-B": {"gate1": {"status": "approved", "research_override": True}, "production": {"status": "waiting"}},
+            "OPP-H": {"gate1": {"status": "approved"}, "production": {"status": "waiting"}},          # Gate 1 ohne Strategie-Bezug → hold
             "OPP-C": {"gate1": {"status": "approved"}, "production": {"status": "draft_ready", "version": 1}, "review": {"status": "revision_requested", "comment": "x"}},
             "OPP-D": {"gate1": {"status": "approved"}, "production": {"status": "draft_ready"}, "gate2": {"status": "approved"}},
             "OPP-E": {"gate1": {"status": "approved"}, "production": {"status": "in_progress"}},
         }
         acts = {a["doc"]: a["action"] for a in workflow.actions(docs)}
-        self.assertEqual(acts, {"OPP-B": "produce", "OPP-C": "revise"})
-        # alle echten Opportunities starten ohne Workflow-Eintrag (= Zur Prüfung)
+        self.assertEqual(acts, {"OPP-B": "produce", "OPP-C": "revise", "OPP-H": "hold"})
+        # echte Freigaben im Spiegel stammen nur aus expliziten Gate-1-Aktionen (mit Zeitstempel);
+        # alte Freigaben ohne Strategie-Bezug werden nie produziert (hold)
         wf = json.load(open(os.path.join(CDIR, "state", "workflow.json"), encoding="utf-8"))
-        self.assertFalse([x for x in wf["items"] if not x.get("test") and (x.get("gate1") or {}).get("status") == "approved"])
+        real = {x["id"]: x for x in wf["items"] if not x.get("test") and (x.get("gate1") or {}).get("status") == "approved"}
+        self.assertTrue(all(x["gate1"].get("at") for x in real.values()))
+        for a in workflow.actions(real):
+            self.assertNotEqual(a["action"], "produce", a)
+
+    def test_research_stage(self):
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import research
+        R = research.load("spreewald-luftaufnahmen", "OPP-02")
+        self.assertEqual(research.validate(R), [])
+        st = research.derive(R)
+        self.assertEqual(st["state"], "complete_with_limits")          # SERP nur indikativ → nie „complete“
+        self.assertTrue(st["limits"])
+        self.assertEqual(R["method"]["semrush_units_used"], 0)        # keine kostenpflichtigen Abfragen ohne Freigabe
+        self.assertEqual(R["A_decision"]["decision"], R["H_ia"]["decision"])
+        # Strategie-Freigabe nur mit passender Research-Version (oder Override)
+        self.assertEqual(research.strategy_ok({"status": "approved", "research_version": R["version"]}, R), (True, "ok"))
+        self.assertEqual(research.strategy_ok({"status": "approved"}, R)[1], "strategy_not_approved")
+        self.assertEqual(research.strategy_ok({"status": "approved"}, None)[1], "research_missing")
+        self.assertTrue(research.strategy_ok({"status": "approved", "research_override": True}, None)[0])
+        # fehlender Abschnitt / offener Punkt → incomplete, egal was deklariert ist
+        bad = json.loads(json.dumps(R)); bad["E_gap"] = {}
+        self.assertEqual(research.derive(bad)["state"], "incomplete")
+        pend = json.loads(json.dumps(R)); pend["status"]["pending"] = ["SERP validation pending"]
+        d = research.derive(pend); self.assertEqual(d["state"], "incomplete"); self.assertIn("SERP validation pending", d["label"])
+        self.assertEqual(research.derive(None)["state"], "not_started")
+        self.assertEqual(research.strategy_ok({"status": "approved", "research_version": R["version"]}, pend)[1], "research_incomplete")
+        # Dashboard: alle CREATE/OPTIMIZE/MERGE haben einen Research-Status, nur OPP-02 ein Dossier
+        for o in self.d["opportunities"]:
+            if o["type"] in ("CREATE", "OPTIMIZE", "MERGE"):
+                self.assertIn(o["research_status"]["state"], research.STATES)
+        o2 = next(o for o in self.d["opportunities"] if o["id"] == "OPP-02")
+        self.assertEqual(o2["research_status"]["state"], "complete_with_limits")
+        self.assertEqual(set(research.SECTIONS) - set(o2["research"]), set())
+        # Kein Wettbewerbertext übernommen: Dossier enthält keine langen Zitate aus den Seitenprofilen
+        self.assertNotIn("lückenloser Baufortschritt aus der Luft", json.dumps(R["F_scope"], ensure_ascii=False) + json.dumps(R["G_structure"], ensure_ascii=False))
 
     def test_workflow_render_html(self):
         import tempfile

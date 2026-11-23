@@ -1,0 +1,133 @@
+{
+  "url": "https://www.spreewald-luftaufnahmen.de/drohnen-baudokumentation/",
+  "domain": "spreewald-luftaufnahmen.de",
+  "fetched": "2026-11-23T16:13:08Z",
+  "status": 200,
+  "final_url": "https://www.spreewald-luftaufnahmen.de/drohnen-baudokumentation/",
+  "title": "Baudokumentation Drohne | Baustellendokumentation Berlin",
+  "meta_description": "Baudokumentation Drohne ► Moderne Baustellendokumentation in Berlin & Brandenburg ► Fortschrittsüberwachung ✔ 3D-Modellierung ► Jetzt buchen!",
+  "headings": [
+    [
+      "h1",
+      "Baudokumentation Drohne in Berlin und Brandenburg"
+    ],
+    [
+      "h2",
+      "Baudokumentation per Drohne: Ihr Bauprojekt professionell dokumentiert"
+    ],
+    [
+      "h2",
+      "Mehrjährige Begleitung: Baudokumentation mit Drohne"
+    ],
+    [
+      "h2",
+      "Unkompliziert zur perfekten Lösung!"
+    ],
+    [
+      "h2",
+      "Darum entscheiden sich Bauunternehmen für uns:"
+    ],
+    [
+      "h2",
+      "Unternehmen, die auf unsere Lösungen zählen"
+    ],
+    [
+      "h2",
+      "Baufortschritt per Drohne jederzeit im Blick behalten"
+    ],
+    [
+      "h2",
+      "Warum lohnt sich eine professionelle Baudokumentation?"
+    ],
+    [
+      "h2",
+      "Kundenstimmen"
+    ],
+    [
+      "h3",
+      "Ihre Gründe für unsere Zusammenarbeit"
+    ],
+    [
+      "h2",
+      "Baudokumentation, die Ihre Projektarbeit erleichtert"
+    ],
+    [
+      "h2",
+      "Was macht unsere Drohnenflüge und Dokumentationen so besonders?"
+    ],
+    [
+      "h3",
+      "Langjährige Erfahrung und bekannt aus dem rbb"
+    ],
+    [
+      "h3",
+      "Zuverlässigkeit, Qualität und Schnelligkeit garantiert"
+    ],
+    [
+      "h3",
+      "Flexible Foto- & Videodokumentation"
+    ],
+    [
+      "h2",
+      "Ihr Partner für die Baudokumentation mit Drohne"
+    ],
+    [
+      "h2",
+      "Starten wir Ihr Projekt gemeinsam."
+    ],
+    [
+      "h3",
+      "Schnelle und unverbindliche Rückmeldung garantiert."
+    ]
+  ],
+  "h1": [
+    "Baudokumentation Drohne in Berlin und Brandenburg"
+  ],
+  "words": 925,
+  "signals": {
+    "faq": 0,
+    "preis": 1,
+    "intervall_abo": 9,
+    "zeitraffer": 0,
+    "video": 4,
+    "orthofoto": 0,
+    "3d_modell": 0,
+    "bim_cad": 0,
+    "portal_cloud": 0,
+    "vermessung_volumen": 0,
+    "beweissicherung": 1,
+    "marketing": 3,
+    "referenzen": 8,
+    "bewertungen": 1,
+    "zertifikat_genehmigung": 3,
+    "versicherung": 0,
+    "lieferzeit": 0,
+    "datenschutz": 0,
+    "zielgruppe_bautraeger": 2,
+    "zielgruppe_bauunternehmen": 4,
+    "zielgruppe_architekt": 3,
+    "zielgruppe_hausverwaltung": 0,
+    "zielgruppe_privat": 5,
+    "lokal_berlin": 4,
+    "lokal_brandenburg": 3,
+    "cta_anfrage": 4
+  },
+  "faq_questions": [
+    "Warum lohnt sich eine professionelle Baudokumentation?",
+    "Was macht unsere Drohnenflüge und Dokumentationen so besonders?"
+  ],
+  "has_form": true,
+  "has_phone_link": false,
+  "schema_types": [
+    "BreadcrumbList",
+    "EntryPoint",
+    "ImageObject",
+    "ListItem",
+    "Organization",
+    "PropertyValueSpecification",
+    "ReadAction",
+    "SearchAction",
+    "WebPage",
+    "WebSite"
+  ]
+}

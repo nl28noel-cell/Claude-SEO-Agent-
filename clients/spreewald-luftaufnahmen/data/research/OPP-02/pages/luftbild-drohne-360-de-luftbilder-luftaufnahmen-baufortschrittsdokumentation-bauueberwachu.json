@@ -1,0 +1,118 @@
+{
+  "url": "https://www.luftbild-drohne-360.de/luftbilder/luftaufnahmen-baufortschrittsdokumentation-bauueberwachung.htm",
+  "domain": "luftbild-drohne-360.de",
+  "fetched": "2026-11-23T16:13:19Z",
+  "status": 200,
+  "final_url": "https://www.luftbild-drohne-360.de/luftbilder/luftaufnahmen-baufortschrittsdokumentation-bauueberwachung.htm",
+  "title": "Luftbilder mit Drohne für Baufortschritt und Bauüberwachung",
+  "meta_description": "Unsere Drohne liefert Ihnen für die Baufortschrittsdokumentationen ✔ oder Bauüberwachung ✔ hochwertige Luftaufnahmen 🎥 und hochauflösende Luftbilder 📷",
+  "headings": [
+    [
+      "h1",
+      "Luftbilder mit Drohne für Baufortschrittsdokumentation und Bauüberwachung"
+    ],
+    [
+      "h2",
+      "Luftaufnahmen mittels Drohne vom Baufortschritt"
+    ],
+    [
+      "h3",
+      "Baudokumentation der Umbauarbeiten am Lennershof in Bochum-Querenburg"
+    ],
+    [
+      "h3",
+      "Luftaufnahmen mit Drohne zur Baustellendokumentation und Überwachung des Baufortschritts"
+    ],
+    [
+      "h3",
+      "Luftbilder mittels Drohne einer Autobahnbaustelle für ein Bauunternehmen"
+    ],
+    [
+      "h3",
+      "Vorteile von Drohnen auf Baustellen - außen und innen"
+    ],
+    [
+      "h3",
+      "Kontrolle durch Livebildübertragung"
+    ],
+    [
+      "h3",
+      "Unser Angebot einer Baustellendokumentation für Sie"
+    ],
+    [
+      "h3",
+      "Luftaufnahmen der Baustelle vom Musikzentrum Bochum und dem Umbau der Marienkirche"
+    ],
+    [
+      "h3",
+      "Luftbildvideo"
+    ],
+    [
+      "h3",
+      "Luftaufnahmen von Tiefbau-Bohrungen auf einer Baustelle"
+    ],
+    [
+      "h3",
+      "Luftaufnahmen der Renovierungs- und Umbauphase bei Baltz Bochum"
+    ],
+    [
+      "h3",
+      "Einsatzgebiete der Drohne zur Bauüberwachung und/oder Baufortschrittsdokumentation"
+    ],
+    [
+      "h3",
+      "Ihr Ansprechpartner für Luftaufnahmen"
+    ]
+  ],
+  "h1": [
+    "Luftbilder mit Drohne für Baufortschrittsdokumentation und Bauüberwachung"
+  ],
+  "words": 984,
+  "signals": {
+    "faq": 0,
+    "preis": 5,
+    "intervall_abo": 0,
+    "zeitraffer": 2,
+    "video": 2,
+    "orthofoto": 0,
+    "3d_modell": 0,
+    "bim_cad": 0,
+    "portal_cloud": 0,
+    "vermessung_volumen": 1,
+    "beweissicherung": 0,
+    "marketing": 1,
+    "referenzen": 0,
+    "bewertungen": 0,
+    "zertifikat_genehmigung": 1,
+    "versicherung": 2,
+    "lieferzeit": 0,
+    "datenschutz": 0,
+    "zielgruppe_bautraeger": 0,
+    "zielgruppe_bauunternehmen": 3,
+    "zielgruppe_architekt": 2,
+    "zielgruppe_hausverwaltung": 0,
+    "zielgruppe_privat": 3,
+    "lokal_berlin": 0,
+    "lokal_brandenburg": 0,
+    "cta_anfrage": 0
+  },
+  "faq_questions": [],
+  "has_form": false,
+  "has_phone_link": true,
+  "schema_types": [
+    "BreadcrumbList",
+    "GeoCoordinates",
+    "ImageObject",
+    "ListItem",
+    "Offer",
+    "OfferCatalog",
+    "OpeningHoursSpecification",
+    "Organization",
+    "PostalAddress",
+    "ProfessionalService",
+    "ReadAction",
+    "Service",
+    "WebPage",
+    "WebSite"
+  ]
+}

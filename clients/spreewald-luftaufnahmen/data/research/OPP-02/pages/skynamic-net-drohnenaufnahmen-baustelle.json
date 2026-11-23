@@ -1,0 +1,132 @@
+{
+  "url": "https://www.skynamic.net/drohnenaufnahmen-baustelle/",
+  "domain": "skynamic.net",
+  "fetched": "2026-11-23T16:13:17Z",
+  "status": 200,
+  "final_url": "https://www.skynamic.net/drohnenaufnahmen-baustelle/",
+  "title": "Drohnenaufnahmen für Bauprojekte & Baustellen aus der Luft",
+  "meta_description": "Baufortschritt, Dimensionen und Abläufe Ihres Bauprojekts aus der Luft — mit den Teams, die auch in der Tesla Giga Factory geflogen sind. Angebot anfragen.",
+  "headings": [
+    [
+      "h1",
+      "Drohnenaufnahmen für Bauprojekte und Baustellen"
+    ],
+    [
+      "h1",
+      "Drohnenaufnahmen für Bauprojekte und Baustellen."
+    ],
+    [
+      "h2",
+      "Baustellen, Baufortschritt und Projektgröße aus der Luft klar erfassen."
+    ],
+    [
+      "h2",
+      "Dieselben Teams, die auch Werbung und Broadcast drehen."
+    ],
+    [
+      "h3",
+      "FOUR Construction Site"
+    ],
+    [
+      "h3",
+      "Ford GTD — Nürburgring"
+    ],
+    [
+      "h2",
+      "Auf Werksgeländen und in Industrieanlagen geflogen."
+    ],
+    [
+      "h3",
+      "ThyssenKrupp Steel"
+    ],
+    [
+      "h3",
+      "Concrete Factory"
+    ],
+    [
+      "h3",
+      "Metal Industry"
+    ],
+    [
+      "h3",
+      "PUMA Logistics"
+    ],
+    [
+      "h3",
+      "AUER Packaging"
+    ],
+    [
+      "h2",
+      "Erzählen Sie uns, was auf Ihrer Baustelle ansteht."
+    ],
+    [
+      "h2",
+      "Wann sich Drohnenaufnahmen auf der Baustelle besonders lohnen."
+    ],
+    [
+      "h2",
+      "Häufige Fragen zu Drohnen­aufnahmen auf der Baustelle."
+    ],
+    [
+      "h2",
+      "Drohnenaufnahmen für Ihr Bauprojekt. Anfrage senden."
+    ],
+    [
+      "h2",
+      "Bereit, Ihr Bauprojekt zu dokumentieren? Sprechen wir darüber."
+    ]
+  ],
+  "h1": [
+    "Drohnenaufnahmen für Bauprojekte und Baustellen",
+    "Drohnenaufnahmen für Bauprojekte und Baustellen."
+  ],
+  "words": 908,
+  "signals": {
+    "faq": 2,
+    "preis": 4,
+    "intervall_abo": 3,
+    "zeitraffer": 0,
+    "video": 1,
+    "orthofoto": 0,
+    "3d_modell": 0,
+    "bim_cad": 0,
+    "portal_cloud": 0,
+    "vermessung_volumen": 0,
+    "beweissicherung": 0,
+    "marketing": 10,
+    "referenzen": 16,
+    "bewertungen": 1,
+    "zertifikat_genehmigung": 1,
+    "versicherung": 1,
+    "lieferzeit": 3,
+    "datenschutz": 4,
+    "zielgruppe_bautraeger": 2,
+    "zielgruppe_bauunternehmen": 5,
+    "zielgruppe_architekt": 2,
+    "zielgruppe_hausverwaltung": 0,
+    "zielgruppe_privat": 2,
+    "lokal_berlin": 1,
+    "lokal_brandenburg": 0,
+    "cta_anfrage": 4
+  },
+  "faq_questions": [],
+  "has_form": true,
+  "has_phone_link": true,
+  "schema_types": [
+    "Answer",
+    "BreadcrumbList",
+    "Country",
+    "EntryPoint",
+    "FAQPage",
+    "ImageObject",
+    "ListItem",
+    "Organization",
+    "PostalAddress",
+    "PropertyValueSpecification",
+    "Question",
+    "ReadAction",
+    "SearchAction",
+    "Service",
+    "WebPage"
+  ]
+}

@@ -115,6 +115,8 @@ const MOCK = () => {
     await p.fill('#wf-c1', 'Bitte stärker auf Hausverwaltungen ausrichten.'); await p.click('[data-act="approve"]'); await p.waitForTimeout(300);
     let w = await p.evaluate(id => window.__all.workflow?.[id], first);
     check('gate1 persisted with timestamp + comment', w?.gate1?.status === 'approved' && !!Date.parse(w.gate1.at) && w.gate1.comment.includes('Hausverwaltungen') && w.production?.status === 'waiting', JSON.stringify(w));
+    const fr = dd.opportunities.find(o => o.id === first).research_status;
+    check('gate1 = strategy approval: research version stored', w.gate1.research_version === fr.version && w.gate1.research_state === fr.state && w.gate1.research_override === false, JSON.stringify(w.gate1));
     const fired = await p.evaluate(() => window.__fired || []);
     check('agent trigger fired (fire_trigger with trigger_id)', fired.length === 1 && fired[0].tool === 'fire_trigger' && !!fired[0].input.trigger_id, JSON.stringify(fired));
     check('trigger result recorded', /angestoßen/.test(w?.trigger?.result || ''), JSON.stringify(w?.trigger));
@@ -125,8 +127,16 @@ const MOCK = () => {
     const second = dd.opportunities.filter(o => ['CREATE', 'OPTIMIZE', 'MERGE'].includes(o.type))[1].id;
     await p.dragAndDrop(`[data-card="${second}"]`, '.wf-col[data-col="production"]'); await p.waitForTimeout(200);
     check('drag & drop opens approval confirmation', (await p.locator('#wf-drawer').isVisible()) && /Drag & Drop/.test(await p.locator('#wf-panel-body').innerText()));
+    const secRes = dd.opportunities.find(o => o.id === second).research_status.state;
+    if (!['complete', 'complete_with_limits'].includes(secRes)) {
+      check('incomplete research: override checkbox shown', (await p.locator('#wf-ovr').count()) === 1 && /Research not started|Research incomplete/.test(await p.locator('#wf-panel-body').innerText()));
+      await p.click('[data-act="approve"]'); await p.waitForTimeout(200);
+      check('incomplete research: approve without override refused', await p.evaluate(id => !window.__all.workflow?.[id], second));
+      await p.check('#wf-ovr');
+    }
     await p.click('[data-act="approve"]'); await p.waitForTimeout(300);
     check('drag & drop approval persisted', await p.evaluate(id => window.__all.workflow?.[id]?.gate1?.status === 'approved', second));
+    if (!['complete', 'complete_with_limits'].includes(secRes)) check('override recorded in gate1 + decision log', await p.evaluate(id => window.__all.workflow[id].gate1.research_override === true && Object.values(window.__all.decisions).some(x => x.item_id === id && x.decision === 'approve_override'), second));
     await p.click('#wf-panel-body [data-close]');
     // Reload → Status bleibt
     await p.reload({ waitUntil: 'networkidle' }); await p.waitForTimeout(300);
@@ -167,6 +177,28 @@ const MOCK = () => {
     check('final column label "Ready for WordPress Draft"', /Ready for WordPress Draft/.test(await p.locator(`.wf-col[data-col="final"] [data-card="${first}"]`).innerText()));
     check('after reload: revision fired trigger, gate 2 did not (nothing to publish)', (await p.evaluate(() => (window.__fired || []).length)) === 1, String(await p.evaluate(() => (window.__fired || []).length)));
     if (SHOTS) { await p.screenshot({ path: `${out}/mock-workflow-board.png`, fullPage: true }); await p.click(`[data-card="${second}"]`); await p.waitForTimeout(150); await p.screenshot({ path: `${out}/mock-workflow-drawer.png` }); }
+    // Alte Gate-1-Freigabe ohne Strategie-Bezug → zurück in „Zur Prüfung“, keine Produktion
+    const third = dd.opportunities.filter(o => ['CREATE', 'OPTIMIZE', 'MERGE'].includes(o.type))[2].id;
+    await p.evaluate(id => window.claude.use('db').then(db => db.collection('workflow').doc(id).set({ opp_id: id, schema: 1, gate1: { status: 'approved', at: '2026-11-23T10:00:00Z', comment: 'alt' }, production: { status: 'blocked', block_reason: 'drive_tool_unavailable' } })), third);
+    await p.waitForTimeout(200);
+    check('legacy gate1 (before research stage) → "Strategie-Freigabe ausstehend" in review', /Strategie-Freigabe ausstehend/.test(await p.locator(`.wf-col[data-col="review"] [data-card="${third}"]`).innerText()));
+    check('workflow cards show research status chip', (await p.locator('.wf-card .wf-res .chip').count()) >= nProd - 2);
+    // Opportunity-Detail: A–J + Gate 1
+    const rOpp = dd.opportunities.find(o => o.research);
+    if (rOpp) {
+      await p.goto(base2 + '#opp-' + rOpp.id, { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
+      check('detail: research sections A–J rendered', (await p.locator('section.rs').count()) === 10);
+      const tx = await p.locator('#view, main, body').first().innerText();
+      check('detail: research status banner', tx.includes(rOpp.research_status.label));
+      check('detail: SERP quality labelled', /Indikativ|Validiert/.test(tx));
+      check('detail: "Gate 1 – Strategie freigeben" after A–J', (await p.locator('.rs-gate').count()) === 1 && await p.evaluate(() => { const a = [...document.querySelectorAll('section.rs')].pop(), g = document.querySelector('.rs-gate'); return !!(a.compareDocumentPosition(g) & Node.DOCUMENT_POSITION_FOLLOWING); }));
+      await p.click('.rs-toc [data-rs="H"]'); await p.waitForTimeout(400);
+      check('detail: TOC jumps without changing route', (await p.evaluate(() => location.hash)) === '#opp-' + rOpp.id);
+      if (SHOTS) await p.screenshot({ path: `${out}/mock-research-detail.png`, fullPage: true });
+    }
+    const nOpp = dd.opportunities.find(o => ['CREATE', 'OPTIMIZE', 'MERGE'].includes(o.type) && !o.research);
+    if (nOpp) { await p.goto(base2 + '#opp-' + nOpp.id, { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
+      check('detail without dossier: "Research not started" visible', /Research not started/.test(await p.locator('body').innerText())); }
     check('mock: no page errors', errs.length === 0, errs.join(' | '));
     await ctx.close(); srv2.close();
   }

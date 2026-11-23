@@ -1,0 +1,143 @@
+{
+  "url": "https://drone-connect.de/einsatzbereiche/baustellendokumentation",
+  "domain": "drone-connect.de",
+  "fetched": "2026-11-23T16:13:22Z",
+  "status": 200,
+  "final_url": "https://drone-connect.de/einsatzbereiche/baustellendokumentation",
+  "title": "Baustellendokumentation mit Drohne – regional & nach Verfügbarkeit | Drone Connect",
+  "meta_description": "Finde Drohnenpiloten für Baustellendokumentation, Baufortschritt, Baudokumentation, Baufortschrittsdokumentation, Projektmonitoring, Baustellenüberwachung und regelmäßige Baustellenaufnahmen regional und nach Verfügbarkeit.",
+  "headings": [
+    [
+      "h1",
+      "Baustellendokumentation mit Drohne regional und nach Verfügbarkeit."
+    ],
+    [
+      "h2",
+      "Baufortschritt aus der Luft klar dokumentieren"
+    ],
+    [
+      "h3",
+      "Baufortschritt sichtbar machen"
+    ],
+    [
+      "h3",
+      "Bessere Abstimmung"
+    ],
+    [
+      "h3",
+      "Dokumentation für interne Zwecke"
+    ],
+    [
+      "h3",
+      "Projektmonitoring vereinfachen"
+    ],
+    [
+      "h3",
+      "Regional planbar"
+    ],
+    [
+      "h2",
+      "Wofür eignet sich Baustellendokumentation?"
+    ],
+    [
+      "h2",
+      "So kommst du zur passenden Baustellendokumentation"
+    ],
+    [
+      "h3",
+      "Baustelle und Ziel beschreiben"
+    ],
+    [
+      "h3",
+      "Aufnahmebedarf klären"
+    ],
+    [
+      "h3",
+      "Passenden Piloten finden"
+    ],
+    [
+      "h2",
+      "Baustellen-Drohnenpiloten für NRW und weiteren Regionen nach Verfügbarkeit"
+    ],
+    [
+      "h2",
+      "Diese Angaben helfen dem Piloten"
+    ],
+    [
+      "h2",
+      "Häufige Fragen zur Baustellendokumentation mit Drohne"
+    ],
+    [
+      "h3",
+      "Wofür eignet sich Baustellendokumentation mit Drohne?"
+    ],
+    [
+      "h3",
+      "Kann man Baustellen regelmäßig mit Drohne dokumentieren?"
+    ],
+    [
+      "h3",
+      "Wer nutzt Drohnenaufnahmen auf Baustellen?"
+    ],
+    [
+      "h3",
+      "Was sollte ich bei einer Anfrage angeben?"
+    ],
+    [
+      "h2",
+      "Baustelle dokumentieren, Baufortschritt zeigen oder Projektübersicht schaffen?"
+    ]
+  ],
+  "h1": [
+    "Baustellendokumentation mit Drohne regional und nach Verfügbarkeit."
+  ],
+  "words": 626,
+  "signals": {
+    "faq": 2,
+    "preis": 1,
+    "intervall_abo": 10,
+    "zeitraffer": 0,
+    "video": 3,
+    "orthofoto": 0,
+    "3d_modell": 0,
+    "bim_cad": 0,
+    "portal_cloud": 0,
+    "vermessung_volumen": 0,
+    "beweissicherung": 0,
+    "marketing": 4,
+    "referenzen": 8,
+    "bewertungen": 0,
+    "zertifikat_genehmigung": 0,
+    "versicherung": 0,
+    "lieferzeit": 0,
+    "datenschutz": 0,
+    "zielgruppe_bautraeger": 2,
+    "zielgruppe_bauunternehmen": 2,
+    "zielgruppe_architekt": 3,
+    "zielgruppe_hausverwaltung": 0,
+    "zielgruppe_privat": 4,
+    "lokal_berlin": 0,
+    "lokal_brandenburg": 0,
+    "cta_anfrage": 4
+  },
+  "faq_questions": [
+    "Wofür eignet sich Baustellendokumentation?",
+    "Wofür eignet sich Baustellendokumentation mit Drohne?",
+    "Kann man Baustellen regelmäßig mit Drohne dokumentieren?",
+    "Wer nutzt Drohnenaufnahmen auf Baustellen?",
+    "Was sollte ich bei einer Anfrage angeben?",
+    "Baustelle dokumentieren, Baufortschritt zeigen oder Projektübersicht schaffen?"
+  ],
+  "has_form": false,
+  "has_phone_link": true,
+  "schema_types": [
+    "Answer",
+    "BreadcrumbList",
+    "FAQPage",
+    "ListItem",
+    "Question",
+    "Service",
+    "ServiceChannel",
+    "WebPage"
+  ]
+}

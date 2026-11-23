@@ -1,0 +1,142 @@
+{
+  "url": "https://berlinskycrew.de/baudokumentation/",
+  "domain": "berlinskycrew.de",
+  "fetched": "2026-11-23T16:13:11Z",
+  "status": 200,
+  "final_url": "https://berlinskycrew.de/baudokumentation/",
+  "title": "Baudokumentation mit Drohne Berlin | Berlinskycrew",
+  "meta_description": "Baudokumentation mit Drohne, Zeitraffer & stationärer Kamera. Baufortschritt lückenlos dokumentieren – für Bauträger, GU & Architekten. Jetzt Angebot anfragen!",
+  "headings": [
+    [
+      "h1",
+      "Baudokumentation mit Drohne – lückenloser Baufortschritt aus der Luft"
+    ],
+    [
+      "h2",
+      "Was professionelle Baudokumentation für Ihr Projekt leistet"
+    ],
+    [
+      "h2",
+      "Drohnenvideos zur Dokumentation Ihres Baufortschritts"
+    ],
+    [
+      "h2",
+      "Von der Planung bis zum Flug – was bringt Ihnen eine Baudokumentation?"
+    ],
+    [
+      "h2",
+      "Schließen Sie sich unseren Kunden an"
+    ],
+    [
+      "h2",
+      "Baudokumentation für jeden, der auf der Baustelle Verantwortung trägt"
+    ],
+    [
+      "h3",
+      "Bauträger & Projektentwickler"
+    ],
+    [
+      "h3",
+      "Generalunternehmer & Bauunternehmen"
+    ],
+    [
+      "h3",
+      "Architekten & Planungsbüros"
+    ],
+    [
+      "h3",
+      "Projektsteuerer & Bauüberwacher"
+    ],
+    [
+      "h3",
+      "Eigentümer & private Bauherren"
+    ],
+    [
+      "h2",
+      "In 4 Schritten zu Ihrer professionellen Baudokumentation"
+    ],
+    [
+      "h2",
+      "Unsere Leistungen im Überblick"
+    ],
+    [
+      "h2",
+      "FPV-Videos"
+    ],
+    [
+      "h2",
+      "Marketing"
+    ],
+    [
+      "h2",
+      "Immobilienverkauf"
+    ],
+    [
+      "h2",
+      "3D-Visualisierung"
+    ],
+    [
+      "h2",
+      "Leistungen"
+    ],
+    [
+      "h2",
+      "Über uns"
+    ],
+    [
+      "h2",
+      "Kontakt"
+    ],
+    [
+      "h3",
+      "Die beste Beratung gibt es persönlich. Gemeinsam können wir herausfinden, wie wir Sie bei Ihrem Projekt weiterhelfen können."
+    ]
+  ],
+  "h1": [
+    "Baudokumentation mit Drohne – lückenloser Baufortschritt aus der Luft"
+  ],
+  "words": 982,
+  "signals": {
+    "faq": 0,
+    "preis": 5,
+    "intervall_abo": 15,
+    "zeitraffer": 4,
+    "video": 3,
+    "orthofoto": 0,
+    "3d_modell": 3,
+    "bim_cad": 3,
+    "portal_cloud": 0,
+    "vermessung_volumen": 0,
+    "beweissicherung": 10,
+    "marketing": 12,
+    "referenzen": 7,
+    "bewertungen": 0,
+    "zertifikat_genehmigung": 3,
+    "versicherung": 1,
+    "lieferzeit": 0,
+    "datenschutz": 2,
+    "zielgruppe_bautraeger": 2,
+    "zielgruppe_bauunternehmen": 2,
+    "zielgruppe_architekt": 2,
+    "zielgruppe_hausverwaltung": 0,
+    "zielgruppe_privat": 7,
+    "lokal_berlin": 5,
+    "lokal_brandenburg": 0,
+    "cta_anfrage": 5
+  },
+  "faq_questions": [
+    "Von der Planung bis zum Flug – was bringt Ihnen eine Baudokumentation?"
+  ],
+  "has_form": false,
+  "has_phone_link": false,
+  "schema_types": [
+    "BreadcrumbList",
+    "EntryPoint",
+    "ListItem",
+    "PropertyValueSpecification",
+    "ReadAction",
+    "SearchAction",
+    "WebPage",
+    "WebSite"
+  ]
+}

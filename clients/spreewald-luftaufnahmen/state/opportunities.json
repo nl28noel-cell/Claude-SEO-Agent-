@@ -7,7 +7,7 @@
       "name": "Baudokumentation",
       "type": "OPTIMIZE",
       "priority": "critical",
-      "status": "Ready for SERP validation",
+      "status": "Strategy ready for Gate 1",
       "business_fit": 10,
       "confidence": "high",
       "gsc_cluster": "baudokumentation",
@@ -28,7 +28,7 @@
         "baustellendokumentation"
       ],
       "existing_page": "/drohnen-baudokumentation/",
-      "recommendation": "Bestehende Seite auf Baustellendokumentation/Baufortschritt mit Drohne schärfen (Vokabular, Intervalle, Zielgruppen Bauträger/Bauunternehmen, Ergebnisformate). Keine neue Seite.",
+      "recommendation": "Bestehende Seite optimieren (keine neue URL): Begriff „Baustellendokumentation“ abdecken, Leistung greifbar machen (einmalig vs. laufend, Ergebnisse, Lieferzeit, Ablauf), FAQ und belegte Vertrauenselemente ergänzen. Details: Research A–J.",
       "why": "Höchste strategische Priorität (10/10, wiederkehrende Aufträge belegt). Messbare Nachfrage mit sehr niedriger Keyword Difficulty; die Seite rankt bereits auf Seite 1–3.",
       "reasoning": [
         "GSC: Kern-Query „baudokumentation drohne“ hat ihre Position von ~30–38 (2025) auf 8–11 (Sep–Nov 2026) verbessert.",
@@ -46,7 +46,7 @@
         "Die Begriffe „Baudokumentation“/„Baustellendokumentation“ ohne „Drohne“ haben überwiegend Software-/Ratgeber-Intent (CPC hoch, aber andere Zielgruppe).",
         "Der Grund für den Wegfall von „baustellendokumentation drohne“ ist nicht bewiesen."
       ],
-      "next_step": "SERP-Check für „baudokumentation drohne“ und „baustellendokumentation drohne“ (Semrush-Connector, cache-first), danach Optimierungsbrief.",
+      "next_step": "Gate 1 – Strategie freigeben (Research v1: Abschnitte A–J). Danach Optimierungsentwurf als Google Doc. Optional vorher: manueller Google.de-Check der zwei Kern-Keywords.",
       "gate1_candidate": true,
       "related_findings": [
         "F-012",
