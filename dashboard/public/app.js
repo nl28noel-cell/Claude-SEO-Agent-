@@ -41,7 +41,7 @@ function freshness(iso, staleDays = 7) {
   const t = new Date(); const today = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate());
   const [y, m, dd] = iso.slice(0, 10).split("-").map(Number);
   const days = Math.max(0, Math.round((today - Date.UTC(y, m - 1, dd)) / 864e5));
-  return days <= staleDays ? chip(`Fresh · ${days} d`, "green", true) : chip(`Stale · ${days} d`, "amber", true);
+  return days <= staleDays ? chip(`Fresh · ${ageText(days)}`, "green", true) : chip(`Stale · ${ageText(days)}`, "amber", true);
 }
 
 /* ------------------------------------------------------------ data helpers */
@@ -83,7 +83,13 @@ document.addEventListener("mouseout", e => { if (e.target.closest("[data-tip]"))
 
 /* ------------------------------------------------------------ chart (SVG) */
 const SVGNS = "http://www.w3.org/2000/svg";
-function svgEl(tag, attrs = {}, parent) { const e = document.createElementNS(SVGNS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); parent && parent.appendChild(e); return e; }
+function svgEl(tag, attrs = {}, parent) {
+  const e = document.createElementNS(SVGNS, tag); let style = "";
+  // CSS-Variablen funktionieren nicht in SVG-Präsentationsattributen -> als Inline-Style setzen (Theme-fähig)
+  for (const [k, v] of Object.entries(attrs)) { if ((k === "fill" || k === "stroke") && String(v).startsWith("var(")) style += `${k}:${v};`; else e.setAttribute(k, v); }
+  if (style) e.setAttribute("style", style);
+  parent && parent.appendChild(e); return e;
+}
 function niceMax(v) { if (v <= 0) return 1; const p = Math.pow(10, Math.floor(Math.log10(v))); const n = v / p; const step = [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find(x => n <= x); return step * p; }
 /** series: [{key,label,color,type:'line'|'area'|'bar'}], points: [{x, ...}] */
 function chart({ points, series, height = 180, invert = false, yFmt = fmtN, xMode = "day", yMin = null, width = 800 }) {
@@ -100,7 +106,7 @@ function chart({ points, series, height = 180, invert = false, yFmt = fmtN, xMod
   const Y = v => invert ? m.t + (v - lo) / (hi - lo) * ih : m.t + ih - (v - lo) / (hi - lo) * ih;
   const g = svgEl("g", { class: "grid" }, svg);
   for (let k = 0; k <= 4; k++) { const v = lo + (hi - lo) * k / 4; const y = Y(v); svgEl("line", { x1: m.l, x2: W - m.r, y1: y, y2: y }, g); const t = svgEl("text", { x: m.l - 6, y: y + 4, "text-anchor": "end" }, svg); t.textContent = yFmt(v); }
-  const ticks = Math.min(6, n); for (let k = 0; k < ticks; k++) { const i = Math.round(k * (n - 1) / Math.max(1, ticks - 1)); const t = svgEl("text", { x: X(i), y: H - 6, "text-anchor": k === 0 ? "start" : k === ticks - 1 ? "end" : "middle" }, svg); const x = points[i].x; t.textContent = xMode === "month" ? x.slice(5, 7) + "/" + x.slice(2, 4) : fmtDate(x).slice(0, 6); }
+  const ticks = Math.max(2, Math.min(6, n, Math.floor(iw / 72))); for (let k = 0; k < ticks; k++) { const i = Math.round(k * (n - 1) / Math.max(1, ticks - 1)); const t = svgEl("text", { x: X(i), y: H - 6, "text-anchor": k === 0 ? "start" : k === ticks - 1 ? "end" : "middle" }, svg); const x = points[i].x; t.textContent = xMode === "month" ? x.slice(5, 7) + "/" + x.slice(2, 4) : fmtDate(x).slice(0, 6); }
   for (const s of series) {
     const pts = points.map((p, i) => [X(i), p[s.key] === null || p[s.key] === undefined ? null : Y(p[s.key])]);
     if (s.type === "bar") {
@@ -112,7 +118,7 @@ function chart({ points, series, height = 180, invert = false, yFmt = fmtN, xMod
       svgEl("path", { d, fill: "none", stroke: s.color, "stroke-width": 1.8, "vector-effect": "non-scaling-stroke", "stroke-linejoin": "round" }, svg);
     }
   }
-  const cross = svgEl("line", { y1: m.t, y2: m.t + ih, stroke: "#9aa4b2", "stroke-dasharray": "3 3", opacity: 0, "vector-effect": "non-scaling-stroke" }, svg);
+  const cross = svgEl("line", { class: "cross", y1: m.t, y2: m.t + ih, "stroke-dasharray": "3 3", opacity: 0, "vector-effect": "non-scaling-stroke" }, svg);
   const hit = svgEl("rect", { x: m.l, y: m.t, width: iw, height: ih, fill: "transparent" }, svg);
   hit.addEventListener("mousemove", e => {
     const r = svg.getBoundingClientRect(); const px = (e.clientX - r.left) / r.width * W;
@@ -188,28 +194,29 @@ pages.overview = () => {
   const healthColor = { Healthy: "green", Attention: "amber", Critical: "red" }[h.status];
   view().innerHTML = `
   <div class="page-head"><div><h1>SEO Autopilot</h1><div class="sub">${esc(d.client.name)} · ${esc(d.client.region)}</div></div>
-    <div class="row"><span class="mini">GSC data through <b>${fmtDate(d.gsc.last)}</b> · fetched ${fmtDate(src.gsc.last_fetch)}</span>${chip(h.status, healthColor, true)}</div></div>
+    <div class="row"><span class="mini">GSC data through <b>${fmtDate(d.gsc.last)}</b> · fetched ${fmtDate(src.gsc.last_fetch)}</span>${chip("Health: " + h.status, healthColor, true)}</div></div>
   <div class="strip">
     ${chip("GSC " + (src.gsc.status === "connected" ? "Connected" : src.gsc.status), src.gsc.status === "connected" ? "green" : "red", true)}
     ${chip("Semrush " + (src.semrush.status === "connected" ? "Connected" : src.semrush.status), src.semrush.status === "connected" ? "green" : "red", true)}
     ${chip("Website Monitoring " + (src.website.monitors?.length ? "Active" : "Off"), src.website.monitors?.length ? "green" : "", true)}
-    <a href="#/changes">${chip(`${h.freezes} Change Freeze`, h.freezes ? "amber" : "")}</a>
-    <a href="#/approvals">${chip(`${h.pending_approvals} Pending Approvals`, h.pending_approvals ? "red" : "")}</a>
-    <a href="#/findings">${chip(`${h.open_findings} Open Findings`, h.open_findings ? "amber" : "")}</a>
-    ${h.blocked_tasks ? `<a href="#/activity">${chip(`${h.blocked_tasks} Blocked Task`, "red")}</a>` : ""}
+    <a href="#changes">${chip(`${h.freezes} Change Freeze`, h.freezes ? "amber" : "")}</a>
+    <a href="#approvals">${chip(`${h.pending_approvals} Pending Approvals`, h.pending_approvals ? "red" : "")}</a>
+    <a href="#findings">${chip(`${h.open_findings} Open Findings`, h.open_findings ? "amber" : "")}</a>
+    ${h.blocked_tasks ? `<a href="#activity">${chip(`${h.blocked_tasks} Blocked Task`, "red")}</a>` : ""}
+    <span class="mini" style="align-self:center">Decisions: <span id="ov-dec">${decisionSummary()}</span></span>
   </div>
   <div class="kpis">
     ${kpi("Clicks", fmtN(cur.clicks), delta(cur.clicks, prev?.clicks), "Letzte 28 Tage vs. 28 Tage davor")}
     ${kpi("Impressions", fmtN(cur.impressions), delta(cur.impressions, prev?.impressions), "Letzte 28 Tage vs. 28 Tage davor")}
     ${kpi("Avg. Position", fmtD(cur.position), delta(cur.position, prev?.position, { invert: true, abs: true, unit: "" }), "Impressions-gewichtet, 28 Tage; niedriger = besser")}
     ${kpi("Tracked Opportunities", fmtN(h.tracked_opportunities), `<span class="flat">excl. IGNORE</span>`)}
-    ${kpi("Open Findings", fmtN(h.open_findings), `<a href="#/findings">View findings</a>`)}
+    ${kpi("Open Findings", fmtN(h.open_findings), `<a href="#findings">View findings</a>`)}
     ${kpi("Pending Decisions", fmtN(h.pending_decisions), `<span class="flat">${h.pending_approvals} approvals · ${h.pending_decisions - h.pending_approvals} business</span>`)}
   </div>
   <div class="grid g-main">
     <div class="card"><div class="card-h"><h2>Needs your attention</h2><span class="hint">${d.attention.length} items · rule-based</span></div>
       <div class="att">${d.attention.length ? d.attention.map(attItem).join("") : `<div class="empty">Nothing needs your attention.</div>`}</div></div>
-    <div class="card"><div class="card-h"><h2>Agent Activity</h2><a href="#/activity" class="mini">All activity →</a></div>
+    <div class="card"><div class="card-h"><h2>Agent Activity</h2><a href="#activity" class="mini">All activity →</a></div>
       <div class="act">${actOrder.slice(0, 7).map(actItem).join("")}</div>
       <div class="card-b mini" style="padding-top:8px">Agent runs on demand in Claude Code sessions – there is no permanently running background process.</div></div>
   </div>
@@ -217,12 +224,13 @@ pages.overview = () => {
     <div class="row">${legend([{ label: "Clicks", color: "var(--c3)" }, { label: "Impressions", color: "var(--c1)" }])}${rangeSel("range")}</div></div>
     <div class="card-b"><div id="ch-clicks"></div><div id="ch-imp" style="margin-top:6px"></div></div></div>
   <div class="grid g2 mt">
-    <div class="card"><div class="card-h"><h2>Top opportunities</h2><a href="#/opportunities" class="mini">All →</a></div><div class="card-b flush" id="ov-opps"></div></div>
-    <div class="card"><div class="card-h"><div><h2>Visibility by business segment</h2><div class="hint">Monthly impressions · ${esc("Strategic B2B vs. Price vs. B2C")}</div></div><a href="#/performance" class="mini">Details →</a></div>
+    <div class="card"><div class="card-h"><h2>Top opportunities</h2><a href="#opportunities" class="mini">All →</a></div><div class="card-b flush" id="ov-opps"></div></div>
+    <div class="card"><div class="card-h"><div><h2>Visibility by business segment</h2><div class="hint">Monthly impressions · ${esc("Strategic B2B vs. Price vs. B2C")}</div></div><a href="#performance" class="mini">Details →</a></div>
       <div class="card-b">${legend(segSeries())}<div id="ch-seg"></div><div class="mini" style="margin-top:6px">${esc(d.client.segments_note)}</div></div></div>
-  </div>`;
+  </div>
+  ${freshPanel()}`;
   drawPerf(S.range, "range", "ch-clicks", "ch-imp");
-  mount("ov-opps", table({ rows: d.opportunities.filter(o => o.type !== "IGNORE").slice(0, 6), pageSize: 6, onRow: o => go("opportunities/" + o.id),
+  mount("ov-opps", table({ rows: d.opportunities.filter(o => o.type !== "IGNORE").slice(0, 6), pageSize: 6, onRow: o => go("opp-" + o.id),
     columns: [{ key: "name", label: "Opportunity", render: o => `<div class="q">${esc(o.name)}</div><div class="s">${esc(o.status)}</div>` },
       { key: "type", label: "Type", render: o => typeChip(o.type) }, { key: "priority", label: "Priority", render: o => prioChip(o.priority), sort: false },
       { key: "business_fit", label: "Fit", num: true, render: o => o.business_fit + "/10" }] }));
@@ -231,7 +239,7 @@ pages.overview = () => {
 };
 const kpi = (label, val, dl, t = "") => `<div class="card kpi"><div class="k-label"><span ${t ? `data-tip="${esc(t)}"` : ""}>${esc(label)}${t ? " ⓘ" : ""}</span></div><div class="k-val">${val}</div><div class="k-delta">${dl}</div></div>`;
 function attItem(a) {
-  const href = a.kind === "opportunity" ? "#/opportunities/" + a.ref : a.kind === "task" ? "#/activity" : a.kind === "approval" ? "#/approvals" : a.kind === "change" ? "#/changes" : "#/market";
+  const href = a.kind === "opportunity" ? "#opp-" + a.ref : a.kind === "task" ? "#activity" : a.kind === "approval" ? "#approvals" : a.kind === "change" ? "#changes" : "#market";
   return `<div class="att-item"><div class="att-bar ${a.level}"></div><div><div class="att-title"><a href="${href}">${esc(a.title)}</a> <span class="mini">${esc(a.ref)}</span></div><div class="att-detail">${esc(a.detail || "")}</div></div><div>${statusChip(a.status)}</div></div>`;
 }
 const STATE = { completed: ["Completed", "green"], planned: ["Planned", "blue"], blocked: ["Blocked", "red"], monitoring: ["Monitoring", "amber"], waiting_for_approval: ["Waiting for approval", "amber"], needs_review: ["Needs review", "amber"] };
@@ -243,15 +251,15 @@ function actItem(t) {
 const rangeSel = which => `<div class="seg" data-range="${which}">${Object.keys(RANGES).map(r => `<button class="${S[which] === r ? "on" : ""}" data-r="${r}">${r}</button>`).join("")}</div>`;
 document.addEventListener("click", e => {
   const b = e.target.closest(".seg[data-range] button"); if (!b) return;
-  const which = b.parentElement.dataset.range; S[which] = b.dataset.r; route();
+  const which = b.parentElement.dataset.range; S[which] = b.dataset.r; route(true);
 });
 function drawPerf(range, _which, idClicks, idImp, idPos, hc = 120) {
   const w = windowRows(range), mode = modeFor(range), pts = bucket(w.cur, mode);
   chartInto(idClicks, { points: pts, series: [{ key: "clicks", label: "Clicks", color: "var(--c3)", type: "bar" }], height: hc, xMode: mode });
   chartInto(idImp, { points: pts, series: [{ key: "impressions", label: "Impressions", color: "var(--c1)", type: "area" }], height: 160, xMode: mode });
-  if (idPos) chartInto(idPos, { points: pts, series: [{ key: "position", label: "Avg. position", color: "#7a5af8", type: "line", fmt: v => fmtD(v) }], height: 160, invert: true, xMode: mode, yFmt: v => fmtD(v, 0) });
+  if (idPos) chartInto(idPos, { points: pts, series: [{ key: "position", label: "Avg. position", color: "var(--violet)", type: "line", fmt: v => fmtD(v) }], height: 160, invert: true, xMode: mode, yFmt: v => fmtD(v, 0) });
 }
-const SEGC = { "Strategic B2B": "#1f8a4c", "Price": "#2f6fdb", "B2C": "#b7740b", "Unknown": "#9aa4b2", "Brand": "#7a5af8" };
+const SEGC = { "Strategic B2B": "var(--seg-b2b)", "Price": "var(--seg-price)", "B2C": "var(--seg-b2c)", "Unknown": "var(--seg-unknown)", "Brand": "var(--seg-brand)" };
 const segSeries = () => ["Strategic B2B", "Price", "B2C", "Unknown"].map(s => ({ key: s, label: s, color: SEGC[s], type: "line" }));
 function drawSeg(id) {
   const sm = S.d.gsc.segments_monthly; const months = [...new Set(Object.values(sm).flatMap(v => v.map(x => x.month)))].sort();
@@ -323,9 +331,9 @@ pages.opportunities = () => {
   view().innerHTML = `<div class="page-head"><div><h1>Opportunities</h1><div class="sub">Source of truth: state/opportunities.json · metrics joined from GSC, Semrush cache and website inventory at build time</div></div>
     <div class="seg" id="otype">${types.map(t => `<button data-t="${t}" class="${cur === t ? "on" : ""}">${t} <span class="mini">${cnt(t)}</span></button>`).join("")}</div></div>
     <div class="card" id="opp-table"></div>`;
-  $("#otype").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { S.ui.otype = b.dataset.t; route(); } });
+  $("#otype").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { S.ui.otype = b.dataset.t; route(true); } });
   const sv = o => { const k = o.semrush.keywords.find(k => k.status === "ok"); return k ? k.volume : null; };
-  mount("opp-table", table({ rows, pageSize: 20, onRow: o => go("opportunities/" + o.id), search: ["name", "primary_keyword", "id"],
+  mount("opp-table", table({ rows, pageSize: 20, onRow: o => go("opp-" + o.id), search: ["name", "primary_keyword", "id"],
     filters: [{ key: "priority", label: "Priority", options: ["critical", "high", "medium", "low"] }, { key: "status", label: "Status", options: [...new Set(d.opportunities.map(o => o.status))] },
       { key: "confidence", label: "Confidence", options: ["high", "medium", "low"] }, { key: "fit", label: "Business fit", options: ["8–10", "5–7", "0–4"], match: (o, v) => ({ "8–10": o.business_fit >= 8, "5–7": o.business_fit >= 5 && o.business_fit < 8, "0–4": o.business_fit < 5 }[v]) }],
     columns: [
@@ -345,9 +353,9 @@ pages.opportunities = () => {
 
 pages.opportunity = id => {
   const o = S.d.opportunities.find(x => x.id === id);
-  if (!o) { view().innerHTML = `<a class="back" href="#/opportunities">← Opportunities</a><div class="card empty">Opportunity ${esc(id)} not found.</div>`; return; }
+  if (!o) { view().innerHTML = `<a class="back" href="#opportunities">← Opportunities</a><div class="card empty">Opportunity ${esc(id)} not found.</div>`; return; }
   const p = o.page_info, inv = o.investigation;
-  view().innerHTML = `<a class="back" href="#/opportunities">← Opportunities</a>
+  view().innerHTML = `<a class="back" href="#opportunities">← Opportunities</a>
   <div class="page-head"><div><div class="detail-head"><h1>${esc(o.name)}</h1>${typeChip(o.type)}${prioChip(o.priority)}${confChip(o.confidence)}${statusChip(o.status)}${o.freeze ? chip("Change freeze", "amber", true) : ""}</div>
     <div class="sub">${esc(o.id)} · Business fit ${o.business_fit}/10 · Primary keyword „${esc(o.primary_keyword)}“</div></div></div>
   <div class="grid g-main">
@@ -378,7 +386,7 @@ pages.opportunity = id => {
       <div class="card"><div class="card-h"><h2>Agent reasoning</h2></div><div class="card-b"><ul class="list">${o.reasoning.map(r => `<li>${esc(r)}</li>`).join("")}</ul></div></div>
       <div class="card"><div class="card-h"><h2>Risks</h2></div><div class="card-b">${o.risks.length ? `<ul class="list">${o.risks.map(r => `<li>${esc(r)}</li>`).join("")}</ul>` : `<span class="mini">None documented.</span>`}</div></div>
       <div class="card"><div class="card-h"><h2>Technical findings</h2></div><div class="card-b">${o.findings_detail.length ? o.findings_detail.map(f => `<div style="margin-bottom:8px"><div class="row">${sevChip(f.severity)}<b>${esc(f.id)}</b> ${esc(f.title)} ${statusChip(f.status)}</div><div class="s">${esc(f.description)}</div></div>`).join("") : `<span class="mini">None linked.</span>`}
-        ${o.related_changes.length ? `<div class="mt">Related changes: ${o.related_changes.map(c => `<a href="#/changes">${esc(c)}</a>`).join(", ")}</div>` : ""}</div></div>
+        ${o.related_changes.length ? `<div class="mt">Related changes: ${o.related_changes.map(c => `<a href="#changes">${esc(c)}</a>`).join(", ")}</div>` : ""}</div></div>
       <div class="card"><div class="card-h"><h2>Next step</h2></div><div class="card-b"><div class="callout">${esc(o.next_step)}</div>${o.gate1_candidate ? `<div class="mini mt">Gate-1 candidate – will be submitted to the Approval Center when the evidence is complete. Not submitted yet.</div>` : ""}</div></div>
     </div>
   </div>`;
@@ -386,21 +394,114 @@ pages.opportunity = id => {
   chartInto("opp-cl", { points: cm, series: [{ key: "impressions", label: "Cluster impressions / month", color: "var(--c1)", type: "bar" }], height: 120, xMode: "month" });
 };
 
+/* ------------------------------------------------------------ approvals (Claude artifact db) */
+/* Entscheidungen werden im db-Speicher des Claude-Artifacts abgelegt (Collection "decisions", ein Dokument je Entscheidung).
+   Der Agent liest sie in seiner nächsten Session (ArtifactData), verarbeitet sie und setzt agent_status = "processed".
+   Keine Entscheidung löst hier eine Website-Aktion aus. Lokal (ohne Claude-Viewer) ist der Speicher nicht verfügbar. */
+const DB = { state: "loading", reason: "", ns: null, canWrite: false, decisions: [], fromCache: false, error: "" };
+const DEC = { approve: ["Approve", "green"], request_changes: ["Request changes", "amber"], reject: ["Reject", "red"] };
+const AGENT = { pending: ["Waiting for agent", "amber"], processed: ["Processed by agent", "green"], superseded: ["Superseded", ""] };
+async function initDb() {
+  const fail = (reason, error = "") => { DB.state = "unavailable"; DB.reason = reason; DB.error = error; dbChanged(); };
+  if (!window.claude || typeof window.claude.use !== "function") return fail("local");
+  const timer = setTimeout(() => { if (DB.state === "loading") fail("timeout"); }, 10000);
+  let db = null;
+  try { db = await window.claude.use("db"); } catch (e) { db = null; }
+  if (!db) { clearTimeout(timer); return fail("not_granted"); }
+  DB.ns = db;
+  try { const user = await window.claude.use("user"); DB.canWrite = user ? ((await user.isOwner()) ?? false) : false; } catch (e) { DB.canWrite = false; }
+  db.collection("decisions").onSnapshot(snap => {
+    clearTimeout(timer);
+    DB.decisions = snap.docs.map(d => ({ _id: d.id, ...d.data() })).sort((a, b) => String(b.decided_at).localeCompare(String(a.decided_at)));
+    DB.fromCache = snap.metadata.fromCache; DB.state = "ready"; dbChanged();
+  }, err => { clearTimeout(timer); fail("error", err.code + ": " + err.message); });
+}
+const clientDecisions = () => DB.decisions.filter(x => x.client === S.client);
+const latestDecision = itemId => clientDecisions().find(x => x.item_id === itemId);
+function dbChanged() {
+  updateBadges();
+  const k = parseHash().key;
+  if (k === "approvals") { renderDecisionLog(); renderItemStatus(); renderStoreNotice(); }
+  if (k === "sources") { const el = $("#store-card"); if (el) el.outerHTML = storeCard(); }
+  if (k === "overview") { const el = $("#ov-dec"); if (el) el.innerHTML = decisionSummary(); }
+}
+function storeStatus() {
+  if (DB.state === "loading") return ["Connecting…", "", "Connecting to the artifact's decision store."];
+  if (DB.state === "ready") return DB.canWrite ? ["Connected", "green", "Decisions are saved in this artifact's store. The agent reads them in its next session."] : ["Read-only", "amber", "You can see decisions, but only the artifact owner can record them."];
+  const why = { local: "This is the local preview. Decisions can only be recorded in the Claude artifact.", timeout: "The decision store did not answer within 10 seconds. Saved decisions may not be shown.", not_granted: "Decision storage is not available in this view (signed out or not granted).", error: "The decision store reported an error: " + DB.error }[DB.reason] || "Not available.";
+  return ["Not available", "red", why];
+}
+const storeCard = () => { const [l, c, t] = storeStatus(); const pend = clientDecisions().filter(x => x.agent_status === "pending").length;
+  return `<div class="card" id="store-card"><div class="card-h"><h2>Approval store</h2>${chip(l, c, true)}</div><div class="card-b"><div class="kv">
+    <div class="k">Storage</div><div>Claude artifact <code>db</code> · collection <code>decisions</code></div>
+    <div class="k">Status</div><div>${esc(t)}</div>
+    <div class="k">Decisions recorded</div><div>${DB.state === "ready" ? `${fmtN(clientDecisions().length)} · ${fmtN(pend)} waiting for the agent` : "Unknown"}</div>
+    <div class="k">Mirror in Git</div><div><code>state/approvals.json → decision_log</code> · ${fmtN(S.d.approvals.decision_log.length)} entries (written by the agent after processing)</div>
+    <div class="k">Website actions</div><div>None. A decision never changes the website.</div></div></div></div>`; };
+function decisionSummary() {
+  if (DB.state !== "ready") return `<span class="mini">${esc(storeStatus()[2])}</span>`;
+  const d = clientDecisions(), pend = d.filter(x => x.agent_status === "pending").length;
+  return d.length ? `${fmtN(d.length)} decisions recorded · <b>${fmtN(pend)}</b> waiting for the agent` : `No decisions recorded yet.`;
+}
+function updateBadges() {
+  if (!S.d) return;
+  const open = [...S.d.approvals.gate1, ...S.d.approvals.gate2].filter(x => x.status === "pending" && !latestDecision(x.id)).length;
+  $("#nav-approvals").textContent = open || "";
+}
 pages.approvals = () => {
   const a = S.d.approvals;
-  const decided = JSON.parse(localStorage.getItem("seo-local-decisions-" + S.client) || "{}");
-  const item = (x, gate) => `<div class="card" style="margin-bottom:10px"><div class="card-h"><div><h2>${esc(x.title)}</h2><div class="hint">${esc(x.id)} · submitted ${fmtDate(x.submitted)}</div></div>${statusChip(decided[x.id] ? "Local decision: " + decided[x.id] : "Approval required")}</div>
+  const item = (x, gate) => `<div class="card" style="margin-bottom:10px" data-item="${esc(x.id)}"><div class="card-h"><div><h2>${esc(x.title)}</h2><div class="hint">${esc(x.id)} · submitted ${fmtDate(x.submitted)}${x.opportunity ? ` · <a href="#opp-${esc(x.opportunity)}">${esc(x.opportunity)}</a>` : ""}</div></div><span data-status-for="${esc(x.id)}"></span></div>
     <div class="card-b"><div class="kv">${Object.entries(x.fields || {}).map(([k, v]) => `<div class="k">${esc(k)}</div><div>${esc(v)}</div>`).join("")}</div>
-    <div class="row mt">${["Approve", "Request changes", "Reject"].map(b => `<button class="btn ${b === "Approve" ? "primary" : ""}" data-dec="${b}" data-id="${esc(x.id)}">${b}</button>`).join("")}<span class="mini">Stored locally in this browser only – not yet synced to the agent; triggers no website action.</span></div></div></div>`;
-  view().innerHTML = `<div class="page-head"><div><h1>Approval Center</h1><div class="sub">Gate 1 = strategy · Gate 2 = publication. The dashboard never publishes or changes the website.</div></div></div>
-  <div class="grid g2">
-    <div><h3>Gate 1 – Strategy</h3>${a.gate1.length ? a.gate1.map(x => item(x, 1)).join("") : `<div class="card"><div class="empty">No strategy decisions pending.</div></div>`}
-      <div class="card mt"><div class="card-h"><div><h2>Pipeline – Gate-1 candidates</h2><div class="hint">Not submitted. The agent submits a candidate once evidence (e.g. SERP check) is complete.</div></div></div><div class="card-b flush">
-      <table><thead><tr><th>Opportunity</th><th>Type</th><th>Status</th><th>Next step</th></tr></thead><tbody>${a.gate1_candidates.map(c => `<tr class="click" onclick="go('opportunities/${esc(c.id)}')"><td class="q">${esc(c.name)}<div class="s">${esc(c.id)}</div></td><td>${typeChip(c.type)}</td><td>${statusChip(c.status)}</td><td class="s">${esc(c.next_step)}</td></tr>`).join("")}</tbody></table></div></div></div>
-    <div><h3>Gate 2 – Publication</h3>${a.gate2.length ? a.gate2.map(x => item(x, 2)).join("") : `<div class="card"><div class="empty">No WordPress drafts awaiting review.<br><span class="mini">Drafts appear here with URL/preview, target keyword, metadata and QA status once content production has started.</span></div></div>`}</div>
+    <div class="dec-form" data-gate="${gate}" data-id="${esc(x.id)}" data-title="${esc(x.title)}">
+      <div class="row" role="group" aria-label="Decision">${Object.entries(DEC).map(([k, [l]]) => `<button class="btn" data-choice="${k}">${l}</button>`).join("")}</div>
+      <label class="mini" for="c-${esc(x.id)}">Comment or feedback for the agent (optional)</label>
+      <textarea id="c-${esc(x.id)}" placeholder="e.g. focus on Bauunternehmen, no price mention"></textarea>
+      <div class="row"><button class="btn primary" data-save disabled>Save decision</button><span class="mini" data-msg>${gate === 2 ? "Approve allows the agent to continue. It still does not publish anything automatically." : "Approve releases the strategy for content production. Nothing is published."}</span></div>
+    </div></div></div>`;
+  view().innerHTML = `<div class="page-head"><div><h1>Approval Center</h1><div class="sub">Gate 1 = strategy · Gate 2 = publication. Your decisions are stored in this artifact and processed by the agent. The dashboard never publishes or changes the website.</div></div></div>
+  <div id="store-notice"></div>
+  <div class="grid g2 mt">
+    <div><h3>Gate 1 – Strategy</h3>${a.gate1.filter(x => x.status === "pending").length ? a.gate1.filter(x => x.status === "pending").map(x => item(x, 1)).join("") : `<div class="card"><div class="empty">No strategy decisions pending.<br><span class="mini">The agent has not submitted a Gate-1 package yet.</span></div></div>`}
+      <div class="card mt"><div class="card-h"><div><h2>Pipeline – Gate-1 candidates</h2><div class="hint">Not submitted. The agent submits a candidate once evidence (e.g. SERP check) is complete.</div></div></div><div class="card-b flush"><div class="tbl-wrap">
+      <table><thead><tr><th>Opportunity · next step</th><th>Type</th><th>Status</th></tr></thead><tbody>${a.gate1_candidates.map(c => `<tr class="click" data-go="opp-${esc(c.id)}"><td><div class="q">${esc(c.name)} <span class="s">${esc(c.id)}</span></div><div class="s">${esc(c.next_step)}</div></td><td>${typeChip(c.type)}</td><td>${statusChip(c.status)}</td></tr>`).join("")}</tbody></table></div></div></div></div>
+    <div><h3>Gate 2 – Publication</h3>${a.gate2.filter(x => x.status === "pending").length ? a.gate2.filter(x => x.status === "pending").map(x => item(x, 2)).join("") : `<div class="card"><div class="empty">No WordPress drafts awaiting review.<br><span class="mini">Drafts appear here with URL/preview, target keyword, metadata and QA status once content production has started.</span></div></div>`}
+      <div class="card mt"><div class="card-h"><div><h2>Decision log</h2><div class="hint">Every decision you record, newest first, with the agent's processing status</div></div></div><div id="dec-log"></div></div></div>
   </div>`;
-  view().querySelectorAll("button[data-dec]").forEach(b => b.addEventListener("click", () => { decided[b.dataset.id] = b.dataset.dec; localStorage.setItem("seo-local-decisions-" + S.client, JSON.stringify(decided)); route(); }));
+  view().querySelectorAll(".dec-form").forEach(f => {
+    let choice = null;
+    f.querySelectorAll("[data-choice]").forEach(b => b.addEventListener("click", () => { choice = b.dataset.choice; f.querySelectorAll("[data-choice]").forEach(x => x.classList.toggle("sel", x === b)); $("[data-save]", f).disabled = !(DB.state === "ready" && DB.canWrite); }));
+    $("[data-save]", f).addEventListener("click", async () => {
+      const btn = $("[data-save]", f), msg = $("[data-msg]", f);
+      if (!choice || !(DB.state === "ready" && DB.canWrite)) return;
+      btn.disabled = true; msg.textContent = "Saving…";
+      const now = new Date(), id = `${S.client}--${f.dataset.id}--g${f.dataset.gate}--${now.getTime()}`.replace(/[^A-Za-z0-9_.~:@+-]/g, "-");
+      const doc = { schema: 1, client: S.client, item_id: f.dataset.id, item_title: f.dataset.title, gate: +f.dataset.gate, decision: choice,
+        comment: $("textarea", f).value.trim(), decided_at: now.toISOString(), agent_status: "pending", agent_processed_at: null, agent_note: null };
+      try { await DB.ns.collection("decisions").doc(id).set(doc); msg.textContent = `Saved ${fmtDateTime(doc.decided_at)}. The agent processes it in its next session; the website is not changed.`; $("textarea", f).value = ""; f.querySelectorAll("[data-choice]").forEach(x => x.classList.remove("sel")); choice = null; }
+      catch (e) { msg.textContent = `Not saved (${e.code || "error"}): ${e.message || ""}. Nothing was recorded – try again.`; btn.disabled = false; }
+    });
+  });
+  renderStoreNotice(); renderDecisionLog(); renderItemStatus();
 };
+function renderStoreNotice() {
+  const el = $("#store-notice"); if (!el) return; const [l, c, t] = storeStatus();
+  el.innerHTML = `<div class="notice row">${chip("Approval store: " + l, c, true)}<span>${esc(t)}</span></div>`;
+  view().querySelectorAll(".dec-form [data-choice]").forEach(b => b.disabled = !(DB.state === "ready" && DB.canWrite));
+}
+function renderItemStatus() {
+  view().querySelectorAll("[data-status-for]").forEach(el => { const d = latestDecision(el.dataset.statusFor);
+    el.innerHTML = d ? `${chip(DEC[d.decision]?.[0] || d.decision, DEC[d.decision]?.[1] || "", true)} ${chip((AGENT[d.agent_status] || [d.agent_status])[0], (AGENT[d.agent_status] || [, ""])[1])}` : statusChip("Approval required"); });
+}
+function renderDecisionLog() {
+  const el = $("#dec-log"); if (!el) return;
+  if (DB.state !== "ready") { el.innerHTML = `<div class="empty">${esc(storeStatus()[2])}</div>`; return; }
+  const d = clientDecisions();
+  el.innerHTML = d.length ? `<div>${d.map(x => `<div class="dl-item"><div><div class="row"><b>${esc(x.item_title || x.item_id)}</b><span class="mini">${esc(x.item_id)} · Gate ${esc(x.gate)}</span></div>
+      <div class="s">Decided ${fmtDateTime(x.decided_at)}${x.comment ? ` · „${esc(x.comment)}“` : ""}</div>
+      ${x.agent_status === "processed" ? `<div class="s">Agent: ${fmtDateTime(x.agent_processed_at)}${x.agent_note ? ` · ${esc(x.agent_note)}` : ""}</div>` : ""}</div>
+      <div class="row" style="align-content:start">${chip(DEC[x.decision]?.[0] || x.decision, DEC[x.decision]?.[1] || "", true)}${chip((AGENT[x.agent_status] || [x.agent_status])[0], (AGENT[x.agent_status] || [, ""])[1])}</div></div>`).join("")}</div>`
+    : `<div class="empty">No decisions recorded yet.</div>`;
+}
 
 pages.changes = () => {
   const ch = S.d.changes;
@@ -408,7 +509,7 @@ pages.changes = () => {
   ${ch.length ? ch.map(c => {
     const today = S.d.meta.today;
     return `<div class="card" style="margin-bottom:14px"><div class="card-h"><div><div class="row"><span class="mini">${fmtDate(c.date)}</span><b>${esc(c.id)}</b><h2>${esc(c.title)}</h2>${statusChip(c.status === "monitoring" ? "Monitoring" : c.status)}${c.freeze ? chip("Change freeze", "amber", true) : ""}</div>
-      <div class="hint">${esc(c.url)} · by ${esc(c.by)} · <a href="#/opportunities/${esc(c.related_opportunity)}">${esc(c.related_opportunity)}</a> · findings ${c.related_findings.map(esc).join(", ")}</div></div>${chip("Assessment: " + c.impact_assessment, "outline")}</div>
+      <div class="hint">${esc(c.url)} · by ${esc(c.by)} · <a href="#opp-${esc(c.related_opportunity)}">${esc(c.related_opportunity)}</a> · findings ${c.related_findings.map(esc).join(", ")}</div></div>${chip("Assessment: " + c.impact_assessment, "outline")}</div>
       <div class="card-b"><div class="grid g3">
         <div><h3>Reason</h3><div>${esc(c.reason)}</div></div><div><h3>Previous state</h3><div class="s" style="font-family:var(--mono)">${esc(c.previous_state)}</div></div><div><h3>New state</h3><div class="s" style="font-family:var(--mono)">${esc(c.new_state)}</div></div></div>
         <h3 class="mt">Monitoring</h3><div class="timeline">${c.checkpoints.map(cp => { const due = cp.status === "pending" && cp.due <= addDays(today, 7); return `<div class="tl-step ${cp.status === "done" ? "done" : due ? "due" : ""}"><div class="pt"></div><div class="l">${esc(cp.label)} ${cp.status === "done" ? "✓" : ""}</div><div class="d">${fmtDate(cp.due)} · ${cp.status === "done" ? "done" : due ? "due soon" : "pending"}</div></div>`; }).join("")}</div>
@@ -449,6 +550,7 @@ function renderMkDetail(x) {
     <div class="grid g2 mt"><div><div class="callout"><b>Recommendation:</b> ${esc(x.recommendation)}</div>${x.note ? `<div class="mini mt">${esc(x.note)}</div>` : ""}
       <h3 class="mt">GSC queries</h3>${x.gsc.top.length ? x.gsc.top.map(q => `<div class="s">${esc(q.query)} · ${fmtN(q.impressions)} impr. · pos ${fmtD(q.position)}</div>`).join("") : `<div class="s">No matching queries – the website does not cover this topic.</div>`}</div>
     <div><h3>Semrush keywords</h3><table><thead><tr><th>Keyword</th><th class="num">Vol.</th><th class="num">KD</th><th class="num">CPC</th></tr></thead><tbody>${x.semrush.map(k => `<tr><td>${esc(k.keyword)}</td>${k.status === "ok" ? `<td class="num">${fmtN(k.volume)}</td><td class="num">${fmtD(k.kd, 0)}</td><td class="num">${fmtD(k.cpc, 2)}</td>` : `<td colspan="3" class="s">${k.status === "no_data" ? "No data" : "Not measured"}</td>`}</tr>`).join("")}</tbody></table><div class="mini">Measured ${fmtDate(x.semrush.find(k => k.fetched)?.fetched)}</div></div></div></div>`;
+  wrapTables(el);
 }
 
 pages.local = () => {
@@ -474,12 +576,12 @@ pages.findings = () => {
     columns: [{ key: "id", label: "ID", render: x => `<b>${esc(x.id)}</b>` }, { key: "severity", label: "Severity", value: x => ({ high: 3, medium: 2, low: 1 }[x.severity]), render: x => sevChip(x.severity) },
       { key: "category", label: "Category" }, { key: "title", label: "Finding", render: x => `<div class="q">${esc(x.title)}</div><div class="s">${esc(x.description.slice(0, 120))}${x.description.length > 120 ? "…" : ""}</div>` },
       { key: "url", label: "Affected URL", render: x => `<span class="s">${esc(x.url || "–")}</span>` }, { key: "status", label: "Status", render: x => statusChip(x.status) },
-      { key: "related_opportunity", label: "Related", render: x => [x.related_opportunity && `<a href="#/opportunities/${esc(x.related_opportunity)}">${esc(x.related_opportunity)}</a>`, x.related_change && `<a href="#/changes">${esc(x.related_change)}</a>`].filter(Boolean).join(" · ") || "–" }] }));
+      { key: "related_opportunity", label: "Related", render: x => [x.related_opportunity && `<a href="#opp-${esc(x.related_opportunity)}">${esc(x.related_opportunity)}</a>`, x.related_change && `<a href="#changes">${esc(x.related_change)}</a>`].filter(Boolean).join(" · ") || "–" }] }));
 };
 function renderFinding(x) {
   $("#fd-detail").innerHTML = `<div class="card"><div class="card-h"><div class="row"><b>${esc(x.id)}</b><h2>${esc(x.title)}</h2>${sevChip(x.severity)}${statusChip(x.status)}</div><span class="mini">${fmtDate(x.date)}</span></div>
     <div class="card-b"><div class="kv"><div class="k">Category</div><div>${esc(x.category)}</div><div class="k">Description</div><div>${esc(x.description)}</div><div class="k">Evidence</div><div>${esc(x.evidence)}</div><div class="k">Affected URL</div><div>${esc(x.url || "–")}</div>
-    <div class="k">Related opportunity</div><div>${x.related_opportunity ? `<a href="#/opportunities/${esc(x.related_opportunity)}">${esc(x.related_opportunity)}</a>` : "–"}</div><div class="k">Related change</div><div>${x.related_change ? `<a href="#/changes">${esc(x.related_change)}</a>` : "–"}</div></div></div></div>`;
+    <div class="k">Related opportunity</div><div>${x.related_opportunity ? `<a href="#opp-${esc(x.related_opportunity)}">${esc(x.related_opportunity)}</a>` : "–"}</div><div class="k">Related change</div><div>${x.related_change ? `<a href="#changes">${esc(x.related_change)}</a>` : "–"}</div></div></div></div>`;
 }
 
 pages.activity = () => {
@@ -490,7 +592,7 @@ pages.activity = () => {
 
 pages.sources = () => {
   const s = S.d.sources, c = S.d.client;
-  view().innerHTML = `<div class="page-head"><div><h1>Data Sources & System Health</h1><div class="sub">Dashboard data built ${esc(S.d.meta.built_at.replace("T", " "))} · freshness calculated in your browser from source dates</div></div></div>
+  view().innerHTML = `<div class="page-head"><div><h1>Data Sources & System Health</h1><div class="sub">Dashboard data built ${fmtDateTime(S.d.meta.built_at)} · freshness is calculated in your browser from the source dates</div></div></div>
   <div class="grid g3">
     <div class="card"><div class="card-h"><h2>Google Search Console</h2>${statusChip(s.gsc.status === "connected" ? "Connected" : s.gsc.status)}</div><div class="card-b"><div class="kv">
       <div class="k">Property</div><div>${esc(c.gsc.property)}</div><div class="k">Property type</div><div>${esc(c.gsc.property_type)}</div><div class="k">Permission</div><div>${esc(c.gsc.permission)}</div>
@@ -508,32 +610,77 @@ pages.sources = () => {
       <div class="k">Inventory</div><div>${fmtN(s.website.urls)} URLs (${fmtN(s.website.indexable)} indexable)</div><div class="k">Last crawl</div><div>${fmtDate(s.website.last_inventory)} ${freshness(s.website.last_inventory, 14)}</div></div>
       <h3 class="mt">Active monitors</h3>${s.website.monitors.map(m => `<div class="callout" style="margin-bottom:6px"><b>${esc(m.url)}</b><div class="s">${esc(m.type)}</div><div class="s">Last check ${fmtDate(m.last_check)} · ${esc(m.result)} · next ${fmtDate(m.next_check)}</div></div>`).join("")}</div></div>
   </div>
+  <div class="grid g2 mt">${storeCard()}<div class="card"><div class="card-h"><h2>Where this dashboard runs</h2>${chip(window.claude && typeof window.claude.use === "function" ? "Claude artifact" : "Local preview", window.claude && typeof window.claude.use === "function" ? "green" : "", true)}</div><div class="card-b"><div class="kv">
+    <div class="k">Primary surface</div><div>Private Claude artifact (pin it in the Claude sidebar)</div>
+    <div class="k">Data delivery</div><div>The agent rebuilds <code>dashboard.json</code> and republishes it beside the page after each work session</div>
+    <div class="k">Live queries</div><div>None. GSC and Semrush are never queried when the page opens (no credentials in the page, no API units spent)</div>
+    <div class="k">Fallback</div><div><code>python3 dashboard/serve.py</code> – same UI on localhost for development</div></div></div></div></div>
+  ${freshPanel()}
   <div class="card mt"><div class="card-h"><h2>Data flow</h2></div><div class="card-b mini">Raw sources (GSC API export, Semrush connector results, website crawl) → normalization & analysis (<code>tools/build_dashboard_data.py</code>) + structured state (<code>clients/&lt;client&gt;/state/*.json</code>) → dashboard data layer (<code>dashboard/public/data/&lt;client&gt;/dashboard.json</code>) → UI. No credentials are read by the build or shipped to the browser.${S.d.meta.warnings.length ? `<div class="down mt">Build warnings: ${S.d.meta.warnings.map(esc).join("; ")}</div>` : ""}</div></div>`;
 };
 
 /* ------------------------------------------------------------ router */
+/* Artifact-taugliches Routing: nur einfache Hash-Namen (#overview, #opp-OPP-02). Alte #/pfad-Links werden umgeschrieben. */
 const TITLES = { overview: "Overview", performance: "Performance", opportunities: "Opportunities", approvals: "Approvals", changes: "Changes & Impact", market: "Market Opportunities", local: "Local SEO", findings: "Findings", activity: "Agent Activity", sources: "Data Sources" };
-function go(path) { location.hash = "#/" + path; }
-window.go = go;
-function route() {
-  tip.hide();
-  const [name, id] = (location.hash.replace(/^#\/?/, "") || "overview").split("/");
-  const key = TITLES[name] ? name : "overview";
-  document.querySelectorAll("#nav a").forEach(a => a.classList.toggle("active", a.dataset.route === key));
-  $("#crumbs").innerHTML = `${esc(S.d.client.name)} / <b>${esc(TITLES[key])}</b>${id ? ` / ${esc(id)}` : ""}`;
-  try { (key === "opportunities" && id ? pages.opportunity(decodeURIComponent(id)) : pages[key]()); }
-  catch (e) { console.error(e); view().innerHTML = `<div class="card empty">This view failed to render: ${esc(e.message)}</div>`; }
-  if (!TITLES[name] && location.hash) history.replaceState(null, "", "#/overview");
-  window.scrollTo(0, 0);
+/** Jede Tabelle scrollt in ihrem eigenen Container – die Seite selbst scrollt nie horizontal. */
+function wrapTables(root = view()) { root.querySelectorAll("table").forEach(t => { if (!t.parentElement.classList.contains("tbl-wrap")) { const w = document.createElement("div"); w.className = "tbl-wrap"; t.replaceWith(w); w.appendChild(t); } }); }
+function parseHash() {
+  let h = decodeURIComponent(location.hash.replace(/^#/, ""));
+  if (h.startsWith("/")) { const [n, id] = h.slice(1).split("/"); h = n === "opportunities" && id ? "opp-" + id : n; }
+  if (h.startsWith("opp-")) return { key: "opportunities", id: h.slice(4), raw: h };
+  return { key: TITLES[h] ? h : "overview", id: null, raw: h, unknown: !!h && !TITLES[h] };
 }
+function go(name) { if (location.hash === "#" + name) route(); else location.hash = "#" + name; }
+window.go = go;
+document.addEventListener("click", e => { const t = e.target.closest("[data-go]"); if (t && !e.target.closest("a,button")) go(t.dataset.go); });
+function route(keepScroll = false) {
+  tip.hide();
+  if (!S.d) return;
+  const r = parseHash();
+  if (location.hash.startsWith("#/")) { history.replaceState(null, "", "#" + (r.id ? "opp-" + r.id : r.key)); }
+  document.querySelectorAll("#nav a").forEach(a => { const on = a.dataset.route === r.key; a.classList.toggle("active", on); on ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"); });
+  $("#crumbs").innerHTML = `${esc(S.d.client.name)} / ${r.id ? `<a href="#opportunities">${esc(TITLES[r.key])}</a> / <b>${esc(r.id)}</b>` : `<b>${esc(TITLES[r.key])}</b>`}`;
+  try { (r.id ? pages.opportunity(r.id) : pages[r.key]()); }
+  catch (e) { console.error(e); view().innerHTML = `<div class="card empty">This view failed to render: ${esc(e.message)}</div>`; }
+  wrapTables();
+  if (!keepScroll) window.scrollTo(0, 0);
+}
+/* ------------------------------------------------------------ freshness */
+function ageDays(iso) { if (!iso) return null; const t = new Date(); const today = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate()); const [y, m, d] = iso.slice(0, 10).split("-").map(Number); return Math.max(0, Math.round((today - Date.UTC(y, m - 1, d)) / 864e5)); }
+const fmtDateTime = iso => { if (!iso) return "Unknown"; const d = new Date(iso); return isNaN(d) ? fmtDate(iso) : d.toLocaleString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }); };
+const ageText = n => n === null ? "unknown" : n === 0 ? "today" : n === 1 ? "1 day ago" : `${n} days ago`;
+function freshClass(iso, ok, stale) { const n = ageDays(iso); return n === null ? "" : n <= ok ? "ok" : n <= stale ? "stale" : "old"; }
+/** [label, iso, okDays, staleDays, explanation] – Schwellen je Quelle */
+function freshSpec() {
+  const f = S.d.meta.freshness || {};
+  return [
+    ["GSC data through", f.gsc_data_through, 5, 14, "Letzter Tag mit Search-Console-Daten (Google liefert mit 2–3 Tagen Verzögerung)"],
+    ["GSC fetched", f.gsc_fetched, 7, 21, "Letzter erfolgreicher API-Abruf durch den Agenten"],
+    ["Semrush last query", f.semrush_last_query, 30, 90, "Letzte Semrush-Abfrage (Keyword-Cache, Rankings)"],
+    ["Website crawl", f.website_crawl, 14, 45, "Letztes Website-Inventar (Titles, H1, Links, Sitemap)"],
+    ["Website monitor", f.website_monitor, 7, 21, "Letzter technischer Check der überwachten URLs"],
+    ["SEO state", f.state_updated, 7, 30, "Letzte Aktualisierung von Opportunities, Findings, Changes, Tasks (state/*.json)"],
+    ["Dashboard build", S.d.meta.built_at, 7, 30, "Zeitpunkt, zu dem diese Dashboard-Daten gebaut und veröffentlicht wurden"],
+  ];
+}
+function freshTopbar() {
+  const f = S.d.meta.freshness || {};
+  const it = (l, iso, ok, st, t) => `<span class="fresh ${freshClass(iso, ok, st)}" data-tip="${esc(t + " · " + ageText(ageDays(iso)))}"><i></i>${l} <b>${iso && iso.length > 10 ? fmtDateTime(iso) : fmtDate(iso)}</b></span>`;
+  return it("GSC", f.gsc_data_through, 5, 14, "GSC-Daten bis") + it("Semrush", f.semrush_last_query, 30, 90, "Letzte Semrush-Abfrage") + it("Crawl", f.website_crawl, 14, 45, "Letzter Website-Crawl") + it("State", f.state_updated, 7, 30, "SEO-State zuletzt aktualisiert") + it("Build", S.d.meta.built_at, 7, 30, "Dashboard gebaut");
+}
+function freshPanel() {
+  return `<div class="card mt" id="fresh-card"><div class="card-h"><div><h2>Data freshness</h2><div class="hint">Snapshot published with the last build. Opening this page does not fetch GSC or Semrush live.</div></div><a href="#sources" class="mini">Data sources →</a></div>
+    <div class="fgrid">${freshSpec().map(([l, iso, ok, st, t]) => { const c = freshClass(iso, ok, st); return `<div class="fitem"><div class="fl" data-tip="${esc(t)}">${esc(l)}</div><div class="fv">${iso && iso.length > 10 ? fmtDateTime(iso) : fmtDate(iso)}</div><div class="fs">${chip(iso ? ageText(ageDays(iso)) : "Unknown", { ok: "green", stale: "amber", old: "red" }[c] || "", true)}</div></div>`; }).join("")}</div></div>`;
+}
+/* ------------------------------------------------------------ load */
 async function load(slug) {
   const r = await fetch(`data/${slug}/dashboard.json`, { cache: "no-store" });
   if (!r.ok) throw new Error(`dashboard.json for ${slug}: HTTP ${r.status}`);
   S.d = await r.json(); S.client = slug;
   $("#client-region").textContent = S.d.client.region;
-  $("#nav-approvals").textContent = S.d.health.pending_approvals || "";
   $("#nav-findings").textContent = S.d.health.open_findings || "";
-  $("#topbar-right").innerHTML = `<span>GSC through ${fmtDate(S.d.gsc.last)}</span><span>Built ${esc(S.d.meta.built_at.replace("T", " ").slice(0, 16))}</span>${chip(S.d.health.status, { Healthy: "green", Attention: "amber", Critical: "red" }[S.d.health.status], true)}`;
+  $("#topbar-right").innerHTML = freshTopbar() + chip(S.d.health.status, { Healthy: "green", Attention: "amber", Critical: "red" }[S.d.health.status], true);
+  updateBadges();
   route();
 }
 let _rz; addEventListener("resize", () => { clearTimeout(_rz); _rz = setTimeout(() => document.querySelectorAll("[id]").forEach(el => { if (el._chart) chartInto(el.id, el._chart); }), 150); });
@@ -546,6 +693,7 @@ let _rz; addEventListener("resize", () => { clearTimeout(_rz); _rz = setTimeout(
     sel.innerHTML = S.clients.map(c => `<option value="${esc(c.slug)}">${esc(c.name)}</option>`).join("");
     sel.addEventListener("change", () => load(sel.value));
     await load(S.clients[0].slug);
-    addEventListener("hashchange", route);
+    addEventListener("hashchange", () => route());
   } catch (e) { console.error(e); view().innerHTML = `<div class="card empty">Could not load dashboard data: ${esc(e.message)}</div>`; }
+  initDb();
 })();

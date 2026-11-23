@@ -1,6 +1,7 @@
 {
-  "_doc": "Approval Gates. Nur der Agent legt Einträge an (status=pending), nur Noel entscheidet. Das Dashboard löst keine Website-Aktionen aus. Gate 1 = Strategie, Gate 2 = Veröffentlichung (WordPress-Draft).",
+  "_doc": "Approval Gates. Nur der Agent legt Einträge an (status=pending), nur Noel entscheidet – im Claude-Artifact (db-Collection 'decisions'). Der Agent liest Entscheidungen per ArtifactData, verarbeitet sie und protokolliert sie hier in decision_log (Spiegel für Git). Das Dashboard löst keine Website-Aktionen aus. Gate 1 = Strategie, Gate 2 = Veröffentlichung (WordPress-Draft).",
   "updated": "2026-11-23",
   "gate1": [],
-  "gate2": []
+  "gate2": [],
+  "decision_log": []
 }

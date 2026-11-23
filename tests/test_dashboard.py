@@ -125,5 +125,75 @@ class SecurityQA(unittest.TestCase):
             self.assertEqual(r.returncode, 0, f"not ignored: {fn}")
 
 
+class ArtifactQA(unittest.TestCase):
+    """Claude-Artifact-Fassung: Format, Freshness-Metadaten, Security-Scan, Approval-Mirror."""
+    @classmethod
+    def setUpClass(cls):
+        subprocess.run([sys.executable, os.path.join(ROOT, "tools", "build_artifact.py")], check=True, capture_output=True)
+        cls.dist = os.path.join(ROOT, "dashboard", "artifact", "dist")
+        cls.page = open(os.path.join(cls.dist, "index.html"), encoding="utf-8").read()
+        cls.d = json.load(open(os.path.join(cls.dist, "data", SLUG, "dashboard.json"), encoding="utf-8"))
+
+    def test_page_is_artifact_body_format(self):
+        self.assertTrue(self.page.startswith("<title>"))
+        for tag in ("<!doctype", "<html", "<head", "<body"):
+            self.assertNotIn(tag, self.page.lower()[:400])
+        self.assertNotIn('src="app.js"', self.page)
+        self.assertLess(len(self.page.encode()), 1_000_000)
+
+    def test_only_allowed_external_resources(self):
+        for url in re.findall(r'(?:src|href)="(https?://[^"]+)"', self.page):
+            self.assertTrue(url.startswith(("https://fonts.googleapis.com/", "https://www.spreewald-luftaufnahmen.de")), url)
+        self.assertNotRegex(self.page, r"fetch\(\s*[\"'`]https?://")
+
+    def test_routes_use_plain_hash_names(self):
+        self.assertNotRegex(self.page, r'href="#/')
+        for reserved in ("settings", "sidebar", "customize", "upgrade", "downloads"):
+            self.assertNotIn(f'href="#{reserved}"', self.page)
+
+    def test_no_inline_event_handlers(self):
+        self.assertNotRegex(self.page, r"\son(click|change|load)=")
+
+    def test_theme_tokens_light_and_dark(self):
+        self.assertIn('@media (prefers-color-scheme: dark){:root:not([data-theme="light"])', self.page)
+        self.assertIn(':root[data-theme="dark"]', self.page)
+        self.assertRegex(self.page, r"body\{[^}]*background:var\(--bg\)")
+
+    def test_freshness_metadata(self):
+        f = self.d["meta"]["freshness"]
+        for k in ("gsc_data_through", "gsc_fetched", "semrush_last_query", "website_crawl", "state_updated"):
+            self.assertRegex(f[k] or "", r"^\d{4}-\d{2}-\d{2}$", k)
+        self.assertEqual(f["gsc_data_through"], self.d["gsc"]["last"])
+        self.assertTrue(self.d["meta"]["built_at"].endswith("Z"))
+
+    def test_security_scan_clean_and_detects_secrets(self):
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import build_artifact
+        files = [os.path.join(dp, f) for dp, _, fs in os.walk(self.dist) for f in fs]
+        self.assertEqual(build_artifact.scan(files), [])
+        import tempfile
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as t:
+            t.write('{"client_email": "a@b-1.iam.gserviceaccount.com", "private_key": "-----BEGIN PRIVATE KEY-----"}')
+        try:
+            self.assertGreaterEqual(len(build_artifact.scan([t.name])), 3)
+        finally:
+            os.unlink(t.name)
+
+    def test_decision_log_mirror_only_processed(self):
+        import tempfile, shutil
+        appr = os.path.join(CDIR, "state", "approvals.json"); backup = open(appr, encoding="utf-8").read()
+        tmp = tempfile.mkdtemp()
+        try:
+            base = {"schema": 1, "client": SLUG, "item_title": "T", "gate": 1, "comment": "", "decided_at": "2026-11-23T10:00:00Z", "agent_processed_at": None, "agent_note": None}
+            json.dump({**base, "item_id": "A", "decision": "approve", "agent_status": "processed"}, open(os.path.join(tmp, "x--A--g1--1.json"), "w"))
+            json.dump({**base, "item_id": "B", "decision": "reject", "agent_status": "pending"}, open(os.path.join(tmp, "x--B--g1--2.json"), "w"))
+            json.dump({**base, "item_id": "C", "decision": "publish_now", "agent_status": "processed"}, open(os.path.join(tmp, "x--C--g1--3.json"), "w"))
+            subprocess.run([sys.executable, os.path.join(ROOT, "tools", "record_decisions.py"), tmp], check=True, capture_output=True)
+            log = json.load(open(appr, encoding="utf-8"))["decision_log"]
+            self.assertEqual([e["item_id"] for e in log], ["A"])
+        finally:
+            open(appr, "w", encoding="utf-8").write(backup); shutil.rmtree(tmp)
+
+
 if __name__ == "__main__":
     unittest.main()

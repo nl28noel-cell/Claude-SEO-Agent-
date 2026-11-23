@@ -1,0 +1,15 @@
+{
+  "_doc": "Das private Claude-Artifact ist die primäre Oberfläche des Control Centers. Veröffentlicht wird immer unter derselben URL (Artifact-Tool, file_path dashboard/artifact/dist/index.html bzw. url unten).",
+  "url": "https://claude.ai/artifact/4dvRn79XhQRBTy21GkmVLk",
+  "visibility": "private (nur Owner)",
+  "capabilities": {"db": {"rules": [{"path": "", "read": "admin", "write": "owner"}]}, "user": {}},
+  "files": {
+    "data/clients.json": "dashboard/artifact/dist/data/clients.json",
+    "data/spreewald-luftaufnahmen/dashboard.json": "dashboard/artifact/dist/data/spreewald-luftaufnahmen/dashboard.json"
+  },
+  "db": {
+    "collection": "decisions",
+    "doc_id": "<client>--<item_id>--g<gate>--<epoch_ms>",
+    "fields": ["schema", "client", "item_id", "item_title", "gate", "decision (approve|request_changes|reject)", "comment", "decided_at (ISO, UTC)", "agent_status (pending|processed|superseded)", "agent_processed_at", "agent_note"]
+  }
+}

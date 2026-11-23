@@ -356,6 +356,21 @@ def build_client(slug, today):
     for m in market.get("items", []):
         if m.get("status") == "Awaiting business decision":
             attention.append({"kind": "market", "ref": m["id"], "title": m["name"], "detail": m["recommendation"], "status": "Decision needed", "level": "info"})
+    # ---- Datenfrische je Quelle (nur echte Datumswerte aus den Quellen/State-Dateien, nichts geschätzt)
+    state_files = {}
+    for fn in sorted(os.listdir(os.path.join(cdir, "state"))):
+        if fn.endswith(".json"):
+            state_files[fn[:-5]] = jload(os.path.join(cdir, "state", fn), {}).get("updated")
+    freshness = {
+        "gsc_data_through": sources.get("gsc", {}).get("data_to"),
+        "gsc_fetched": sources.get("gsc", {}).get("last_fetch"),
+        "semrush_last_query": sources.get("semrush", {}).get("last_query"),
+        "semrush_cache_latest": sources.get("semrush", {}).get("cache", {}).get("latest"),
+        "website_crawl": sources.get("website", {}).get("last_inventory"),
+        "website_monitor": max((m.get("last_check") or "" for m in sources.get("website", {}).get("monitors", [])), default=None) or None,
+        "state_updated": max((v for v in state_files.values() if v), default=None),
+        "state_files": state_files,
+    }
     open_findings = [f for f in findings if f["status"] == "open"]
     pending_approvals = sum(1 for g in ("gate1", "gate2") for a in appr.get(g, []) if a.get("status") == "pending")
     blocked = [t for t in tasks if t["state"] == "blocked"]
@@ -363,8 +378,8 @@ def build_client(slug, today):
              "Attention" if blocked or pending_approvals or any(f["severity"] == "high" for f in open_findings) else "Healthy"
 
     out = {
-        "meta": {"client": slug, "built_at": dt.datetime.now().isoformat(timespec="seconds"), "today": today.isoformat(),
-                 "schema": 1, "warnings": warnings},
+        "meta": {"client": slug, "built_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"), "today": today.isoformat(),
+                 "schema": 2, "warnings": warnings, "freshness": freshness},
         "client": {k: cfg[k] for k in ("slug", "name", "region", "domain", "website")} | {"gsc": {k: v for k, v in cfg["gsc"].items() if k not in ("data_dir", "service_account")}, "segments_note": cfg["segments"]["note"]},
         "health": {"status": health, "open_findings": len(open_findings), "pending_approvals": pending_approvals,
                    "freezes": sum(1 for c in changes if c.get("freeze")), "blocked_tasks": len(blocked),
@@ -383,7 +398,8 @@ def build_client(slug, today):
         "findings": findings,
         "changes": changes,
         "tasks": tasks,
-        "approvals": {"gate1": appr.get("gate1", []), "gate2": appr.get("gate2", []), "gate1_candidates": candidates},
+        "approvals": {"gate1": appr.get("gate1", []), "gate2": appr.get("gate2", []), "gate1_candidates": candidates,
+                      "decision_log": appr.get("decision_log", [])},
         "market": market,
         "local": local_out,
         "sources": sources,

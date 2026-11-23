@@ -4,7 +4,7 @@ const { chromium } = require('playwright');
 const base = process.argv[2] || 'http://127.0.0.1:8765/';
 const out = process.argv[3] || 'qa-shots';
 const W = +(process.argv[4] || 1440), H = +(process.argv[5] || 900), DPR = +(process.argv[6] || 1);
-const routes = ['overview', 'performance', 'opportunities', 'opportunities/OPP-02', 'opportunities/OPP-04', 'approvals', 'changes', 'market', 'local', 'findings', 'activity', 'sources', 'doesnotexist'];
+const routes = ['overview', 'performance', 'opportunities', 'opp-OPP-02', 'opp-OPP-04', 'approvals', 'changes', 'market', 'local', 'findings', 'activity', 'sources', 'doesnotexist'];
 (async () => {
   require('fs').mkdirSync(out, { recursive: true });
   const b = await chromium.launch();
@@ -14,7 +14,7 @@ const routes = ['overview', 'performance', 'opportunities', 'opportunities/OPP-0
   p.on('pageerror', e => errors.push('[pageerror] ' + e.message));
   p.on('requestfailed', r => errors.push('[requestfailed] ' + r.url()));
   for (const r of routes) {
-    await p.goto(base + '#/' + r, { waitUntil: 'networkidle' });
+    await p.goto(base + '#' + r, { waitUntil: 'networkidle' });
     await p.waitForTimeout(250);
     const failed = await p.$eval('#view', el => el.innerText.includes('failed to render') || el.innerText.includes('Could not load'));
     const overflowX = await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);

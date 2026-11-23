@@ -20,3 +20,4 @@ dashboard/public/data/
 # QA-Artefakte
 qa-shots/
 node_modules/
+dashboard/artifact/dist/

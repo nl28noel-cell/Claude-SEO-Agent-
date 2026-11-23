@@ -13,7 +13,7 @@ const check = (name, cond, info = '') => (cond ? ok : bad).push(name + (info ? '
   const rowsOf = sel => p.locator(sel + ' tbody tr').allInnerTexts();
 
   // KPI 28D gegen Rohdaten
-  await p.goto(base + '#/overview', { waitUntil: 'networkidle' });
+  await p.goto(base + '#overview', { waitUntil: 'networkidle' });
   const last28 = d.gsc.daily.slice(-28);
   const c = last28.reduce((a, r) => a + r.clicks, 0), i = last28.reduce((a, r) => a + r.impressions, 0);
   const kpis = await p.locator('.kpi .k-val').allInnerTexts();
@@ -25,7 +25,7 @@ const check = (name, cond, info = '') => (cond ? ok : bad).push(name + (info ? '
   check('Range 16M active', (await p.locator('.seg[data-range="range"] button.on').getAttribute('data-r')) === '16M');
 
   // Performance: Suche, Filter, Sortierung, Pagination, Tabs
-  await p.goto(base + '#/performance', { waitUntil: 'networkidle' });
+  await p.goto(base + '#performance', { waitUntil: 'networkidle' });
   await p.fill('#ptab-body input[type=search]', 'baudokumentation'); await p.waitForTimeout(100);
   const r1 = await rowsOf('#ptab-body');
   check('Search filters queries', r1.length > 0 && r1.every(t => t.toLowerCase().includes('baudokumentation')), r1.length + ' rows');
@@ -47,35 +47,35 @@ const check = (name, cond, info = '') => (cond ? ok : bad).push(name + (info ? '
   check('Perf range 28D KPI', (await p.locator('.kpi .k-val').first().innerText()) === nf(c));
 
   // Opportunities: Typfilter, Detail, unbekannte ID
-  await p.goto(base + '#/opportunities', { waitUntil: 'networkidle' });
+  await p.goto(base + '#opportunities', { waitUntil: 'networkidle' });
   await p.click('#otype button[data-t="CREATE"]'); await p.waitForTimeout(80);
   const n = await p.locator('#opp-table tbody tr').count();
   check('Type filter CREATE', n === d.opportunities.filter(o => o.type === 'CREATE').length, String(n));
   await p.click('#otype button[data-t="All"]'); await p.waitForTimeout(80);
   await p.click('#opp-table tbody tr:first-child'); await p.waitForTimeout(150);
-  check('Row opens detail', p.url().includes('#/opportunities/' + d.opportunities[0].id), p.url());
+  check('Row opens detail', p.url().includes('#opp-' + d.opportunities[0].id), p.url());
   check('Detail has evidence sections', (await p.locator('.card h2').allInnerTexts()).includes('Agent reasoning'));
-  await p.goto(base + '#/opportunities/NOPE', { waitUntil: 'networkidle' });
+  await p.goto(base + '#opp-NOPE', { waitUntil: 'networkidle' });
   check('Unknown opportunity handled', (await p.locator('#view').innerText()).includes('not found'));
 
   // Market / Findings Detail
-  await p.goto(base + '#/market', { waitUntil: 'networkidle' });
+  await p.goto(base + '#market', { waitUntil: 'networkidle' });
   await p.click('#mk tbody tr:first-child'); await p.waitForTimeout(80);
   check('Market row expands', (await p.locator('#mk-detail h2').count()) === 1);
-  await p.goto(base + '#/findings', { waitUntil: 'networkidle' });
+  await p.goto(base + '#findings', { waitUntil: 'networkidle' });
   await p.click('#fd tbody tr:first-child'); await p.waitForTimeout(80);
   check('Finding detail opens', (await p.locator('#fd-detail .kv').count()) === 1);
 
   // Approvals: keine Entscheidungs-Buttons ohne echte Einträge
-  await p.goto(base + '#/approvals', { waitUntil: 'networkidle' });
+  await p.goto(base + '#approvals', { waitUntil: 'networkidle' });
   const pending = d.approvals.gate1.length + d.approvals.gate2.length;
-  check('Approval buttons only for real items', (await p.locator('button[data-dec]').count()) === pending * 3);
+  check('Approval buttons only for real items', (await p.locator('button[data-choice]').count()) === pending * 3);
 
   // Tote interne Links
   const hrefs = new Set();
-  for (const r of ['overview', 'opportunities/OPP-02', 'findings', 'changes', 'approvals', 'local', 'activity']) {
-    await p.goto(base + '#/' + r, { waitUntil: 'networkidle' });
-    for (const h of await p.locator('a[href^="#/"]').evaluateAll(a => a.map(x => x.getAttribute('href')))) hrefs.add(h);
+  for (const r of ['overview', 'opp-OPP-02', 'findings', 'changes', 'approvals', 'local', 'activity', 'sources']) {
+    await p.goto(base + '#' + r, { waitUntil: 'networkidle' });
+    for (const h of await p.locator('a[href^="#"]').evaluateAll(a => a.map(x => x.getAttribute('href')))) hrefs.add(h);
   }
   for (const h of hrefs) {
     await p.goto(base + h, { waitUntil: 'networkidle' });

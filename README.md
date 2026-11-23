@@ -2,17 +2,22 @@
 
 Datengetriebenes SEO-Research-, Strategie- und Monitoring-System. Pilotkunde: **Spreewald Luftaufnahmen**.
 
-## Dashboard starten
+## Control Center (primär: privates Claude-Artifact)
+
+**Primäre Oberfläche:** https://claude.ai/artifact/4dvRn79XhQRBTy21GkmVLk (privat, nur Owner). In Claude öffnen und über das Artifact-Menü anpinnen. Details, Approval-Ablauf und Workflow: [`docs/artifact.md`](docs/artifact.md).
 
 ```bash
-python3 dashboard/serve.py
+python3 tools/build_artifact.py        # Daten neu bauen + Artifact-Dateien erzeugen (inkl. Security-Scan)
+# danach veröffentlicht der Agent dashboard/artifact/dist/ unter derselben URL (Artifact-Tool)
 ```
 
-Dann im Browser öffnen: **http://127.0.0.1:8765/**
+**Lokaler Fallback** (Entwicklung/Debugging, gleiche UI):
 
-Der Befehl baut zuerst die Dashboard-Daten aus den aktuellen Quelldateien neu und startet dann einen lokalen Webserver (nur `localhost`). Voraussetzung: Python 3.10+ (keine weiteren Pakete nötig). Beenden mit `Strg+C`.
+```bash
+python3 dashboard/serve.py             # http://127.0.0.1:8765/
+```
 
-Optionen: `--port 9000`, `--no-build` (nur Server, vorhandene Daten verwenden).
+Optionen: `--port 9000`, `--no-build`. Approvals sind lokal nicht speicherbar (nur im Artifact).
 
 ## Wie die Daten ins Dashboard kommen
 
@@ -46,7 +51,7 @@ Neue GSC-Daten → `python3 dashboard/serve.py` → Dashboard zeigt sie. Kein Co
 | GSC-Abruf | per Skript, ausgelöst vom Agenten (noch kein Zeitplan) |
 | Semrush-Abruf | nur über den Connector im Claude-Chat (kein eigener API-Key) |
 | Opportunity-Bewertung, Findings, Change Log | vom Agenten in `state/*.json` gepflegt |
-| Approval-Buttons | **nur lokale Notiz im Browser**, kein Sync zum Agenten, keine Website-Aktion |
+| Approvals | im Artifact-`db` gespeichert (Collection `decisions`), vom Agenten in der nächsten Session verarbeitet; Spiegel in `state/approvals.json → decision_log`; **keine Website-Aktion** |
 | Website-/WordPress-Aktionen | **nicht vorhanden** (bewusst) |
 | Live-Agentenstatus | nicht vorhanden – es werden nur echte Zustände gezeigt (Completed, Planned, Monitoring, Blocked, Needs review) |
 
@@ -56,6 +61,8 @@ Neue GSC-Daten → `python3 dashboard/serve.py` → Dashboard zeigt sie. Kein Co
 python3 -m unittest tests/test_dashboard.py -v      # Daten- und Security-Checks
 node dashboard/qa/smoke.js                           # alle Routen, Console-Fehler, Screenshots (Server muss laufen)
 node dashboard/qa/functional.js                      # Filter, Suche, Tabs, Detailansichten, KPI-Abgleich
+node dashboard/qa/artifact_qa.js [out] --shots      # Artifact-Fassung: Light/Dark, 4 Breiten, Overflow, Approval-Flow (Mock)
+python3 tools/qa_artifact_data.py <dashboard.json>   # veröffentlichte Daten gegen Rohquellen
 ```
 
 ## Sicherheit
@@ -74,6 +81,6 @@ clients/<client>/state/*.json         Single Source of Truth (Opportunities, Fin
 clients/<client>/data/                Rohdaten + Analysen
 clients/<client>/reports/             Reports (Erklärung, nicht Datenquelle)
 tools/                                Fetch-, Analyse- und Build-Skripte
-dashboard/                            Control Center (serve.py, public/, qa/)
+dashboard/                            Control Center (public/ = UI, artifact/ = Claude-Artifact-Build, serve.py, qa/)
 docs/integrations.md                  Semrush, GSC, Secrets, Setup-Skript
 ```
