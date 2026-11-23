@@ -409,6 +409,8 @@ def build_client(slug, today):
         "findings": findings,
         "changes": changes,
         "tasks": tasks,
+        "workflow": {"items": st("workflow").get("items", []), "mirrored": st("workflow").get("updated"),
+                     "trigger_id": cfg.get("workflow", {}).get("trigger_id"), "drive_folder_url": cfg.get("workflow", {}).get("drive_folder_url")},
         "approvals": {"gate1": appr.get("gate1", []), "gate2": appr.get("gate2", []), "gate1_candidates": candidates,
                       "decision_log": appr.get("decision_log", [])},
         "market": market,

@@ -583,20 +583,25 @@ async function initDb() {
     DB.decisions = snap.docs.map(d => ({ _id: d.id, ...d.data() })).sort((a, b) => String(b.decided_at).localeCompare(String(a.decided_at)));
     DB.fromCache = snap.metadata.fromCache; DB.state = "ready"; dbChanged();
   }, err => { clearTimeout(timer); fail("error", err.code + ": " + err.message); });
+  db.collection("workflow").onSnapshot(snap => {
+    WF.items = Object.fromEntries(snap.docs.map(d => [d.id, { _id: d.id, ...d.data() }])); WF.live = !snap.metadata.fromCache || snap.size > 0;
+    if (parseHash().key === "approvals") { renderBoard(); if (WF_OPEN && !document.activeElement?.matches("textarea")) openCard(WF_OPEN); }
+    updateBadges();
+  }, () => { /* Board fällt auf den Git-Spiegel zurück */ });
 }
 const clientDecisions = () => DB.decisions.filter(x => x.client === S.client);
 const latestDecision = itemId => clientDecisions().find(x => x.item_id === itemId);
 function dbChanged() {
   updateBadges();
   const k = parseHash().key;
-  if (k === "approvals") { renderDecisionLog(); renderItemStatus(); renderStoreNotice(); }
+  if (k === "approvals") { renderDecisionLog(); renderStoreNotice(); renderBoard(); }
   if (k === "sources") { const el = $("#store-card"); if (el) el.outerHTML = storeCard(); }
   if (k === "overview") { const el = $("#ov-dec"); if (el) el.innerHTML = decisionSummary(); }
 }
 function storeStatus() {
   if (DB.state === "loading") return ["Connecting…", "", "Connecting to the artifact's decision store."];
-  if (DB.state === "ready") return DB.canWrite ? ["Connected", "green", "Decisions are saved in this artifact's store. The agent reads them in its next session."] : ["Read-only", "amber", "You can see decisions, but only the artifact owner can record them."];
-  const why = { local: "This is the local preview. Decisions can only be recorded in the Claude artifact.", timeout: "The decision store did not answer within 10 seconds. Saved decisions may not be shown.", not_granted: "Decision storage is not available in this view (signed out or not granted).", error: "The decision store reported an error: " + DB.error }[DB.reason] || "Not available.";
+  if (DB.state === "ready") return DB.canWrite ? ["Connected", "green", "Freigaben werden persistent im Artifact gespeichert. Nach einer Aktion wird Claude über eine geplante Aufgabe angestoßen; ist das nicht möglich, verarbeitet Claude sie beim nächsten Lauf."] : ["Read-only", "amber", "Nur der Owner des Artifacts kann Freigaben erteilen."];
+  const why = { local: "Lokale Vorschau – Freigaben sind nur im Claude-Artifact möglich.", timeout: "The decision store did not answer within 10 seconds. Saved decisions may not be shown.", not_granted: "Decision storage is not available in this view (signed out or not granted).", error: "The decision store reported an error: " + DB.error }[DB.reason] || "Not available.";
   return ["Not available", "red", why];
 }
 const storeCard = () => { const [l, c, t] = storeStatus(); const pend = clientDecisions().filter(x => x.agent_status === "pending").length;
@@ -647,8 +652,8 @@ function decisionSummary() {
 }
 function updateBadges() {
   if (!S.d) return;
-  const open = [...S.d.approvals.gate1, ...S.d.approvals.gate2].filter(x => x.status === "pending" && !latestDecision(x.id)).length;
-  $("#nav-approvals").textContent = open || "";
+  const drafts = wfCards().filter(c => wfCol(wfDoc(c.id)) === "draft").length; // Entwürfe, die auf dein Review warten
+  $("#nav-approvals").textContent = drafts || "";
 }
 /** Search → Business für eine Opportunity: Cluster-Funnel + eigene Landingpage (GA4/Ads), gleiche Zahlen wie auf der Funnel-Seite */
 function oppBusinessCard(o) {
@@ -663,49 +668,191 @@ function oppBusinessCard(o) {
     ${lp ? `<div class="k">Diese Seite</div><div>${fmtN(lp.ga4_sessions)} Sitzungen (${fmtN(lp.ga4_organic)} organisch) · Engagement ${lp.eng_rate === null || lp.eng_rate === undefined ? "–" : fmtPct(lp.eng_rate, 0)} · Intent ${fmtN(lp.micro_sessions)} · <b>${fmtN(leadsOf(lp))} Leads</b> (${lp.lead_form} F · ${lp.lead_contact} K)${lp.paid_sessions_hist ? ` · ${fmtN(lp.paid_sessions_hist)} Paid-Sitzungen (hist.)` : ""}</div>` : o.existing_page ? `<div class="k">Diese Seite</div><div class="s">Keine GA4-Sitzungen im Zeitraum</div>` : ""}
     </div>${f ? `<div class="row mt">${f.signals.filter(x => ["weak", "paid", "lead", "intent", "nolead"].includes(x.kind)).map(x => chip(SIG_LABEL[x.kind], SIG[x.kind])).join("")}</div>` : ""}</div></div>`;
 }
+/* ------------------------------------------------------------ Workflow-Board (Gate 1 → Drive-Entwurf → Review → Gate 2) */
+/* SSOT: db-Collection "workflow" (ein Dokument je Opportunity). Noel schreibt Entscheidungen, der Agent schreibt den Produktionsstatus.
+   Eine Aktion speichert zuerst persistent und stößt danach – falls verfügbar – den Agentenlauf über den Konnektor
+   "Claude Code Remote" (fire_trigger) an. Keine Aktion verändert Website oder WordPress. */
+const WF_COLS = [
+  ["review", "Zur Prüfung", "Gate 1 steht aus"],
+  ["production", "Freigegeben / Produktion", "Gate 1 erteilt · Claude produziert"],
+  ["draft", "Entwurf fertig / Review", "Dein Review"],
+  ["final", "Final freigegeben", "Gate 2 · bereit für WordPress-Draft"],
+];
+const WF = { items: {}, live: false, trigger: { state: "unknown", note: "" } };
+const wfDoc = id => (WF.live ? WF.items[id] : WF.items[id] || (S.d.workflow?.items || []).find(x => x.id === id)) || null;
+function wfCol(w) {
+  if (!w || w.gate1?.status !== "approved") return "review";
+  if (w.gate2?.status === "approved") return "final";
+  if (w.review?.status === "revision_requested") return "production";
+  if (w.production?.status === "draft_ready") return "draft";
+  return "production";
+}
+function wfLabel(w) {
+  const c = wfCol(w);
+  if (c === "review") return ["Zur Prüfung", ""];
+  if (c === "final") return ["Final approved · Ready for WordPress Draft", "green"];
+  if (c === "draft") return [`Entwurf v${w.production.version || 1} · Review`, "blue"];
+  if (w.review?.status === "revision_requested") return [w.production?.status === "in_progress" ? "Revision in Arbeit" : "Revision requested · Waiting for agent", "amber"];
+  if (w.production?.status === "in_progress") return ["In Produktion", "blue"];
+  if (w.production?.status === "failed") return ["Produktion fehlgeschlagen", "red"];
+  return ["Approved · Waiting for agent", "amber"];
+}
+/** Karten: alle CREATE/OPTIMIZE/MERGE-Opportunities + TEST-Einträge aus der db (nur für technische Tests, deutlich markiert) */
+function wfCards() {
+  const opps = S.d.opportunities.filter(o => ["CREATE", "OPTIMIZE", "MERGE"].includes(o.type)).map(o => ({ id: o.id, o }));
+  const tests = Object.values(WF.items).filter(w => w.test).map(w => ({ id: w.opp_id || w._id, o: { id: w.opp_id || w._id, name: w.title || "TEST", type: w.card?.type || "CREATE", priority: "low", confidence: "low", business_fit: 0, primary_keyword: w.card?.primary_keyword || "test", gsc_cluster: null, why: "Technischer Workflow-Test – kein echter Content.", recommendation: "TEST", reasoning: [], risks: [], gsc: { queries: [] }, semrush: { keywords: [] }, test: true } }));
+  return [...opps, ...tests];
+}
+function wfSignals(o) {
+  if (o.test) return [chip("TEST", "amber")];
+  const s = [], f = S.d.funnel?.clusters.find(c => c.cluster === o.gsc_cluster);
+  const ct = o.gsc?.cluster_total; if (ct) s.push(`<span data-tip="GSC-Cluster, 16 Monate">GSC ${fmtN(ct.impressions)} Impr. · Pos. ${fmtD(ct.position)}</span>`);
+  const sv = o.semrush?.keywords?.find(k => k.status === "ok"); if (sv) s.push(`<span data-tip="Semrush-Volumen des Primär-Keywords (DE)">Semrush ${fmtN(sv.volume)}</span>`);
+  if (f) s.push(`<span data-tip="GA4, Haupt-Landingpages des Clusters, 16 Monate">GA4 ${fmtN(leadsOf(f.engagement))} Leads · Intent ${fmtN(f.engagement.micro_sessions)}</span>`);
+  return s;
+}
+function wfCard({ id, o }) {
+  const w = wfDoc(id), col = wfCol(w), [l, c] = wfLabel(w);
+  const short = (o.why || o.recommendation || "").length > 150 ? (o.why || o.recommendation).slice(0, 150).replace(/\s+\S*$/, "") + " …" : (o.why || o.recommendation || "");
+  return `<article class="wf-card${o.test ? " test" : ""}" data-card="${esc(id)}" tabindex="0" ${col === "review" && !o.test ? `draggable="true"` : col === "review" ? `draggable="true"` : ""} aria-label="${esc(id)} ${esc(o.name)}">
+    <div class="wf-top"><span class="wf-id">${esc(id)}</span>${typeChip(o.type)}${o.test ? chip("TEST", "amber") : prioChip(o.priority)}</div>
+    <h4>${esc(o.name)}</h4>
+    <div class="wf-meta"><span>Conf. ${esc({ high: "High", medium: "Medium", low: "Low" }[o.confidence] || "–")}</span><span>Fit ${esc(o.business_fit ?? "–")}/10</span>${o.freeze ? chip("Change freeze", "amber") : ""}</div>
+    <div class="wf-kw">${esc(o.primary_keyword || "–")}${o.gsc_cluster ? ` <span class="s">· ${esc(CL_LABEL(o.gsc_cluster))}</span>` : ""}</div>
+    <div class="wf-url s">${o.existing_page ? `Bestehend: ${esc(o.existing_page)}` : o.planned_url ? `Geplant: ${esc(o.planned_url)}` : o.test ? "Testdatei" : "Neue Seite (URL offen)"}</div>
+    <p class="wf-why">${esc(short)}</p>
+    <div class="wf-sig">${wfSignals(o).join("")}</div>
+    <div class="wf-foot">${chip(l, c, true)}${w?.production?.doc_url && col !== "review" ? `<a href="${esc(w.production.doc_url)}" target="_blank" rel="noopener" class="mini">Entwurf ↗</a>` : ""}</div>
+  </article>`;
+}
 pages.approvals = () => {
-  const a = S.d.approvals;
-  const item = (x, gate) => `<div class="card" style="margin-bottom:10px" data-item="${esc(x.id)}"><div class="card-h"><div><h2>${esc(x.title)}</h2><div class="hint">${esc(x.id)} · submitted ${fmtDate(x.submitted)}${x.opportunity ? ` · <a href="#opp-${esc(x.opportunity)}">${esc(x.opportunity)}</a>` : ""}</div></div><span data-status-for="${esc(x.id)}"></span></div>
-    <div class="card-b"><div class="kv">${Object.entries(x.fields || {}).map(([k, v]) => `<div class="k">${esc(k)}</div><div>${esc(v)}</div>`).join("")}</div>
-    <div class="dec-form" data-gate="${gate}" data-id="${esc(x.id)}" data-title="${esc(x.title)}">
-      <div class="row" role="group" aria-label="Decision">${Object.entries(DEC).map(([k, [l]]) => `<button class="btn" data-choice="${k}">${l}</button>`).join("")}</div>
-      <label class="mini" for="c-${esc(x.id)}">Comment or feedback for the agent (optional)</label>
-      <textarea id="c-${esc(x.id)}" placeholder="e.g. focus on Bauunternehmen, no price mention"></textarea>
-      <div class="row"><button class="btn primary" data-save disabled>Save decision</button><span class="mini" data-msg>${gate === 2 ? "Approve allows the agent to continue. It still does not publish anything automatically." : "Approve releases the strategy for content production. Nothing is published."}</span></div>
-    </div></div></div>`;
-  view().innerHTML = `<div class="page-head"><div><h1>Approval Center</h1><div class="sub">Gate 1 = strategy · Gate 2 = publication. Your decisions are stored in this artifact and processed by the agent. The dashboard never publishes or changes the website.</div></div></div>
-  <div id="store-notice"></div>
-  <div class="grid g2 mt">
-    <div><h3>Gate 1 – Strategy</h3>${a.gate1.filter(x => x.status === "pending").length ? a.gate1.filter(x => x.status === "pending").map(x => item(x, 1)).join("") : `<div class="card"><div class="empty">No strategy decisions pending.<br><span class="mini">The agent has not submitted a Gate-1 package yet.</span></div></div>`}
-      <div class="card mt"><div class="card-h"><div><h2>Pipeline – Gate-1 candidates</h2><div class="hint">Not submitted. The agent submits a candidate once evidence (e.g. SERP check) is complete.</div></div></div><div class="card-b flush"><div class="tbl-wrap">
-      <table><thead><tr><th>Opportunity · next step</th><th>Type</th><th>Status</th></tr></thead><tbody>${a.gate1_candidates.map(c => `<tr class="click" data-go="opp-${esc(c.id)}"><td><div class="q">${esc(c.name)} <span class="s">${esc(c.id)}</span></div><div class="s">${esc(c.next_step)}</div></td><td>${typeChip(c.type)}</td><td>${statusChip(c.status)}</td></tr>`).join("")}</tbody></table></div></div></div></div>
-    <div><h3>Gate 2 – Publication</h3>${a.gate2.filter(x => x.status === "pending").length ? a.gate2.filter(x => x.status === "pending").map(x => item(x, 2)).join("") : `<div class="card"><div class="empty">No WordPress drafts awaiting review.<br><span class="mini">Drafts appear here with URL/preview, target keyword, metadata and QA status once content production has started.</span></div></div>`}
-      <div class="card mt"><div class="card-h"><div><h2>Decision log</h2><div class="hint">Every decision you record, newest first, with the agent's processing status</div></div></div><div id="dec-log"></div></div></div>
-  </div>`;
-  view().querySelectorAll(".dec-form").forEach(f => {
-    let choice = null;
-    f.querySelectorAll("[data-choice]").forEach(b => b.addEventListener("click", () => { choice = b.dataset.choice; f.querySelectorAll("[data-choice]").forEach(x => x.classList.toggle("sel", x === b)); $("[data-save]", f).disabled = !(DB.state === "ready" && DB.canWrite); }));
-    $("[data-save]", f).addEventListener("click", async () => {
-      const btn = $("[data-save]", f), msg = $("[data-msg]", f);
-      if (!choice || !(DB.state === "ready" && DB.canWrite)) return;
-      btn.disabled = true; msg.textContent = "Saving…";
-      const now = new Date(), id = `${S.client}--${f.dataset.id}--g${f.dataset.gate}--${now.getTime()}`.replace(/[^A-Za-z0-9_.~:@+-]/g, "-");
-      const doc = { schema: 1, client: S.client, item_id: f.dataset.id, item_title: f.dataset.title, gate: +f.dataset.gate, decision: choice,
-        comment: $("textarea", f).value.trim(), decided_at: now.toISOString(), agent_status: "pending", agent_processed_at: null, agent_note: null };
-      try { await DB.ns.collection("decisions").doc(id).set(doc); msg.textContent = `Saved ${fmtDateTime(doc.decided_at)}. The agent processes it in its next session; the website is not changed.`; $("textarea", f).value = ""; f.querySelectorAll("[data-choice]").forEach(x => x.classList.remove("sel")); choice = null; }
-      catch (e) { msg.textContent = `Not saved (${e.code || "error"}): ${e.message || ""}. Nothing was recorded – try again.`; btn.disabled = false; }
-    });
-  });
-  renderStoreNotice(); renderDecisionLog(); renderItemStatus();
+  view().innerHTML = `<div class="page-head"><div><h1>Workflow</h1><div class="sub">Gate 1 (Strategie) → Entwurf in Google Drive → dein Review → Gate 2 (final). Freigaben ändern nie die Website und veröffentlichen nichts.</div></div>
+    <a class="btn" href="${esc(S.d.workflow?.drive_folder_url || "#")}" target="_blank" rel="noopener">Drive-Ordner „Claude Landingpages“ ↗</a></div>
+    <div id="store-notice"></div>
+    <div class="wf-board mt" id="wf-board"></div>
+    <div class="card mt"><div class="card-h"><div><h2>Entscheidungsprotokoll</h2><div class="hint">Jede Aktion, neueste zuerst</div></div></div><div id="dec-log"></div></div>
+    <div class="wf-drawer" id="wf-drawer" hidden><div class="wf-backdrop" data-close></div><aside class="wf-panel" role="dialog" aria-modal="true" aria-labelledby="wf-title"><div id="wf-panel-body"></div></aside></div>`;
+  renderBoard(); renderStoreNotice(); renderDecisionLog();
+  const board = $("#wf-board");
+  board.addEventListener("click", e => { const c = e.target.closest("[data-card]"); if (c && !e.target.closest("a")) openCard(c.dataset.card); });
+  board.addEventListener("keydown", e => { const c = e.target.closest("[data-card]"); if (c && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openCard(c.dataset.card); } });
+  board.addEventListener("dragstart", e => { const c = e.target.closest("[data-card]"); if (!c) return; e.dataTransfer.setData("text/plain", c.dataset.card); e.dataTransfer.effectAllowed = "move"; board.classList.add("dragging"); });
+  board.addEventListener("dragend", () => { board.classList.remove("dragging"); board.querySelectorAll(".wf-col.over").forEach(x => x.classList.remove("over")); });
+  board.addEventListener("dragover", e => { const col = e.target.closest('.wf-col[data-col="production"]'); if (col) { e.preventDefault(); col.classList.add("over"); } });
+  board.addEventListener("dragleave", e => { const col = e.target.closest(".wf-col"); if (col && !col.contains(e.relatedTarget)) col.classList.remove("over"); });
+  board.addEventListener("drop", e => { const col = e.target.closest('.wf-col[data-col="production"]'); if (!col) return; e.preventDefault(); col.classList.remove("over");
+    const id = e.dataTransfer.getData("text/plain"); if (id && wfCol(wfDoc(id)) === "review") openCard(id, { approve: true }); });
+  $("#wf-drawer").addEventListener("click", e => { if (e.target.closest("[data-close]")) closeCard(); });
+  document.addEventListener("keydown", wfEsc);
 };
+function wfEsc(e) { if (e.key === "Escape" && $("#wf-drawer") && !$("#wf-drawer").hidden) closeCard(); }
+function renderBoard() {
+  const el = $("#wf-board"); if (!el) return;
+  const cards = wfCards(), by = Object.fromEntries(WF_COLS.map(([k]) => [k, []]));
+  for (const c of cards) by[wfCol(wfDoc(c.id))].push(c);
+  el.innerHTML = WF_COLS.map(([k, t, h]) => `<section class="wf-col" data-col="${k}" aria-label="${esc(t)}"><header><div><h3>${esc(t)}</h3><div class="s">${esc(h)}</div></div><span class="wf-count">${by[k].length}</span></header>
+    <div class="wf-list">${by[k].map(wfCard).join("") || `<div class="wf-empty">${k === "production" ? "Karte hierher ziehen oder in der Karte „Zur Produktion freigeben“ wählen" : "Keine Einträge"}</div>`}</div></section>`).join("");
+  updateBadges();
+}
+let WF_OPEN = null;
+function openCard(id, opts = {}) {
+  const c = wfCards().find(x => x.id === id); if (!c) return;
+  WF_OPEN = id; const o = c.o, w = wfDoc(id), col = wfCol(w), [l, lc] = wfLabel(w), f = S.d.funnel?.clusters.find(x => x.cluster === o.gsc_cluster);
+  const canWrite = DB.state === "ready" && DB.canWrite;
+  const hist = clientDecisions().filter(x => x.item_id === id);
+  let action = "";
+  if (col === "review") action = `<div class="wf-action"><h3>Gate 1 · Zur Produktion freigeben</h3>
+      <p class="s">Bedeutet: Die SEO-Maßnahme ist genehmigt und Claude erstellt einen vollständigen Content-Entwurf als Google Doc im Ordner „Claude Landingpages“. Bedeutet nicht: Website/WordPress ändern, bestehende Seite überschreiben, veröffentlichen oder URLs ändern.</p>
+      <label class="mini" for="wf-c1">Kommentar für das Produktionsbriefing (optional)</label><textarea id="wf-c1" placeholder="z. B. Bitte stärker auf Hausverwaltungen ausrichten."></textarea>
+      <div class="row"><button class="btn primary" data-act="approve" ${canWrite ? "" : "disabled"}>Zur Produktion freigeben</button>${opts.approve ? `<span class="mini">Per Drag & Drop gewählt – zum Freigeben bestätigen.</span>` : ""}<span class="mini" data-msg></span></div></div>`;
+  else if (col === "production") action = `<div class="wf-action"><h3>${esc(l)}</h3>
+      <div class="kv"><div class="k">Gate 1</div><div>${fmtDateTime(w.gate1.at)}${w.gate1.comment ? ` · „${esc(w.gate1.comment)}“` : ""}</div>
+      ${w.review?.status === "revision_requested" ? `<div class="k">Änderungswunsch</div><div>„${esc(w.review.comment)}“ · ${fmtDateTime(w.review.at)}</div>` : ""}
+      <div class="k">Agentenlauf</div><div>${w.trigger?.requested_at ? `${fmtDateTime(w.trigger.requested_at)} · ${esc(w.trigger.result || "")}` : "Noch kein Anstoß – wird beim nächsten Agentenlauf verarbeitet"}</div>
+      ${w.production?.error ? `<div class="k">Fehler</div><div class="down">${esc(w.production.error)}</div>` : ""}</div>
+      <div class="row mt"><button class="btn" data-act="retrigger" ${canWrite ? "" : "disabled"}>Agentenlauf erneut anstoßen</button><span class="mini" data-msg></span></div></div>`;
+  else if (col === "draft" || col === "final") { const p = w.production || {};
+    action = `<div class="wf-action"><h3>${esc(l)}</h3>
+      <div class="row"><a class="btn primary" href="${esc(p.doc_url)}" target="_blank" rel="noopener">Entwurf öffnen ↗</a><span class="s">${esc(p.doc_title || "")}</span></div>
+      <div class="kv mt"><div class="k">Erstellt</div><div>${fmtDateTime(p.created_at)}</div><div class="k">Letzte Änderung</div><div>${fmtDateTime(p.updated_at)}</div>
+      <div class="k">Version</div><div>v${esc(p.version || 1)}${(p.history || []).length > 1 ? ` · frühere: ${(p.history || []).filter(h => h.version !== p.version).map(h => `<a href="${esc(h.doc_url)}" target="_blank" rel="noopener">v${esc(h.version)}</a>`).join(", ")}` : ""}</div>
+      <div class="k">QA</div><div>${chip(p.qa_status || "Unknown", /pass/i.test(p.qa_status || "") ? "green" : "amber", true)}${p.qa_notes ? `<div class="s">${esc(p.qa_notes)}</div>` : ""}</div>
+      <div class="k">Content-Strategie</div><div>${esc(p.strategy_summary || "–")}</div>
+      ${w.gate2?.status === "approved" ? `<div class="k">Gate 2</div><div>${fmtDateTime(w.gate2.at)}${w.gate2.comment ? ` · „${esc(w.gate2.comment)}“` : ""}</div>` : ""}</div>
+      ${col === "draft" ? `<label class="mini mt" for="wf-c2" style="display:block">Kommentar (Pflicht bei „Änderungen anfordern“)</label><textarea id="wf-c2" placeholder="z. B. Einstieg kürzer, FAQ zu Kosten ergänzen"></textarea>
+      <div class="row"><button class="btn" data-act="revise" ${canWrite ? "" : "disabled"}>Änderungen anfordern</button><button class="btn primary" data-act="final" ${canWrite ? "" : "disabled"}>Final freigeben</button><span class="mini" data-msg></span></div>
+      <p class="s">„Final freigeben“ ist Gate 2: Der Text ist fachlich freigegeben und darf für die spätere WordPress-Umsetzung genutzt werden. Es wird nichts veröffentlicht.</p>` : ""}</div>`; }
+  $("#wf-panel-body").innerHTML = `<div class="wf-ph"><div><div class="row"><span class="wf-id">${esc(id)}</span>${typeChip(o.type)}${o.test ? chip("TEST", "amber") : prioChip(o.priority)}${chip(l, lc, true)}</div><h2 id="wf-title">${esc(o.name)}</h2></div><button class="btn" data-close aria-label="Schließen">✕</button></div>
+    ${canWrite ? "" : `<div class="notice">${esc(storeStatus()[2])}</div>`}
+    ${action}
+    <div class="wf-basis"><h3>Entscheidungsgrundlage</h3>
+      <div class="kv"><div class="k">Primary Keyword</div><div>${esc(o.primary_keyword || "–")}${o.gsc_cluster ? ` · Cluster ${esc(CL_LABEL(o.gsc_cluster))}` : ""}</div>
+      <div class="k">URL</div><div>${o.existing_page ? `bestehend ${esc(o.existing_page)}` : o.planned_url ? `geplant ${esc(o.planned_url)} <span class="s">(${esc(o.planned_url_note || "Vorschlag")})</span>` : "–"}</div>
+      <div class="k">Priorität · Confidence · Fit</div><div>${prioChip(o.priority)} ${esc({ high: "High", medium: "Medium", low: "Low" }[o.confidence] || "–")} · ${esc(o.business_fit)}/10</div>
+      <div class="k">Warum</div><div>${esc(o.why || "–")}</div><div class="k">Empfehlung</div><div>${esc(o.recommendation || "–")}</div></div>
+      ${o.reasoning?.length ? `<h4>Reasoning</h4><ul class="list">${o.reasoning.map(r => `<li>${esc(r)}</li>`).join("")}</ul>` : ""}
+      ${o.risks?.length ? `<h4>Risiken</h4><ul class="list">${o.risks.map(r => `<li>${esc(r)}</li>`).join("")}</ul>` : ""}
+      ${o.gsc?.queries?.length ? `<h4>GSC (16 Monate)</h4><div class="tbl-wrap"><table><thead><tr><th>Query</th><th class="num">Impr.</th><th class="num">Klicks</th><th class="num">Pos.</th></tr></thead><tbody>${o.gsc.queries.map(q => q.missing ? `<tr><td>${esc(q.query)}</td><td colspan="3" class="s">keine GSC-Daten</td></tr>` : `<tr><td>${esc(q.query)}</td><td class="num">${fmtN(q.impressions)}</td><td class="num">${fmtN(q.clicks)}</td><td class="num">${fmtD(q.position)}</td></tr>`).join("")}</tbody></table></div>` : ""}
+      ${o.semrush?.keywords?.length ? `<h4>Semrush (DE)</h4><div class="tbl-wrap"><table><thead><tr><th>Keyword</th><th class="num">Vol.</th><th class="num">KD</th><th class="num">CPC</th></tr></thead><tbody>${o.semrush.keywords.map(k => k.status === "ok" ? `<tr><td>${esc(k.keyword)}</td><td class="num">${fmtN(k.volume)}</td><td class="num">${fmtD(k.kd, 0)}</td><td class="num">${fmtD(k.cpc, 2)}</td></tr>` : `<tr><td>${esc(k.keyword)}</td><td colspan="3" class="s">nicht gemessen</td></tr>`).join("")}</tbody></table></div>` : ""}
+      ${f ? `<h4>Search → Business (GA4)</h4><div class="s">${fmtN(f.engagement.sessions)} Sitzungen · ${fmtN(f.engagement.engaged)} engagiert · Intent ${fmtN(f.engagement.micro_sessions)} · ${fmtN(leadsOf(f.engagement))} Leads (${f.engagement.lead_form} F · ${f.engagement.lead_contact} K)</div><div class="row mt">${f.signals.map(x => chip(SIG_LABEL[x.kind] || x.kind, SIG[x.kind] || "")).join("")}</div>` : ""}
+      ${o.test ? "" : `<p class="mt"><a href="#opp-${esc(id)}">Vollständige Analyse öffnen →</a></p>`}
+    </div>
+    ${hist.length ? `<div class="wf-basis"><h3>Verlauf</h3>${hist.map(x => `<div class="s">${fmtDateTime(x.decided_at)} · Gate ${esc(x.gate)} · ${esc((DEC[x.decision] || [x.decision])[0])}${x.comment ? ` · „${esc(x.comment)}“` : ""}</div>`).join("")}</div>` : ""}`;
+  $("#wf-drawer").hidden = false; document.body.style.overflow = "hidden";
+  $("#wf-panel-body").querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", () => wfAct(b.dataset.act, c)));
+  setTimeout(() => ($("#wf-c1") || $("#wf-panel-body [data-close]"))?.focus(), 30);
+}
+function closeCard() { WF_OPEN = null; const d = $("#wf-drawer"); if (d) d.hidden = true; document.body.style.overflow = ""; }
+async function wfAct(act, c) {
+  const msg = $("#wf-panel-body [data-msg]"), id = c.id, o = c.o, now = new Date().toISOString();
+  const say = t => { if (msg) msg.textContent = t; };
+  if (!(DB.state === "ready" && DB.canWrite)) return say("Speichern ist in dieser Ansicht nicht möglich.");
+  const ref = DB.ns.collection("workflow").doc(id), cur = WF.items[id];
+  let patch, ev;
+  if (act === "approve") {
+    const comment = ($("#wf-c1")?.value || "").trim();
+    patch = { gate1: { status: "approved", at: now, comment }, production: { status: "waiting" }, review: { status: "none" } };
+    ev = { gate: 1, decision: "approve", comment };
+  } else if (act === "revise") {
+    const comment = ($("#wf-c2")?.value || "").trim();
+    if (!comment) return say("Bitte beschreibe kurz, was geändert werden soll.");
+    patch = { review: { status: "revision_requested", comment, at: now, for_version: cur?.production?.version || 1 } };
+    ev = { gate: 2, decision: "request_changes", comment };
+  } else if (act === "final") {
+    const comment = ($("#wf-c2")?.value || "").trim();
+    patch = { gate2: { status: "approved", at: now, comment }, review: { status: "approved", at: now, comment } };
+    ev = { gate: 2, decision: "approve", comment };
+  } else if (act === "retrigger") { say("Stoße Agentenlauf an…"); await wfTrigger(id, "retrigger"); return say(WF.trigger.note); }
+  say("Speichere…"); $("#wf-panel-body").querySelectorAll("[data-act]").forEach(b => b.disabled = true);
+  try {
+    if (cur) await ref.update(patch); else await ref.set({ opp_id: id, title: o.name, client: S.client, schema: 1, ...patch });
+    const eid = `${S.client}--${id}--g${ev.gate}--${Date.now()}`.replace(/[^A-Za-z0-9_.~:@+-]/g, "-");
+    await DB.ns.collection("decisions").doc(eid).set({ schema: 1, client: S.client, item_id: id, item_title: o.name, gate: ev.gate, decision: ev.decision, comment: ev.comment, decided_at: now, agent_status: act === "final" ? "processed" : "pending", agent_processed_at: act === "final" ? now : null, agent_note: act === "final" ? "Gate 2 – keine Agentenaktion nötig (kein Publishing)" : null });
+    say("Gespeichert.");
+    if (act === "approve" || act === "revise") { await wfTrigger(id, act); say("Gespeichert. " + WF.trigger.note); }
+  } catch (e) { say(`Nicht gespeichert (${e.code || "error"}): ${e.message || ""}`); $("#wf-panel-body").querySelectorAll("[data-act]").forEach(b => b.disabled = false); }
+}
+/** Agentenlauf anstoßen: geplante Aufgabe (nur auf Anstoß) über den Konnektor "Claude Code Remote". Ohne Konnektor bleibt die Freigabe gespeichert und wird beim nächsten Lauf verarbeitet. */
+async function wfTrigger(id, act) {
+  const tid = S.d.workflow?.trigger_id, srv = "Claude Code Remote";
+  let result;
+  try {
+    const mcp = await window.claude?.use?.("mcp");
+    if (!mcp || !tid) throw { code: "unavailable", message: "Konnektor nicht verfügbar" };
+    const lt = await mcp.listTools(srv).catch(() => null);
+    const has = lt?.servers?.some(s => s.server === srv && s.tools.some(t => t.name === "fire_trigger"));
+    if (!has) throw { code: "not_available", message: "fire_trigger in dieser Ansicht nicht verfügbar" };
+    await mcp.callTool(srv, "fire_trigger", { trigger_id: tid, text: `Workflow-Aktion „${act}“ für ${id} im Artifact (Zeitpunkt ${new Date().toISOString()}).` }, { cache: false });
+    result = "Agentenlauf angestoßen"; WF.trigger = { state: "ok", note: "Claude wurde angestoßen und verarbeitet die Freigabe." };
+  } catch (e) {
+    result = "nicht angestoßen (" + (e.code || "error") + ")"; WF.trigger = { state: "off", note: "Kein automatischer Anstoß möglich – Status bleibt „Waiting for agent“ und wird beim nächsten Agentenlauf verarbeitet." };
+  }
+  try { await DB.ns.collection("workflow").doc(id).update({ trigger: { requested_at: new Date().toISOString(), result } }); } catch (e) { /* Status bleibt ohne Trigger-Vermerk korrekt */ }
+}
+
 function renderStoreNotice() {
   const el = $("#store-notice"); if (!el) return; const [l, c, t] = storeStatus();
   el.innerHTML = `<div class="notice row">${chip("Approval store: " + l, c, true)}<span>${esc(t)}</span></div>`;
-  view().querySelectorAll(".dec-form [data-choice]").forEach(b => b.disabled = !(DB.state === "ready" && DB.canWrite));
-}
-function renderItemStatus() {
-  view().querySelectorAll("[data-status-for]").forEach(el => { const d = latestDecision(el.dataset.statusFor);
-    el.innerHTML = d ? `${chip(DEC[d.decision]?.[0] || d.decision, DEC[d.decision]?.[1] || "", true)} ${chip((AGENT[d.agent_status] || [d.agent_status])[0], (AGENT[d.agent_status] || [, ""])[1])}` : statusChip("Approval required"); });
 }
 function renderDecisionLog() {
   const el = $("#dec-log"); if (!el) return;
@@ -839,7 +986,7 @@ pages.sources = () => {
 
 /* ------------------------------------------------------------ router */
 /* Artifact-taugliches Routing: nur einfache Hash-Namen (#overview, #opp-OPP-02). Alte #/pfad-Links werden umgeschrieben. */
-const TITLES = { overview: "Overview", performance: "Performance", funnel: "Search → Business", analytics: "Analytics (GA4)", ads: "Google Ads", opportunities: "Opportunities", approvals: "Approvals", changes: "Changes & Impact", market: "Market Opportunities", local: "Local SEO", findings: "Findings", activity: "Agent Activity", sources: "Data Sources" };
+const TITLES = { overview: "Overview", performance: "Performance", funnel: "Search → Business", analytics: "Analytics (GA4)", ads: "Google Ads", opportunities: "Opportunities", approvals: "Workflow", changes: "Changes & Impact", market: "Market Opportunities", local: "Local SEO", findings: "Findings", activity: "Agent Activity", sources: "Data Sources" };
 /** Jede Tabelle scrollt in ihrem eigenen Container – die Seite selbst scrollt nie horizontal. */
 function wrapTables(root = view()) { root.querySelectorAll("table").forEach(t => { if (!t.parentElement.classList.contains("tbl-wrap")) { const w = document.createElement("div"); w.className = "tbl-wrap"; t.replaceWith(w); w.appendChild(t); } }); }
 function parseHash() {
