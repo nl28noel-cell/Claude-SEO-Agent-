@@ -121,7 +121,12 @@ def preflight(d, drive_ok=False, folder_ok=False):
 
 
 def _dash(client):
-    return json.load(open(os.path.join(ROOT, "dashboard", "public", "data", client, "dashboard.json"), encoding="utf-8"))
+    """dashboard.json ist nicht in Git (generiert). Im Cold Start fehlt es → automatisch aus den Rohdaten bauen."""
+    p = os.path.join(ROOT, "dashboard", "public", "data", client, "dashboard.json")
+    if not os.path.exists(p):
+        import subprocess
+        subprocess.run([sys.executable, os.path.join(ROOT, "tools", "build_dashboard_data.py")], check=True, capture_output=True)
+    return json.load(open(p, encoding="utf-8"))
 
 
 def brief(d, opp_id, out, client=DEFAULT_CLIENT):

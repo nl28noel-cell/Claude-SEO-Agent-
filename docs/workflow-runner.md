@@ -32,7 +32,7 @@ Ein Klick im Artifact (Gate 1, „Änderungen anfordern“, „Erneut versuchen�
 7. **Produktion** gemäß `docs/workflow.md` (Briefing, Content-Paket, QA, Render).
 8. **Idempotenz**: Titel per `python3 tools/workflow.py doc-title /tmp/wf <OPP>`; vor dem Anlegen im Zielordner nach exakt diesem Titel suchen (nicht im Papierkorb). Existiert er → dieses Dokument verwenden, kein zweites anlegen.
 9. **Ergebnis** zurückschreiben (`draft_ready`, Doc-ID/-URL, Version, Historie, QA, Strategie; `review.status=pending`). Bei Fehlern: `blocked` + `block_reason=production_error` + Detail; Gate 1 bleibt unverändert.
-10. **Spiegel**: `python3 tools/workflow.py mirror /tmp/wf` (nach erneutem Export), committen, `git pull --rebase` und pushen.
+10. **Spiegel (optional)**: `python3 tools/workflow.py mirror /tmp/wf`, committen, `git pull --rebase`, **genau ein** Push-Versuch. Scheitert er (z. B. 403, weil das Repo nicht als Quelle an der Routine hängt), nicht wiederholen: der Spiegel wird von der nächsten Session mit Push-Zugriff neu erzeugt. Die Artifact-db bleibt maßgeblich.
 
 Eine Opportunity hat genau einen Workflow-Eintrag und eine Produktionshistorie (`production.history`); ein technischer Fehler setzt nie Gate 1 zurück.
 
@@ -48,3 +48,8 @@ Eine Opportunity hat genau einen Workflow-Eintrag und eine Produktionshistorie (
 | Bereits blockierte Echt-Einträge unverändert | ✓ |
 
 **Technische Grenze:** Konnektoren einer Routine können über die API dieser Organisation nicht gesetzt werden (`connectors`-Parameter nicht verfügbar). Der Google-Drive-Konnektor muss einmalig in der claude.ai-Oberfläche an der Routine „SEO Autopilot – Workflow-Runner“ hinterlegt werden. Danach: „Erneut versuchen“ auf der TEST-Karte = echter End-to-End-Test.
+
+## Cold-Start-Test 23.11.2026, 15:30 UTC – mit Google Drive (Session `session_01ACEsmJxfc5rFNmj5RE3qFe`) ✅
+
+Konnektor Google Drive von Noel an der Routine hinterlegt (`mcp_connections`: Google_Drive, Semrush). Ergebnis: frische Session → Repo geklont → Preflight 9/9 grün → TEST-Doc im Ordner „Claude Landingpages“ → `draft_ready` mit Doc-Link, QA und Historie zurück in die Artifact-db. Echte Einträge unverändert.
+Nebenbefunde (behoben): `brief` baut `dashboard.json` jetzt selbst, wenn es fehlt; Git-Push des Spiegels scheitert ohne Repo-Quelle an der Routine (403) → nur ein Versuch, nicht blockierend.
