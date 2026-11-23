@@ -1,122 +1,146 @@
 # Business-Profil – Spreewald Luftaufnahmen
 
-Status: **ENTWURF v0.1** – vorbefüllt aus Website, Google Drive und Unternehmenscockpit; offene Punkte mit ❓, Widersprüche mit ⚠️.
-Stand: 22.11.2026
+**Version 1.0** · freigegeben durch Noel am 23.11.2026
+Quellen: Website (Live-Crawl 22.11.2026), Google Drive (SEO-Texte, Projektordner), Unternehmenscockpit 2026, Angaben Noel.
 
-Legende: ✅ belegt (Quelle genannt) · ⚠️ widersprüchlich / zu prüfen · ❓ offen, Entscheidung durch Noel · 💡 Vorschlag von Claude
+Dieses Profil ist die verbindliche Grundlage für Business Fit, Opportunity-Bewertung und jede inhaltliche Aussage im Content. Prioritäten sind Startwerte und werden anhand echter Nachfrage, Auftragswerte und Ergebnisse kalibriert.
 
 ---
 
 ## 1. Stammdaten
 
-| Feld | Wert | Quelle |
+| Feld | Wert |
+|---|---|
+| Firma | Spreewald Luftaufnahmen |
+| Gründung | 2020 (intern; nicht prominent kommunizieren, siehe §10) |
+| Operativer Ausgangspunkt | Rathausgasse 29, 12529 Schönefeld |
+| Postadresse | Am Brock 23, 15907 Lübben (Spreewald) |
+| Telefon / E-Mail | +49 1522 2611681 · spreewald-luftaufnahmen@gmx.de |
+| Erreichbarkeit | **maßgeblich: Google Business Profile** (Zeiten von dort übernehmen; Website-Abweichungen → Findings) |
+| Aufsichtsbehörde | Landesluftfahrtbehörde Berlin & Brandenburg |
+| Berufshaftpflicht | R+V Allgemeine Versicherung AG, Geltung weltweit |
+| Website-Technik | WordPress, Elementor (Hello-Theme), Yoast SEO, Site Kit by Google |
+
+## 2. Strategischer Rahmen
+
+- Rolle: **High-Margin Project Engine** – wenige, attraktive B2B-Aufträge, größere Projekte, möglichst wiederkehrend (Rahmenverträge, Quartals-Retainer).
+- Zielauftrag: ca. **800–2.000 €+**, niedriger Zeitaufwand und/oder Wiederholungscharakter. Typisch heute 500–1.500 €.
+- Referenzmuster: wiederkehrende Baudokumentation (Quartals-Retainer), einmalige B2B-Projekte mit hohem Umsatz pro Stunde.
+- Ressourcen des Autopiloten fließen primär in höherwertige B2B-Leistungen. Kleine Privataufträge und Hochzeiten werden nicht aktiv ausgebaut – bestehende Seiten werden aber **nicht** automatisch gelöscht oder deindexiert.
+
+## 3. Leistungen & strategische Priorität (Startwerte)
+
+| Prio | Leistung | Bestehende URL |
 |---|---|---|
-| Firma | Spreewald Luftaufnahmen (Einzelunternehmen) | ✅ Impressum |
-| Inhaber | Noel-Patrice Lehmann | ✅ Impressum |
-| Geschäftsadresse | Rathausgasse 29, 12529 Schönefeld | ✅ Impressum |
-| Postadresse | Am Brock 23, 15907 Lübben (Spreewald) | ✅ Impressum |
-| Telefon / E-Mail | +49 1522 2611681 · spreewald-luftaufnahmen@gmx.de | ✅ Kontakt |
-| Erreichbarkeit | ⚠️ Kontaktseite: Mo–Fr 09–17 Uhr · Footer: Mo–Fr 08–18 Uhr | Website |
-| Aufsichtsbehörde | Landesluftfahrtbehörde Berlin & Brandenburg | ✅ Impressum |
-| Berufshaftpflicht | R+V Allgemeine Versicherung AG, Geltung weltweit | ✅ Impressum |
-| Website-Technik | WordPress 7.1, Elementor 4.4 (Hello-Theme), Yoast SEO, Site Kit by Google | ✅ HTML |
+| **10** | Baudokumentation / Baufortschritt | /drohnen-baudokumentation/ |
+| **9** | Dachinspektion | /dachinspektion-mit-drohne/ |
+| **9** | Fassadeninspektion | /fassadeninspektion-mit-drohne-berlin-brandenburg/ |
+| **9** | Gebäudeinspektion (Hub) | /drohne-dach-gebaeude-inspektion/ |
+| **8** | Dach-/Fassadenvermessung & verwandte Vermessung (mit Partner) | /drohne-dach-vermessung/, /fassadenaufmass-drohnen-vermessung-fassade/ |
+| **8** | Bestandsaufnahme Gebäude / Immobilien | – (keine Seite) |
+| **8** | Industrie- / größere Projektdokumentation | – (keine Seite) |
+| **6** | Immobilienaufnahmen für professionelle Auftraggeber | /immobilien-fotografie-drohne/ |
+| **5** | Unternehmens-/Firmenluftbilder | /drohnen-aufnahmen-firma/ |
+| **4** | Video / Imagefilm | (Teil Preise/Firma) |
+| **3** | 360° / virtuelle Touren | (Teil Firma) |
+| **2** | Private Haus-/Grundstücksaufnahmen | /haus-grundstueck-luftbild/ |
+| **1** | Events | – (Drive-Entwurf 2022) |
+| **0–1** | Hochzeiten | /drohne-luftaufnahmen-hochzeit/ |
 
-## 2. Strategischer Rahmen (aus Unternehmenscockpit 2026)
+Partnerleistung Vermessung: Partner Airteam (Photogrammetrie, 3D-Modell, Vermessungsbericht). Marge noch offen – blockiert den Start nicht.
 
-- Rolle im Gesamtunternehmen: **„High-Margin Project Engine“** – wenige, hochpreisige B2B-Aufträge mit sehr gutem Verhältnis Umsatz/Zeitaufwand, möglichst wiederkehrend.
-- Ausdrücklich **nicht**: Wachstum über viele kleine Privatkundenaufträge; Mitarbeiter, Büro, neue Marken, Wachstum um jeden Preis.
-- Zielauftrag: **ca. 800–2.000 €**, niedriger Zeitaufwand und/oder Wiederholungscharakter (Rahmenverträge).
-- Referenzfälle für das Zielbild: DIBAG (Quartals-Retainer), Sellerstraße (1.180 € netto bei geringem Aufwand).
-- Zu untersuchende Felder laut Cockpit: Dach- und Gebäudedokumentation, Baufortschrittsdokumentation, Bestandsaufnahmen für Immobilien, Industrie-/Projektaufnahmen.
+## 4. Neue Geschäftsfelder (Search Intelligence)
 
-## 3. Leistungen & strategische Priorität (0–10)
+Neue Felder werden **nie** automatisch als bestehende Leistung behandelt, aber aktiv gesucht und als **NEW BUSINESS OPPORTUNITY (NBO)** gemeldet mit: Suchmuster, Nachfrage, Wettbewerber, Fit-Begründung.
 
-💡 = Vorschlag aus Cockpit-Strategie, ❓ = bitte bestätigen/korrigieren.
+Machbarkeitsklassen:
+- **A** heute direkt leistbar
+- **B** über bestehende Partner leistbar
+- **C** benötigt Investition / Technik / Qualifikation / neue Partner (ausdrücklich vorschlagbar)
+- **D** strategisch uninteressant
 
-| Leistung | Bestehende URL | Zielkunde | Preisindikation | Prio 💡 |
-|---|---|---|---|---|
-| Baudokumentation / Baufortschritt | /drohnen-baudokumentation/ | Bauträger, Bauunternehmen, Projektentwickler | Kombi-Pakete ab 699 € | **10** |
-| Dachinspektion | /dachinspektion-mit-drohne/ | Hausverwaltung, Wohnungswirtschaft, Gewerbe, Dachdecker | individuell | **9** |
-| Fassadeninspektion | /fassadeninspektion-mit-drohne-berlin-brandenburg/ | Hausverwaltung, Wohnungsunternehmen, Gewerbeimmobilien | 600–2.500 € (FAQ der Seite) | **9** |
-| Gebäudeinspektion (Übersicht) | /drohne-dach-gebaeude-inspektion/ | wie oben | – | **9** |
-| Dachvermessung (mit Partner Airteam) | /drohne-dach-vermessung/ | Dachdecker, Planer, Eigentümer | individuell | **8** ❓ |
-| Fassadenaufmaß (mit Partner Airteam) | /fassadenaufmass-drohnen-vermessung-fassade/ | Fassadenbauer, Maler, Planer | individuell | **8** ❓ |
-| Bestandsaufnahme Gebäude/Immobilie | ❌ keine Seite (in Inspektion-Doc als interner Link geplant) | Eigentümer, Verwaltung, Planer | ❓ | **8** ❓ |
-| Industrie-/Projektaufnahmen | ❌ keine Seite | Industrie, Energie, Logistik | ❓ | **7** ❓ |
-| Immobilienfotografie (B2B) | /immobilien-fotografie-drohne/ | Makler, Bauträger, Architekten | Bildpakete ab 349 € | **6** |
-| Unternehmensfotografie / Firmenluftbilder | /drohnen-aufnahmen-firma/ | KMU, Handwerk, Gewerbe | ab 349 € | **5** |
-| Drohnenvideo / Imagefilm | (Teil Preise & Firma) | Unternehmen | Videopakete ab 449 € | **4** ❓ |
-| 360°-Panoramen / virtuelle Touren | (Teil Firma) | Unternehmen, Tourismus | ❓ | **3** ❓ |
-| Haus & Grundstück (privat) | /haus-grundstueck-luftbild/ | Privatpersonen | ab 349 € | **2** |
-| Events & Veranstaltungen | ❌ (nur Drive-Entwurf von 2022) | Veranstalter, Agenturen | ❓ | **2** ❓ |
-| Hochzeit | /drohne-luftaufnahmen-hochzeit/ (nicht im Menü) | Privatpersonen | ❓ | **1** ❓ |
+Prüffelder (nicht abschließend): Versicherungs-/Schadendokumentation, Bestandsaufnahmen, Industrie-/Anlageninspektion, PV-Inspektion, Thermografie, Orthofotos, Geländevermessung, 3D-Modelle, Volumenberechnung, Dokumentation größerer Immobilienbestände, Denkmal-/Gebäudedokumentation, weitere aus den Daten entdeckte B2B-Anwendungsfälle.
 
-## 4. Neue Geschäftsfelder
-
-- Gewünscht / denkbar: ❓ (siehe Fragen)
-- Explizit unerwünscht: ❓
-- Regel für „NEW BUSINESS OPPORTUNITY“: wird gemeldet, nicht verworfen; Bewertung gegen Cockpit-Regel (Umsatzpotenzial, eigener Zeitaufwand, wiederkehrend?, stärkt bestehendes Modell?, wirklich Priorität?).
+Bewertungsfilter (Cockpit): Umsatzpotenzial · eigener Zeitaufwand · einmalig vs. wiederkehrend · stärkt bestehendes Modell · wirklich Priorität?
 
 ## 5. Zielkunden
 
-- Schwerpunkt **B2B** ✅ (Cockpit). B2C nur ergänzend.
-- B2B-Segmente 💡: Hausverwaltungen, Wohnungsbaugesellschaften, Bauträger/Projektentwickler, Bauunternehmen, Dachdecker/Fassadenbauer, Architekten/Planer, Sachverständige, Gewerbe-/Industrieimmobilien, Makler.
-- ❓ Ranking der Segmente
+Schwerpunkt B2B, größere Projekte, wiederkehrende Auftraggeber. Startreihenfolge (keine starre Vorgabe – abweichende Daten-Chancen ausdrücklich melden):
 
-## 6. Geografie
+1. Hausverwaltungen / Wohnungswirtschaft / Bestandshalter
+2. Bauträger / Projektentwickler
+3. Bauunternehmen
+4. Gewerbe / Industrie
+5. Sachverständige / Versicherungsumfeld
+6. Dachdecker / Fassadenbauer
+7. Architekten / Planer
+8. Makler / professionelle Immobilienvermarktung
+9. Private Auftraggeber
 
-- Primär: **Berlin & Brandenburg** ✅ (alle Seiten)
-- Website-Aussage „bundesweite Projekte möglich“ / „deutschlandweit“ ✅
-- Anfahrtszonen ✅: 0–15 km frei · bis 30 km 30 € · bis 45 km 40 € · bis 60 km 50 € · bis 75 km 60 € · >75 km auf Anfrage (vermutlich ab Schönefeld ❓)
-- Lokale Schwerpunkte: ❓
+## 6. Geografie & Local SEO
 
-## 7. Auftragsgrößen
+- Kernmarkt: **Berlin & Brandenburg**, Ausgangspunkt Schönefeld.
+- Entfernung ist **kein** Ausschlusskriterium; große B2B-Projekte lohnen auch weiter weg. Website: bundesweite Projekte möglich.
+- Anfahrtszonen (Website): 0–15 km frei · ≤30 km 30 € · ≤45 km 40 € · ≤60 km 50 € · ≤75 km 60 € · >75 km auf Anfrage.
 
-- Typisch: 500–1.500 € je Projekt, teils darüber ✅ (Cockpit)
-- Ziel: 800–2.000 €, wiederkehrend ✅ (Cockpit)
-- Wiederkehrend: Quartals-Retainer Baudokumentation (DIBAG) ✅
-- Preispakete Website ✅: Bild 349/599/749 € · Video 449/699/849 € · Kombi 699/899/1.199 €
-- ⚠️ Preis-FAQ nennt „ab ca. 230–250 €“ – widerspricht Paketen ab 349 €
+**Local SEO ist eigener Strategiebaustein.** Prinzip: *Leistung × Stadt/Region*, datenbasiert ausgewählt.
+Bewertung lokaler Keywords:
+- Business Value der Leistung · Größe/wirtschaftliche Relevanz des Standorts · Zielkundendichte · Search Intent · vorhandene SERPs · lokale Konkurrenzstärke · bestehende Rankings/GSC-Signale · erwarteter Auftragswert · geografische Machbarkeit · Referenzen in der Region
+- **Suchvolumen 0 / nicht messbar ≠ IGNORE.**
 
-## 8. Wettbewerbsvorteile (Aussagen der Website)
+Leitplanke: **keine Doorway-Page-Fabrik.** Jede Stadtseite eigenständig mit echtem lokalem Bezug (lokale Zielgruppen, Gebäudestruktur/Anwendungsfälle, belegte lokale Projekte, Einsatzgebiet/Anfahrt, lokale FAQs, regionale interne Verlinkung, eigenes Keyword-Set). Kernleistung darf gleich sein, Text wird individuell erstellt.
 
-- Komplette Abwicklung inkl. Genehmigungen, Flug-Briefing & Risikomanagement ✅
-- Bekannt aus rbb-Reportage (Drohneninspektion) ✅ – Video auf /drohne-dach-gebaeude-inspektion/
-- Vermessung mit Partner Airteam (Photogrammetrie, 3D-Modell) ✅
-- Berufshaftpflicht R+V, weltweit ✅
-- Wetterbedingte Verschiebung ohne Zusatzkosten ✅ · Lieferung in 5–7 Werktagen ✅ · Festpreis im Angebot ✅
-- Persönlicher Ansprechpartner, regionale Nähe ✅
-- ⚠️ „Seit über 5 Jahren“ (Drive-Texte) vs. „Seit vielen Jahren“ (Startseite live) – Gründungsjahr ❓
-- ⚠️ „Unser Team“, „erfahrene Drohnenpiloten“ (Plural) – ❓ Einzelpilot oder Team/Netzwerk?
-- ⚠️ „zertifizierter Drohnenpilot“ / „lizenzierter Partner“ – welche Nachweise genau? ❓
+Output: **Local Opportunity Matrix** = Leistung × Stadt/Region × Nachfrage × Wettbewerb × Business Fit × Empfehlung.
+
+## 7. Preise & Auftragswerte
+
+- Website-Preise sind **Richtwerte / kommunikative Einstiegspreise**, keine starre Preisliste. Unterschiedliche Einstiegspreise je Leistung sind kein Widerspruch.
+- Bekannte Angaben: Bildpakete ab 349/599/749 € · Videopakete ab 449/699/849 € · Kombi ab 699/899/1.199 € · Preis-FAQ „ab ca. 230–250 €“ · Fassadeninspektion 600–2.500 €.
+- Größere B2B-Projekte: individuelle Kalkulation / Festpreisangebot.
+- Content-Regeln: Preise nur nennen, wenn passend zu Intent und Leistung; nie behaupten, jeder Auftrag koste so viel; Preise als Orientierung/Conversion-Hilfe nutzbar.
+- Später: echte Angebote/Auftragswerte zur Kalibrierung des Business Value (falls Daten verfügbar).
+
+## 8. Wettbewerbsvorteile (belegt)
+
+- Komplette Abwicklung: Flugplanung, Genehmigungen, Flug-Briefing, Risikomanagement, Aufbereitung, digitale Übergabe
+- Bekannt aus einer rbb-Reportage (Drohneninspektion)
+- Vermessung mit Partner Airteam: Photogrammetrie, Vermessungsbericht, 3D-Modell
+- Berufshaftpflicht R+V, weltweit
+- Wetterbedingte Terminverschiebung ohne Zusatzkosten
+- Lieferung i. d. R. in 5–7 Werktagen
+- Angebotspreis = Endpreis, keine versteckten Kosten
+- Rabatte für größere Projekte / Stammkunden
+- Persönlicher Ansprechpartner, regionale Nähe Berlin/Brandenburg
+- Fachlich saubere Abgrenzung: visuelle Inspektion ersetzt kein Gutachten
 
 ## 9. Referenzen
 
-- Logos auf der Website ✅: arte, SGL, K&M Cover GmbH, FIRO Bau, Tonis Lounge, Spreewaldpension, Haus 8, DIBAG
-- Kundenstimmen ✅: AUBET GmbH, K&M Cover GmbH, R. Neugebauer (je 5/5)
-- Projekte ✅ (Drive): Berlin Daumstraße (2025/2026), Fassadeninspektion Eisenhüttenstadt (09/2026), Sellerstraße, DIBAG
-- ❓ Welche Namen/Projekte darf Content konkret nennen? Welche Logo-Kunden sind echte Drohnenkunden?
+- Logos auf der Website = **tatsächliche Kunden oder Partner** von Spreewald Luftaufnahmen: arte, SGL, K&M Cover GmbH, FIRO Bau, Tonis Lounge, Spreewaldpension, Haus 8, DIBAG.
+- Kundenstimmen (5/5): AUBET GmbH, K&M Cover GmbH, R. Neugebauer.
+- **Kunde ≠ Partner ≠ öffentlich beschreibbares Projekt.** Ein Logo berechtigt nicht zu Aussagen über konkrete Leistungen, Projektgrößen oder Details.
+- Case Studies / Projektaussagen nur aus belegten Projektinformationen (z. B. Drive-Projektordner + Freigabe Noel).
 
 ## 10. Content-Regeln
 
-### Darf verwendet werden (nach Bestätigung)
-- alles mit ✅ in Abschnitt 1, 6, 7, 8
-- Abgrenzung: Visuelle Inspektion ersetzt kein Gutachten (bestehende Formulierung beibehalten)
+### Tonalität & Darstellung
+- **Wir-Perspektive**, Auftritt als professionell aufgestelltes Unternehmen/Team. Erwünscht: „unser Team“, „unsere Erfahrung“, „unsere Drohnenpiloten“, „wir übernehmen/begleiten …“.
+- Erfahrung: bevorzugt „seit vielen Jahren“ / „langjährige Erfahrung“. Gründungsjahr nicht prominent.
+- Qualifikation: allgemeine Aussage „zertifizierte Drohnenpiloten“ zulässig. Fokus auf Kundennutzen statt Zertifikatsbezeichnungen.
 
-### Darf niemals erfunden werden
-- Preise außerhalb der freigegebenen Spannen
-- Zertifikate, Lizenzen, Drohnenmodelle, Sensoren (z. B. Wärmebild)
-- Kundennamen, Projekte, Zahlen (Anzahl Projekte, Jahre), Bewertungen
-- Teamgröße, Standorte/Niederlassungen
-- Garantien, Normen, rechtliche Aussagen (z. B. Pflichtprüfungen)
-- Leistungen, die nicht in Abschnitt 3 stehen
+### Niemals erfinden
+- Teamgröße, Mitarbeiterzahl, konkrete Personen, Rollen, Beschäftigungsverhältnisse
+- konkrete Zertifikate, Genehmigungskategorien, Qualifikationen ohne bestätigte Grundlage
+- Drohnenmodelle, Sensoren (z. B. Wärmebild) ohne Bestätigung – und nur bei echtem Kundennutzen
+- Projekte, Projektdetails, Leistungen für namentliche Kunden, Zahlen (Projekte, Flugstunden, Jahre)
+- Bewertungen, Zitate, Auszeichnungen
+- Preise als verbindlich für jeden Auftrag
+- Leistungen außerhalb §3 (NBOs erst nach Freigabe)
+- Normen, Rechtspflichten, Prüfintervalle als Behauptung
+- Standorte/Niederlassungen in Zielstädten (lokale Seiten = Einsatzgebiet, nicht Sitz)
 
 ## 11. Conversions
 
-- Kontaktformular Seite /kontakt/ ✅ (Name, Firma, E-Mail, Projektadresse, Anliegen)
-- Footer-Formular auf allen Seiten ✅
-- Telefon-Klick ✅ · E-Mail-Klick ✅
-- „Jetzt buchen“-Buttons Preisseite ✅ (Ziel ❓)
-- Kein WhatsApp / keine Online-Buchung erkannt
-- Tracking: Site Kit by Google installiert → GA4/Search Console vermutlich verbunden ❓
-- 💡 Lead-Qualität später: Auftragswert, B2B/B2C, Leistung, Quelle
+- Ziel langfristig: organischer Besuch → Anfrage → qualifizierter Lead → Angebot → Auftrag → Umsatz.
+- Kontaktwege: Kontaktformular (/kontakt/ + Footer-Formular), Telefon, E-Mail, Google Business Profile (soweit messbar).
+- Gewichtung: potenzieller wiederkehrender B2B-Kunde > einmaliger B2B-Auftrag > private Anfrage.
+- Für den Pilot: SEO Opportunity + Business Fit + Ranking-/Trafficentwicklung genügen; volle Attribution ist keine Voraussetzung.
