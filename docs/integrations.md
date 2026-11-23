@@ -142,3 +142,20 @@ Status: in dieser Session manuell ausgeführt und funktionsfähig; im frischen C
 Nach Einrichtung ruft der Autopilot **selbstständig und ohne manuelle Exporte** Query-, Page-, Country-, Device- und Tages-Zeitreihen (16 Monate) sowie den Indexierungsstatus einzelner URLs ab. Neue Kunden: nur Dienstkonto in deren Property als Nutzer hinzufügen.
 
 Benötigte Hosts (bereits freigegeben): `oauth2.googleapis.com`, `searchconsole.googleapis.com`, `www.googleapis.com`.
+
+
+## Google Analytics 4 (read-only)
+
+- Gleicher Service Account wie GSC, Scope `analytics.readonly`. Zugriff auf Property 321987676 besteht bereits (keine manuelle Aktion nötig).
+- APIs: Google Analytics Data API + Google Analytics Admin API (beide aktiv im Projekt).
+- Abruf: `python3 tools/ga4_client.py baseline 321987676 <start> <end> clients/spreewald-luftaufnahmen/data/ga4-YYYY-MM`
+  (Admin-Konfiguration ohne Ersteller-E-Mail, 15 Datensätze, Quota/Thresholding/Sampling werden protokolliert).
+- Normalisierung: `tools/build_ga4_ads.py` – Testverkehr (`tagassistant.google.com`) wird ausgeschlossen, Conversions nur laut `state/conversions.json`.
+
+## Google Ads (read-only)
+
+- Service Account im MCC 5474466547 mit „Nur lesen“; Header `login-customer-id`; API-Version über `ADS_API_VERSION` (Standard v26).
+- Ein Developer Token war für Discovery/GAQL nicht erforderlich; falls künftig nötig: Umgebungsvariable `GOOGLE_ADS_DEVELOPER_TOKEN` (nie ins Repo).
+- `tools/ads_client.py` implementiert keine Mutate-Endpunkte; schreibende Pfade werden zusätzlich blockiert.
+- Spreewald-Konto 1935597794 ist gekündigt → keine API-Daten. Keyword Planner erst mit Basic Access.
+- `discover` speichert nur MCC, Zielkonto und die Anzahl weiterer Konten – keine Namen anderer Kunden.

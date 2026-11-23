@@ -1,0 +1,1614 @@
+date,sessionDefaultChannelGroup,sessions,engagedSessions,userEngagementDuration,keyEvents
+20241124,Cross-network,45,17,410,0
+20241123,Cross-network,37,10,275,1
+20241116,Cross-network,36,12,337,4
+20241117,Cross-network,35,19,351,10
+20241119,Cross-network,33,17,312,0
+20241110,Cross-network,31,17,188,7
+20241128,Cross-network,28,11,188,0
+20241130,Cross-network,27,8,348,0
+20241202,Cross-network,27,10,144,0
+20241017,Cross-network,26,9,141,3
+20241125,Cross-network,25,11,242,0
+20241014,Cross-network,24,5,286,2
+20241027,Cross-network,24,8,166,6
+20241208,Cross-network,24,10,178,0
+20241103,Cross-network,23,8,130,6
+20241108,Cross-network,23,9,243,4
+20241013,Cross-network,22,6,131,2
+20241028,Cross-network,22,8,137,2
+20241031,Cross-network,22,10,115,7
+20241112,Cross-network,22,6,144,1
+20241026,Cross-network,21,9,166,2
+20241006,Cross-network,20,9,273,3
+20241102,Cross-network,20,11,133,5
+20241025,Cross-network,19,10,184,5
+20241118,Cross-network,19,3,88,0
+20241207,Cross-network,19,12,386,0
+20241121,Cross-network,18,3,55,0
+20241212,Cross-network,17,6,208,1
+20241106,Cross-network,16,8,208,2
+20241215,Cross-network,16,6,165,0
+20241015,Cross-network,15,5,65,3
+20241205,Cross-network,15,6,98,0
+20230717,Organic Social,14,11,391,0
+20231123,Unassigned,14,0,1359,18
+20241104,Cross-network,14,5,69,4
+20241210,Cross-network,14,5,149,0
+20230904,Unassigned,13,0,1990,0
+20241003,Cross-network,13,7,157,0
+20241101,Cross-network,13,6,91,2
+20241115,Cross-network,13,2,50,0
+20241209,Cross-network,13,7,102,0
+20241008,Cross-network,12,7,126,2
+20241222,Cross-network,12,4,93,0
+20241024,Cross-network,11,6,24,5
+20241107,Cross-network,10,6,113,2
+20241113,Cross-network,10,2,43,0
+20241211,Cross-network,10,2,62,0
+20241214,Cross-network,10,3,146,0
+20221118,Unassigned,9,0,193,0
+20240807,Organic Search,9,7,308,10
+20241109,Cross-network,9,6,283,2
+20241114,Cross-network,9,4,73,2
+20241220,Cross-network,9,6,121,0
+20230905,Unassigned,8,0,1717,0
+20241001,Cross-network,8,5,70,2
+20241005,Cross-network,8,4,121,1
+20241126,Cross-network,8,2,15,0
+20221110,Organic Search,7,6,191,0
+20230811,Organic Search,7,4,35,0
+20240928,Cross-network,7,2,14,1
+20241004,Cross-network,7,3,32,1
+20241204,Cross-network,7,2,143,0
+20241218,Cross-network,7,2,48,0
+20230615,Organic Search,6,3,939,0
+20230905,Organic Search,6,2,48,0
+20231020,Referral,6,2,58,1
+20231123,Organic Search,6,2,48,1
+20240128,Unassigned,6,0,336,7
+20240628,Organic Search,6,1,68,1
+20240922,Cross-network,6,4,65,1
+20240923,Cross-network,6,2,29,1
+20241009,Cross-network,6,3,67,1
+20241127,Cross-network,6,1,47,0
+20250613,Direct,6,1,0,0
+20220721,Organic Search,5,3,593,0
+20221006,Unassigned,5,0,267,0
+20221027,Unassigned,5,0,94,0
+20230328,Organic Search,5,2,20,0
+20230420,Organic Search,5,2,122,0
+20230520,Organic Search,5,2,0,0
+20230521,Organic Search,5,2,0,0
+20230523,Organic Search,5,2,87,0
+20230605,Organic Search,5,2,68,0
+20231001,Unassigned,5,0,176,5
+20240215,Organic Search,5,4,784,4
+20240322,Direct,5,1,16,1
+20240515,Organic Search,5,2,102,3
+20240715,Organic Search,5,3,95,1
+20240717,Organic Search,5,4,49,0
+20240927,Cross-network,5,3,40,1
+20240930,Cross-network,5,1,8,0
+20241011,Cross-network,5,4,127,3
+20241012,Cross-network,5,2,51,2
+20241029,Cross-network,5,3,21,0
+20241213,Cross-network,5,2,101,0
+20241217,Cross-network,5,2,55,0
+20220729,Organic Search,4,2,38,0
+20220905,Direct,4,3,728,0
+20221006,Organic Search,4,2,240,0
+20221012,Organic Search,4,4,101,0
+20230307,Organic Search,4,2,389,0
+20230313,Direct,4,3,112,0
+20230409,Organic Search,4,2,36,0
+20230413,Organic Search,4,4,28,0
+20230418,Organic Search,4,3,262,0
+20230526,Organic Search,4,2,25,0
+20230531,Referral,4,3,55,2
+20230601,Referral,4,4,470,1
+20230622,Direct,4,3,215,0
+20230629,Organic Search,4,4,187,0
+20230707,Organic Search,4,3,31,0
+20230718,Organic Search,4,3,64,0
+20230719,Organic Search,4,2,46,0
+20230726,Organic Search,4,2,9,0
+20230807,Paid Search,4,3,52,0
+20230808,Paid Search,4,3,325,0
+20230821,Organic Search,4,2,52,0
+20231108,Unassigned,4,0,275,4
+20240123,Unassigned,4,0,536,13
+20240125,Organic Search,4,1,221,3
+20240127,Unassigned,4,0,591,3
+20240213,Unassigned,4,0,402,3
+20240216,Organic Search,4,3,62,2
+20240226,Unassigned,4,0,187,6
+20240527,Organic Search,4,3,235,6
+20240625,Organic Search,4,3,104,1
+20240712,Organic Search,4,2,62,1
+20240808,Organic Search,4,3,236,1
+20240808,Referral,4,4,357,14
+20240815,Organic Search,4,4,789,2
+20240820,Organic Search,4,3,126,0
+20240902,Referral,4,4,758,1
+20240905,Referral,4,2,131,0
+20240908,Cross-network,4,2,39,2
+20240918,Cross-network,4,2,2,1
+20240924,Paid Search,4,3,247,1
+20240929,Cross-network,4,2,8,2
+20241002,Cross-network,4,3,59,1
+20241008,Organic Search,4,3,254,0
+20241015,Paid Search,4,2,420,0
+20241017,Paid Search,4,1,17,0
+20241026,Paid Search,4,2,81,1
+20241119,Direct,4,4,96,0
+20241122,Cross-network,4,2,43,0
+20241127,Organic Search,4,2,22,0
+20241221,Cross-network,4,1,9,0
+20241226,Cross-network,4,1,131,0
+20250127,Organic Search,4,0,2,0
+20250205,Organic Search,4,1,23,0
+20250225,Organic Search,4,3,217,0
+20250825,Organic Search,4,1,45,0
+20251202,Direct,4,3,823,0
+20260113,Organic Search,4,2,96,0
+20261107,Direct,4,0,2,0
+20220707,Direct,3,3,56,0
+20220707,Organic Search,3,3,529,0
+20220713,Organic Search,3,3,113,0
+20220820,Unassigned,3,0,357,0
+20220829,Unassigned,3,0,696,0
+20220831,Direct,3,1,12,0
+20220905,Organic Search,3,2,381,0
+20220907,Organic Search,3,2,60,0
+20220926,Organic Search,3,2,206,0
+20221005,Direct,3,3,205,0
+20221013,Organic Search,3,2,44,0
+20221025,Unassigned,3,0,143,0
+20221026,Organic Search,3,2,90,0
+20221027,Organic Search,3,3,383,0
+20221028,Organic Search,3,1,19,0
+20221031,Organic Search,3,2,525,0
+20221110,Unassigned,3,0,8,0
+20221117,Organic Search,3,3,698,0
+20221208,Organic Search,3,2,84,0
+20230115,Organic Search,3,2,566,0
+20230210,Organic Search,3,2,304,0
+20230213,Organic Search,3,2,74,0
+20230225,Organic Search,3,3,278,0
+20230227,Organic Search,3,2,31,0
+20230301,Organic Search,3,1,34,0
+20230308,Organic Search,3,3,98,0
+20230309,Organic Search,3,2,0,0
+20230315,Direct,3,0,2,0
+20230324,Organic Search,3,2,62,0
+20230330,Direct,3,1,0,0
+20230331,Organic Search,3,2,9,0
+20230419,Organic Search,3,3,93,0
+20230503,Organic Search,3,2,21,0
+20230511,Organic Search,3,3,148,0
+20230519,Organic Search,3,1,61,0
+20230524,Referral,3,0,0,0
+20230528,Organic Search,3,1,96,0
+20230607,Direct,3,2,3,0
+20230608,Organic Search,3,3,64,1
+20230614,Paid Search,3,1,531,0
+20230620,Paid Search,3,2,6,0
+20230621,Direct,3,1,32,0
+20230622,Referral,3,2,14,0
+20230625,Paid Search,3,0,0,0
+20230701,Paid Search,3,1,32,0
+20230717,Organic Search,3,1,7,0
+20230724,Direct,3,3,94,0
+20230727,Organic Search,3,1,159,0
+20230801,Organic Search,3,1,138,0
+20230812,Organic Search,3,3,117,0
+20230830,Organic Search,3,0,0,0
+20230901,Unassigned,3,0,44,0
+20230904,Organic Search,3,1,10,0
+20230906,Unassigned,3,0,653,0
+20230907,Unassigned,3,0,278,0
+20230922,Organic Search,3,1,257,1
+20230922,Unassigned,3,0,208,0
+20231004,Unassigned,3,0,107,3
+20231011,Unassigned,3,0,89,1
+20231018,Unassigned,3,0,779,6
+20231026,Unassigned,3,0,160,1
+20231101,Unassigned,3,0,159,5
+20231103,Unassigned,3,0,166,6
+20231124,Organic Search,3,1,0,1
+20231219,Organic Search,3,1,0,1
+20231223,Organic Search,3,1,12,1
+20240105,Unassigned,3,0,109,0
+20240124,Unassigned,3,0,111,0
+20240125,Unassigned,3,0,333,11
+20240219,Unassigned,3,0,284,3
+20240222,Unassigned,3,0,197,9
+20240229,Referral,3,2,150,5
+20240327,Unassigned,3,0,227,4
+20240420,Unassigned,3,0,270,2
+20240422,Unassigned,3,0,127,1
+20240423,Unassigned,3,0,96,4
+20240430,Unassigned,3,0,46,0
+20240515,Unassigned,3,0,265,5
+20240520,Unassigned,3,0,77,2
+20240522,Unassigned,3,0,83,1
+20240523,Organic Search,3,2,59,2
+20240525,Unassigned,3,0,95,0
+20240603,Unassigned,3,0,98,1
+20240619,Direct,3,1,0,0
+20240621,Organic Search,3,2,116,1
+20240626,Organic Search,3,1,20,0
+20240701,Organic Search,3,1,12,0
+20240703,Organic Search,3,1,28,0
+20240723,Organic Search,3,1,67,1
+20240730,Organic Search,3,1,118,3
+20240731,Organic Search,3,3,188,6
+20240804,Organic Search,3,1,78,1
+20240806,Organic Search,3,3,163,8
+20240812,Organic Search,3,2,8,0
+20240906,Paid Search,3,0,0,0
+20240916,Cross-network,3,1,15,0
+20240922,Direct,3,2,96,0
+20241007,Cross-network,3,1,25,1
+20241014,Referral,3,2,227,0
+20241021,Paid Search,3,3,202,0
+20241022,Organic Search,3,3,46,0
+20241023,Referral,3,1,21,0
+20241024,Paid Search,3,1,14,0
+20241025,Paid Search,3,2,65,0
+20241125,Paid Search,3,2,314,1
+20241126,Paid Search,3,1,78,0
+20241130,Paid Search,3,2,56,0
+20241203,Cross-network,3,2,21,0
+20241206,Cross-network,3,1,19,0
+20241209,Paid Search,3,3,626,2
+20241216,Cross-network,3,0,6,0
+20241218,Paid Search,3,2,27,1
+20241220,Paid Search,3,0,9,0
+20241230,Organic Search,3,2,86,0
+20250209,Organic Search,3,2,234,1
+20250213,Organic Search,3,3,128,0
+20250219,Organic Search,3,2,111,0
+20250224,Organic Search,3,3,205,1
+20250227,Organic Search,3,2,104,0
+20250228,Organic Search,3,3,404,0
+20250502,Direct,3,0,0,0
+20250511,Organic Search,3,2,86,2
+20250512,Organic Search,3,2,282,2
+20251111,Organic Search,3,2,35,0
+20260103,Direct,3,0,0,0
+20260120,Organic Search,3,2,56,0
+20260227,Organic Search,3,2,233,1
+20260730,Direct,3,0,0,0
+20220717,Organic Search,2,0,3,0
+20220718,Organic Search,2,2,28,0
+20220718,Unassigned,2,0,19,0
+20220720,Unassigned,2,0,107,0
+20220726,Unassigned,2,0,15,0
+20220729,Organic Social,2,1,276,0
+20220803,Unassigned,2,0,119,0
+20220819,Organic Search,2,1,93,0
+20220830,Unassigned,2,0,209,0
+20220831,Organic Search,2,1,21,0
+20220831,Unassigned,2,0,67,0
+20220901,Organic Search,2,0,0,0
+20220930,Unassigned,2,0,60,0
+20221003,Organic Search,2,1,54,0
+20221005,Unassigned,2,0,9,0
+20221016,Organic Search,2,1,7,0
+20221017,Unassigned,2,0,89,0
+20221019,Unassigned,2,0,96,0
+20221021,Unassigned,2,0,309,0
+20221025,Organic Search,2,1,81,0
+20221026,Unassigned,2,0,109,0
+20221102,Organic Search,2,2,95,0
+20221117,Unassigned,2,0,58,0
+20221124,Unassigned,2,0,22,0
+20221128,Organic Search,2,2,73,0
+20221128,Unassigned,2,0,132,0
+20221203,Unassigned,2,0,106,0
+20221204,Unassigned,2,0,63,0
+20221207,Unassigned,2,0,95,0
+20230103,Direct,2,0,0,0
+20230107,Unassigned,2,0,228,0
+20230115,Unassigned,2,0,6,0
+20230121,Unassigned,2,0,72,0
+20230123,Organic Search,2,1,217,0
+20230129,Unassigned,2,0,283,0
+20230205,Unassigned,2,0,216,0
+20230206,Direct,2,1,4,0
+20230207,Direct,2,0,0,0
+20230209,Unassigned,2,0,589,0
+20230210,Unassigned,2,0,15,0
+20230215,Organic Search,2,2,268,0
+20230228,Organic Social,2,1,0,0
+20230311,Organic Search,2,1,133,0
+20230313,Organic Search,2,0,0,0
+20230314,Organic Search,2,1,3,0
+20230316,Organic Search,2,0,7,0
+20230317,Organic Search,2,1,0,0
+20230320,Organic Search,2,2,180,0
+20230321,Organic Search,2,1,71,0
+20230326,Organic Search,2,1,7,0
+20230329,Organic Search,2,2,85,0
+20230330,Organic Search,2,2,10,0
+20230405,Organic Search,2,2,130,0
+20230412,Direct,2,0,4,0
+20230420,Direct,2,0,0,0
+20230425,Organic Search,2,2,38,0
+20230504,Direct,2,1,39,0
+20230506,Organic Search,2,1,43,0
+20230510,Direct,2,0,4,0
+20230513,Organic Search,2,1,31,0
+20230527,Organic Search,2,1,6,0
+20230601,Direct,2,2,58,0
+20230606,Organic Search,2,0,0,0
+20230609,Paid Search,2,2,222,0
+20230612,Direct,2,2,36,0
+20230613,Direct,2,1,106,0
+20230613,Organic Search,2,2,10,0
+20230614,Organic Search,2,2,5,0
+20230616,Organic Search,2,0,0,0
+20230617,Organic Search,2,1,0,0
+20230617,Paid Search,2,1,15,0
+20230619,Direct,2,1,0,0
+20230619,Paid Search,2,1,179,0
+20230621,Paid Search,2,2,16,0
+20230622,Paid Search,2,2,194,1
+20230623,Organic Search,2,2,17,0
+20230624,Paid Search,2,1,10,0
+20230626,Organic Search,2,0,7,0
+20230626,Paid Search,2,1,137,0
+20230627,Paid Search,2,1,123,0
+20230628,Organic Search,2,1,102,0
+20230629,Paid Search,2,2,19,0
+20230630,Organic Search,2,2,187,0
+20230704,Paid Search,2,2,12,0
+20230706,Direct,2,1,0,0
+20230710,Paid Search,2,2,100,0
+20230712,Paid Search,2,1,0,0
+20230714,Organic Search,2,1,34,0
+20230714,Paid Search,2,2,15,0
+20230715,Paid Search,2,0,9,0
+20230716,Paid Search,2,2,10,0
+20230717,Paid Search,2,1,69,0
+20230718,Organic Social,2,1,7,0
+20230718,Paid Search,2,1,204,0
+20230720,Paid Search,2,2,244,0
+20230722,Direct,2,1,0,0
+20230727,Paid Search,2,2,114,0
+20230728,Organic Social,2,1,7,0
+20230728,Paid Search,2,2,190,0
+20230731,Direct,2,1,15,0
+20230731,Paid Search,2,1,16,0
+20230802,Direct,2,1,2,0
+20230802,Paid Search,2,1,71,0
+20230803,Organic Search,2,1,31,0
+20230803,Paid Search,2,2,11,0
+20230804,Paid Search,2,2,37,0
+20230805,Organic Search,2,0,0,0
+20230805,Paid Search,2,2,49,0
+20230806,Organic Search,2,1,182,0
+20230808,Direct,2,1,82,0
+20230809,Organic Search,2,2,10,0
+20230810,Paid Search,2,1,48,0
+20230811,Paid Search,2,2,27,0
+20230814,Paid Search,2,1,8,0
+20230815,Organic Search,2,0,0,0
+20230815,Paid Search,2,2,5,0
+20230816,Organic Search,2,1,16,0
+20230816,Paid Search,2,1,26,0
+20230817,Paid Search,2,0,0,0
+20230818,Paid Search,2,0,1,0
+20230820,Direct,2,2,18,0
+20230820,Organic Search,2,1,25,0
+20230822,Organic Search,2,1,0,0
+20230823,Organic Search,2,0,3,0
+20230823,Unassigned,2,0,149,0
+20230828,Unassigned,2,0,55,0
+20230829,Unassigned,2,0,60,0
+20230830,Referral,2,1,241,0
+20230902,Paid Search,2,2,684,0
+20230902,Unassigned,2,0,117,0
+20230908,Unassigned,2,0,83,0
+20230910,Unassigned,2,0,329,0
+20230913,Organic Search,2,2,254,0
+20230914,Unassigned,2,0,22,0
+20230916,Unassigned,2,0,63,0
+20230918,Unassigned,2,0,35,0
+20230919,Unassigned,2,0,100,0
+20230920,Referral,2,0,0,0
+20230923,Unassigned,2,0,67,2
+20230925,Organic Search,2,0,0,0
+20230927,Unassigned,2,0,25,1
+20230929,Unassigned,2,0,18,1
+20230930,Unassigned,2,0,24,2
+20231001,Organic Search,2,1,16,2
+20231004,Organic Search,2,0,0,0
+20231006,Unassigned,2,0,263,2
+20231008,Unassigned,2,0,163,3
+20231018,Organic Search,2,1,20,0
+20231018,Referral,2,2,175,4
+20231019,Organic Search,2,2,151,5
+20231023,Organic Search,2,1,2,0
+20231103,Organic Search,2,2,1624,20
+20231105,Direct,2,0,0,0
+20231109,Organic Search,2,2,17,1
+20231110,Organic Search,2,1,6,0
+20231113,Unassigned,2,0,399,8
+20231114,Organic Search,2,2,677,4
+20231115,Unassigned,2,0,48,1
+20231124,Unassigned,2,0,156,0
+20231206,Unassigned,2,0,177,3
+20231211,Organic Search,2,1,120,7
+20231211,Unassigned,2,0,83,2
+20231212,Referral,2,1,8,0
+20231218,Organic Search,2,1,4,0
+20231218,Unassigned,2,0,78,2
+20231221,Organic Search,2,2,1,2
+20240111,Direct,2,0,0,0
+20240116,Unassigned,2,0,140,1
+20240124,Organic Search,2,0,0,0
+20240126,Organic Search,2,0,0,0
+20240126,Unassigned,2,0,220,4
+20240205,Unassigned,2,0,195,4
+20240216,Unassigned,2,0,39,2
+20240221,Unassigned,2,0,103,1
+20240228,Direct,2,2,0,2
+20240306,Unassigned,2,0,73,1
+20240309,Unassigned,2,0,188,3
+20240311,Unassigned,2,0,145,2
+20240316,Unassigned,2,0,32,0
+20240326,Unassigned,2,0,69,2
+20240328,Unassigned,2,0,89,3
+20240404,Unassigned,2,0,50,1
+20240405,Direct,2,2,26,4
+20240412,Unassigned,2,0,45,1
+20240425,Unassigned,2,0,173,3
+20240428,Unassigned,2,0,144,1
+20240507,Organic Search,2,1,9,0
+20240508,Unassigned,2,0,285,3
+20240516,Unassigned,2,0,121,1
+20240523,Direct,2,0,0,0
+20240529,Organic Search,2,2,21,1
+20240529,Unassigned,2,0,34,0
+20240531,Organic Search,2,1,1,0
+20240531,Unassigned,2,0,454,1
+20240606,Unassigned,2,0,48,2
+20240607,Unassigned,2,0,454,4
+20240614,Organic Search,2,2,8,1
+20240618,Organic Search,2,2,98,1
+20240624,Organic Search,2,0,0,0
+20240625,Direct,2,1,195,2
+20240627,Organic Search,2,1,13,1
+20240704,Organic Search,2,1,2,0
+20240707,Organic Search,2,1,137,1
+20240709,Organic Search,2,2,140,2
+20240713,Direct,2,1,0,1
+20240725,Organic Search,2,1,13,0
+20240726,Organic Search,2,1,35,1
+20240807,Direct,2,2,55,1
+20240814,Referral,2,1,77,0
+20240817,Paid Search,2,2,36,0
+20240818,Organic Search,2,1,18,0
+20240826,Organic Search,2,1,24,1
+20240827,Organic Search,2,1,126,0
+20240901,Organic Search,2,1,51,0
+20240904,Organic Search,2,0,7,0
+20240907,Unassigned,2,0,0,0
+20240910,Cross-network,2,1,30,0
+20240911,Direct,2,2,49,0
+20240916,Paid Search,2,1,54,0
+20240928,Organic Search,2,1,233,0
+20241002,Direct,2,1,10,0
+20241005,Organic Search,2,1,0,0
+20241008,Direct,2,1,20,0
+20241009,Referral,2,2,35,0
+20241010,Cross-network,2,2,4,1
+20241016,Organic Search,2,1,57,0
+20241016,Paid Search,2,2,214,1
+20241018,Paid Search,2,2,524,0
+20241023,Paid Search,2,2,1324,0
+20241027,Direct,2,1,13,0
+20241028,Paid Search,2,2,33,1
+20241029,Paid Search,2,2,119,0
+20241101,Paid Search,2,0,0,0
+20241103,Direct,2,0,0,0
+20241104,Direct,2,2,54,2
+20241104,Paid Search,2,2,67,0
+20241106,Organic Search,2,1,39,0
+20241109,Organic Search,2,0,0,0
+20241118,Paid Search,2,1,40,0
+20241121,Organic Search,2,2,17,0
+20241121,Paid Search,2,2,65,0
+20241122,Direct,2,2,132,4
+20241123,Paid Search,2,2,17,0
+20241124,Direct,2,2,86,0
+20241204,Organic Search,2,1,22,1
+20241204,Paid Search,2,1,58,0
+20241206,Paid Search,2,2,42,0
+20241211,Direct,2,1,15,0
+20241212,Paid Search,2,0,0,0
+20241212,Referral,2,2,438,1
+20241213,Paid Search,2,2,103,1
+20241217,Organic Search,2,1,308,0
+20241217,Paid Search,2,0,0,0
+20241219,Cross-network,2,0,8,0
+20241220,Direct,2,1,29,1
+20241222,Paid Search,2,1,69,0
+20241223,Paid Search,2,1,510,0
+20241224,Cross-network,2,0,0,0
+20241225,Cross-network,2,1,80,0
+20250107,Organic Search,2,2,36,0
+20250118,Direct,2,0,0,0
+20250120,Organic Search,2,2,216,0
+20250122,Organic Search,2,2,334,0
+20250128,Organic Search,2,0,0,0
+20250203,Organic Search,2,1,49,0
+20250204,Organic Search,2,2,425,1
+20250216,Organic Search,2,2,72,0
+20250220,Organic Search,2,2,95,0
+20250222,Referral,2,0,0,0
+20250301,Direct,2,2,284,0
+20250303,Organic Search,2,2,124,0
+20250312,Organic Search,2,1,43,0
+20250317,Organic Search,2,1,165,0
+20250415,Organic Search,2,1,35,0
+20250420,Direct,2,0,0,0
+20250423,Organic Search,2,2,89,0
+20250515,Organic Search,2,0,0,0
+20250522,Organic Search,2,0,0,0
+20250526,Direct,2,0,0,0
+20250527,Organic Search,2,1,123,0
+20250529,Organic Search,2,1,27,0
+20250531,Organic Search,2,1,157,1
+20250602,Organic Search,2,2,233,1
+20250617,Organic Search,2,1,31,0
+20250630,Organic Search,2,2,216,1
+20250710,Organic Search,2,2,69,0
+20250730,Organic Search,2,2,54,0
+20250805,Direct,2,0,0,0
+20250811,Organic Search,2,1,42,0
+20250826,Organic Search,2,1,45,0
+20250912,Organic Search,2,2,103,1
+20250913,Organic Search,2,0,0,0
+20250923,Organic Search,2,1,69,1
+20251001,Organic Search,2,2,94,0
+20251006,Organic Search,2,1,21,0
+20251009,Organic Search,2,1,10,0
+20251013,Organic Search,2,2,74,0
+20251024,Organic Search,2,2,51,0
+20251029,Organic Search,2,2,209,2
+20251211,Organic Search,2,0,0,0
+20260102,Organic Search,2,1,150,1
+20260109,Direct,2,2,44,0
+20260121,Organic Search,2,2,157,1
+20260122,Organic Search,2,1,102,0
+20260202,Direct,2,1,136,1
+20260213,Direct,2,0,0,0
+20260219,Referral,2,0,0,0
+20260222,Organic Search,2,1,66,0
+20260305,Organic Search,2,1,376,0
+20260309,Organic Search,2,1,39,0
+20260310,Organic Search,2,2,33,0
+20260330,Organic Search,2,2,69,0
+20260420,Direct,2,1,60,0
+20260424,Organic Search,2,1,18,0
+20260609,Organic Search,2,1,36,0
+20260623,Organic Search,2,0,0,0
+20260706,Organic Search,2,2,75,2
+20260726,Organic Search,2,2,197,0
+20260824,Direct,2,0,8,0
+20260828,Direct,2,1,10,0
+20260908,Organic Search,2,2,106,0
+20260909,Organic Search,2,1,19,0
+20260927,Direct,2,0,0,0
+20261027,Unassigned,2,2,24,0
+20261113,Direct,2,0,2,0
+20220707,Unassigned,1,0,72,0
+20220708,Unassigned,1,0,30,0
+20220709,Organic Search,1,0,0,0
+20220711,Organic Search,1,1,49,0
+20220712,Direct,1,1,6,0
+20220713,Unassigned,1,0,112,0
+20220714,Unassigned,1,0,14,0
+20220715,Unassigned,1,0,25,0
+20220716,Unassigned,1,0,0,0
+20220717,Unassigned,1,0,4,0
+20220720,Direct,1,0,0,0
+20220720,Organic Search,1,1,30,0
+20220721,Referral,1,0,77,0
+20220721,Unassigned,1,0,92,0
+20220727,Organic Search,1,0,0,0
+20220728,Organic Search,1,0,1,0
+20220729,Unassigned,1,0,171,0
+20220801,Unassigned,1,0,0,0
+20220802,Unassigned,1,0,15,0
+20220803,Direct,1,0,0,0
+20220808,Organic Search,1,0,6,0
+20220814,Unassigned,1,0,72,0
+20220816,Unassigned,1,0,15,0
+20220818,Organic Social,1,1,11,0
+20220822,Organic Search,1,0,0,0
+20220825,Unassigned,1,0,4,0
+20220829,Organic Search,1,1,13,0
+20220830,Direct,1,1,5,0
+20220830,Organic Search,1,1,12,0
+20220903,Unassigned,1,0,96,0
+20220904,Unassigned,1,0,6,0
+20220905,Unassigned,1,0,1,0
+20220906,Organic Search,1,1,2,0
+20220909,Organic Search,1,0,0,0
+20220910,Unassigned,1,0,53,0
+20220911,Organic Search,1,1,10,0
+20220912,Unassigned,1,0,9,0
+20220913,Organic Search,1,1,1,0
+20220913,Unassigned,1,0,1,0
+20220916,Direct,1,0,0,0
+20220916,Unassigned,1,0,7,0
+20220918,Organic Search,1,1,21,0
+20220918,Unassigned,1,0,329,0
+20220919,Organic Search,1,1,15,0
+20220920,Organic Search,1,1,595,0
+20220921,Unassigned,1,0,148,0
+20220922,Organic Search,1,1,144,0
+20220926,Direct,1,0,0,0
+20220926,Unassigned,1,0,10,0
+20220927,Organic Search,1,1,15,0
+20220929,Direct,1,1,7,0
+20220929,Unassigned,1,0,169,0
+20221004,Organic Search,1,0,0,0
+20221005,Organic Search,1,1,36,0
+20221008,Organic Search,1,1,0,0
+20221009,Unassigned,1,0,2,0
+20221010,Unassigned,1,0,54,0
+20221012,Unassigned,1,0,1,0
+20221013,Unassigned,1,0,22,0
+20221015,Direct,1,0,0,0
+20221015,Unassigned,1,0,20,0
+20221016,Organic Social,1,1,33,0
+20221019,Organic Search,1,0,0,0
+20221020,Unassigned,1,0,33,0
+20221021,Organic Search,1,0,0,0
+20221022,Organic Search,1,0,0,0
+20221023,Organic Search,1,1,2,0
+20221026,Direct,1,1,25,0
+20221030,Organic Search,1,1,10,0
+20221030,Unassigned,1,0,23,0
+20221102,Unassigned,1,0,8,0
+20221103,Unassigned,1,0,139,0
+20221106,Unassigned,1,0,81,0
+20221109,Unassigned,1,0,39,0
+20221112,Unassigned,1,0,76,0
+20221113,Organic Search,1,1,448,0
+20221114,Organic Search,1,1,52,0
+20221115,Unassigned,1,0,80,0
+20221116,Direct,1,1,64,0
+20221116,Organic Search,1,0,1,0
+20221116,Unassigned,1,0,6,0
+20221118,Direct,1,0,0,0
+20221118,Organic Social,1,1,11,0
+20221119,Organic Search,1,0,0,0
+20221119,Unassigned,1,0,0,0
+20221120,Direct,1,0,0,0
+20221120,Unassigned,1,0,37,0
+20221122,Direct,1,1,0,0
+20221123,Unassigned,1,0,35,0
+20221124,Organic Search,1,0,0,0
+20221125,Direct,1,1,4,0
+20221125,Organic Search,1,1,477,0
+20221127,Unassigned,1,0,26,0
+20221129,Unassigned,1,0,8,0
+20221130,Unassigned,1,0,130,0
+20221201,Organic Search,1,1,1,0
+20221205,Unassigned,1,0,37,0
+20221206,Unassigned,1,0,0,0
+20221207,Direct,1,0,0,0
+20221207,Organic Search,1,0,0,0
+20221209,Organic Social,1,1,0,0
+20221209,Unassigned,1,0,24,0
+20221210,Unassigned,1,0,44,0
+20221212,Unassigned,1,0,56,0
+20221215,Organic Search,1,1,24,0
+20221217,Direct,1,1,266,0
+20221218,Unassigned,1,0,41,0
+20221219,Organic Search,1,0,2,0
+20221223,Unassigned,1,0,39,0
+20221226,Organic Search,1,1,139,0
+20221227,Organic Search,1,0,0,0
+20230102,Organic Search,1,1,31,0
+20230102,Unassigned,1,0,16,0
+20230103,Unassigned,1,0,20,0
+20230104,Unassigned,1,0,23,0
+20230105,Organic Search,1,1,58,0
+20230105,Unassigned,1,0,201,0
+20230108,Unassigned,1,0,18,0
+20230111,Unassigned,1,0,23,0
+20230112,Organic Search,1,0,0,0
+20230112,Unassigned,1,0,23,0
+20230113,Unassigned,1,0,109,0
+20230117,Organic Search,1,1,16,0
+20230117,Unassigned,1,0,10,0
+20230119,Organic Search,1,0,6,0
+20230120,Organic Search,1,1,0,0
+20230120,Unassigned,1,0,70,0
+20230122,Unassigned,1,0,19,0
+20230126,Unassigned,1,0,34,0
+20230128,Unassigned,1,0,56,0
+20230130,Unassigned,1,0,40,0
+20230131,Unassigned,1,0,10,0
+20230201,Unassigned,1,0,27,0
+20230205,Referral,1,0,2,0
+20230207,Unassigned,1,0,264,0
+20230212,Organic Search,1,0,0,0
+20230212,Unassigned,1,0,0,0
+20230214,Organic Search,1,1,10,0
+20230215,Direct,1,0,0,0
+20230215,Unassigned,1,0,14,0
+20230216,Organic Search,1,1,10,0
+20230219,Unassigned,1,0,5,0
+20230220,Unassigned,1,0,137,0
+20230221,Direct,1,0,0,0
+20230221,Unassigned,1,0,40,0
+20230222,Organic Search,1,1,136,0
+20230223,Organic Search,1,1,0,0
+20230224,Organic Search,1,0,0,0
+20230227,Direct,1,1,14,0
+20230228,Organic Search,1,1,1,0
+20230301,Direct,1,0,4,0
+20230302,Direct,1,1,0,0
+20230302,Organic Search,1,0,2,0
+20230302,Organic Social,1,1,7,0
+20230303,Organic Social,1,1,23,0
+20230304,Organic Search,1,1,3,0
+20230305,Direct,1,1,0,0
+20230305,Organic Search,1,0,0,0
+20230306,Organic Search,1,0,0,0
+20230307,Direct,1,0,0,0
+20230309,Organic Social,1,1,6,0
+20230309,Referral,1,0,6,0
+20230312,Organic Search,1,1,10,0
+20230316,Direct,1,1,2,0
+20230318,Direct,1,0,0,0
+20230319,Direct,1,0,0,0
+20230320,Referral,1,1,13,0
+20230321,Direct,1,0,0,0
+20230321,Referral,1,0,0,0
+20230322,Direct,1,0,0,0
+20230322,Unassigned,1,0,187,0
+20230323,Direct,1,0,0,0
+20230325,Direct,1,0,0,0
+20230326,Direct,1,1,29,0
+20230327,Direct,1,0,0,0
+20230327,Organic Search,1,1,27,0
+20230329,Direct,1,0,5,0
+20230330,Organic Social,1,1,7,0
+20230401,Direct,1,0,2,0
+20230402,Organic Search,1,0,0,0
+20230402,Referral,1,0,0,0
+20230403,Direct,1,0,0,0
+20230404,Organic Search,1,0,0,0
+20230405,Direct,1,1,90,0
+20230406,Direct,1,0,0,0
+20230406,Organic Social,1,1,7,0
+20230407,Organic Search,1,1,679,0
+20230411,Organic Search,1,0,2,0
+20230412,Organic Search,1,1,25,0
+20230414,Organic Search,1,0,0,0
+20230415,Direct,1,0,0,0
+20230416,Organic Search,1,0,0,0
+20230420,Organic Social,1,1,15,0
+20230421,Organic Search,1,0,0,0
+20230422,Organic Search,1,0,0,0
+20230423,Direct,1,0,0,0
+20230423,Organic Search,1,0,0,0
+20230424,Direct,1,0,0,0
+20230424,Organic Search,1,1,57,0
+20230426,Direct,1,1,7,0
+20230426,Organic Search,1,0,0,0
+20230427,Organic Search,1,1,0,0
+20230427,Referral,1,0,0,0
+20230428,Direct,1,0,0,0
+20230428,Organic Search,1,0,3,0
+20230501,Direct,1,0,0,0
+20230503,Organic Social,1,1,3,0
+20230505,Organic Search,1,0,0,0
+20230505,Referral,1,1,0,0
+20230507,Organic Search,1,1,14,0
+20230508,Organic Search,1,1,129,0
+20230509,Referral,1,0,0,0
+20230510,Organic Search,1,1,29,0
+20230514,Direct,1,1,9,0
+20230514,Organic Search,1,0,0,0
+20230515,Organic Search,1,0,0,0
+20230517,Direct,1,1,18,0
+20230517,Organic Social,1,1,1,0
+20230517,Referral,1,0,0,0
+20230519,Direct,1,1,28,0
+20230522,Direct,1,1,19,0
+20230522,Organic Search,1,1,0,0
+20230524,Direct,1,0,2,0
+20230524,Organic Search,1,1,35,0
+20230524,Organic Social,1,1,5,0
+20230525,Organic Search,1,0,0,0
+20230528,Direct,1,1,99,0
+20230529,Organic Search,1,1,128,0
+20230529,Organic Social,1,1,0,0
+20230530,Direct,1,1,0,0
+20230530,Organic Search,1,1,13,0
+20230531,Direct,1,1,0,0
+20230531,Organic Search,1,1,56,0
+20230531,Organic Social,1,1,7,0
+20230531,Unassigned,1,0,79,0
+20230602,Organic Search,1,1,67,0
+20230606,Paid Search,1,1,8,0
+20230607,Organic Search,1,1,3,0
+20230607,Organic Social,1,0,0,0
+20230608,Referral,1,0,0,0
+20230609,Organic Search,1,0,0,0
+20230610,Paid Search,1,0,0,0
+20230610,Referral,1,0,0,0
+20230611,Organic Search,1,1,47,0
+20230611,Paid Search,1,0,5,0
+20230612,Paid Search,1,1,10,0
+20230613,Paid Search,1,1,7,0
+20230614,Direct,1,0,4,0
+20230614,Organic Social,1,1,7,0
+20230615,Direct,1,1,0,0
+20230615,Paid Search,1,0,2,0
+20230616,Direct,1,1,0,0
+20230616,Paid Search,1,0,0,0
+20230618,Direct,1,0,0,0
+20230618,Organic Search,1,1,0,0
+20230618,Paid Search,1,1,224,0
+20230619,Organic Search,1,1,27,0
+20230619,Referral,1,0,0,0
+20230620,Direct,1,1,0,0
+20230620,Organic Search,1,1,35,0
+20230621,Organic Search,1,1,170,0
+20230622,Organic Search,1,0,0,0
+20230623,Organic Social,1,0,0,0
+20230623,Paid Search,1,1,0,0
+20230627,Organic Search,1,1,49,0
+20230627,Organic Social,1,1,0,0
+20230630,Paid Search,1,1,0,0
+20230701,Organic Search,1,0,0,0
+20230703,Organic Search,1,1,64,0
+20230703,Paid Search,1,0,0,0
+20230705,Direct,1,0,4,0
+20230705,Organic Search,1,1,0,0
+20230706,Organic Search,1,1,19,0
+20230706,Referral,1,0,0,0
+20230707,Direct,1,1,0,0
+20230708,Organic Search,1,1,7,0
+20230709,Organic Search,1,0,0,0
+20230710,Direct,1,1,0,0
+20230711,Direct,1,0,0,0
+20230712,Organic Search,1,1,0,0
+20230713,Paid Search,1,1,4,0
+20230719,Direct,1,0,3,0
+20230719,Organic Social,1,1,35,0
+20230719,Paid Search,1,1,15,0
+20230720,Direct,1,1,17,0
+20230721,Direct,1,0,0,0
+20230721,Organic Search,1,0,0,0
+20230721,Paid Search,1,1,0,0
+20230722,Organic Search,1,0,0,0
+20230722,Paid Search,1,0,0,0
+20230723,Paid Search,1,1,79,0
+20230724,Organic Search,1,1,4,0
+20230724,Organic Social,1,1,41,0
+20230724,Paid Search,1,0,0,0
+20230725,Organic Social,1,1,117,0
+20230725,Paid Search,1,0,6,0
+20230726,Paid Search,1,0,6,0
+20230728,Direct,1,1,42,0
+20230729,Organic Search,1,0,0,0
+20230729,Paid Search,1,1,16,0
+20230729,Referral,1,0,0,0
+20230730,Direct,1,0,0,0
+20230730,Paid Search,1,1,22,0
+20230731,Organic Search,1,0,0,0
+20230801,Direct,1,1,47,0
+20230801,Paid Search,1,0,0,0
+20230802,Organic Search,1,1,12,0
+20230802,Referral,1,1,115,0
+20230803,Referral,1,1,889,0
+20230804,Organic Search,1,1,296,0
+20230806,Paid Search,1,1,17,0
+20230808,Organic Search,1,0,3,0
+20230809,Direct,1,0,0,0
+20230809,Paid Search,1,1,0,0
+20230810,Organic Search,1,1,95,0
+20230811,Direct,1,0,0,0
+20230812,Paid Search,1,1,54,0
+20230812,Referral,1,0,0,0
+20230813,Organic Search,1,1,12,0
+20230815,Direct,1,1,127,0
+20230816,Direct,1,0,4,0
+20230817,Direct,1,1,3,0
+20230817,Organic Search,1,1,0,0
+20230818,Organic Search,1,0,0,0
+20230819,Organic Search,1,1,0,0
+20230819,Paid Search,1,0,0,0
+20230820,Paid Search,1,0,0,0
+20230821,Paid Search,1,1,23,0
+20230822,Direct,1,1,0,0
+20230822,Paid Search,1,0,2,0
+20230823,Direct,1,0,0,0
+20230826,Unassigned,1,0,46,0
+20230827,Unassigned,1,0,97,0
+20230829,Organic Search,1,1,7,0
+20230829,Referral,1,1,578,13
+20230830,Unassigned,1,0,19,0
+20230831,Unassigned,1,0,8,0
+20230901,Referral,1,1,304,0
+20230903,Paid Search,1,0,0,0
+20230903,Referral,1,0,0,0
+20230905,Referral,1,1,14,0
+20230906,Referral,1,1,103,0
+20230910,Paid Search,1,1,21,0
+20230911,Organic Search,1,1,9,0
+20230911,Unassigned,1,0,29,0
+20230912,Organic Search,1,0,0,0
+20230912,Unassigned,1,0,14,0
+20230913,Unassigned,1,0,7,0
+20230915,Unassigned,1,0,30,0
+20230917,Unassigned,1,0,10,0
+20230919,Paid Search,1,0,0,0
+20230922,Direct,1,0,0,0
+20230922,Referral,1,1,662,3
+20230925,Unassigned,1,0,15,0
+20230926,Organic Search,1,1,7,0
+20230928,Unassigned,1,0,218,2
+20231003,Unassigned,1,0,126,3
+20231005,Organic Search,1,0,0,0
+20231009,Organic Search,1,1,7,0
+20231010,Unassigned,1,0,49,2
+20231013,Organic Search,1,0,0,0
+20231013,Unassigned,1,0,268,0
+20231017,Unassigned,1,0,5,1
+20231019,Unassigned,1,0,28,1
+20231020,Direct,1,1,66,0
+20231021,Referral,1,0,0,0
+20231022,Organic Search,1,0,0,0
+20231022,Unassigned,1,0,84,2
+20231025,Organic Search,1,0,0,0
+20231025,Paid Search,1,0,0,0
+20231025,Unassigned,1,0,6,0
+20231028,Unassigned,1,0,25,0
+20231029,Unassigned,1,0,46,1
+20231030,Unassigned,1,0,18,1
+20231101,Direct,1,1,0,1
+20231101,Organic Search,1,1,933,2
+20231103,Direct,1,0,0,0
+20231105,Organic Search,1,0,0,0
+20231105,Unassigned,1,0,66,1
+20231106,Direct,1,0,0,0
+20231106,Unassigned,1,0,27,2
+20231107,Organic Search,1,1,40,2
+20231112,Unassigned,1,0,16,0
+20231113,Organic Search,1,0,3,0
+20231114,Referral,1,0,0,0
+20231116,Organic Search,1,1,8,0
+20231117,Unassigned,1,0,5,1
+20231118,Unassigned,1,0,116,2
+20231120,Unassigned,1,0,44,1
+20231121,Organic Search,1,0,0,0
+20231121,Unassigned,1,0,39,3
+20231122,Unassigned,1,0,19,0
+20231123,Direct,1,1,30,2
+20231125,Organic Search,1,1,3,0
+20231126,Organic Search,1,0,0,0
+20231126,Referral,1,0,0,0
+20231127,Organic Search,1,0,0,0
+20231127,Unassigned,1,0,31,0
+20231128,Unassigned,1,0,99,0
+20231129,Unassigned,1,0,39,0
+20231130,Unassigned,1,0,101,2
+20231205,Direct,1,0,0,0
+20231206,Direct,1,0,0,0
+20231207,Direct,1,1,2,0
+20231207,Organic Search,1,0,0,0
+20231208,Organic Search,1,0,0,0
+20231208,Unassigned,1,0,240,0
+20231212,Unassigned,1,0,5,0
+20231213,Referral,1,0,0,0
+20231215,Organic Search,1,1,12,0
+20231217,Organic Search,1,0,0,0
+20231219,Unassigned,1,0,47,1
+20231220,Organic Search,1,0,0,0
+20231221,Direct,1,0,7,0
+20231221,Unassigned,1,0,113,0
+20231222,Organic Search,1,1,5,1
+20231223,Unassigned,1,0,195,2
+20231224,Organic Search,1,0,0,0
+20231224,Unassigned,1,0,88,2
+20231227,Organic Search,1,1,304,4
+20231229,Unassigned,1,0,29,0
+20231231,Referral,1,0,0,0
+20240101,Referral,1,0,0,0
+20240103,Organic Search,1,1,57,4
+20240103,Unassigned,1,0,190,1
+20240110,Organic Search,1,0,0,0
+20240110,Unassigned,1,0,63,1
+20240111,Referral,1,1,20,2
+20240112,Unassigned,1,0,68,0
+20240113,Unassigned,1,0,44,1
+20240116,Referral,1,0,0,0
+20240122,Referral,1,0,0,0
+20240122,Unassigned,1,0,14,1
+20240125,Direct,1,1,0,1
+20240127,Organic Search,1,1,0,1
+20240128,Organic Search,1,1,0,1
+20240129,Direct,1,1,0,1
+20240129,Referral,1,0,0,0
+20240129,Unassigned,1,0,44,1
+20240130,Organic Search,1,1,113,1
+20240130,Unassigned,1,0,581,5
+20240203,Unassigned,1,0,17,0
+20240204,Unassigned,1,0,36,1
+20240207,Unassigned,1,0,64,1
+20240209,Unassigned,1,0,10,0
+20240211,Unassigned,1,0,66,0
+20240212,Organic Search,1,1,242,2
+20240214,Direct,1,0,0,0
+20240214,Unassigned,1,0,104,9
+20240215,Unassigned,1,0,31,0
+20240217,Organic Search,1,1,20,0
+20240217,Referral,1,1,65,2
+20240219,Organic Search,1,1,29,1
+20240221,Organic Search,1,0,0,0
+20240222,Organic Search,1,1,57,6
+20240223,Unassigned,1,0,105,3
+20240224,Unassigned,1,0,10,0
+20240226,Direct,1,0,0,0
+20240226,Organic Search,1,0,0,0
+20240227,Organic Search,1,0,0,0
+20240227,Unassigned,1,0,16,0
+20240228,Unassigned,1,0,20,1
+20240302,Unassigned,1,0,51,2
+20240304,Organic Search,1,0,0,0
+20240305,Organic Search,1,0,0,0
+20240307,Organic Search,1,1,87,0
+20240307,Unassigned,1,0,33,0
+20240309,Organic Search,1,0,0,0
+20240310,Organic Search,1,1,4,0
+20240310,Unassigned,1,0,7,0
+20240311,Direct,1,1,5,0
+20240311,Organic Search,1,0,0,0
+20240312,Direct,1,1,38,0
+20240313,Organic Search,1,1,3,0
+20240314,Unassigned,1,0,108,2
+20240318,Unassigned,1,0,8,1
+20240320,Unassigned,1,0,34,0
+20240321,Unassigned,1,0,112,2
+20240330,Referral,1,0,0,0
+20240330,Unassigned,1,0,34,2
+20240402,Unassigned,1,0,6,1
+20240403,Organic Search,1,0,0,0
+20240405,Organic Search,1,1,25,0
+20240408,Unassigned,1,0,57,1
+20240409,Unassigned,1,0,7,0
+20240410,Unassigned,1,0,89,1
+20240411,Unassigned,1,0,11,0
+20240412,Organic Search,1,1,96,2
+20240413,Direct,1,0,0,0
+20240413,Organic Search,1,0,0,0
+20240416,Direct,1,0,0,0
+20240416,Unassigned,1,0,35,0
+20240417,Direct,1,1,2,2
+20240417,Unassigned,1,0,6,0
+20240418,Unassigned,1,0,20,0
+20240419,Direct,1,0,0,0
+20240420,Direct,1,0,0,0
+20240421,Organic Search,1,0,0,0
+20240421,Unassigned,1,0,147,3
+20240425,Direct,1,0,0,0
+20240425,Organic Search,1,0,0,0
+20240426,Unassigned,1,0,42,0
+20240427,Unassigned,1,0,10,0
+20240429,Organic Search,1,1,46,1
+20240429,Unassigned,1,0,52,1
+20240430,Direct,1,1,107,1
+20240430,Organic Search,1,1,637,1
+20240503,Direct,1,1,26,2
+20240510,Unassigned,1,0,37,0
+20240513,Unassigned,1,0,44,1
+20240518,Organic Search,1,0,0,0
+20240520,Organic Search,1,0,0,0
+20240523,Unassigned,1,0,42,0
+20240526,Unassigned,1,0,7,0
+20240527,Unassigned,1,0,199,5
+20240528,Organic Search,1,1,59,1
+20240530,Organic Search,1,0,0,0
+20240530,Unassigned,1,0,153,2
+20240602,Organic Search,1,0,0,0
+20240602,Unassigned,1,0,87,3
+20240603,Direct,1,1,122,1
+20240604,Direct,1,1,102,0
+20240605,Unassigned,1,0,83,2
+20240606,Direct,1,1,11,0
+20240606,Organic Search,1,0,0,0
+20240608,Referral,1,0,0,0
+20240611,Organic Search,1,0,0,0
+20240611,Unassigned,1,0,500,1
+20240615,Organic Search,1,1,23,0
+20240616,Unassigned,1,0,6,0
+20240617,Unassigned,1,0,119,3
+20240619,Organic Search,1,1,51,1
+20240619,Unassigned,1,0,39,1
+20240620,Organic Search,1,0,0,0
+20240622,Unassigned,1,0,6,0
+20240623,Organic Search,1,0,0,0
+20240624,Direct,1,1,2,1
+20240627,Direct,1,0,0,0
+20240629,Organic Search,1,1,21,1
+20240702,Organic Search,1,1,41,0
+20240705,Direct,1,1,3,1
+20240706,Direct,1,0,0,0
+20240707,Direct,1,0,0,0
+20240708,Direct,1,1,2,1
+20240708,Organic Search,1,0,0,0
+20240710,Direct,1,0,0,0
+20240710,Organic Search,1,0,0,0
+20240711,Organic Search,1,0,0,0
+20240715,Direct,1,0,0,0
+20240716,Direct,1,1,52,1
+20240716,Organic Search,1,1,27,0
+20240717,Direct,1,0,0,0
+20240718,Direct,1,0,0,0
+20240718,Organic Search,1,0,0,0
+20240719,Organic Search,1,1,13,1
+20240720,Organic Search,1,1,26,0
+20240722,Direct,1,1,2,1
+20240723,Direct,1,0,0,0
+20240724,Direct,1,0,0,0
+20240724,Organic Search,1,1,11,1
+20240728,Direct,1,1,14,2
+20240801,Organic Search,1,1,19,1
+20240802,Direct,1,0,0,0
+20240806,Direct,1,0,0,0
+20240806,Unassigned,1,0,0,0
+20240808,Direct,1,1,164,1
+20240809,Organic Search,1,0,0,0
+20240809,Paid Search,1,1,22,0
+20240811,Direct,1,1,0,0
+20240811,Organic Search,1,1,14,0
+20240811,Paid Search,1,1,12,0
+20240812,Paid Search,1,0,8,0
+20240813,Organic Search,1,0,5,0
+20240814,Paid Search,1,0,0,0
+20240815,Paid Search,1,0,0,0
+20240816,Direct,1,0,0,0
+20240816,Organic Search,1,1,45,0
+20240816,Paid Search,1,0,0,0
+20240817,Organic Search,1,1,23,0
+20240818,Paid Search,1,1,69,0
+20240818,Referral,1,1,13,0
+20240819,Paid Search,1,1,25,0
+20240821,Paid Search,1,0,0,0
+20240822,Organic Search,1,0,0,0
+20240826,Paid Search,1,0,6,0
+20240827,Paid Search,1,1,25,0
+20240828,Paid Search,1,1,245,1
+20240829,Organic Search,1,0,0,0
+20240830,Direct,1,1,29,0
+20240830,Organic Search,1,1,32,0
+20240830,Paid Search,1,1,83,0
+20240831,Organic Search,1,1,7,0
+20240831,Referral,1,1,58,0
+20240901,Direct,1,0,0,0
+20240903,Organic Search,1,1,0,0
+20240904,Direct,1,0,0,0
+20240904,Referral,1,1,205,0
+20240905,Cross-network,1,0,0,0
+20240905,Direct,1,0,0,0
+20240905,Organic Search,1,0,0,0
+20240907,Organic Search,1,1,0,0
+20240908,Organic Search,1,1,16,0
+20240909,Cross-network,1,0,2,0
+20240909,Direct,1,1,284,0
+20240909,Paid Search,1,1,105,0
+20240910,Paid Search,1,0,0,0
+20240911,Paid Search,1,1,21,0
+20240912,Organic Search,1,1,42,0
+20240912,Paid Search,1,1,27,0
+20240913,Cross-network,1,1,10,1
+20240914,Cross-network,1,1,17,0
+20240915,Cross-network,1,0,0,0
+20240915,Paid Search,1,0,0,0
+20240917,Organic Search,1,0,0,0
+20240919,Paid Search,1,1,287,0
+20240920,Organic Search,1,1,17,0
+20240920,Paid Search,1,1,50,0
+20240921,Organic Search,1,1,9,0
+20240921,Referral,1,0,0,0
+20240923,Direct,1,1,13,0
+20240923,Paid Search,1,1,61,0
+20240923,Referral,1,1,74,0
+20240924,Cross-network,1,0,8,0
+20240924,Organic Search,1,0,0,0
+20240925,Organic Search,1,1,13,0
+20240926,Cross-network,1,1,12,0
+20240927,Direct,1,1,295,1
+20240927,Organic Search,1,0,9,0
+20240929,Direct,1,1,12,0
+20240929,Organic Search,1,0,0,0
+20240930,Paid Search,1,1,39,0
+20241001,Direct,1,0,0,0
+20241002,Paid Search,1,1,36,0
+20241003,Direct,1,1,14,0
+20241004,Paid Search,1,0,5,0
+20241004,Referral,1,1,540,0
+20241007,Paid Search,1,1,86,0
+20241008,Paid Search,1,1,176,0
+20241009,Organic Search,1,0,0,0
+20241010,Organic Search,1,1,40,0
+20241010,Paid Search,1,1,13,0
+20241012,Organic Search,1,1,99,0
+20241014,Direct,1,1,9,1
+20241014,Paid Search,1,1,24,0
+20241015,Organic Search,1,1,49,0
+20241016,Cross-network,1,0,0,0
+20241017,Direct,1,1,3,0
+20241017,Referral,1,1,19,1
+20241018,Direct,1,1,0,0
+20241019,Paid Search,1,1,139,0
+20241021,Cross-network,1,1,0,1
+20241022,Direct,1,1,18,0
+20241022,Paid Search,1,1,67,0
+20241023,Direct,1,1,209,0
+20241023,Organic Search,1,1,27,0
+20241024,Organic Search,1,1,0,0
+20241025,Direct,1,1,34,0
+20241026,Direct,1,0,0,0
+20241027,Paid Search,1,0,7,0
+20241028,Referral,1,1,0,0
+20241029,Direct,1,0,0,0
+20241029,Organic Search,1,1,75,0
+20241030,Paid Search,1,1,40,0
+20241031,Paid Search,1,1,72,0
+20241101,Organic Search,1,0,0,0
+20241105,Cross-network,1,0,0,0
+20241105,Organic Search,1,1,1170,0
+20241105,Paid Search,1,1,3,0
+20241105,Referral,1,0,0,0
+20241106,Direct,1,0,0,0
+20241106,Paid Search,1,1,13,1
+20241107,Organic Search,1,1,173,0
+20241107,Paid Search,1,1,8,0
+20241108,Direct,1,1,19,1
+20241108,Paid Search,1,0,2,0
+20241110,Direct,1,0,0,0
+20241110,Paid Search,1,1,27,0
+20241111,Organic Search,1,1,137,2
+20241111,Paid Search,1,1,38,0
+20241113,Direct,1,1,46,0
+20241113,Paid Search,1,1,41,0
+20241114,Organic Search,1,0,9,0
+20241114,Paid Search,1,1,40,0
+20241115,Direct,1,0,0,0
+20241115,Organic Search,1,0,0,0
+20241117,Direct,1,1,14,0
+20241119,Organic Search,1,1,65,0
+20241120,Cross-network,1,0,0,0
+20241120,Organic Search,1,0,0,0
+20241120,Referral,1,1,0,0
+20241122,Paid Search,1,1,589,0
+20241122,Referral,1,1,213,9
+20241124,Organic Search,1,1,69,0
+20241125,Unassigned,1,0,0,0
+20241126,Direct,1,0,0,0
+20241127,Paid Search,1,1,418,2
+20241128,Paid Search,1,1,15,1
+20241129,Paid Search,1,0,0,0
+20241130,Direct,1,1,18,0
+20241201,Paid Search,1,1,23,0
+20241202,Direct,1,1,21,0
+20241202,Paid Search,1,1,42,0
+20241203,Organic Search,1,1,77,0
+20241207,Organic Search,1,0,0,0
+20241207,Paid Search,1,1,23,0
+20241210,Organic Search,1,0,4,0
+20241210,Paid Search,1,1,113,0
+20241211,Organic Search,1,1,95,0
+20241211,Paid Search,1,0,9,0
+20241212,Direct,1,0,0,0
+20241212,Organic Search,1,1,12,0
+20241214,Direct,1,1,20,0
+20241214,Paid Search,1,0,0,0
+20241215,Paid Search,1,1,42,0
+20241216,Paid Search,1,1,38,1
+20241218,Direct,1,1,165,1
+20241221,Direct,1,1,82,0
+20241221,Paid Search,1,0,0,0
+20241226,Organic Search,1,1,24,0
+20241226,Paid Search,1,1,77,0
+20250104,Organic Social,1,1,69,0
+20250108,Organic Search,1,1,430,0
+20250111,Organic Search,1,1,32,0
+20250114,Organic Search,1,0,0,0
+20250115,Organic Search,1,0,0,0
+20250117,Organic Search,1,0,8,0
+20250118,Organic Search,1,1,0,0
+20250119,Direct,1,0,0,0
+20250119,Organic Search,1,1,52,1
+20250123,Organic Search,1,0,0,0
+20250124,Organic Search,1,1,453,0
+20250129,Organic Search,1,1,1058,0
+20250203,Direct,1,1,79,0
+20250204,Direct,1,1,42,0
+20250206,Organic Search,1,0,9,0
+20250209,Organic Social,1,0,0,0
+20250213,Direct,1,0,0,0
+20250214,Referral,1,1,0,0
+20250223,Direct,1,0,0,0
+20250226,Organic Search,1,0,0,0
+20250304,Organic Search,1,1,14,0
+20250306,Organic Search,1,0,6,0
+20250309,Organic Search,1,0,4,0
+20250310,Organic Search,1,1,42,0
+20250311,Organic Search,1,0,0,0
+20250313,Organic Search,1,1,75,0
+20250315,Organic Search,1,1,32,0
+20250319,Organic Search,1,0,0,0
+20250321,Organic Search,1,1,525,0
+20250331,Organic Search,1,1,13,0
+20250403,Organic Search,1,1,63,0
+20250404,Organic Search,1,0,0,0
+20250408,Referral,1,1,96,0
+20250409,Organic Search,1,0,5,0
+20250410,Referral,1,0,0,0
+20250411,Organic Search,1,1,155,0
+20250413,Referral,1,0,0,0
+20250414,Direct,1,1,16,1
+20250415,Unassigned,1,0,0,0
+20250416,Unassigned,1,0,7,0
+20250417,Organic Search,1,1,13,0
+20250419,Organic Search,1,1,88,0
+20250419,Referral,1,0,0,0
+20250422,Organic Search,1,1,17,0
+20250425,Direct,1,1,7,0
+20250425,Organic Search,1,0,0,0
+20250428,Organic Search,1,0,0,0
+20250429,Organic Social,1,1,689,1
+20250429,Referral,1,0,0,0
+20250503,Organic Search,1,1,343,2
+20250505,Organic Search,1,1,33,0
+20250506,Organic Search,1,1,16,0
+20250508,Organic Search,1,1,314,0
+20250509,Direct,1,1,108,0
+20250510,Direct,1,0,2,0
+20250513,Organic Search,1,1,216,1
+20250514,Organic Search,1,1,13,0
+20250517,Organic Search,1,1,220,1
+20250520,Organic Search,1,1,13,0
+20250521,Organic Search,1,1,6,1
+20250521,Referral,1,0,0,0
+20250522,Direct,1,0,0,0
+20250525,Direct,1,1,83,0
+20250525,Organic Search,1,1,22,0
+20250526,Referral,1,0,0,0
+20250528,Organic Search,1,1,78,1
+20250607,Organic Search,1,0,0,0
+20250614,Organic Search,1,0,0,0
+20250614,Referral,1,0,0,0
+20250615,Direct,1,1,0,0
+20250615,Organic Search,1,0,0,0
+20250616,Organic Search,1,1,23,0
+20250618,Direct,1,1,0,0
+20250618,Organic Search,1,1,68,0
+20250619,Direct,1,1,10,0
+20250620,Direct,1,0,1,0
+20250620,Organic Social,1,0,0,0
+20250622,Organic Search,1,0,0,0
+20250623,Referral,1,1,124,1
+20250625,Organic Search,1,1,84,0
+20250627,Organic Search,1,0,0,0
+20250629,Organic Search,1,1,4,0
+20250703,Organic Search,1,1,10,0
+20250706,Direct,1,0,0,0
+20250707,Referral,1,1,16,0
+20250714,Organic Search,1,0,0,0
+20250715,Direct,1,1,5,0
+20250722,Organic Search,1,1,47,0
+20250724,Organic Search,1,1,19,0
+20250725,Organic Search,1,0,0,0
+20250726,Organic Search,1,0,0,0
+20250727,Organic Search,1,1,39,1
+20250803,Organic Search,1,0,0,0
+20250808,Organic Search,1,1,99,0
+20250812,Organic Search,1,1,81,0
+20250815,Organic Search,1,0,0,0
+20250818,Organic Search,1,0,6,0
+20250819,Direct,1,0,1,0
+20250822,Organic Search,1,1,47,1
+20250826,Direct,1,1,17,0
+20250827,Organic Search,1,1,25,1
+20250827,Referral,1,0,0,0
+20250828,Direct,1,0,0,0
+20250831,Organic Search,1,1,89,0
+20250905,Organic Search,1,1,17,1
+20250906,Organic Search,1,0,5,0
+20250908,Organic Search,1,1,106,2
+20250908,Organic Social,1,1,257,0
+20250910,Organic Search,1,0,0,0
+20250916,Direct,1,1,194,0
+20250916,Organic Search,1,1,21,0
+20250917,Organic Search,1,0,0,0
+20250918,Organic Search,1,0,0,0
+20250923,Referral,1,1,64,0
+20250924,Organic Search,1,1,72,1
+20251004,Organic Search,1,1,30,0
+20251005,Organic Search,1,1,33,0
+20251013,Direct,1,1,94,0
+20251015,Direct,1,0,0,0
+20251017,Direct,1,0,2,0
+20251019,Unassigned,1,1,105,1
+20251020,Organic Search,1,1,146,1
+20251022,Organic Search,1,1,26,1
+20251025,Organic Search,1,1,91,1
+20251103,Organic Search,1,0,0,0
+20251105,Direct,1,1,113,0
+20251106,Direct,1,0,0,0
+20251115,Organic Search,1,1,90,1
+20251117,Organic Search,1,1,445,0
+20251120,Referral,1,1,513,1
+20251123,Organic Search,1,1,72,0
+20251127,Direct,1,1,21,0
+20251128,Direct,1,1,76,1
+20251201,Organic Search,1,1,226,1
+20251205,Organic Search,1,1,19,1
+20251205,Referral,1,1,129,0
+20251206,Organic Search,1,0,0,0
+20251207,Organic Search,1,0,0,0
+20251208,Referral,1,1,66,0
+20251210,Organic Search,1,1,138,0
+20251216,Direct,1,0,3,0
+20251217,Organic Search,1,1,151,2
+20251219,Direct,1,1,54,0
+20251222,Referral,1,0,0,0
+20251223,Direct,1,0,0,0
+20251223,Organic Search,1,1,54,0
+20251224,Direct,1,1,0,1
+20251228,Organic Search,1,1,184,0
+20251230,Organic Search,1,0,1,0
+20260104,Organic Search,1,1,337,0
+20260111,Direct,1,1,0,1
+20260113,Referral,1,1,42,0
+20260114,Organic Search,1,1,74,1
+20260119,Organic Search,1,1,27,0
+20260123,Direct,1,1,0,0
+20260123,Organic Search,1,1,3,0
+20260124,Direct,1,0,0,0
+20260128,Organic Search,1,0,0,0
+20260131,Organic Search,1,1,3,0
+20260201,Organic Search,1,0,0,0
+20260209,Organic Search,1,1,19,0
+20260210,Organic Search,1,1,26,0
+20260211,Organic Social,1,1,49,0
+20260216,Direct,1,0,0,0
+20260217,Direct,1,1,15,0
+20260217,Organic Search,1,1,440,0
+20260223,Referral,1,1,6,1
+20260224,Direct,1,1,14,0
+20260224,Organic Search,1,1,125,0
+20260224,Organic Social,1,1,17,0
+20260227,Direct,1,0,0,0
+20260227,Unassigned,1,1,31,0
+20260228,Organic Search,1,1,133,1
+20260304,Organic Search,1,0,0,0
+20260308,Direct,1,1,21,0
+20260308,Organic Search,1,1,15,0
+20260310,Direct,1,0,4,0
+20260311,Organic Search,1,1,0,0
+20260313,Direct,1,0,0,0
+20260313,Organic Search,1,1,4,0
+20260315,Direct,1,0,0,0
+20260318,Direct,1,0,0,0
+20260319,Organic Search,1,1,34,0
+20260320,Direct,1,0,0,0
+20260320,Organic Search,1,1,15,0
+20260321,Direct,1,1,12,0
+20260323,Direct,1,0,0,0
+20260324,Organic Search,1,1,465,1
+20260325,Direct,1,0,0,0
+20260325,Organic Search,1,0,0,0
+20260326,Direct,1,0,0,0
+20260326,Organic Search,1,0,0,0
+20260328,Direct,1,0,0,0
+20260331,Direct,1,0,0,0
+20260401,Organic Search,1,0,5,0
+20260406,Direct,1,0,0,0
+20260411,Direct,1,0,0,0
+20260417,Direct,1,0,0,0
+20260420,Organic Search,1,1,49,2
+20260421,Organic Search,1,0,5,0
+20260425,Organic Search,1,1,54,0
+20260426,Organic Search,1,1,36,0
+20260501,Direct,1,0,0,0
+20260504,Organic Search,1,1,108,1
+20260506,Direct,1,0,0,0
+20260508,Direct,1,0,0,0
+20260512,Referral,1,1,14,1
+20260513,Direct,1,0,0,0
+20260514,Direct,1,0,0,0
+20260515,Direct,1,0,0,0
+20260518,Direct,1,0,0,0
+20260519,Direct,1,1,11,0
+20260522,Organic Search,1,1,102,0
+20260523,Organic Search,1,1,27,0
+20260524,Direct,1,0,0,0
+20260527,Direct,1,0,0,0
+20260601,Organic Search,1,1,10,0
+20260602,Organic Search,1,0,0,0
+20260603,Direct,1,0,0,0
+20260603,Organic Search,1,0,3,0
+20260608,Direct,1,0,0,0
+20260611,Direct,1,0,0,0
+20260611,Organic Search,1,1,55,1
+20260614,Organic Search,1,1,569,0
+20260619,Organic Search,1,1,66,0
+20260623,Direct,1,0,0,0
+20260625,Direct,1,0,0,0
+20260629,Direct,1,0,0,0
+20260629,Organic Search,1,0,0,0
+20260629,Referral,1,1,15,0
+20260701,Organic Search,1,1,32,0
+20260707,Organic Search,1,0,0,0
+20260709,Direct,1,0,0,0
+20260715,Organic Search,1,1,59,0
+20260719,Direct,1,0,0,0
+20260721,Direct,1,0,0,0
+20260721,Organic Search,1,1,64,0
+20260722,Direct,1,0,0,0
+20260725,Direct,1,0,0,0
+20260726,Organic Social,1,0,0,0
+20260727,Direct,1,0,0,0
+20260801,Direct,1,0,0,0
+20260802,Direct,1,1,0,0
+20260810,Direct,1,0,0,0
+20260815,Organic Search,1,0,0,0
+20260816,Direct,1,0,0,0
+20260818,Direct,1,0,0,0
+20260821,Direct,1,0,0,0
+20260823,Direct,1,0,0,0
+20260825,Organic Search,1,1,29,0
+20260826,Direct,1,1,8,0
+20260826,Organic Search,1,1,527,1
+20260828,Organic Search,1,1,0,0
+20260830,Direct,1,1,8,0
+20260830,Referral,1,1,16,0
+20260831,Direct,1,0,0,0
+20260901,Direct,1,0,0,0
+20260901,Organic Search,1,1,21,0
+20260904,Direct,1,0,0,0
+20260905,Direct,1,0,0,0
+20260905,Organic Search,1,1,72,1
+20260907,Direct,1,1,32,0
+20260909,Direct,1,0,0,0
+20260913,Direct,1,1,105,0
+20260914,AI Assistant,1,1,3,0
+20260921,Direct,1,1,56,2
+20260922,Organic Search,1,1,15,0
+20260924,Direct,1,0,0,0
+20260925,Organic Search,1,1,38,1
+20260928,Direct,1,1,239,0
+20260929,Direct,1,1,360,0
+20261002,Organic Search,1,0,9,0
+20261003,Organic Search,1,1,309,0
+20261012,Organic Search,1,1,21,1
+20261013,Organic Search,1,0,0,0
+20261014,Organic Search,1,0,0,0
+20261018,Organic Search,1,1,26,0
+20261025,Direct,1,1,21,0
+20261025,Organic Search,1,1,343,0
+20261028,Direct,1,1,0,0
+20261101,Direct,1,0,0,0
+20261104,Referral,1,0,0,0
+20261105,Unassigned,1,0,4,0
+20261109,Direct,1,0,2,0
+20261112,Organic Search,1,1,30,1
+20261112,Referral,1,1,11,0

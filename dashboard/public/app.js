@@ -2,7 +2,7 @@
    Liest ausschließlich data/clients.json und data/<client>/dashboard.json (erzeugt von tools/build_dashboard_data.py). */
 "use strict";
 
-const S = { clients: [], client: null, d: null, range: "3M", perfRange: "3M", ui: {} };
+const S = { clients: [], client: null, d: null, range: "3M", perfRange: "3M", gaRange: "12M", ui: {} };
 const $ = (sel, el = document) => el.querySelector(sel);
 const view = () => $("#view");
 
@@ -198,6 +198,8 @@ pages.overview = () => {
   <div class="strip">
     ${chip("GSC " + (src.gsc.status === "connected" ? "Connected" : src.gsc.status), src.gsc.status === "connected" ? "green" : "red", true)}
     ${chip("Semrush " + (src.semrush.status === "connected" ? "Connected" : src.semrush.status), src.semrush.status === "connected" ? "green" : "red", true)}
+    ${chip("GA4 " + (src.ga4?.status === "connected" ? "Connected" : src.ga4?.status || "Unknown"), src.ga4?.status === "connected" ? "green" : "red", true)}
+    <a href="#ads">${chip("Google Ads " + (src.google_ads?.status === "account_canceled" ? "Account canceled" : src.google_ads?.status || "Unknown"), src.google_ads?.status === "connected" ? "green" : "amber", true)}</a>
     ${chip("Website Monitoring " + (src.website.monitors?.length ? "Active" : "Off"), src.website.monitors?.length ? "green" : "", true)}
     <a href="#changes">${chip(`${h.freezes} Change Freeze`, h.freezes ? "amber" : "")}</a>
     <a href="#approvals">${chip(`${h.pending_approvals} Pending Approvals`, h.pending_approvals ? "red" : "")}</a>
@@ -228,6 +230,9 @@ pages.overview = () => {
     <div class="card"><div class="card-h"><div><h2>Visibility by business segment</h2><div class="hint">Monthly impressions · ${esc("Strategic B2B vs. Price vs. B2C")}</div></div><a href="#performance" class="mini">Details →</a></div>
       <div class="card-b">${legend(segSeries())}<div id="ch-seg"></div><div class="mini" style="margin-top:6px">${esc(d.client.segments_note)}</div></div></div>
   </div>
+  <div class="card mt"><div class="card-h"><div><h2>Search → Business: wichtigste Themen</h2><div class="hint">Nachfrage, Sichtbarkeit, Paid-Historie, Landingpage und Anfragen je Thema (Priorität ≥ 8)</div></div><a href="#funnel" class="mini">Funnel →</a></div><div class="card-b flush"><div class="tbl-wrap"><table><thead><tr><th>Thema</th><th class="num">Nachfrage</th><th class="num">Ø Pos.</th><th class="num">Paid (hist.)</th><th class="num">Anfragen</th><th>Signal</th></tr></thead><tbody>
+    ${d.funnel.clusters.filter(x => (x.priority || 0) >= 8).sort((a, b) => b.priority - a.priority || b.demand.semrush_volume - a.demand.semrush_volume).slice(0, 6).map(x => `<tr class="click" data-go="funnel"><td class="q">${esc(CL_LABEL(x.cluster))}<div class="s">Prio ${x.priority}/10${x.opportunities.length ? " · " + x.opportunities.map(esc).join(", ") : ""}</div></td><td class="num">${x.demand.keywords ? fmtN(x.demand.semrush_volume) : "–"}</td><td class="num">${fmtD(x.organic.position)}</td><td class="num">${x.paid.keyword_cost ? fmtEur(x.paid.keyword_cost) : "–"}</td><td class="num">${x.engagement.conv_primary}<span class="s"> + ${x.engagement.conv_secondary}</span></td><td class="s">${esc((x.signals.find(s => s.kind === "weak") || x.signals[0] || {}).text || "")}</td></tr>`).join("")}
+  </tbody></table></div></div></div>
   ${freshPanel()}`;
   drawPerf(S.range, "range", "ch-clicks", "ch-imp");
   mount("ov-opps", table({ rows: d.opportunities.filter(o => o.type !== "IGNORE").slice(0, 6), pageSize: 6, onRow: o => go("opp-" + o.id),
@@ -394,6 +399,160 @@ pages.opportunity = id => {
   chartInto("opp-cl", { points: cm, series: [{ key: "impressions", label: "Cluster impressions / month", color: "var(--c1)", type: "bar" }], height: 120, xMode: "month" });
 };
 
+/* ------------------------------------------------------------ Search → Business (Funnel) */
+const CL_LABEL = c => ({ baudokumentation: "Baudokumentation", dachinspektion: "Dachinspektion", fassadeninspektion: "Fassadeninspektion", inspektion_allgemein: "Inspektion allgemein", dachvermessung: "Dachvermessung", fassadenvermessung: "Fassadenvermessung", vermessung_allgemein: "Vermessung allgemein", bestandsaufnahme: "Bestandsaufnahme", immobilien: "Immobilien", firma_imagefilm: "Firma / Imagefilm", video: "Video", haus_privat: "Haus privat", hochzeit_event: "Hochzeit / Event", preis: "Preis-Suchen", generisch_drohne: "Generisch (Drohne/Luftbild)" }[c] || c);
+const SIG = { demand: "blue", paid: "amber", value: "", weak: "red", strong: "green", page: "green", conv: "green", noconv: "amber", prio: "blue" };
+const fmtEur = v => (v === null || v === undefined) ? "–" : v.toLocaleString("de-DE", { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + " €";
+const fmtSec = v => (v === null || v === undefined) ? "–" : `${Math.floor(v / 60)}:${String(Math.round(v % 60)).padStart(2, "0")} min`;
+pages.funnel = () => {
+  const f = S.d.funnel, w = f.window;
+  view().innerHTML = `<div class="page-head"><div><h1>Search → Business</h1><div class="sub">Je Thema: Nachfrage (Semrush) → Sichtbarkeit organisch (GSC) und bezahlt (Ads-Historie) → Landingpage → Engagement und Anfragen (GA4) → Business-Priorität (Profil). Zeitraum GSC/GA4: ${fmtDate(w[0])} – ${fmtDate(w[1])}.</div></div></div>
+  <div class="notice">Lesehilfe: GA4 erfasst nur etwa ${fmtPct(S.d.ga4.quality?.capture_ratio, 0)} der organischen Klicks (Consent). Anfragen sind kleine Zahlen – sie zeigen Richtung, keine Statistik. Paid-Werte stammen aus der GA4-Verknüpfung des gekündigten Ads-Kontos (2023–24, Keyword-Ebene).</div>
+  <div class="card mt" id="fn-table"></div>
+  <div class="card mt"><div class="card-h"><div><h2>Landingpages: GSC × GA4 × Ads</h2><div class="hint">Zusammengeführt über den URL-Pfad. Organische Sitzungen und Anfragen aus GA4 im selben Zeitraum wie GSC; Paid-Sitzungen = Ads-Historie gesamt.</div></div></div><div id="fn-pages"></div></div>`;
+  mount("fn-table", table({ rows: f.clusters, pageSize: 20, onRow: x => renderFunnelDetail(x), sort: { key: "priority", dir: -1 },
+    columns: [
+      { key: "cluster", label: "Thema", render: x => `<div class="q">${esc(CL_LABEL(x.cluster))}</div><div class="s">${x.opportunities.map(esc).join(", ") || "keine Opportunity"}</div>` },
+      { key: "priority", label: "Prio", num: true, value: x => x.priority ?? -1, render: x => x.priority === null || x.priority === undefined ? `<span class="s">–</span>` : x.priority + "/10" },
+      { key: "demand", label: "Nachfrage", num: true, tip: "Summe Suchvolumen/Monat der gemessenen Semrush-Keywords dieses Themas (DE)", value: x => x.demand.semrush_volume, render: x => x.demand.keywords ? `${fmtN(x.demand.semrush_volume)}<div class="s">${x.demand.keywords} Keywords</div>` : `<span class="s">Not measured</span>` },
+      { key: "imp", label: "GSC Impr.", num: true, value: x => x.organic.impressions, render: x => fmtN(x.organic.impressions) },
+      { key: "pos", label: "Ø Pos.", num: true, value: x => x.organic.position, render: x => fmtD(x.organic.position) },
+      { key: "clk", label: "GSC Klicks", num: true, value: x => x.organic.clicks, render: x => fmtN(x.organic.clicks) },
+      { key: "paid", label: "Paid (hist.)", num: true, tip: "Google-Ads-Kosten auf Keyword-Ebene 2023–24 (über GA4)", value: x => x.paid.keyword_cost, render: x => x.paid.keyword_cost ? `${fmtEur(x.paid.keyword_cost)}<div class="s">${x.paid.keyword_clicks} Klicks</div>` : x.paid.campaigns.length ? `<span class="s">Kampagne, ohne Keyword-Daten</span>` : `<span class="s">–</span>` },
+      { key: "ses", label: "GA4 Sitzungen", num: true, tip: "Sitzungen auf den Haupt-Landingpages des Themas (alle Kanäle)", value: x => x.engagement.sessions, render: x => fmtN(x.engagement.sessions) },
+      { key: "conv", label: "Anfragen", num: true, tip: "Primäre Conversions (Formular/Heyflow) + Kontakt-Klicks (Telefon/E-Mail/Chat) auf diesen Landingpages", value: x => x.engagement.conv_primary * 10 + x.engagement.conv_secondary, render: x => `${x.engagement.conv_primary}<span class="s"> + ${x.engagement.conv_secondary}</span>` },
+      { key: "sig", label: "Signale", sort: false, render: x => x.signals.filter(s => ["weak", "paid", "conv", "noconv"].includes(s.kind)).map(s => chip(s.kind === "weak" ? "Organisch schwach" : s.kind === "paid" ? "Paid-Historie" : s.kind === "conv" ? "Anfragen" : "Keine Anfrage", SIG[s.kind])).join(" ") },
+    ] }));
+  $("#fn-table").insertAdjacentHTML("beforeend", `<div id="fn-detail"></div>`);
+  mount("fn-pages", table({ rows: f.pages, pageSize: 15, search: ["page", "title"],
+    columns: [
+      { key: "page", label: "Landingpage", render: p => `<div class="q path">${esc(p.page)}</div><div class="s">${esc(p.title || (p.in_inventory ? "" : "Nicht im Website-Inventar"))}</div>` },
+      { key: "gsc_impressions", label: "GSC Impr.", num: true, render: p => fmtN(p.gsc_impressions) },
+      { key: "gsc_clicks", label: "GSC Klicks", num: true, render: p => fmtN(p.gsc_clicks) },
+      { key: "gsc_position", label: "Pos.", num: true, render: p => fmtD(p.gsc_position) },
+      { key: "ga4_organic", label: "GA4 organisch", num: true, render: p => fmtN(p.ga4_organic) },
+      { key: "ga4_sessions", label: "GA4 gesamt", num: true, render: p => fmtN(p.ga4_sessions) },
+      { key: "eng_rate", label: "Engagement", num: true, render: p => p.eng_rate === null || p.eng_rate === undefined ? "–" : fmtPct(p.eng_rate, 0) },
+      { key: "conv_primary", label: "Anfragen", num: true, value: p => p.conv_primary * 10 + p.conv_secondary, render: p => `${p.conv_primary}<span class="s"> + ${p.conv_secondary}</span>` },
+      { key: "paid_sessions_hist", label: "Paid-Sitz. (hist.)", num: true, render: p => fmtN(p.paid_sessions_hist) },
+    ] }));
+};
+function renderFunnelDetail(x) {
+  const el = $("#fn-detail"); if (!el) return;
+  if (S.ui.fnOpen === x.cluster) { S.ui.fnOpen = null; el.innerHTML = ""; return; } S.ui.fnOpen = x.cluster;
+  const stage = (n, t, body) => `<div class="fstage"><div class="fnum">${n}</div><div><div class="ft">${t}</div><div class="s">${body}</div></div></div>`;
+  el.innerHTML = `<div class="card-b" style="border-top:1px solid var(--border);padding-top:14px"><div class="row"><h2>${esc(CL_LABEL(x.cluster))}</h2>${x.priority ? chip("Business-Priorität " + x.priority + "/10", x.priority >= 8 ? "blue" : "") : ""}${x.opportunities.map(o => `<a href="#opp-${esc(o)}">${chip(o, "outline")}</a>`).join("")}</div>
+    <div class="grid g2 mt"><div class="funnel">
+      ${stage("1", "Search Demand", x.demand.keywords ? `${fmtN(x.demand.semrush_volume)} Suchen/Monat · ${x.demand.top.map(k => `${esc(k.keyword)} (${fmtN(k.volume)}, KD ${fmtD(k.kd, 0)})`).join(" · ")}` : "Nicht gemessen (Semrush)")}
+      ${stage("2", "Organische Sichtbarkeit", `${fmtN(x.organic.impressions)} Impressionen · Ø Position ${fmtD(x.organic.position)} · ${x.organic.queries} Queries`)}
+      ${stage("2b", "Paid-Sichtbarkeit (historisch)", x.paid.keyword_cost ? `${fmtEur(x.paid.keyword_cost)} für ${x.paid.keyword_clicks} Klicks · ${x.paid.keywords.map(esc).join(", ")}` : x.paid.campaigns.length ? "Kampagnen: " + x.paid.campaigns.map(esc).join(", ") + " (Kampagnenwerte unplausibel, s. Google Ads)" : "Keine Paid-Daten")}
+      ${stage("3", "Klicks", `${fmtN(x.organic.clicks)} organische Klicks (GSC) · CTR ${fmtPct(x.organic.ctr)}`)}
+      ${stage("4", "Landingpages", x.pages.map(p => `${esc(p.page)}${p.exists ? "" : " (nicht im Inventar)"}`).join(" · ") || "–")}
+      ${stage("5", "Engagement", `${fmtN(x.engagement.sessions)} GA4-Sitzungen, davon ${fmtN(x.engagement.organic_sessions)} organisch`)}
+      ${stage("6", "Conversion", `${x.engagement.conv_primary} Anfragen (Formular/Heyflow) · ${x.engagement.conv_secondary} Kontakt-Klicks`)}
+      ${stage("7", "Business Value", x.priority ? `Priorität ${x.priority}/10 laut Business-Profil` : "Keine Leistungspriorität (Querschnittsthema)")}
+    </div><div><h3>Signale für den Agenten</h3><ul class="list">${x.signals.map(s => `<li>${chip(s.kind, SIG[s.kind] || "")} ${esc(s.text)}</li>`).join("")}</ul>
+      <h3 class="mt">Landingpages im Detail</h3><div class="tbl-wrap"><table><thead><tr><th>Seite</th><th class="num">Sitz.</th><th class="num">organisch</th><th class="num">Engagement</th><th class="num">Anfragen</th></tr></thead><tbody>${x.pages.map(p => `<tr><td class="s path">${esc(p.page)}</td><td class="num">${fmtN(p.sessions)}</td><td class="num">${fmtN(p.organic_sessions)}</td><td class="num">${p.eng_rate === null || p.eng_rate === undefined ? "–" : fmtPct(p.eng_rate, 0)}</td><td class="num">${p.conv_primary} + ${p.conv_secondary}</td></tr>`).join("")}</tbody></table></div></div></div></div>`;
+}
+
+/* ------------------------------------------------------------ Analytics (GA4) */
+function gaWindow(range) {
+  const daily = S.d.ga4.daily, n = RANGES[range]; if (!daily.length) return { cur: [], prev: null };
+  // Kalenderfenster bis zum letzten GA4-Tag (Tage ohne Sitzungen fehlen in den Rohdaten -> nach Datum filtern, nicht nach Anzahl)
+  const end = S.d.ga4.fetch_range?.[1] || daily.at(-1).date;
+  if (!n) return { cur: daily, prev: null, from: daily[0].date, to: end };
+  const from = addDays(end, -(n - 1)), pfrom = addDays(end, -(2 * n - 1)), pto = addDays(end, -n);
+  return { cur: daily.filter(r => r.date >= from && r.date <= end), prev: daily[0].date <= pfrom ? daily.filter(r => r.date >= pfrom && r.date <= pto) : null, from, to: end };
+}
+const gaSum = rows => { if (!rows) return null; const s = k => rows.reduce((a, r) => a + r[k], 0); const ses = s("sessions"); return { sessions: ses, users: s("users"), organic: s("organic"), engaged: s("engaged"), er: ses ? s("engaged") / ses : null, avg: ses ? s("eng_time") / ses : null, conv_p: s("conv_primary"), conv_s: s("conv_secondary") }; };
+pages.analytics = () => {
+  const g = S.d.ga4;
+  if (!g.available) { view().innerHTML = `<div class="page-head"><div><h1>Analytics (GA4)</h1></div></div><div class="card empty">GA4 not available.</div>`; return; }
+  const r = S.gaRange || "12M", w = gaWindow(r), cur = gaSum(w.cur), prev = gaSum(w.prev), q = g.quality;
+  view().innerHTML = `<div class="page-head"><div><h1>Analytics (GA4)</h1><div class="sub">${esc(g.property.name)} · Property ${esc(g.property.id)} · ${fmtDate(w.from)} – ${fmtDate(w.to)}${w.prev ? " · vs. Vorperiode gleicher Länge" : ""}</div></div>
+    <div class="seg" data-range="gaRange">${Object.keys(RANGES).map(x => `<button class="${r === x ? "on" : ""}" data-r="${x}">${x}</button>`).join("")}</div></div>
+  <div class="notice row">${chip("Erfassung ≈ " + fmtPct(q.capture_ratio, 0) + " der GSC-Klicks", "amber", true)}<span>Kleine Fallzahlen. ${fmtN(q.test_sessions_excluded)} Tag-Assistant-Testsitzungen und ${fmtN(q.test_conversion_events_excluded)} Test-Events sind aus Kanälen, Landingpages und Conversions ausgeschlossen. „Anfragen“ = nur Events, die laut Klassifizierung echte Business-Conversions sind (nicht die GA4-Summe „Key Events“).</span></div>
+  <div class="kpis mt">
+    ${kpi("Users", fmtN(cur.users), delta(cur.users, prev?.users))}
+    ${kpi("Sessions", fmtN(cur.sessions), delta(cur.sessions, prev?.sessions))}
+    ${kpi("Organic Search Sessions", fmtN(cur.organic), delta(cur.organic, prev?.organic))}
+    ${kpi("Engagement Rate", fmtPct(cur.er, 0), prev && prev.er !== null && cur.er !== null ? delta(cur.er * 100, prev.er * 100, { abs: true, unit: "pp" }) : delta(null, null))}
+    ${kpi("Avg. Engagement Time", fmtSec(cur.avg), `<span class="flat">je Sitzung</span>`)}
+    ${kpi("Anfragen", fmtN(cur.conv_p), `<span class="flat">+ ${fmtN(cur.conv_s)} Kontakt-Klicks</span>`, "Formular/Heyflow gesendet; daneben Telefon-, E-Mail-, Chat-Klicks")}
+  </div>
+  <div class="card"><div class="card-h"><div><h2>Sitzungen je Kanal</h2><div class="hint">monatlich, seit ${fmtDate(g.first)} · ohne Testverkehr</div></div>${legend(gaSeries())}</div><div class="card-b"><div id="ga-ch"></div></div></div>
+  <div class="grid g2 mt">
+    <div class="card"><div class="card-h"><div><h2>Default Channel Group</h2><div class="hint">${fmtDate(S.d.funnel.window[0])} – ${fmtDate(S.d.funnel.window[1])} (GSC-Zeitraum)</div></div></div><div class="card-b flush" id="ga-chan"></div></div>
+    <div class="card"><div class="card-h"><div><h2>Source / Medium</h2><div class="hint">gesamt seit ${fmtDate(g.first)}</div></div></div><div class="card-b flush" id="ga-sm"></div></div>
+  </div>
+  <div class="card mt"><div class="card-h"><div><h2>Landingpages</h2><div class="hint">${fmtDate(S.d.funnel.window[0])} – ${fmtDate(S.d.funnel.window[1])} · Pfade normalisiert · alle Kanäle</div></div></div><div id="ga-lp"></div></div>
+  <div class="card mt"><div class="card-h"><div><h2>Events & Key Events – Eignung als Business-Conversion</h2><div class="hint">Klassifizierung durch den Agenten (state/conversions.json). An GA4 wurde nichts geändert.</div></div></div><div id="ga-ev"></div></div>
+  <div class="grid g2 mt">
+    <div class="card"><div class="card-h"><h2>Geräte</h2><span class="hint">gesamt</span></div><div class="card-b flush"><table><thead><tr><th>Gerät</th><th class="num">Sitzungen</th><th class="num">organisch</th><th class="num">Engagement</th></tr></thead><tbody>${g.devices.map(x => `<tr><td>${esc(x.device)}</td><td class="num">${fmtN(x.sessions)}</td><td class="num">${fmtN(x.organic || 0)}</td><td class="num">${fmtPct(x.engaged / x.sessions, 0)}</td></tr>`).join("")}</tbody></table></div></div>
+    <div class="card"><div class="card-h"><h2>Regionen</h2><span class="hint">gesamt · Sitzungen</span></div><div class="card-b flush"><table><thead><tr><th>Region</th><th class="num">Sitzungen</th></tr></thead><tbody>${g.regions.map(x => `<tr><td>${esc(x.region)}</td><td class="num">${fmtN(x.sessions)}</td></tr>`).join("")}</tbody></table></div></div>
+  </div>`;
+  drawGaChannels("ga-ch");
+  const chanCols = [{ key: "channel", label: "Kanal" }, { key: "sessions", label: "Sitzungen", num: true, render: x => fmtN(x.sessions) },
+    { key: "eng_rate", label: "Engagement", num: true, render: x => fmtPct(x.eng_rate, 0) }, { key: "avg_eng_time", label: "Ø Zeit", num: true, render: x => fmtSec(x.avg_eng_time) },
+    { key: "conv_primary", label: "Anfragen", num: true, value: x => x.conv_primary * 10 + x.conv_secondary, render: x => `${x.conv_primary}<span class="s"> + ${x.conv_secondary}</span>` }];
+  mount("ga-chan", table({ rows: g.channels_window, columns: chanCols, pageSize: 12 })); $(".tbl-tools", $("#ga-chan"))?.remove();
+  mount("ga-sm", table({ rows: g.source_medium, pageSize: 10, columns: [{ key: "source_medium", label: "Source / Medium", render: x => `${esc(x.source_medium)}${x.test ? ` ${chip("Test", "amber")}` : ""}<div class="s">${esc(x.channel)}</div>` }, { key: "sessions", label: "Sitzungen", num: true, render: x => fmtN(x.sessions) }, { key: "engaged", label: "Engagiert", num: true, render: x => fmtN(x.engaged) }] })); $(".tbl-tools", $("#ga-sm"))?.remove();
+  mount("ga-lp", table({ rows: g.landing, pageSize: 15, search: ["page"], columns: [
+    { key: "page", label: "Landingpage", render: x => `<span class="q path">${esc(x.page)}</span>` }, { key: "sessions", label: "Sitzungen", num: true, render: x => fmtN(x.sessions) },
+    { key: "organic", label: "organisch", num: true, render: x => fmtN(x.organic || 0) }, { key: "paid", label: "Paid", num: true, render: x => fmtN(x.paid || 0) },
+    { key: "eng_rate", label: "Engagement", num: true, render: x => fmtPct(x.eng_rate, 0) }, { key: "avg_eng_time", label: "Ø Zeit", num: true, render: x => fmtSec(x.avg_eng_time) },
+    { key: "conv_primary", label: "Anfragen", num: true, value: x => (x.conv_primary || 0) * 10 + (x.conv_secondary || 0), render: x => `${x.conv_primary || 0}<span class="s"> + ${x.conv_secondary || 0}</span>` }] }));
+  const CLS = { primary: ["Business-Conversion", "green"], secondary: ["Kontaktabsicht", "blue"], micro: ["Micro / Engagement", "amber"], none: ["Keine Conversion", "red"], auto: ["Automatisch", ""] };
+  mount("ga-ev", table({ rows: g.events, pageSize: 25, search: ["event", "reason"], filters: [{ key: "class", label: "Klasse", options: Object.keys(CLS) }], sort: null, columns: [
+    { key: "event", label: "Event", render: x => `<div class="q">${esc(x.event)}</div><div class="s">${esc(x.label || "")}</div>` },
+    { key: "class", label: "Eignung", render: x => chip(CLS[x.class]?.[0] || x.class, CLS[x.class]?.[1] || "") },
+    { key: "key_event_now", label: "Key Event", render: x => x.key_event_now ? chip("ja", "outline") : `<span class="s">nein${x.key_events_hist ? " (früher ja)" : ""}</span>` },
+    { key: "total", label: "gesamt", num: true, render: x => fmtN(x.total) }, { key: "window", label: "16 Mon.", num: true, render: x => fmtN(x.window) },
+    { key: "test_events", label: "davon Test", num: true, render: x => x.test_events ? `<span class="down">${fmtN(x.test_events)}</span>` : "–" },
+    { key: "last", label: "zuletzt", render: x => `<span style="white-space:nowrap">${x.last ? esc(x.last.slice(5) + "/" + x.last.slice(0, 4)) : "–"}</span>` },
+    { key: "reason", label: "Begründung", sort: false, render: x => `<div class="s">${esc(x.reason)}</div>${x.recommendation ? `<div class="s"><b>${esc(x.recommendation)}</b></div>` : ""}` }] }));
+};
+const gaSeries = () => [{ key: "Organic Search", label: "Organic Search", color: "var(--seg-b2b)", type: "line" }, { key: "Paid", label: "Paid (Search + P-Max)", color: "var(--seg-b2c)", type: "line" }, { key: "Direct", label: "Direct", color: "var(--seg-price)", type: "line" }, { key: "Other", label: "Andere", color: "var(--seg-unknown)", type: "line" }];
+function drawGaChannels(id) {
+  const pts = S.d.ga4.channel_month.map(m => { const o = { x: m.month + "-01", "Organic Search": m["Organic Search"] || 0, Paid: (m["Paid Search"] || 0) + (m["Cross-network"] || 0) + (m["Paid Other"] || 0), Direct: m.Direct || 0 };
+    o.Other = Object.entries(m).filter(([k]) => !["month", "Organic Search", "Paid Search", "Cross-network", "Paid Other", "Direct"].includes(k)).reduce((a, [, v]) => a + v, 0); return o; });
+  chartInto(id, { points: pts, series: gaSeries(), height: 200, xMode: "month" });
+}
+
+/* ------------------------------------------------------------ Google Ads */
+pages.ads = () => {
+  const a = S.d.ads, dsc = a.discovery || {}, acc = dsc.account || {}, t = dsc.tests || {};
+  const st = (k, label) => { const v = t[k]; return `<tr><td>${label}</td><td>${v === "ok" ? chip("Verfügbar", "green", true) : v ? chip("Nicht verfügbar", "red", true) : chip("Unknown", "")}</td><td class="s">${v && v !== "ok" ? esc(v) : ""}</td></tr>`; };
+  view().innerHTML = `<div class="page-head"><div><h1>Google Ads</h1><div class="sub">Read-only über das MCC ${esc(dsc.mcc?.name || "")} (${esc(dsc.mcc?.id || "")}) · API ${esc(dsc.api_version || "")} · geprüft ${fmtDateTime(dsc.checked_at)}</div></div></div>
+  <div class="grid g2">
+    <div class="card"><div class="card-h"><h2>Konto Spreewald Luftaufnahmen</h2>${chip(acc.status === "ENABLED" ? "Aktiv" : acc.status === "CANCELED" ? "Gekündigt" : (acc.status || "Unknown"), acc.status === "ENABLED" ? "green" : "red", true)}</div><div class="card-b"><div class="kv">
+      <div class="k">Customer ID</div><div>${esc(acc.id || "–")}</div><div class="k">Status</div><div>${esc(acc.status || "–")}</div><div class="k">Währung / Zeitzone</div><div>${esc(acc.currency || "–")} · ${esc(acc.time_zone || "–")}</div>
+      <div class="k">MCC</div><div>${esc(dsc.mcc?.name || "–")} · ${fmtN(dsc.client_accounts?.total)} Kundenkonten · Berechtigung ${esc(dsc.mcc?.permission || "–")}</div>
+      <div class="k">Bedeutung</div><div>Ein gekündigtes Konto liefert über die API keine Daten. Kampagnen, Search Terms, Conversion Actions und Final URLs sind daher <b>Not available</b>.</div></div></div></div>
+    <div class="card"><div class="card-h"><h2>API-Fähigkeiten (Explorer-Zugang)</h2></div><div class="card-b flush"><div class="tbl-wrap"><table><thead><tr><th>Funktion</th><th>Status</th><th>Hinweis</th></tr></thead><tbody>
+      ${st("list_accessible_customers", "Account Discovery")}${st("gaql_mcc", "Reporting (GAQL) im MCC")}${st("gaql_account", "Reporting Spreewald-Konto")}${st("generateKeywordIdeas", "Keyword Planner: Keyword-Ideen")}${st("generateKeywordHistoricalMetrics", "Keyword Planner: Suchvolumen")}
+      </tbody></table></div><div class="card-b mini" style="padding-top:10px">Google-eigene Keyword-Daten (Planner) brauchen <b>Basic Access</b> für das Developer Token (Antrag im API Center des MCC). Bis dahin bleibt Semrush die Keyword-Quelle.</div></div></div>
+  </div>
+  ${a.available ? `<div class="card mt"><div class="card-h"><div><h2>Paid-Historie über GA4</h2><div class="hint">${esc(a.source)} · ${esc(a.range?.[0])} – ${esc(a.range?.[1])}</div></div></div><div class="card-b">
+    <div class="kpis k4" style="margin-bottom:10px">${kpi("Kosten (Keyword-Ebene)", fmtEur(a.totals.keyword_level_cost), `<span class="flat">${fmtN(a.totals.keyword_level_clicks)} Klicks · plausibel</span>`)}${kpi("Ø CPC (Keyword-Ebene)", a.totals.keyword_level_clicks ? (a.totals.keyword_level_cost / a.totals.keyword_level_clicks).toLocaleString("de-DE", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) + " €" : "–", `<span class="flat">Search-Kampagnen</span>`)}${kpi("Paid-Sitzungen (GA4)", fmtN(a.totals.paid_sessions), `<span class="flat">Search + P-Max</span>`)}${kpi("Kampagnen-Ebene", fmtEur(a.totals.campaign_level_cost), `<span class="down">${a.totals.flagged_rows} von ${a.history_months.length} Zeilen auffällig – nicht verwenden</span>`)}</div>
+    <div class="callout amber">Kampagnenwerte aus der GA4-Verknüpfung sind unplausibel (identische Werte in mehreren Monaten, bis zu 150 Klicks je Sitzung). Für Entscheidungen nur die Keyword-Ebene verwenden und im Zweifel im Google-Ads-Konto gegenprüfen. CPA/ROAS sind nicht belastbar berechenbar: keine Conversion-Werte, Conversions nur als GA4-Events.</div></div>
+    <div class="tabs" id="adtabs">${["Keywords", "Suchanfragen", "Landingpages", "Kampagnen × Monat"].map(x => `<button data-t="${x}" class="${(S.ui.adtab || "Keywords") === x ? "on" : ""}">${x}</button>`).join("")}</div><div id="ad-body"></div></div>` : `<div class="card mt empty">Keine historischen Paid-Daten über GA4 verfügbar.</div>`}`;
+  if (!a.available) return;
+  $("#adtabs").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.ui.adtab = b.dataset.t; $("#adtabs").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); renderAdTab(); });
+  renderAdTab();
+};
+function renderAdTab() {
+  const a = S.d.ads, t = S.ui.adtab || "Keywords"; let node;
+  if (t === "Keywords") node = table({ rows: a.keywords, pageSize: 15, columns: [{ key: "keyword", label: "Keyword", render: k => `<div class="q">${esc(k.keyword)}</div><div class="s">${esc(CL_LABEL(k.cluster))}</div>` },
+    { key: "clicks", label: "Klicks", num: true }, { key: "cost", label: "Kosten", num: true, render: k => fmtEur(k.cost) }, { key: "cpc", label: "Ø CPC", num: true, render: k => k.cpc === null ? "–" : k.cpc.toLocaleString("de-DE", { minimumFractionDigits: 2 }) + " €" },
+    { key: "sessions", label: "Sitzungen", num: true }, { key: "engaged", label: "Engagiert", num: true }, { key: "key_events", label: "Key Events*", num: true, tip: "GA4-Key-Events inkl. Nicht-Conversions (siehe Analytics)" }] });
+  if (t === "Suchanfragen") node = table({ rows: a.search_queries, pageSize: 15, columns: [{ key: "query", label: "Search Term", render: k => `<div class="q">${esc(k.query)}</div><div class="s">${esc(CL_LABEL(k.cluster))}</div>` }, { key: "sessions", label: "Sitzungen", num: true }, { key: "engaged", label: "Engagiert", num: true }] });
+  if (t === "Landingpages") node = table({ rows: a.landing, pageSize: 15, columns: [{ key: "page", label: "Final URL / Landingpage", render: k => `<span class="q path">${esc(k.page)}</span>` }, { key: "sessions", label: "Paid-Sitzungen", num: true }, { key: "engaged", label: "Engagiert", num: true }] });
+  if (t === "Kampagnen × Monat") node = table({ rows: a.history_months, pageSize: 20, sort: { key: "month", dir: 1 }, columns: [{ key: "month", label: "Monat" }, { key: "campaign", label: "Kampagne", render: k => `<div class="q">${esc(k.campaign)}</div>${k.flags.length ? `<div class="s down">${k.flags.map(esc).join(" · ")}</div>` : ""}` },
+    { key: "impressions", label: "Impr.", num: true, render: k => fmtN(k.impressions) }, { key: "clicks", label: "Klicks", num: true, render: k => fmtN(k.clicks) }, { key: "cost", label: "Kosten", num: true, render: k => fmtEur(k.cost) }, { key: "sessions", label: "Sitzungen", num: true }] });
+  mount("ad-body", node);
+}
+
 /* ------------------------------------------------------------ approvals (Claude artifact db) */
 /* Entscheidungen werden im db-Speicher des Claude-Artifacts abgelegt (Collection "decisions", ein Dokument je Entscheidung).
    Der Agent liest sie in seiner nächsten Session (ArtifactData), verarbeitet sie und setzt agent_status = "processed".
@@ -438,6 +597,32 @@ const storeCard = () => { const [l, c, t] = storeStatus(); const pend = clientDe
     <div class="k">Decisions recorded</div><div>${DB.state === "ready" ? `${fmtN(clientDecisions().length)} · ${fmtN(pend)} waiting for the agent` : "Unknown"}</div>
     <div class="k">Mirror in Git</div><div><code>state/approvals.json → decision_log</code> · ${fmtN(S.d.approvals.decision_log.length)} entries (written by the agent after processing)</div>
     <div class="k">Website actions</div><div>None. A decision never changes the website.</div></div></div></div>`; };
+function ga4Card() {
+  const g = S.d.ga4, src = S.d.sources.ga4 || {};
+  if (!g.available) return `<div class="card"><div class="card-h"><h2>Google Analytics 4</h2>${chip("Not available", "red", true)}</div></div>`;
+  return `<div class="card"><div class="card-h"><h2>Google Analytics 4</h2>${statusChip(src.status === "connected" ? "Connected" : src.status || "Unknown")}</div><div class="card-b"><div class="kv">
+    <div class="k">Property</div><div>${esc(g.property.name)} · ${esc(g.property.id)}</div><div class="k">Zugriff</div><div>${esc(src.access || "–")}</div>
+    <div class="k">APIs</div><div>Data API ${esc(src.apis?.analytics_data_api || "?")} · Admin API ${esc(src.apis?.analytics_admin_api || "?")}</div>
+    <div class="k">Last successful sync</div><div>${fmtDate(src.last_fetch)} ${freshness(src.last_fetch, 7)}</div>
+    <div class="k">Data range</div><div>${fmtDate(g.first)} – ${fmtDate(g.fetch_range?.[1])} <span class="mini">(letzte Sitzung ${fmtDate(g.last)})</span></div>
+    <div class="k">Qualität</div><div>Thresholding ${g.quality.thresholding ? "ja" : "nein"} · Sampling ${g.quality.sampling ? "ja" : "nein"} · Erfassung ≈ ${fmtPct(g.quality.capture_ratio, 0)} der GSC-Klicks · ${fmtN(g.quality.test_sessions_excluded)} Testsitzungen ausgeschlossen</div>
+    <div class="k">Retention</div><div>${esc(g.property.retention || "–")}</div>
+    <div class="k">Ads-Verknüpfung</div><div>${g.property.ads_links.map(esc).join(", ") || "keine"}</div>
+    <div class="k">Limitierungen</div><div class="s">${(src.limitations || []).map(esc).join(" · ")}</div></div></div></div>`;
+}
+function adsCard() {
+  const src = S.d.sources.google_ads || {}, a = S.d.ads, acc = src.account || {};
+  const c = src.status === "account_canceled" ? ["Account canceled", "red"] : src.status === "connected" ? ["Connected", "green"] : [src.status || "Unknown", ""];
+  return `<div class="card"><div class="card-h"><h2>Google Ads</h2>${chip(c[0], c[1], true)}</div><div class="card-b"><div class="kv">
+    <div class="k">Zugriff</div><div>${esc(src.access || "–")} · API ${esc(src.api_version || "–")}</div>
+    <div class="k">MCC</div><div>${esc(src.mcc?.name || "–")} · ${esc(src.mcc?.id || "–")} · ${fmtN(src.client_accounts_total)} Kundenkonten</div>
+    <div class="k">Konto</div><div>${esc(acc.name || "–")} · ${esc(acc.id || "–")} · <b>${esc(acc.status || "–")}</b></div>
+    <div class="k">Last check</div><div>${fmtDate(src.last_check)} ${freshness(src.last_check, 30)}</div>
+    <div class="k">Last successful sync</div><div>${src.last_fetch ? fmtDate(src.last_fetch) : "Not available – Konto liefert keine API-Daten"}</div>
+    <div class="k">Data range</div><div>${a.range ? `${esc(a.range[0])} – ${esc(a.range[1])} (Historie über GA4)` : "Not available"}</div>
+    <div class="k">Fähigkeiten</div><div class="s">${Object.entries(src.capabilities || {}).map(([k, v]) => `${esc(k)}: ${esc(v)}`).join("<br>")}</div>
+    <div class="k">Limitierungen</div><div class="s">${(src.limitations || []).map(esc).join(" · ")}</div></div></div></div>`;
+}
 function decisionSummary() {
   if (DB.state !== "ready") return `<span class="mini">${esc(storeStatus()[2])}</span>`;
   const d = clientDecisions(), pend = d.filter(x => x.agent_status === "pending").length;
@@ -610,6 +795,7 @@ pages.sources = () => {
       <div class="k">Inventory</div><div>${fmtN(s.website.urls)} URLs (${fmtN(s.website.indexable)} indexable)</div><div class="k">Last crawl</div><div>${fmtDate(s.website.last_inventory)} ${freshness(s.website.last_inventory, 14)}</div></div>
       <h3 class="mt">Active monitors</h3>${s.website.monitors.map(m => `<div class="callout" style="margin-bottom:6px"><b>${esc(m.url)}</b><div class="s">${esc(m.type)}</div><div class="s">Last check ${fmtDate(m.last_check)} · ${esc(m.result)} · next ${fmtDate(m.next_check)}</div></div>`).join("")}</div></div>
   </div>
+  <div class="grid g2 mt">${ga4Card()}${adsCard()}</div>
   <div class="grid g2 mt">${storeCard()}<div class="card"><div class="card-h"><h2>Where this dashboard runs</h2>${chip(window.claude && typeof window.claude.use === "function" ? "Claude artifact" : "Local preview", window.claude && typeof window.claude.use === "function" ? "green" : "", true)}</div><div class="card-b"><div class="kv">
     <div class="k">Primary surface</div><div>Private Claude artifact (pin it in the Claude sidebar)</div>
     <div class="k">Data delivery</div><div>The agent rebuilds <code>dashboard.json</code> and republishes it beside the page after each work session</div>
@@ -621,7 +807,7 @@ pages.sources = () => {
 
 /* ------------------------------------------------------------ router */
 /* Artifact-taugliches Routing: nur einfache Hash-Namen (#overview, #opp-OPP-02). Alte #/pfad-Links werden umgeschrieben. */
-const TITLES = { overview: "Overview", performance: "Performance", opportunities: "Opportunities", approvals: "Approvals", changes: "Changes & Impact", market: "Market Opportunities", local: "Local SEO", findings: "Findings", activity: "Agent Activity", sources: "Data Sources" };
+const TITLES = { overview: "Overview", performance: "Performance", funnel: "Search → Business", analytics: "Analytics (GA4)", ads: "Google Ads", opportunities: "Opportunities", approvals: "Approvals", changes: "Changes & Impact", market: "Market Opportunities", local: "Local SEO", findings: "Findings", activity: "Agent Activity", sources: "Data Sources" };
 /** Jede Tabelle scrollt in ihrem eigenen Container – die Seite selbst scrollt nie horizontal. */
 function wrapTables(root = view()) { root.querySelectorAll("table").forEach(t => { if (!t.parentElement.classList.contains("tbl-wrap")) { const w = document.createElement("div"); w.className = "tbl-wrap"; t.replaceWith(w); w.appendChild(t); } }); }
 function parseHash() {
@@ -657,6 +843,9 @@ function freshSpec() {
     ["GSC data through", f.gsc_data_through, 5, 14, "Letzter Tag mit Search-Console-Daten (Google liefert mit 2–3 Tagen Verzögerung)"],
     ["GSC fetched", f.gsc_fetched, 7, 21, "Letzter erfolgreicher API-Abruf durch den Agenten"],
     ["Semrush last query", f.semrush_last_query, 30, 90, "Letzte Semrush-Abfrage (Keyword-Cache, Rankings)"],
+    ["GA4 data through", f.ga4_data_through, 7, 21, "Ende des abgerufenen GA4-Zeitraums. Letzte Sitzung: " + fmtDate(f.ga4_last_session)],
+    ["GA4 fetched", f.ga4_fetched, 7, 21, "Letzter erfolgreicher GA4-API-Abruf"],
+    ["Google Ads checked", f.ads_checked, 30, 90, "Letzter Konto-/Fähigkeitscheck. Paid-Daten: Historie bis " + (f.ads_data_through || "–")],
     ["Website crawl", f.website_crawl, 14, 45, "Letztes Website-Inventar (Titles, H1, Links, Sitemap)"],
     ["Website monitor", f.website_monitor, 7, 21, "Letzter technischer Check der überwachten URLs"],
     ["SEO state", f.state_updated, 7, 30, "Letzte Aktualisierung von Opportunities, Findings, Changes, Tasks (state/*.json)"],
@@ -666,7 +855,7 @@ function freshSpec() {
 function freshTopbar() {
   const f = S.d.meta.freshness || {};
   const it = (l, iso, ok, st, t) => `<span class="fresh ${freshClass(iso, ok, st)}" data-tip="${esc(t + " · " + ageText(ageDays(iso)))}"><i></i>${l} <b>${iso && iso.length > 10 ? fmtDateTime(iso) : fmtDate(iso)}</b></span>`;
-  return it("GSC", f.gsc_data_through, 5, 14, "GSC-Daten bis") + it("Semrush", f.semrush_last_query, 30, 90, "Letzte Semrush-Abfrage") + it("Crawl", f.website_crawl, 14, 45, "Letzter Website-Crawl") + it("State", f.state_updated, 7, 30, "SEO-State zuletzt aktualisiert") + it("Build", S.d.meta.built_at, 7, 30, "Dashboard gebaut");
+  return it("GSC", f.gsc_data_through, 5, 14, "GSC-Daten bis") + it("Semrush", f.semrush_last_query, 30, 90, "Letzte Semrush-Abfrage") + it("GA4", f.ga4_data_through, 7, 21, "GA4-Daten bis") + it("Crawl", f.website_crawl, 14, 45, "Letzter Website-Crawl") + it("State", f.state_updated, 7, 30, "SEO-State zuletzt aktualisiert") + it("Build", S.d.meta.built_at, 7, 30, "Dashboard gebaut");
 }
 function freshPanel() {
   return `<div class="card mt" id="fresh-card"><div class="card-h"><div><h2>Data freshness</h2><div class="hint">Snapshot published with the last build. Opening this page does not fetch GSC or Semrush live.</div></div><a href="#sources" class="mini">Data sources →</a></div>

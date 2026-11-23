@@ -1,0 +1,22 @@
+deviceCategory,sessionDefaultChannelGroup,sessions,totalUsers,engagedSessions,userEngagementDuration,keyEvents
+mobile,Cross-network,1079,1032,435,9455,119
+desktop,Organic Search,665,371,422,36144,149
+mobile,Organic Search,373,306,201,11628,52
+desktop,Direct,267,240,112,5459,33
+desktop,Unassigned,243,241,2,18094,157
+mobile,Unassigned,237,236,2,14679,123
+mobile,Paid Search,164,139,101,5863,10
+mobile,Direct,153,130,76,3355,15
+desktop,Referral,118,46,69,8297,63
+desktop,Paid Search,91,79,61,7134,6
+mobile,Organic Social,31,28,22,859,0
+desktop,Organic Social,24,23,17,1239,1
+tablet,Cross-network,24,24,6,86,0
+desktop,Cross-network,21,20,9,258,0
+tablet,Organic Search,18,13,11,1001,3
+mobile,Referral,13,13,0,0,0
+tablet,Unassigned,8,8,0,576,1
+tablet,Paid Search,5,5,4,77,0
+tablet,Direct,3,3,2,128,0
+desktop,AI Assistant,1,1,1,3,0
+tablet,Organic Social,1,1,1,0,0

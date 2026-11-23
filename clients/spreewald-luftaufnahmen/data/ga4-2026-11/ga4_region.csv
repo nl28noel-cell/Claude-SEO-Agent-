@@ -1,0 +1,580 @@
+region,city,sessions,totalUsers,keyEvents
+Berlin,Berlin,770,575,189
+Hessen,Frankfurt,190,153,47
+Saxony,Leipzig,143,139,21
+Brandenburg,Lubben,142,56,46
+Saxony,Dresden,124,119,9
+(not set),(not set),110,111,8
+Brandenburg,(not set),80,80,12
+Saxony,(not set),76,66,11
+Virginia,Ashburn,58,58,0
+Hamburg,Hamburg,54,27,35
+North Rhine-Westphalia,(not set),37,36,7
+Brandenburg,Brandenburg,34,34,4
+Brandenburg,Cottbus,28,26,4
+Saxony,Chemnitz,26,23,4
+Bavaria,(not set),25,18,2
+Bavaria,Munich,25,23,0
+Saxony,Grimma,25,25,4
+North Rhine-Westphalia,Cologne,24,15,1
+Saxony-Anhalt,38899,24,24,2
+Schleswig-Holstein,Bad Oldesloe,24,6,0
+Brandenburg,Luckenwalde,22,22,6
+Brandenburg,Eberswalde,20,15,10
+Brandenburg,Potsdam,20,18,3
+Brandenburg,Bernau bei Berlin,19,14,2
+Brandenburg,Pritzwalk,17,17,1
+Baden-Wurttemberg,Stuttgart,16,15,5
+Brandenburg,Lubbenau,16,14,10
+Lower Saxony,Meppen,16,9,1
+Saxony,Wurzen,15,15,0
+Brandenburg,Erkner,14,14,1
+North Rhine-Westphalia,Dusseldorf,14,12,3
+Schleswig-Holstein,(not set),14,9,3
+Brandenburg,Konigs Wusterhausen,13,13,0
+Lower Saxony,Hanover,13,9,0
+New York,New York,13,13,1
+Saxony,Limbach-Oberfrohna,13,4,5
+Bavaria,Nuremberg,12,11,6
+Saarland,Merzig,12,1,0
+Saxony,Hoyerswerda,12,12,0
+Thuringia,Saalfeld,12,12,1
+Baden-Wurttemberg,Mannheim,11,11,4
+Brandenburg,Luckau,11,11,1
+Lower Saxony,Oldenburg,11,2,0
+North Rhine-Westphalia,Bad Oeynhausen,11,10,0
+Saxony,Freiberg,11,10,3
+Vienna,Vienna,11,11,3
+Brandenburg,Neuenhagen,10,9,3
+Brandenburg,Senftenberg,10,10,1
+Mecklenburg-Vorpommern,(not set),10,9,2
+Saxony,Bautzen,10,10,0
+Bavaria,Rosenheim,9,9,3
+Brandenburg,Falkensee,9,9,1
+Mecklenburg-Vorpommern,Schwerin,9,8,4
+Rhineland-Palatinate,Bad Kreuznach,9,9,2
+Schleswig-Holstein,Itzehoe,9,9,4
+Baden-Wurttemberg,Sinsheim,8,8,0
+Bavaria,Bad Staffelstein,8,4,1
+Brandenburg,Angermunde,8,7,2
+Brandenburg,Frankfurt an der Oder,8,8,2
+Brandenburg,Golssen,8,7,1
+Brandenburg,Oranienburg,8,8,0
+Baden-Wurttemberg,(not set),7,7,1
+Bavaria,Wendelstein,7,1,2
+Brandenburg,Schwedt,7,6,1
+Brandenburg,Spremberg,7,7,4
+County Dublin,Dublin,7,7,0
+Lower Saxony,Luneburg,7,7,0
+Lower Saxony,Melle,7,7,1
+North Rhine-Westphalia,Bielefeld,7,7,4
+Saxony,Coswig,7,4,0
+Saxony,Zwickau,7,7,1
+Telangana,Hyderabad,7,7,1
+Thuringia,Greiz,7,7,1
+Baden-Wurttemberg,Bad Mergentheim,6,6,0
+Brandenburg,Beeskow,6,6,2
+Brandenburg,Guben,6,6,0
+Brandenburg,Neuruppin,6,5,0
+Brandenburg,Wittenberge,6,4,1
+Brandenburg,Zeuthen,6,6,1
+East Java,Mojoanyar,6,5,1
+Hessen,Frankenberg (Eder),6,6,1
+Hessen,Limburg,6,6,2
+Ile-de-France,Paris,6,6,0
+Lower Saxony,Braunschweig,6,6,0
+Lower Saxony,Cloppenburg,6,6,0
+Lower Saxony,Goslar,6,6,1
+Lower Saxony,Twist,6,3,25
+North Rhine-Westphalia,Aachen,6,6,0
+North Rhine-Westphalia,Mechernich,6,6,0
+North Rhine-Westphalia,Munster,6,6,1
+North Rhine-Westphalia,Winterberg,6,6,3
+Rhineland-Palatinate,(not set),6,6,2
+Saxony,Plauen,6,6,0
+Schleswig-Holstein,Norderstedt,6,6,5
+Baden-Wurttemberg,Crailsheim,5,3,0
+Bavaria,Cham,5,5,0
+Brandenburg,Finsterwalde,5,5,0
+Brandenburg,Hennigsdorf,5,5,1
+Lower Austria,Bruck an der Leitha,5,5,2
+Lower Saxony,Hildesheim,5,4,1
+Mecklenburg-Vorpommern,Greifswald,5,5,3
+Mecklenburg-Vorpommern,Wolgast,5,5,1
+North Rhine-Westphalia,Eschweiler,5,5,0
+North Rhine-Westphalia,Hamm,5,5,2
+North Rhine-Westphalia,Rahden,5,5,1
+Saxony,Auerbach,5,5,0
+Saxony,Kamenz,5,5,0
+Saxony,Oschatz,5,5,0
+Saxony,Riesa,5,5,2
+Saxony,Torgau,5,5,2
+Saxony,Zittau,5,5,0
+Saxony-Anhalt,(not set),5,5,1
+Saxony-Anhalt,Halle (Saale),5,5,0
+Saxony-Anhalt,Magdeburg,5,5,0
+Schleswig-Holstein,Kiel,5,5,0
+Thuringia,Altenburg,5,3,2
+Thuringia,Jena,5,5,3
+Thuringia,Sondershausen,5,5,2
+Uusimaa,Helsinki,5,4,0
+Zurich,Zurich,5,4,0
+Baden-Wurttemberg,Ludwigsburg,4,4,0
+Bavaria,Kitzingen,4,4,0
+Brandenburg,Altlandsberg,4,4,3
+Brandenburg,Beelitz,4,4,0
+Brandenburg,Forst,4,4,0
+Brandenburg,Furstenwalde,4,4,1
+Brandenburg,Kolkwitz,4,3,0
+Brandenburg,Ludwigsfelde,4,4,0
+Brandenburg,Petershagen-Eggersdorf,4,3,0
+Brandenburg,Rathenow,4,3,0
+Brandenburg,Wandlitz,4,4,1
+Brandenburg,Werder,4,4,0
+Iowa,Altoona,4,4,0
+Lower Austria,(not set),4,1,0
+Lower Saxony,Achim,4,4,0
+Lower Saxony,Brunswick,4,4,1
+Lower Saxony,Gottingen,4,4,0
+Lower Saxony,Salzgitter,4,4,0
+Mecklenburg-Vorpommern,Rostock,4,2,0
+New Jersey,Clifton,4,4,0
+North Holland,Amsterdam,4,4,0
+North Rhine-Westphalia,Gelsenkirchen,4,4,0
+North Rhine-Westphalia,Lippstadt,4,2,0
+North Rhine-Westphalia,Wuppertal,4,4,0
+Oregon,Boardman,4,4,0
+Rhineland-Palatinate,Alzey,4,4,0
+Rhineland-Palatinate,Koblenz,4,4,0
+Saarland,Sankt Wendel,4,4,3
+Saxony,Aue,4,4,1
+Saxony,Bischofswerda,4,4,0
+Saxony,Crimmitschau,4,4,2
+Saxony,Delitzsch,4,4,0
+Saxony,Eilenburg,4,4,0
+Saxony,Grunhain-Beierfeld,4,4,0
+Saxony,Marienberg,4,4,0
+Saxony,Pirna,4,4,0
+Schleswig-Holstein,Flensburg,4,4,0
+Thuringia,(not set),4,4,1
+Thuringia,Eisenach,4,4,2
+Bavaria,Bad Neustadt an der Saale,3,3,1
+Bavaria,Ruhstorf an der Rott,3,1,0
+Brandenburg,Bad Liebenwerda,3,3,0
+Brandenburg,Calau,3,2,0
+Brandenburg,Elsterwerda,3,3,0
+Brandenburg,Fredersdorf-Vogelsdorf,3,3,1
+Brandenburg,Kleinmachnow,3,3,0
+Brandenburg,Nauen,3,3,0
+Brandenburg,Prenzlau,3,3,0
+Brandenburg,Rudersdorf,3,2,0
+Brandenburg,Schoneiche,3,2,1
+Brandenburg,Stahnsdorf,3,3,0
+Brandenburg,Strausberg,3,3,0
+Brandenburg,Velten,3,3,1
+Brandenburg,Zossen,3,3,0
+Catalonia,Barcelona,3,2,2
+Hessen,Wiesbaden,3,3,0
+Lower Saxony,Uelzen,3,2,1
+Lower Saxony,Wilhelmshaven,3,2,3
+Lower Saxony,Wittmund,3,2,7
+New Mexico,Albuquerque,3,1,5
+North Carolina,Forest City,3,3,0
+North Rhine-Westphalia,Bottrop,3,2,0
+North Rhine-Westphalia,Dortmund,3,3,0
+North Rhine-Westphalia,Duisburg,3,2,0
+North Rhine-Westphalia,Essen,3,3,0
+North Rhine-Westphalia,Krefeld,3,2,1
+North Rhine-Westphalia,Rheine,3,3,1
+North Rhine-Westphalia,Viersen,3,2,1
+Saxony,Gorlitz,3,3,1
+Saxony,Grossenhain,3,2,1
+Saxony,Markkleeberg,3,2,0
+Saxony,Meissen,3,3,0
+Saxony,Nossen,3,3,0
+Saxony,Olbernhau,3,3,0
+Saxony,Radebeul,3,3,0
+Saxony,Werdau,3,3,0
+Andalusia,(not set),2,1,3
+Baden-Wurttemberg,Bad Krozingen,2,2,0
+Baden-Wurttemberg,Balingen,2,1,0
+Baden-Wurttemberg,Emmendingen,2,2,0
+Baden-Wurttemberg,Esslingen,2,2,2
+Baden-Wurttemberg,Freiburg im Breisgau,2,2,0
+Baden-Wurttemberg,Welzheim,2,1,0
+Baranya,7846,2,2,0
+Bavaria,Augsburg,2,2,1
+Bavaria,Bruckmuhl,2,1,3
+Bavaria,Landsberg am Lech,2,2,0
+Bavaria,Lauf an der Pegnitz,2,1,0
+Bavaria,Passau,2,1,0
+Bavaria,Schwabach,2,2,0
+Brandenburg,Blankenfelde-Mahlow,2,2,1
+Brandenburg,Brieselang,2,2,0
+Brandenburg,Dallgow-Doberitz,2,2,0
+Brandenburg,Grossbeeren,2,2,0
+Brandenburg,Grunheide (Mark),2,2,2
+Brandenburg,Hohen Neuendorf,2,2,2
+Brandenburg,Hoppegarten,2,2,0
+Brandenburg,Kloster Lehnin,2,2,1
+Brandenburg,Lauchhammer,2,2,0
+Brandenburg,Michendorf,2,2,0
+Brandenburg,Mittenwalde,2,2,0
+Brandenburg,Muncheberg,2,2,2
+Brandenburg,Rangsdorf,2,2,0
+Brandenburg,Teltow,2,2,0
+Brandenburg,Templin,2,2,0
+Brandenburg,Vetschau,2,2,0
+Brandenburg,Wittstock,2,2,1
+California,(not set),2,2,0
+Catalonia,Vilanova i la Geltru,2,1,0
+Colorado,Aspen,2,2,0
+Colorado,Longmont,2,2,0
+District of Columbia,Washington,2,2,0
+Fujian,Fuzhou,2,2,0
+Hessen,Budingen,2,2,0
+Hessen,Frankfurt am Main,2,2,0
+Hessen,Hanau,2,1,0
+Hessen,Hunfeld,2,2,2
+Hessen,Offenbach,2,2,0
+Ile-de-France,95660,2,2,0
+Ile-de-France,Boulogne-Billancourt,2,1,0
+Lower Saxony,49770,2,2,0
+Lower Saxony,Bad Fallingbostel,2,2,1
+Lower Saxony,Hatten,2,1,2
+Lower Saxony,Osterholz-Scharmbeck,2,2,2
+Lower Saxony,Soltau,2,2,3
+Lower Saxony,Varel,2,2,1
+Manitoba,De Salaberry,2,2,0
+Maritime Region,Lome,2,2,0
+Masovian Voivodeship,Warsaw,2,2,0
+Mecklenburg-Vorpommern,Neubrandenburg,2,2,0
+Mecklenburg-Vorpommern,Poel,2,2,0
+Montana,Gardiner,2,2,1
+Norrbotten County,Lulea,2,2,0
+North Rhine-Westphalia,Beverungen,2,2,0
+North Rhine-Westphalia,Euskirchen,2,2,1
+North Rhine-Westphalia,Frechen,2,1,9
+North Rhine-Westphalia,Ibbenburen,2,1,0
+North Rhine-Westphalia,Monchengladbach,2,2,2
+North Rhine-Westphalia,Mulheim,2,2,0
+North Rhine-Westphalia,Solingen,2,1,0
+Rhineland-Palatinate,Kaiserslautern,2,2,0
+Rhineland-Palatinate,Ludwigshafen,2,2,0
+Rhineland-Palatinate,Mainz,2,2,2
+Saarland,Saarbrucken,2,2,0
+Saxony,Annaberg-Buchholz,2,2,0
+Saxony,Bannewitz,2,2,0
+Saxony,Bernstadt auf dem Eigen,2,2,0
+Saxony,Borna,2,2,0
+Saxony,Dobeln,2,2,0
+Saxony,Dohna,2,2,0
+Saxony,Freital,2,2,0
+Saxony,Glauchau,2,2,0
+Saxony,Mittweida,2,2,0
+Saxony,Zwonitz,2,2,0
+Saxony-Anhalt,Coswig (Anhalt),2,2,0
+Saxony-Anhalt,Schonebeck,2,1,0
+Schleswig-Holstein,Eutin,2,2,1
+Schleswig-Holstein,Timmendorfer Strand,2,1,1
+Sichuan,Chengdu,2,1,0
+State of Sao Paulo,07863,2,1,0
+Thuringia,Erfurt,2,2,2
+Thuringia,Ilmenau,2,2,4
+Trentino-South Tyrol,Bolzano,2,2,1
+Upper Austria,Wels,2,1,0
+West Papua,98457,2,2,0
+(not set),Luxembourg,1,1,0
+Aargau,Oberrohrdorf,1,1,0
+Aargau,Rothrist,1,1,0
+Ankara,Ankara,1,1,0
+Baden-Wurttemberg,Auggen,1,1,0
+Baden-Wurttemberg,Bad Sackingen,1,1,0
+Baden-Wurttemberg,Brackenheim,1,1,0
+Baden-Wurttemberg,Breisach,1,1,0
+Baden-Wurttemberg,Calw,1,1,0
+Baden-Wurttemberg,Graben-Neudorf,1,1,0
+Baden-Wurttemberg,Hartheim am Rhein,1,1,1
+Baden-Wurttemberg,Heidelberg,1,1,0
+Baden-Wurttemberg,Herrenberg,1,1,0
+Baden-Wurttemberg,Ingelfingen,1,1,0
+Baden-Wurttemberg,Leinfelden-Echterdingen,1,1,0
+Baden-Wurttemberg,Lorrach,1,1,0
+Baden-Wurttemberg,Markgroningen,1,1,0
+Baden-Wurttemberg,Obersulm,1,1,0
+Baden-Wurttemberg,Ostrach,1,1,1
+Baden-Wurttemberg,Schriesheim,1,1,0
+Baden-Wurttemberg,Schwabisch Gmund,1,1,0
+Baden-Wurttemberg,Sindelfingen,1,1,0
+Baden-Wurttemberg,Singen,1,1,0
+Baden-Wurttemberg,Stetten am kalten Markt,1,1,0
+Baden-Wurttemberg,Tuttlingen,1,1,0
+Baden-Wurttemberg,Ubstadt-Weiher,1,1,0
+Baden-Wurttemberg,Ulm,1,1,0
+Baden-Wurttemberg,Waiblingen,1,1,0
+Baden-Wurttemberg,Wehr,1,1,2
+Baden-Wurttemberg,Westhausen,1,1,1
+Baden-Wurttemberg,Winnenden,1,1,0
+Balearic Islands,Palma,1,1,0
+Basel City,Basel,1,1,0
+Bavaria,83253,1,1,0
+Bavaria,Ainring,1,1,0
+Bavaria,Altotting,1,1,1
+Bavaria,Aschheim,1,1,0
+Bavaria,Bad Berneck,1,1,0
+Bavaria,Bodenwohr,1,1,0
+Bavaria,Dachau,1,1,0
+Bavaria,Deggendorf,1,1,0
+Bavaria,Donauworth,1,1,0
+Bavaria,Eichstatt,1,1,0
+Bavaria,Erlangen,1,1,0
+Bavaria,Freising,1,1,0
+Bavaria,Furstenfeldbruck,1,1,0
+Bavaria,Furth,1,1,5
+Bavaria,Grossostheim,1,1,0
+Bavaria,Grunwald,1,1,3
+Bavaria,Gunzburg,1,1,0
+Bavaria,Muhldorf,1,1,0
+Bavaria,Naila,1,1,0
+Bavaria,Neu-Ulm,1,1,0
+Bavaria,Neusass,1,1,1
+Bavaria,Olching,1,1,0
+Bavaria,Peissenberg,1,1,3
+Bavaria,Pfaffenhofen an der Ilm,1,1,0
+Bavaria,Pfarrkirchen,1,1,0
+Bavaria,Regensburg,1,1,1
+Bavaria,Sonthofen,1,1,1
+Bavaria,Wurzburg,1,1,1
+Borsod-Abauj-Zemplen,3833,1,1,0
+Brandenburg,Ahrensfelde,1,1,0
+Brandenburg,Bad Belzig,1,1,0
+Brandenburg,Eisenhuttenstadt,1,1,0
+Brandenburg,Gransee,1,1,0
+Brandenburg,Heiligengrabe,1,1,0
+Brandenburg,Herzberg,1,1,0
+Brandenburg,Kremmen,1,1,0
+Brandenburg,Schonefeld,1,1,0
+Brandenburg,Sonnewalde,1,1,0
+Brandenburg,Spreenhagen,1,1,0
+Brandenburg,Tauche,1,1,0
+Brandenburg,Wildau,1,1,0
+Brandenburg,Wusterhausen,1,1,0
+Brandenburg,Wustermark,1,1,0
+Brandenburg,Zehdenick,1,1,1
+Brandenburg,Ziesar,1,1,0
+Bremen,Bremen,1,1,0
+Burgenland,(not set),1,1,0
+Calabarzon,Antipolo,1,1,0
+Canary Islands,(not set),1,1,0
+Canton of Bern,Koniz,1,1,0
+Canton of Bern,Lyss,1,1,1
+Central Kalimantan,East Barito Regency,1,1,0
+Colorado,(not set),1,1,0
+East Nusa Tenggara,Bikomi Tengah,1,1,0
+England,Colchester,1,1,0
+England,Kingston upon Hull,1,1,0
+England,London,1,1,0
+Enugu,Enugu,1,1,0
+Faro District,Albufeira,1,1,0
+Federal Capital Territory,Abuja,1,1,0
+Florida,(not set),1,1,0
+Florida,Ocala,1,1,0
+Florida,Trinity,1,1,0
+Fujian,Quanzhou,1,1,0
+Galicia,A Coruna,1,1,0
+Gavleborg County,Ockelbo,1,1,0
+Giurgiu County,(not set),1,1,0
+Grand Est,57860,1,1,0
+Greater Poland Voivodeship,Kalisz,1,1,0
+Greater Poland Voivodeship,Poznan,1,1,1
+Greater Poland Voivodeship,Wolsztyn,1,1,0
+Haryana,Gurgaon,1,1,0
+Hessen,(not set),1,1,0
+Hessen,36266,1,1,0
+Hessen,Alsfeld,1,1,0
+Hessen,Bad Homburg,1,1,0
+Hessen,Bad Nauheim,1,1,0
+Hessen,Bad Vilbel,1,1,0
+Hessen,Braunfels,1,1,0
+Hessen,Darmstadt,1,1,0
+Hessen,Dietzenbach,1,1,0
+Hessen,Gelnhausen,1,1,1
+Hessen,Hofheim,1,1,0
+Hessen,Hunfelden,1,1,0
+Hessen,Kassel,1,1,0
+Hessen,Lahnau,1,1,0
+Hessen,Lich,1,1,0
+Hessen,Seligenstadt,1,1,0
+Hessen,Solms,1,1,0
+Ho Chi Minh City,Ho Chi Minh City,1,1,1
+Ile-de-France,95450,1,1,0
+Innlandet,Gjovik Municipality,1,1,0
+Iowa,Council Bluffs,1,1,0
+Kaliningrad Oblast,Kaliningrad,1,1,1
+Kosovska Mitrovica District,(not set),1,1,0
+Kyiv city,Kyiv,1,1,0
+Liguria,Genoa,1,1,0
+Littoral Department,Cotonou,1,1,0
+Ljubljana,Ljubljana,1,1,0
+Lower Austria,Brunn am Gebirge,1,1,0
+Lower Austria,Mistelbach,1,1,0
+Lower Austria,Monichkirchen,1,1,0
+Lower Austria,Saint Polten,1,1,0
+Lower Austria,Stockerau,1,1,0
+Lower Saxony,(not set),1,1,0
+Lower Saxony,Aurich,1,1,0
+Lower Saxony,Barssel,1,1,0
+Lower Saxony,Bassum,1,1,0
+Lower Saxony,Beverstedt,1,1,0
+Lower Saxony,Friesoythe,1,1,0
+Lower Saxony,Hamelin,1,1,0
+Lower Saxony,Helmstedt,1,1,0
+Lower Saxony,Lohne,1,1,0
+Lower Saxony,Meine,1,1,0
+Lower Saxony,Meinersen,1,1,0
+Lower Saxony,Osnabruck,1,1,0
+Lower Saxony,Stadthagen,1,1,1
+Lower Saxony,Stuhr,1,1,0
+Lower Saxony,Walsrode,1,1,0
+Lower Saxony,Weener,1,1,0
+Lower Saxony,Wolfenbuttel,1,1,0
+Lower Saxony,Zeven,1,1,0
+Lower Silesian Voivodeship,Wroclaw,1,1,0
+Lucerne,Lucerne,1,1,0
+Massachusetts,(not set),1,1,0
+Mecklenburg-Vorpommern,Boizenburg,1,1,0
+Mecklenburg-Vorpommern,Laage,1,1,0
+Mecklenburg-Vorpommern,Pasewalk,1,1,1
+Mecklenburg-Vorpommern,Waren,1,1,0
+Moscow,Moscow,1,1,0
+Mugla,(not set),1,1,0
+Nebraska,Lincoln,1,1,0
+Nevada,Las Vegas,1,1,0
+New Taipei City,(not set),1,1,0
+North Carolina,Charlotte,1,1,2
+North Rhine-Westphalia,Arnsberg,1,1,0
+North Rhine-Westphalia,Billerbeck,1,1,0
+North Rhine-Westphalia,Bochum,1,1,0
+North Rhine-Westphalia,Bonn,1,1,0
+North Rhine-Westphalia,Bornheim,1,1,1
+North Rhine-Westphalia,Castrop-Rauxel,1,1,1
+North Rhine-Westphalia,Coesfeld,1,1,0
+North Rhine-Westphalia,Detmold,1,1,0
+North Rhine-Westphalia,Dinslaken,1,1,0
+North Rhine-Westphalia,Drensteinfurt,1,1,0
+North Rhine-Westphalia,Dulmen,1,1,0
+North Rhine-Westphalia,Enger,1,1,1
+North Rhine-Westphalia,Ennepetal,1,1,0
+North Rhine-Westphalia,Ense,1,1,0
+North Rhine-Westphalia,Geilenkirchen,1,1,0
+North Rhine-Westphalia,Gevelsberg,1,1,0
+North Rhine-Westphalia,Goch,1,1,0
+North Rhine-Westphalia,Gutersloh,1,1,1
+North Rhine-Westphalia,Hagen,1,1,0
+North Rhine-Westphalia,Herford,1,1,0
+North Rhine-Westphalia,Hiddenhausen,1,1,1
+North Rhine-Westphalia,Horstel,1,1,0
+North Rhine-Westphalia,Hoxter,1,1,0
+North Rhine-Westphalia,Kamp-Lintfort,1,1,0
+North Rhine-Westphalia,Ludinghausen,1,1,0
+North Rhine-Westphalia,Marl,1,1,0
+North Rhine-Westphalia,Mettmann,1,1,0
+North Rhine-Westphalia,Monheim am Rhein,1,1,0
+North Rhine-Westphalia,Neuss,1,1,0
+North Rhine-Westphalia,Olpe,1,1,0
+North Rhine-Westphalia,Paderborn,1,1,0
+North Rhine-Westphalia,Remscheid,1,1,0
+North Rhine-Westphalia,Sankt Augustin,1,1,0
+North Rhine-Westphalia,Schwalmtal,1,1,0
+North Rhine-Westphalia,Simmerath,1,1,0
+North Rhine-Westphalia,Sprockhovel,1,1,0
+North Rhine-Westphalia,Warstein,1,1,1
+North Rhine-Westphalia,Weeze,1,1,0
+North Rhine-Westphalia,Werne,1,1,0
+North Rhine-Westphalia,Wetter,1,1,0
+North Rhine-Westphalia,Witten,1,1,0
+Nouvelle-Aquitaine,40630,1,1,0
+Odisha,Bhubaneswar,1,1,0
+Oklahoma,Perkins,1,1,0
+Ontario,Toronto,1,1,0
+Ouest Department,Port-au-Prince,1,1,0
+Pattani,Mueang Pattani District,1,1,0
+Pest County,2745,1,1,0
+Punjab,Jalandhar,1,1,0
+Punjab,Khanewal,1,1,1
+Republic of Tatarstan,Naberezhnye Chelny,1,1,0
+Rhineland-Palatinate,Bad Breisig,1,1,1
+Rhineland-Palatinate,Bendorf,1,1,0
+Rhineland-Palatinate,Bernkastel-Kues,1,1,0
+Rhineland-Palatinate,Hachenburg,1,1,1
+Rhineland-Palatinate,Kirchheimbolanden,1,1,0
+Rhineland-Palatinate,Neustadt,1,1,0
+Rhineland-Palatinate,Simmern,1,1,0
+Rhineland-Palatinate,Speyer,1,1,0
+Rhineland-Palatinate,Worms,1,1,0
+Saarland,Mettlach,1,1,0
+Salzburg,Saint Johann im Pongau,1,1,1
+Salzburg,Salzburg,1,1,0
+Saraburi,Saraburi,1,1,0
+Saxony,Adorf,1,1,0
+Saxony,Bad Duben,1,1,1
+Saxony,Burgstadt,1,1,0
+Saxony,Heidenau,1,1,0
+Saxony,Hohenstein-Ernstthal,1,1,0
+Saxony,Klipphausen,1,1,0
+Saxony,Lengenfeld,1,1,0
+Saxony,Lobau,1,1,0
+Saxony,Meerane,1,1,0
+Saxony,Naunhof,1,1,0
+Saxony,Niesky,1,1,0
+Saxony,Oelsnitz/Erzgebirge,1,1,0
+Saxony,Radeberg,1,1,0
+Saxony,Schkeuditz,1,1,0
+Saxony,Sebnitz,1,1,0
+Saxony,Taucha,1,1,0
+Saxony,Weisswasser,1,1,0
+Saxony-Anhalt,Bitterfeld-Wolfen,1,1,0
+Saxony-Anhalt,Gardelegen,1,1,0
+Saxony-Anhalt,Salzwedel,1,1,0
+Saxony-Anhalt,Stendal,1,1,0
+Saxony-Anhalt,Weissenfels,1,1,0
+Saxony-Anhalt,Wittenberg,1,1,0
+Saxony-Anhalt,Wolmirstedt,1,1,0
+Schleswig-Holstein,Elmshorn,1,1,0
+Schwyz,Freienbach,1,1,1
+Sfax Governorate,Sfax,1,1,0
+Sofia City Province,Sofia,1,1,1
+Solothurn,Bettlach,1,1,0
+Solothurn,Breitenbach,1,1,0
+South Australia,5660,1,1,0
+South Sulawesi,91123,1,1,0
+St. Gallen,Rapperswil-Jona,1,1,0
+St. Gallen,Sargans,1,1,0
+Tamil Nadu,Chennai,1,1,0
+Texas,Abilene,1,1,0
+Texas,Austin,1,1,0
+Thurgau,(not set),1,1,1
+Thuringia,Gera,1,1,0
+Thuringia,Heilbad Heiligenstadt,1,1,0
+Thuringia,Krolpa,1,1,0
+Thuringia,Meiningen,1,1,0
+Thuringia,Muhlhausen,1,1,0
+Thuringia,Schmolln,1,1,0
+Thuringia,Weimar,1,1,0
+Tyrol,(not set),1,1,0
+Tyrol,Innsbruck,1,1,0
+Tyrol,Navis,1,1,1
+Usti nad Labem Region,Varnsdorf,1,1,0
+Utrecht,Utrecht,1,1,0
+Valais,Fiesch,1,1,1
+Valais,Monthey,1,1,0
+Vorarlberg,Dornbirn,1,1,0
+Wales,(not set),1,1,0
+Washington,Seattle,1,1,0
+West Java,45562,1,1,1
+Western Cape,Hermanus,1,1,1
+Western Visayas,Bacolod,1,1,0
+Zamboanga Peninsula,Zamboanga,1,1,0
+Zurich,Affoltern am Albis,1,1,0
+Zurich,Kusnacht,1,1,0
+Zurich,Winterthur,1,1,3

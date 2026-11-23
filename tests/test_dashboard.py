@@ -179,6 +179,30 @@ class ArtifactQA(unittest.TestCase):
         finally:
             os.unlink(t.name)
 
+    def test_ga4_ads_funnel_sections(self):
+        g, a, f = self.d["ga4"], self.d["ads"], self.d["funnel"]
+        self.assertTrue(g["available"])
+        self.assertGreater(g["quality"]["test_sessions_excluded"], 0)
+        self.assertTrue(all(not x["test"] or "tagassistant" in x["source_medium"] for x in g["source_medium"]))
+        self.assertEqual(a["discovery"]["account"]["status"], "CANCELED")
+        self.assertTrue(f["clusters"] and all("signals" in c for c in f["clusters"]))
+        for k in ("ga4_data_through", "ga4_fetched", "ads_checked"):
+            self.assertIn(k, self.d["meta"]["freshness"])
+
+    def test_no_other_mcc_clients_or_personal_data(self):
+        txt = json.dumps(self.d, ensure_ascii=False)
+        for bad in ("FIRO", "K&M Cover", "9578550074", "3001574868", "9195667966", "creatorEmailAddress"):
+            self.assertNotIn(bad, txt)
+
+    def test_api_clients_are_read_only(self):
+        ads = open(os.path.join(ROOT, "tools", "ads_client.py"), encoding="utf-8").read()
+        self.assertNotRegex(ads, r'_post\(s, f?"[^"]*:mutate')
+        self.assertIn("_FORBIDDEN", ads)
+        ga = open(os.path.join(ROOT, "tools", "ga4_client.py"), encoding="utf-8").read()
+        for verb in ("s.patch(", "s.delete(", "s.put(", ":create", "batchCreate"):
+            self.assertNotIn(verb, ga)
+        self.assertIn("analytics.readonly", ga)
+
     def test_decision_log_mirror_only_processed(self):
         import tempfile, shutil
         appr = os.path.join(CDIR, "state", "approvals.json"); backup = open(appr, encoding="utf-8").read()

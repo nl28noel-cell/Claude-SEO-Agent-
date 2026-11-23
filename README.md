@@ -34,6 +34,9 @@ State-Dateien (JSON)       ─┘      Joins, Attention-Regeln)                 
 |---|---|---|
 | Google Search Console | `clients/<client>/data/gsc-YYYY-MM/gsc_*.csv` | `tools/gsc_client.py query …` (API, automatisierbar) |
 | GSC URL Inspection | Ergebnis in `state/changes.json` (Checkpoint) | `tools/gsc_client.py inspect …` |
+| GA4 | `clients/<client>/data/ga4-YYYY-MM/ga4_*.csv` + `ga4_admin.json` | `tools/ga4_client.py baseline <property> <start> <end> <dir>` (read-only) |
+| Google Ads | `clients/<client>/data/ads-YYYY-MM/ads_discovery.json` (+ Paid-Historie über GA4) | `tools/ads_client.py discover "<name>" <out.json>` / `query` (read-only, MCC) |
+| Conversion-Klassifizierung | `clients/<client>/state/conversions.json` | vom Agenten gepflegt |
 | Semrush | `data/keyword-cache.csv`, `clients/<client>/data/baseline-*/semrush-*.csv` | Semrush-MCP-Connector im Claude-Chat, danach `tools/keyword_cache.py import …` |
 | Website-Inventar | `clients/<client>/data/baseline-*/inventory.json` | `tools/site_inventory.py <url> <dir>` |
 | Technisches Monitoring | `state/sources.json` | `tools/monitor_url.py <url>` |

@@ -1,0 +1,122 @@
+{
+  "property": {
+    "name": "properties/321987676",
+    "parent": "accounts/170485203",
+    "createTime": "2022-07-06T08:54:56.206Z",
+    "updateTime": "2022-07-06T09:09:23.717Z",
+    "displayName": "Spreewald-Luftaufnahmen  – GA4",
+    "timeZone": "Europe/Berlin",
+    "currencyCode": "EUR",
+    "serviceLevel": "GOOGLE_ANALYTICS_STANDARD",
+    "account": "accounts/170485203",
+    "propertyType": "PROPERTY_TYPE_ORDINARY"
+  },
+  "dataStreams": {
+    "dataStreams": [
+      {
+        "name": "properties/321987676/dataStreams/3819750204",
+        "type": "WEB_DATA_STREAM",
+        "displayName": "spreewald-luftaufnahmen.de GA4",
+        "createTime": "2022-07-06T09:11:38.899Z",
+        "updateTime": "2024-11-22T12:09:26.548Z",
+        "webStreamData": {
+          "measurementId": "G-9BQV2Y12K1",
+          "defaultUri": "https://www.spreewald-luftaufnahmen.de"
+        }
+      }
+    ]
+  },
+  "keyEvents": {
+    "keyEvents": [
+      {
+        "name": "properties/321987676/keyEvents/3819738196",
+        "eventName": "purchase",
+        "createTime": "2022-07-06T08:54:56.206431Z",
+        "countingMethod": "ONCE_PER_EVENT"
+      },
+      {
+        "name": "properties/321987676/keyEvents/6217236480",
+        "eventName": "fb_klick",
+        "createTime": "2023-09-22T12:06:26.111824Z",
+        "deletable": true,
+        "custom": true,
+        "countingMethod": "ONCE_PER_SESSION"
+      },
+      {
+        "name": "properties/321987676/keyEvents/6217241810",
+        "eventName": "ytb_klick",
+        "createTime": "2023-09-22T12:06:35.080095Z",
+        "deletable": true,
+        "custom": true,
+        "countingMethod": "ONCE_PER_SESSION"
+      },
+      {
+        "name": "properties/321987676/keyEvents/6217247740",
+        "eventName": "tel_klick",
+        "createTime": "2023-09-22T12:04:16.112689Z",
+        "deletable": true,
+        "custom": true,
+        "countingMethod": "ONCE_PER_SESSION"
+      },
+      {
+        "name": "properties/321987676/keyEvents/6217248300",
+        "eventName": "kontakt_form_send",
+        "createTime": "2023-09-22T12:03:53.306378Z",
+        "deletable": true,
+        "custom": true,
+        "countingMethod": "ONCE_PER_SESSION"
+      },
+      {
+        "name": "properties/321987676/keyEvents/6303811445",
+        "eventName": "click_to_chat",
+        "createTime": "2023-10-20T11:58:05.039388Z",
+        "deletable": true,
+        "custom": true,
+        "countingMethod": "ONCE_PER_SESSION"
+      },
+      {
+        "name": "properties/321987676/keyEvents/6380968092",
+        "eventName": "email_klick",
+        "createTime": "2023-11-15T21:14:18.878019Z",
+        "deletable": true,
+        "custom": true,
+        "countingMethod": "ONCE_PER_SESSION"
+      },
+      {
+        "name": "properties/321987676/keyEvents/9973197474",
+        "eventName": "heyflow_interaktion",
+        "createTime": "2024-11-22T12:26:21.470678Z",
+        "deletable": true,
+        "custom": true,
+        "countingMethod": "ONCE_PER_SESSION"
+      },
+      {
+        "name": "properties/321987676/keyEvents/9973244903",
+        "eventName": "heyflow_formular_abgesendet",
+        "createTime": "2024-11-22T12:27:06.620622Z",
+        "deletable": true,
+        "custom": true,
+        "countingMethod": "ONCE_PER_SESSION"
+      }
+    ]
+  },
+  "googleAdsLinks": {
+    "googleAdsLinks": [
+      {
+        "name": "properties/321987676/googleAdsLinks/5284780324",
+        "customerId": "1935597794",
+        "adsPersonalizationEnabled": true,
+        "createTime": "2023-05-31T12:45:28.319Z",
+        "updateTime": "2023-05-31T12:45:28.319Z"
+      }
+    ]
+  },
+  "customDimensions": {},
+  "customMetrics": {},
+  "dataRetentionSettings": {
+    "name": "properties/321987676/dataRetentionSettings",
+    "eventDataRetention": "FOURTEEN_MONTHS",
+    "resetUserDataOnNewActivity": true,
+    "userDataRetention": "FOURTEEN_MONTHS"
+  }
+}

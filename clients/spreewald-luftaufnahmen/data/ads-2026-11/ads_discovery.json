@@ -1,0 +1,32 @@
+{
+  "checked_at": "2026-11-23T13:46:59Z",
+  "api_version": "v26",
+  "access_level": "Explorer (laut Nutzer; API-Antworten bestätigen Explorer-Grenzen)",
+  "tests": {
+    "list_accessible_customers": "ok",
+    "gaql_mcc": "ok",
+    "gaql_account": "The customer account can't be accessed because it is not yet enabled or has been deactivated.",
+    "generateKeywordIdeas": "This method is not allowed for use with explorer access. Please apply for basic or standard access.",
+    "generateKeywordHistoricalMetrics": "This method is not allowed for use with explorer access. Please apply for basic or standard access."
+  },
+  "mcc": {
+    "id": "5474466547",
+    "name": "SemSharks",
+    "status": "ENABLED",
+    "permission": "Read only (Service Account)"
+  },
+  "client_accounts": {
+    "total": 4,
+    "by_status": {
+      "CANCELED": 1,
+      "ENABLED": 3
+    }
+  },
+  "account": {
+    "id": "1935597794",
+    "name": "Spreewald Luftaufnahmen",
+    "status": "CANCELED",
+    "currency": "EUR",
+    "time_zone": "Europe/Berlin"
+  }
+}

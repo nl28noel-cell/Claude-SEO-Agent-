@@ -15,6 +15,7 @@ from collections import defaultdict, Counter
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 from gsc_analyze import cluster as classify_cluster, places as find_places  # noqa: E402
+import build_ga4_ads  # noqa: E402
 
 OUT_ROOT = os.path.join(ROOT, "dashboard", "public", "data")
 
@@ -356,6 +357,11 @@ def build_client(slug, today):
     for m in market.get("items", []):
         if m.get("status") == "Awaiting business decision":
             attention.append({"kind": "market", "ref": m["id"], "title": m["name"], "detail": m["recommendation"], "status": "Decision needed", "level": "info"})
+    # ---- GA4, Google Ads, Funnel (Search Demand → … → Conversion → Business Value)
+    ga4, ads, funnel, w2 = build_ga4_ads.build(cdir, cfg, daily, (first.isoformat(), last.isoformat()), queries, pages,
+                                               classify_cluster, inv, cache_rows, opps)
+    warnings += w2
+
     # ---- Datenfrische je Quelle (nur echte Datumswerte aus den Quellen/State-Dateien, nichts geschätzt)
     state_files = {}
     for fn in sorted(os.listdir(os.path.join(cdir, "state"))):
@@ -368,6 +374,11 @@ def build_client(slug, today):
         "semrush_cache_latest": sources.get("semrush", {}).get("cache", {}).get("latest"),
         "website_crawl": sources.get("website", {}).get("last_inventory"),
         "website_monitor": max((m.get("last_check") or "" for m in sources.get("website", {}).get("monitors", [])), default=None) or None,
+        "ga4_data_through": (ga4.get("fetch_range") or [None, None])[1] or ga4.get("last"),
+        "ga4_last_session": ga4.get("last"),
+        "ga4_fetched": sources.get("ga4", {}).get("last_fetch"),
+        "ads_checked": sources.get("google_ads", {}).get("last_check"),
+        "ads_data_through": (ads.get("range") or [None, None])[1],
         "state_updated": max((v for v in state_files.values() if v), default=None),
         "state_files": state_files,
     }
@@ -403,6 +414,9 @@ def build_client(slug, today):
         "market": market,
         "local": local_out,
         "sources": sources,
+        "ga4": ga4,
+        "ads": ads,
+        "funnel": funnel,
     }
     odir = os.path.join(OUT_ROOT, slug)
     os.makedirs(odir, exist_ok=True)

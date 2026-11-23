@@ -1,0 +1,124 @@
+{
+  "property": "321987676",
+  "conversion_candidates": [
+    "click to chat",
+    "click_to_chat",
+    "email_klick",
+    "fb_klick",
+    "heyflow_button_klick",
+    "heyflow_erste_interaktion",
+    "heyflow_exit",
+    "heyflow_formular_abgesendet",
+    "heyflow_interaktion",
+    "kontakt_form_send",
+    "kontaktformular_gesendet",
+    "purchase",
+    "tel_klick",
+    "ytb_klick"
+  ],
+  "start": "2022-07-01",
+  "end": "2026-11-22",
+  "key_events": [
+    "purchase",
+    "fb_klick",
+    "ytb_klick",
+    "tel_klick",
+    "kontakt_form_send",
+    "click_to_chat",
+    "email_klick",
+    "heyflow_interaktion",
+    "heyflow_formular_abgesendet"
+  ],
+  "datasets": {
+    "date": {
+      "rows": 1030,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "date_channel": {
+      "rows": 1613,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "landing_channel": {
+      "rows": 101,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "source_medium": {
+      "rows": 58,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "device_channel": {
+      "rows": 21,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "region": {
+      "rows": 579,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "events_month": {
+      "rows": 423,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "keyevents_landing": {
+      "rows": 145,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "keyevents_page": {
+      "rows": 117,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "landing_date": {
+      "rows": 2156,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "conv_date": {
+      "rows": 297,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "ads_month": {
+      "rows": 76,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "ads_keyword": {
+      "rows": 13,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "ads_query": {
+      "rows": 15,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    },
+    "ads_landing": {
+      "rows": 49,
+      "subject_to_thresholding": false,
+      "data_loss_other_row": false,
+      "sampling": false
+    }
+  }
+}

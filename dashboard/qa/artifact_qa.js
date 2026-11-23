@@ -45,7 +45,7 @@ const MOCK = () => {
   const check = (n, c, i = '') => (c ? ok : bad).push(n + (i ? ' — ' + i : ''));
   const b = await chromium.launch();
   const srv = await serve(false); const base = `http://127.0.0.1:${srv.address().port}/`;
-  const routes = ['overview', 'performance', 'opportunities', 'opp-OPP-02', 'approvals', 'changes', 'market', 'local', 'findings', 'activity', 'sources'];
+  const routes = ['overview', 'performance', 'funnel', 'analytics', 'ads', 'opportunities', 'opp-OPP-02', 'approvals', 'changes', 'market', 'local', 'findings', 'activity', 'sources'];
   const widths = [1440, 1180, 900, 400];
   for (const scheme of ['light', 'dark']) {
     for (const W of widths) {
@@ -62,7 +62,7 @@ const MOCK = () => {
         const bg = await p.evaluate(() => getComputedStyle(document.body).backgroundColor);
         const dark = await p.evaluate(() => { const c = getComputedStyle(document.body).backgroundColor.match(/\d+/g).map(Number); return (c[0] + c[1] + c[2]) / 3 < 80; });
         check(`[${scheme} ${W}] ${r} body background follows theme`, scheme === 'dark' ? dark : !dark, bg);
-        if (SHOTS && (W === 1440 || (W === 400 && ['overview', 'opp-OPP-02', 'approvals'].includes(r)) || (W === 1180 && ['overview', 'performance'].includes(r))))
+        if (SHOTS && (W === 1440 || (W === 400 && ['overview', 'opp-OPP-02', 'approvals', 'funnel', 'analytics'].includes(r)) || (W === 1180 && ['overview', 'performance'].includes(r))))
           await p.screenshot({ path: `${out}/${scheme}-${W}-${r}.png`, fullPage: true });
       }
       check(`[${scheme} ${W}] no console/page errors`, errs.length === 0, errs.join(' | '));

@@ -1,0 +1,115 @@
+{
+  "_doc": "Klassifizierung der GA4-Events als Business-Conversion. Nur Analyse – an GA4/GTM wird nichts geändert. Zählung im Dashboard ohne Tag-Assistant-Testverkehr. Klassen: primary = echte Anfrage, secondary = Kontaktabsicht, micro = Interaktion, none = keine Business-Conversion.",
+  "updated": "2026-11-23",
+  "property": "321987676",
+  "exclude_sources": [
+    "tagassistant.google.com"
+  ],
+  "events": [
+    {
+      "event": "kontakt_form_send",
+      "class": "primary",
+      "label": "Kontaktformular gesendet",
+      "reason": "Abgesendetes Formular = konkrete Anfrage. Aktiver Key Event seit 09/2023.",
+      "recommendation": "Als Haupt-Conversion nutzen."
+    },
+    {
+      "event": "kontaktformular_gesendet",
+      "class": "primary",
+      "label": "Kontaktformular gesendet (alt)",
+      "reason": "Vorgänger von kontakt_form_send (05–08/2023), heute kein Key Event; 14 von 17 Auslösungen stammen aus Tag-Assistant-Tests.",
+      "recommendation": "Historisch mit kontakt_form_send zusammenfassen."
+    },
+    {
+      "event": "heyflow_formular_abgesendet",
+      "class": "primary",
+      "label": "Heyflow-Anfrage gesendet",
+      "reason": "Abgeschlossener Heyflow-Funnel (Angebotsanfrage).",
+      "recommendation": "Als Haupt-Conversion nutzen."
+    },
+    {
+      "event": "tel_klick",
+      "class": "secondary",
+      "label": "Telefon-Klick",
+      "reason": "Klick auf Telefonnummer = starke Kontaktabsicht, aber kein bestätigtes Gespräch.",
+      "recommendation": "Als sekundäre Conversion werten."
+    },
+    {
+      "event": "email_klick",
+      "class": "secondary",
+      "label": "E-Mail-Klick",
+      "reason": "Klick auf E-Mail-Link = Kontaktabsicht, Versand nicht messbar.",
+      "recommendation": "Als sekundäre Conversion werten."
+    },
+    {
+      "event": "click_to_chat",
+      "class": "secondary",
+      "label": "Chat-Klick",
+      "reason": "Kontaktabsicht. 2024 zu 76 % aus P-Max (Cross-network) – Qualität fraglich; seit 11/2024 keine Auslösung.",
+      "recommendation": "Sekundär; Paid-Anteil kritisch prüfen."
+    },
+    {
+      "event": "click to chat",
+      "class": "secondary",
+      "label": "Chat-Klick (Duplikat)",
+      "reason": "Doppelte Variante mit Leerzeichen (05–11/2024), parallel zu click_to_chat – vermutlich doppelt erfasst.",
+      "recommendation": "Nicht zusätzlich zählen (Doppelzählung)."
+    },
+    {
+      "event": "heyflow_interaktion",
+      "class": "micro",
+      "label": "Heyflow-Interaktion",
+      "reason": "Start/Interaktion mit dem Funnel, keine Anfrage. Als Key Event markiert – überzeichnet Conversions.",
+      "recommendation": "Nur als Engagement-Signal nutzen."
+    },
+    {
+      "event": "heyflow_erste_interaktion",
+      "class": "micro",
+      "label": "Heyflow erste Interaktion",
+      "reason": "Nur am 22.11.2024 (Setup-Tests).",
+      "recommendation": "Ignorieren."
+    },
+    {
+      "event": "heyflow_button_klick",
+      "class": "micro",
+      "label": "Heyflow-Button",
+      "reason": "Nur Setup-Tests.",
+      "recommendation": "Ignorieren."
+    },
+    {
+      "event": "heyflow_exit",
+      "class": "none",
+      "label": "Heyflow verlassen",
+      "reason": "Abbruch.",
+      "recommendation": "Ignorieren."
+    },
+    {
+      "event": "fb_klick",
+      "class": "none",
+      "label": "Facebook-Klick",
+      "reason": "Verlässt die Website Richtung Social – keine Anfrage. Aktuell Key Event.",
+      "recommendation": "Nicht als Business-Conversion werten."
+    },
+    {
+      "event": "ytb_klick",
+      "class": "none",
+      "label": "YouTube-Klick",
+      "reason": "Wie fb_klick.",
+      "recommendation": "Nicht als Business-Conversion werten."
+    },
+    {
+      "event": "purchase",
+      "class": "none",
+      "label": "purchase (Standard)",
+      "reason": "GA4-Standard-Key-Event, nie ausgelöst (kein Shop).",
+      "recommendation": "Ignorieren."
+    },
+    {
+      "event": "scroll",
+      "class": "none",
+      "label": "Scroll (90 %)",
+      "reason": "War zeitweise als Key Event markiert (437 Key Events historisch) – verzerrt alte Conversion-Zahlen stark.",
+      "recommendation": "Nie als Conversion werten; historische Key-Event-Summen nicht verwenden."
+    }
+  ]
+}

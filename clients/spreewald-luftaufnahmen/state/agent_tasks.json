@@ -66,6 +66,13 @@
       "detail": "Primäre Oberfläche in Claude (angepinnt). Approvals über Artifact-db, Datenfrische sichtbar, Light/Dark geprüft."
     },
     {
+      "id": "T-010",
+      "title": "GA4 + Google Ads angebunden (read-only)",
+      "state": "completed",
+      "date": "2026-11-23",
+      "detail": "GA4-Baseline 07/2022–11/2026, Event-Klassifizierung; Ads: MCC-Discovery, Spreewald-Konto gekündigt, Paid-Historie über GA4."
+    },
+    {
       "id": "T-101",
       "title": "Dachinspektion Canonical-Monitoring (CL-001)",
       "state": "monitoring",
@@ -116,6 +123,13 @@
       "state": "needs_review",
       "date": "2026-11-23",
       "detail": "Noel prüft das Artifact und gibt Änderungswünsche."
+    },
+    {
+      "id": "T-206",
+      "title": "Google Ads Basic Access beantragen (Keyword Planner)",
+      "state": "needs_review",
+      "date": "2026-11-23",
+      "detail": "Entscheidung Noel: Basic Access im API Center beantragen, damit Google-Keyword-Daten neben Semrush nutzbar werden."
     }
   ]
 }

@@ -72,8 +72,42 @@ check("no 'running' task state", all(t["state"] != "running" for t in d["tasks"]
 
 # Security
 txt = json.dumps(d)
-for pat in [r"private_key", r"client_email", r"iam\.gserviceaccount\.com", r"BEGIN [A-Z ]*PRIVATE KEY", r"service_account", r"data_dir"]:
+for pat in [r"private[_]key", r"client[_]email", r"iam\.gserviceaccount\.com", r"BEGIN [A-Z ]*PRIVATE KEY", r"service_account", r"data_dir"]:
     check(f"no '{pat}' in data", not re.search(pat, txt))
+
+# GA4 gegen Rohdaten
+ga = os.path.join(cdir, "data", "ga4-2026-11")
+if d.get("ga4", {}).get("available"):
+    rawd = rd(os.path.join(ga, "ga4_date.csv"))
+    for k_raw, k in (("sessions", "sessions"), ("totalUsers", "users"), ("engagedSessions", "engaged")):
+        r = sum(int(x[k_raw]) for x in rawd); s_ = sum(x[k] for x in d["ga4"]["daily"])
+        check(f"GA4 total {k}", r == s_, f"raw {r} vs dashboard {s_}")
+    lo, hi = d["funnel"]["window"]
+    iso = lambda x: f"{x[:4]}-{x[4:6]}-{x[6:]}"
+    ld = rd(os.path.join(ga, "ga4_landing_date.csv"))
+    org = sum(int(x["sessions"]) for x in ld if x["sessionSource"] != "tagassistant.google.com" and x["sessionDefaultChannelGroup"] == "Organic Search" and lo <= iso(x["date"]) <= hi)
+    dash = next((c["sessions"] for c in d["ga4"]["channels_window"] if c["channel"] == "Organic Search"), None)
+    check("GA4 organic sessions (window, ohne Test)", org == dash, f"raw {org} vs dashboard {dash}")
+    conv = json.load(open(os.path.join(cdir, "state", "conversions.json"), encoding="utf-8"))
+    prim = {e["event"] for e in conv["events"] if e["class"] == "primary"}
+    cv = rd(os.path.join(ga, "ga4_conv_date.csv"))
+    rp = sum(int(x["eventCount"]) for x in cv if x["eventName"] in prim and x["sessionSource"] != "tagassistant.google.com" and lo <= iso(x["date"]) <= hi)
+    dp = sum(c["conv_primary"] for c in d["ga4"]["channels_window"])
+    check("GA4 primary conversions (window, ohne Test)", rp == dp, f"raw {rp} vs dashboard {dp}")
+    tests = sum(int(x["eventCount"]) for x in cv if x["sessionSource"] == "tagassistant.google.com")
+    check("GA4 test events excluded count", tests == d["ga4"]["quality"]["test_conversion_events_excluded"], str(tests))
+    kw = rd(os.path.join(ga, "ga4_ads_keyword.csv"))
+    rc = round(sum(float(x["advertiserAdCost"]) for x in kw if x["sessionGoogleAdsKeyword"] not in ("(not set)", "")), 2)
+    check("Ads keyword-level cost", abs(rc - d["ads"]["totals"]["keyword_level_cost"]) < 0.05, f"raw {rc} vs {d['ads']['totals']['keyword_level_cost']}")
+    disc = json.load(open(os.path.join(cdir, "data", "ads-2026-11", "ads_discovery.json"), encoding="utf-8"))
+    check("Ads account status", d["ads"]["discovery"]["account"]["status"] == disc["account"]["status"] == "CANCELED")
+    # Funnel: Cluster-Impressionen = Summe der Queries des Clusters
+    for f in d["funnel"]["clusters"][:6]:
+        s2 = sum(q["impressions"] for q in d["gsc"]["queries"] if q["cluster"] == f["cluster"])
+        check(f"funnel {f['cluster']} GSC impressions", s2 == f["organic"]["impressions"], f"{s2} vs {f['organic']['impressions']}")
+    # Datenschutz: keine anderen MCC-Kunden, keine Ersteller-E-Mail
+    for bad_txt in ("FIRO", "K&M Cover", "9578550074", "3001574868", "9195667966", "creatorEmailAddress", "@gmx.de"):
+        check(f"no '{bad_txt}' in data", bad_txt not in txt)
 
 print("PASS", len(ok)); print("FAIL", len(bad)); [print("  ✗", b) for b in bad]
 sys.exit(1 if bad else 0)
