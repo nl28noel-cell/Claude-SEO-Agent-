@@ -4,11 +4,11 @@ Laufende Liste. **Status OPEN = erkannt, nichts verändert.** Änderungen an der
 
 | ID | Datum | Typ | Befund | Status |
 |---|---|---|---|---|
-| F-001 | 22.11.2026 | Technik/Indexierung | /dachinspektion-mit-drohne/ ist indexierbar (index, follow) und im Menü verlinkt, fehlt aber in der Yoast-Sitemap (page-sitemap.xml). Ursache siehe F-005 | OPEN |
+| F-001 | 22.11.2026 | Technik/Indexierung | /dachinspektion-mit-drohne/ fehlte in der Yoast-Sitemap. Ursache F-005. **Verifiziert 23.11.2026: jetzt in page-sitemap.xml (lastmod 2026-11-23T10:45:43Z)** | RESOLVED – MONITOR |
 | F-002 | 22.11.2026 | Struktur | /drohne-luftaufnahmen-hochzeit/ steht in der Sitemap, ist aber nicht im Hauptmenü verlinkt (Prio 0–1, kein Handlungsdruck) | OPEN |
-| F-003 | 22.11.2026 | Konsistenz/NAP | Erreichbarkeit widersprüchlich: /kontakt/ „Mo–Fr 09–17 Uhr, Sa & So geschlossen“ vs. Footer „Mo–Fr 08–18 Uhr“. Abgleich mit Google Business Profile (maßgeblich) | OPEN |
+| F-003 | 22.11.2026 | Konsistenz/NAP | GBP (maßgeblich): Mo–Fr 09–17, Sa/So geschlossen. /kontakt/ stimmt überein. **Footer (alle Seiten) zeigt abweichend „Mo.–Fr.: 08:00–18:00 Uhr“** (verifiziert 23.11.2026) → Footer anpassen (nach Freigabe) | OPEN |
 | F-004 | 22.11.2026 | Konsistenz/Preis | Preis-FAQ „ab ca. 230–250 €“ vs. Pakete ab 349 €. **Kein automatischer Fehler** – kontextbezogen prüfen (unterschiedliche Leistungen/Einstiegspreise) | OPEN – prüfen |
-| F-005 | 23.11.2026 | Technik/Canonical | Dachinspektion: Canonical `…/dachinspektion-mit-drohne` (ohne Slash) → 301 auf Slash-URL. Canonical zeigt auf Weiterleitung; Yoast schließt Seite deshalb aus Sitemap aus. Fix: Canonical-Feld in Yoast leeren | OPEN – Quick Win |
+| F-005 | 23.11.2026 | Technik/Canonical | Dachinspektion: Canonical zeigte auf `…/dachinspektion-mit-drohne` (ohne Slash, 301). **Von Noel behoben; verifiziert 23.11.2026: Canonical = Self (mit Slash), HTTP 200, Schema-@id korrekt.** Siehe CL-001 | RESOLVED – MONITOR |
 | F-006 | 23.11.2026 | Interne Verlinkung | Kontextuelle Links sehr dünn; Fassadeninspektion und Preise 0 eingehende Content-Links | OPEN |
 | F-007 | 23.11.2026 | Schema | Nur Yoast-Standard; kein LocalBusiness/Service; FAQ-Schema fehlt auf Fassadeninspektion | OPEN |
 | F-008 | 23.11.2026 | Bilder | ca. 45–65 % der Content-Bilder ohne Alt-Text | OPEN |

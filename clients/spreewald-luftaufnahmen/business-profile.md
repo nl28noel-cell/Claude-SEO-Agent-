@@ -1,6 +1,6 @@
 # Business-Profil – Spreewald Luftaufnahmen
 
-**Version 1.0** · freigegeben durch Noel am 23.11.2026
+**Version 1.1** · freigegeben durch Noel am 23.11.2026 (v1.1: Erreichbarkeit laut GBP, Vermessungsumfang Airteam)
 Quellen: Website (Live-Crawl 22.11.2026), Google Drive (SEO-Texte, Projektordner), Unternehmenscockpit 2026, Angaben Noel.
 
 Dieses Profil ist die verbindliche Grundlage für Business Fit, Opportunity-Bewertung und jede inhaltliche Aussage im Content. Prioritäten sind Startwerte und werden anhand echter Nachfrage, Auftragswerte und Ergebnisse kalibriert.
@@ -16,7 +16,7 @@ Dieses Profil ist die verbindliche Grundlage für Business Fit, Opportunity-Bewe
 | Operativer Ausgangspunkt | Rathausgasse 29, 12529 Schönefeld |
 | Postadresse | Am Brock 23, 15907 Lübben (Spreewald) |
 | Telefon / E-Mail | +49 1522 2611681 · spreewald-luftaufnahmen@gmx.de |
-| Erreichbarkeit | **maßgeblich: Google Business Profile** (Zeiten von dort übernehmen; Website-Abweichungen → Findings) |
+| Telefonische Erreichbarkeit | **Mo–Fr 09:00–17:00 · Sa & So geschlossen** (Quelle: Google Business Profile, maßgeblich; Stand 23.11.2026). Website-Abweichungen → Finding F-003 |
 | Aufsichtsbehörde | Landesluftfahrtbehörde Berlin & Brandenburg |
 | Berufshaftpflicht | R+V Allgemeine Versicherung AG, Geltung weltweit |
 | Website-Technik | WordPress, Elementor (Hello-Theme), Yoast SEO, Site Kit by Google |
@@ -47,7 +47,8 @@ Dieses Profil ist die verbindliche Grundlage für Business Fit, Opportunity-Bewe
 | **1** | Events | – (Drive-Entwurf 2022) |
 | **0–1** | Hochzeiten | /drohne-luftaufnahmen-hochzeit/ |
 
-Partnerleistung Vermessung: Partner Airteam (Photogrammetrie, 3D-Modell, Vermessungsbericht). Marge noch offen – blockiert den Start nicht.
+Partnerleistung Vermessung (Airteam): **aktuell konkret anbietbar sind ausschließlich Dachvermessung und Fassadenvermessung** (inkl. Vermessungsbericht/3D-Modell wie auf den bestehenden Seiten beschrieben). Marge okay bis gut → strategisch interessant, aktiv in SEO-/Opportunity-Analyse.
+Weitere Airteam-Leistungen dürfen **nicht** als bestehende Leistung dargestellt werden. Andere Vermessungsfelder (Gelände, Volumen, Orthofoto, 3D-Scan …) bleiben NEW BUSINESS OPPORTUNITY.
 
 ## 4. Neue Geschäftsfelder (Search Intelligence)
 
