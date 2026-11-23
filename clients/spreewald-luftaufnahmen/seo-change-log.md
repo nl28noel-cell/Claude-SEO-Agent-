@@ -14,8 +14,8 @@ Baseline vor Fix (Semrush DE, 23.11.2026): „dachinspektion mit drohne“ Pos. 
 
 | Checkpoint | Datum | Prüfpunkte | Ergebnis |
 |---|---|---|---|
-| T+0 | 23.11.2026 | Sitemap ✅ · Canonical ✅ · HTTP 200 ✅ · robots index,follow ✅ | erledigt |
-| T+7 | 30.11.2026 | Sitemap/Canonical erneut; Indexierung (GSC URL Inspection, sobald angebunden) | offen |
+| T+0 | 23.11.2026 | Sitemap ✅ · Canonical ✅ · HTTP 200 ✅ · robots index,follow ✅ · GSC URL Inspection: PASS, „Submitted and indexed“, Google-Canonical = Slash-URL ✅; gespeichertes User-Canonical noch alt (ohne Slash), Sitemap-Zuordnung „None“ – beides Stand **letzter Crawl 26.10.2026**, also vor dem Fix | erledigt |
+| T+7 | 30.11.2026 | Sitemap/Canonical erneut; GSC URL Inspection: neuer Crawl nach 23.11.? User-Canonical mit Slash? Sitemap erkannt? | offen |
 | T+14 | 07.12.2026 | + Ranking dachinspektion drohne / dachinspektion mit drohne / drohne dachinspektion / dachinspektion | offen |
 | T+30 | 23.12.2026 | + GSC Impressions/Clicks/Position je Query | offen |
 | T+60 | 22.01.2027 | Bewertung: Erfolgreich / Potenzial / Underperformer | offen |

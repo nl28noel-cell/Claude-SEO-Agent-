@@ -1,0 +1,16 @@
+# Secrets – niemals committen
+*service-account*.json
+*service_account*.json
+*credentials*.json
+*-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].json
+gsc-*.json
+.secrets/
+secrets/
+.env
+.env.*
+*.pem
+*.p12
+
+# Python
+__pycache__/
+*.pyc

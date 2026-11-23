@@ -29,11 +29,25 @@ SCOPES = ["https://www.googleapis.com/auth/webmasters.readonly"]
 API = "https://searchconsole.googleapis.com"
 
 
-def session():
+DEFAULT_FILE = os.path.expanduser("~/.config/semsharks/gsc-service-account.json")
+
+
+def load_credentials_info():
+    """Reihenfolge: 1) Umgebungsvariable GSC_SERVICE_ACCOUNT_JSON_B64 (persistent, bevorzugt)
+    2) Datei aus GSC_SERVICE_ACCOUNT_FILE  3) ~/.config/semsharks/gsc-service-account.json
+    (außerhalb des Repos, chmod 600). Der Schlüsselinhalt wird nie ausgegeben."""
     raw = os.environ.get("GSC_SERVICE_ACCOUNT_JSON_B64")
-    if not raw:
-        sys.exit("GSC_SERVICE_ACCOUNT_JSON_B64 ist nicht gesetzt (Umgebungseinstellungen).")
-    info = json.loads(base64.b64decode(raw))
+    if raw:
+        return json.loads(base64.b64decode(raw)), "env:GSC_SERVICE_ACCOUNT_JSON_B64"
+    path = os.environ.get("GSC_SERVICE_ACCOUNT_FILE", DEFAULT_FILE)
+    if os.path.exists(path):
+        return json.load(open(path)), f"file:{path}"
+    sys.exit("Kein GSC-Credential gefunden (GSC_SERVICE_ACCOUNT_JSON_B64 oder Datei außerhalb des Repos).")
+
+
+def session():
+    info, source = load_credentials_info()
+    print(f"[credential source: {source}]", file=sys.stderr)
     creds = service_account.Credentials.from_service_account_info(info, scopes=SCOPES)
     creds.refresh(Request())
     s = requests.Session()
