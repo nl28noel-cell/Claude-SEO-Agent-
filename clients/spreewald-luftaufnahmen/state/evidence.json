@@ -708,6 +708,23 @@
       "meta": {
         "note": "Revisionsliste lesbar (u. a. 16.07.2026); Update-Werkzeug warnt: Änderungen an veröffentlichten Seiten gehen sofort live; Jetpack speichert nur registrierte Meta-Felder"
       }
+    },
+    {
+      "id": "SRC-030",
+      "type": "website",
+      "key": "wp-sandbox-6955",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "WordPress Test-Draft 6955 · [TEST SEO-Autopilot] Elementor-Kopie",
+      "domain": "spreewald-luftaufnahmen.de",
+      "url": "https://www.spreewald-luftaufnahmen.de/?page_id=6955",
+      "fetched": "2026-11-24T14:31:00Z",
+      "fetched_precision": "exact",
+      "meta": {
+        "status": "draft",
+        "source_page": 5401
+      }
     }
   ],
   "findings": [
@@ -849,5 +866,5 @@
       ]
     }
   ],
-  "updated": "2026-11-24T14:07:13Z"
+  "updated": "2026-11-24T14:35:59Z"
 }

@@ -627,13 +627,19 @@ class ArtifactQA(unittest.TestCase):
         w3["gate3"]["for_draft_version"] = 2
         self.assertEqual(g("live_update", w3, post=5401), "visual_review_missing")
         w3["gate3"]["visual_review_confirmed"] = True
-        self.assertEqual(g("live_update", w3, post=5401), "ok")
-        self.assertEqual(g("live_update", w3, post=5401, fields=["canonical"]), "sensitive_field")
-        self.assertEqual(g("live_update", w3, post=4857), "not_in_change_set")
-        w4 = copy.deepcopy(w3); w4["wordpress"]["rollback"] = {"status": "unavailable"}
-        self.assertEqual(g("live_update", w4, post=5401), "rollback_unavailable")
-        w5 = copy.deepcopy(w3); w5["wordpress"]["snapshots"] = []
-        self.assertEqual(g("live_update", w5, post=5401), "snapshot_missing")
+        self.assertEqual(g("live_update", w3, post=5401), "elementor_write_insufficient")          # realer Status nach Sandbox-Test
+        real_cfg = WP.cfg
+        WP.cfg = lambda client=WP.DEFAULT_CLIENT: {**real_cfg(client), "capabilities_verified": {"elementor_write_status": "verified"}}  # simuliert: Schreibweg bestätigt
+        try:
+            self.assertEqual(g("live_update", w3, post=5401), "ok")
+            self.assertEqual(g("live_update", w3, post=5401, fields=["canonical"]), "sensitive_field")
+            self.assertEqual(g("live_update", w3, post=4857), "not_in_change_set")
+            w4 = copy.deepcopy(w3); w4["wordpress"]["rollback"] = {"status": "unavailable"}
+            self.assertEqual(g("live_update", w4, post=5401), "rollback_unavailable")
+            w5 = copy.deepcopy(w3); w5["wordpress"]["snapshots"] = []
+            self.assertEqual(g("live_update", w5, post=5401), "snapshot_missing")
+        finally:
+            WP.cfg = real_cfg
         for op in ("delete", "redirect", "canonical_change", "robots_change", "slug_change_live", "unpublish", "plugin_change"):
             self.assertEqual(g(op, w3, post=5401), "requires_explicit_confirmation")
         self.assertEqual(g("delete", {**w3, "confirmations": [{"op": "delete", "post": 9001, "status": "confirmed"}]}, post=9001), "confirmed")
@@ -681,10 +687,43 @@ class ArtifactQA(unittest.TestCase):
         docs["OPP-02"]["wordpress"] = {**w["wordpress"], "status": "publish_queued"}
         a = workflow.actions(docs)[0]; self.assertEqual((a["action"], a["reason"]), ("wp_publish_blocked", "gate3_missing"))
         docs["OPP-02"]["gate3"] = {"status": "approved", "for_draft_version": 2, "visual_review_confirmed": True}
-        self.assertEqual(workflow.actions(docs)[0]["action"], "wp_publish")
+        a = workflow.actions(docs)[0]; self.assertEqual((a["action"], a["reason"]), ("wp_publish_blocked", "elementor_write_insufficient"))
+        real_cfg = WP.cfg
+        WP.cfg = lambda client=WP.DEFAULT_CLIENT: {**real_cfg(client), "capabilities_verified": {"elementor_write_status": "verified"}}
+        try:
+            self.assertEqual(workflow.actions(docs)[0]["action"], "wp_publish")
+        finally:
+            WP.cfg = real_cfg
         e = WP.change_log_entry(docs["OPP-02"], "OPP-02", "2026-12-01T10:00:00Z", {"queries": []})
         self.assertEqual([c["label"] for c in e["checkpoints"]], ["T+7", "T+14", "T+30", "T+60", "T+90"])
         self.assertTrue(all(set(c["checks"]) == {"ranking_protection", "cannibalization"} for c in e["checkpoints"]))
+
+    def test_wordpress_sandbox_firewall(self):
+        """Sandbox-Test 24.11.2026: Payload mit <script> → Firewall 403. Guard muss das VOR dem Schreibaufruf erkennen."""
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import wordpress as WP
+        tree = [{"id": "c1", "elType": "container", "elements": [
+                    {"id": "h1", "elType": "widget", "widgetType": "heading", "settings": {"title": "Baudokumentation", "header_size": "h1"}, "elements": []},
+                    {"id": "x1", "elType": "widget", "widgetType": "html", "settings": {"html": "<SCRIPT src='https://cdn.example/l.js'></SCRIPT>"}, "elements": []}]}]
+        fr = WP.firewall_risk(tree)
+        self.assertTrue(fr["blocked"]); self.assertEqual([h["id"] for h in fr["widgets"]], ["x1"])
+        self.assertFalse(WP.firewall_risk(json.dumps(tree[:0]))["blocked"])
+        self.assertFalse(WP.firewall_risk([{"id": "c", "elType": "container", "elements": [tree[0]["elements"][0]]}])["blocked"])
+        w = {"gate2": {"status": "approved"}, "wordpress": {"mode": "OPTIMIZE", "documents": [{"draft_post_id": 9001}]}}
+        r = WP.guard("update_draft", w, post=9001, payload=tree)
+        self.assertEqual(r["code"], "payload_blocked_by_firewall"); self.assertFalse(r["allowed"])
+        self.assertEqual(WP.guard("update_draft", w, post=9001, payload=[tree[0]["elements"][0]])["code"], "ok")
+        # Status aus dem Sandbox-Test: kein automatisches Live-Update bestehender (OPTIMIZE) Seiten
+        cv = WP.cfg()["capabilities_verified"]
+        self.assertEqual(cv["elementor_write_status"], "insufficient"); self.assertFalse(cv["elementor_meta_write_verified"])
+        w3 = {"gate2": {"status": "approved"}, "gate3": {"status": "approved", "for_draft_version": 1, "visual_review_confirmed": True},
+              "wordpress": {"mode": "OPTIMIZE", "draft_version": 1, "qa": {"overall": "passed"}, "rollback": {"status": "available"},
+                            "documents": [{"wp_post_id": 5401, "draft_post_id": 9001}], "snapshots": [{"post": 5401, "verified": True}]}}
+        self.assertEqual(WP.guard("live_update", w3, post=5401)["code"], "elementor_write_insufficient")
+        st = json.load(open(os.path.join(ROOT, "clients/spreewald-luftaufnahmen/state/sources.json")))["wordpress"]["sandbox_test"]
+        self.assertTrue(st["source_page"]["unchanged"]); self.assertEqual(st["test_draft"]["status"], "draft")
+        self.assertFalse(st["test_draft"]["published"])
+        self.assertNotRegex(json.dumps(st), r"(?i)password|token|secret|private[_]key")
 
     def test_workflow_render_html(self):
         import tempfile

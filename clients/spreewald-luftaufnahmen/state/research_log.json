@@ -491,7 +491,23 @@
       "summary": "Gate 2 → WordPress Draft → QA → Gate 3 → Live → Monitoring implementiert und mit simulierten WordPress-Ergebnissen getestet. Keine WordPress-Seite erstellt, kopiert, geändert oder veröffentlicht.",
       "found": "Harte Schreibsperre (tools/wordpress.py guard), WordPress-Preflight im Runner, Pre-change Snapshot + Rollback-Prüfung, WordPress QA (Visual: manual review), Gate 3 im Artifact",
       "insight": "Rollback protection bleibt „unavailable“, bis ein freigegebener Sandbox-Test bestätigt, dass _elementor_data per Konnektor geschrieben und identisch zurückgelesen werden kann. WordPress-Konnektor ist noch nicht an der Runner-Routine."
+    },
+    {
+      "id": "EVT-028",
+      "source_ids": [
+        "SRC-030"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-24T14:30:30Z",
+      "at_precision": "exact",
+      "opp": "OPP-02",
+      "action": "integration_preflight",
+      "title": "WordPress Sandbox-Test (Elementor)",
+      "summary": "Isolierter Schreibtest: Baudoku-Seite 5401 nur gelesen; Test-Draft 6955 „[TEST SEO-Autopilot] Elementor-Kopie“ angelegt (Entwurf). 3 Schreibaufrufe nur auf 6955.",
+      "found": "Elementor write capability insufficient – Probe (Hero) strukturell identisch; Payload mit <script> (Trustindex-Widgets) → HTTP 403 der Hosting-Firewall, nichts geschrieben. Tests 2–5 gestoppt. Live-Seite unverändert (modified 2026-07-16T14:27:04).",
+      "insight": "Rollback bleibt unavailable. Weiter nur nach Entscheidung: Firewall-Ausnahme oder Trustindex ohne <script>. Runner: wp_connector_unavailable. Test-Draft bleibt bis zur Bestätigung bestehen."
     }
   ],
-  "updated": "2026-11-24T14:07:13Z"
+  "updated": "2026-11-24T14:35:59Z"
 }

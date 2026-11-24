@@ -6,10 +6,11 @@ MUSS vor JEDEM Schreibaufruf `guard` ausführen – Exit ≠ 0 = Aufruf verboten
 (Status der Artifact-db), nicht nur im Prompt.
 
     python3 tools/wordpress.py preflight <observed.json>                       -> WordPress-Preflight (Exit 2 = blocked)
-    python3 tools/wordpress.py guard <op> <wf_doc.json> [--post <id>] [--fields a,b] [--status s] [--slug s]
+    python3 tools/wordpress.py guard <op> <wf_doc.json> [--post <id>] [--fields a,b] [--status s] [--slug s] [--payload elementor.json]
                                                                                -> Schreibsperre (Exit 0 = erlaubt, 3 = verboten)
     python3 tools/wordpress.py snapshot <page_edit.json> <yoast.json> <out.json> -> Pre-change Snapshot (+ SHA-256)
     python3 tools/wordpress.py verify-snapshot <snapshot.json> [--sha <hash>]  -> vollständig & unverändert?
+    python3 tools/wordpress.py firewall-check <page_edit.json|elementor.json>  -> Widgets, die die Hosting-Firewall blockiert (Exit 4 = blockiert)
     python3 tools/wordpress.py qa <change_set.json> <original_edit.json|-> <draft_edit.json> <draft_yoast.json> [--opp OPP]
                                                                                -> WordPress QA (Content · SEO · Technical · Visual)
 Konfiguration: clients/<client>/client.json → "wordpress".
@@ -64,11 +65,34 @@ def preflight(obs, client=DEFAULT_CLIENT):
 
 
 # ---------------------------------------------------------------- Harte Schreibsperre
-def guard(op, w, post=None, fields=None, status=None, slug=None, live_slugs=(), client=DEFAULT_CLIENT):
-    """Darf diese WordPress-Schreiboperation jetzt ausgeführt werden? w = Workflow-Dokument (Artifact-db)."""
+def firewall_risk(tree_or_raw, client=DEFAULT_CLIENT):
+    """Sandbox-Test 24.11.2026: Die Hosting-Firewall beantwortet Schreibaufrufe, deren Inhalt <script> enthält, mit HTTP 403
+    (atomar, nichts geschrieben). Liefert die betroffenen Widgets, BEVOR ein Schreibaufruf versucht wird."""
+    pats = ((cfg(client).get("capabilities_verified") or {}).get("firewall_blocks_patterns")) or ["<script"]
+    tree = json.loads(tree_or_raw) if isinstance(tree_or_raw, str) else (_tree(tree_or_raw) if isinstance(tree_or_raw, dict) else tree_or_raw or [])
+    hits = []
+    def walk(nodes, top):
+        for n in nodes:
+            s = json.dumps(n.get("settings") or {}, ensure_ascii=False).lower()
+            if n.get("elType") == "widget" and any(p.lower() in s for p in pats):
+                hits.append({"id": n.get("id"), "type": n.get("widgetType"), "section": top, "pattern": next(p for p in pats if p.lower() in s)})
+            walk(n.get("elements") or [], top)
+    for i, n in enumerate(tree):
+        walk([n], i)
+    return {"blocked": bool(hits), "widgets": hits, "patterns": pats,
+            "why": f"{len(hits)} Widget(s) mit {', '.join(sorted({h['pattern'] for h in hits}))} – Hosting-Firewall antwortet mit HTTP 403" if hits else None}
+
+
+def guard(op, w, post=None, fields=None, status=None, slug=None, live_slugs=(), client=DEFAULT_CLIENT, payload=None):
+    """Darf diese WordPress-Schreiboperation jetzt ausgeführt werden? w = Workflow-Dokument (Artifact-db).
+    payload = zu schreibendes _elementor_data (optional) → Firewall-Vorprüfung."""
     c, wp = cfg(client), (w or {}).get("wordpress") or {}
     fields = set(fields or [])
     deny = lambda code, why: {"allowed": False, "op": op, "code": code, "why": why}  # noqa: E731
+    if payload is not None and op in DRAFT_OPS | LIVE_OPS:
+        fr = firewall_risk(payload, client)
+        if fr["blocked"]:
+            return {**deny("payload_blocked_by_firewall", fr["why"] + " – nicht umgehen (keine Kodierungs-Tricks)"), "widgets": fr["widgets"]}
     if op in CONFIRM_OPS:
         conf = [x for x in (w.get("confirmations") or []) if x.get("op") == op and str(x.get("post")) == str(post) and x.get("status") == "confirmed"]
         if not conf:
@@ -105,6 +129,9 @@ def guard(op, w, post=None, fields=None, status=None, slug=None, live_slugs=(), 
         return deny("qa_not_passed", "WordPress QA nicht bestanden")
     if wp.get("qa", {}).get("overall") == "passed_manual_visual" and not g3.get("visual_review_confirmed"):
         return deny("visual_review_missing", "Sichtprüfung (Desktop/Tablet/Mobile) nicht bestätigt")
+    if op in ("live_update", "yoast_update_live") and (c.get("capabilities_verified") or {}).get("elementor_write_status") == "insufficient" \
+            and (w.get("wordpress") or {}).get("mode") == "OPTIMIZE":
+        return deny("elementor_write_insufficient", "Sandbox-Test: Elementor write capability insufficient – kein automatisches Live-Update bestehender Seiten")
     if op in ("live_update", "yoast_update_live"):
         rb = wp.get("rollback") or {}
         if rb.get("status") != "available":
@@ -339,7 +366,7 @@ if __name__ == "__main__":
     elif a[0] == "guard":
         w = json.load(open(a[2], encoding="utf-8")); w = w.get("data", w)
         r = guard(a[1], w, opt("--post"), (opt("--fields") or "").split(",") if opt("--fields") else [], opt("--status"), opt("--slug"),
-                  (opt("--live-slugs") or "").split(","))
+                  (opt("--live-slugs") or "").split(","), payload=json.load(open(opt("--payload"), encoding="utf-8")) if opt("--payload") else None)
         print(json.dumps(r, ensure_ascii=False)); sys.exit(0 if r["allowed"] else 3)
     elif a[0] == "snapshot":
         import datetime as dt
@@ -347,6 +374,8 @@ if __name__ == "__main__":
         json.dump(s, open(a[3], "w", encoding="utf-8"), ensure_ascii=False); print(json.dumps({**verify_snapshot(s), "out": a[3]}))
     elif a[0] == "verify-snapshot":
         r = verify_snapshot(json.load(open(a[1], encoding="utf-8")), opt("--sha")); print(json.dumps(r)); sys.exit(0 if r["verified"] else 1)
+    elif a[0] == "firewall-check":
+        r = firewall_risk(json.load(open(a[1], encoding="utf-8"))); print(json.dumps(r, ensure_ascii=False, indent=2)); sys.exit(4 if r["blocked"] else 0)
     elif a[0] == "qa":
         orig = None if a[2] == "-" else json.load(open(a[2], encoding="utf-8"))
         r = qa(json.load(open(a[1], encoding="utf-8")), orig, json.load(open(a[3], encoding="utf-8")), json.load(open(a[4], encoding="utf-8")))

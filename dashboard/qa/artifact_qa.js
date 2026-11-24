@@ -260,7 +260,7 @@ const MOCK = () => {
     // Evidence je Opportunity + Findings mit Quellen
     await p.goto(base2 + '#opp-OPP-02', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
     const evTxt = await p.locator('#rs-evidence').innerText();
-    check('evidence card: grouped counts', /GSC \(3\)/.test(evTxt) && /Semrush \(1\)/.test(evTxt) && /Competitor Websites \(8\)/.test(evTxt) && /Own Website \(2\)/.test(evTxt) && /GA4 \(1\)/.test(evTxt), evTxt.slice(0, 200));
+    check('evidence card: grouped counts', /GSC \(3\)/.test(evTxt) && /Semrush \(1\)/.test(evTxt) && /Competitor Websites \(8\)/.test(evTxt) && /Own Website \(3\)/.test(evTxt) && /GA4 \(1\)/.test(evTxt), evTxt.slice(0, 200));
     check('findings link to sources ("Quellen anzeigen")', (await p.locator('section.rs summary', { hasText: 'Quellen anzeigen' }).count()) >= 3);
     await p.click('#rs-evidence [data-rl-opp]'); await p.waitForTimeout(250);
     check('evidence → research log filtered by opportunity', (await p.evaluate(() => location.hash)) === '#research-log' && (await p.locator('[data-f="opp"]').inputValue()) === 'OPP-02');
@@ -313,6 +313,7 @@ const MOCK = () => {
     await p.goto(base2 + '#sources', { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
     const wpc = await p.locator('#wp-card').innerText();
     check('data sources: WordPress card (read-only tested, publish locked, no credentials)', /administrator/.test(wpc) && /gesperrt/.test(wpc) && /Elementor/.test(wpc) && !/password|passwort|token/i.test(wpc.replace(/Zugangsdaten: keine im Repository\/Artifact/, '')));
+    check('WordPress sandbox: status, test draft 6955 (draft), live page unchanged, stop result, options', /Elementor write capability insufficient/.test(wpc) && /6955/.test(wpc) && /draft/.test(wpc) && /unverändert/.test(wpc) && /HTTP 403/.test(wpc) && /Optionen/.test(wpc) && (await p.locator('#wp-sandbox a[href*="post=6955"]').count()) === 1 && (await p.locator('#wp-sandbox a[href*="post=5401"]').count()) === 0);
     // Local Opportunity Matrix
     await p.goto(base2 + '#local', { waitUntil: 'networkidle' }); await p.waitForTimeout(300);
     const lm = await p.locator('#local-matrix').innerText();

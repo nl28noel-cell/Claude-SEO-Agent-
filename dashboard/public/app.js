@@ -646,13 +646,23 @@ function adsCard() {
 function wpCard() {
   const w = S.d.sources.wordpress; if (!w) return "";
   const c = w.capabilities || {};
-  return `<div class="card" id="wp-card"><div class="card-h"><h2>WordPress</h2>${chip("Verbunden · nur lesend geprüft", "green", true)}</div><div class="card-b"><div class="kv">
+  const sb = w.sandbox_test, sbOk = sb?.status === "verified";
+  const sbHtml = !sb ? "" : `<div class="callout ${sbOk ? "green" : "red"} mt" id="wp-sandbox"><b>${esc(sb.label)}</b>
+    <div class="s">Test vom ${fmtDate(sb.date)} · Quelle: Seite ${esc(sb.source_page.id)} (${esc(sb.source_page.use)}) – ${sb.source_page.unchanged ? "<b>unverändert</b> (modified " + esc(sb.source_page.modified_after) + ")" : "<b>GEÄNDERT – prüfen!</b>"}</div>
+    <div class="kv mt"><div class="k">Test-Draft</div><div>${esc(sb.test_draft.title)} · ID ${esc(sb.test_draft.id)} · ${esc(sb.test_draft.status)} · ${esc(sb.test_draft.content)}<br>
+      <a href="${esc(sb.test_draft.edit_url)}" target="_blank" rel="noopener">In Elementor öffnen</a> · <a href="${esc(sb.test_draft.preview_url)}" target="_blank" rel="noopener">Vorschau</a> <span class="mini">(${esc(sb.test_draft.preview_note)})</span><br><span class="mini">Löschen: ${esc(sb.test_draft.delete)}</span></div>
+    <div class="k">Schreibvorgänge</div><div class="s">${sb.write_ops.map(o => `${esc(o.op)} → ${esc(o.result)}<br><span class="mini">${esc(o.payload)}</span>`).join("<br>")}</div>
+    <div class="k">Tests</div><div class="s">${Object.entries(sb.results).map(([k, v]) => `${esc(k)}: ${esc(v)}`).join("<br>")}</div>
+    <div class="k">Vergleich</div><div class="s">${Object.entries(sb.comparison).map(([k, v]) => `<b>${esc(k.replace(/_/g, " "))}</b>: ${v.length ? v.map(esc).join(" · ") : "–"}`).join("<br>")}</div></div>
+    <div class="mt"><b>Erkenntnisse</b>${ul(sb.findings)}</div><div class="mt"><b>Optionen (Entscheidung offen)</b>${ul(sb.options)}</div></div>`;
+  return `<div class="card" id="wp-card"><div class="card-h"><h2>WordPress</h2>${chip(sb ? (sbOk ? "Sandbox-Test bestanden" : "Sandbox: Elementor write insufficient") : "Verbunden · nur lesend geprüft", sb && !sbOk ? "red" : "green", true)}</div><div class="card-b"><div class="kv">
     <div class="k">Zugriff</div><div>${esc(w.access)}</div><div class="k">Rolle</div><div>${esc(w.role)}</div>
     <div class="k">Editor</div><div>${esc(w.editor)}</div><div class="k">SEO</div><div>${esc(w.seo)}</div>
     <div class="k">CREATE Draft</div><div>${esc(c.create_draft)}</div><div class="k">OPTIMIZE</div><div>${esc(c.optimize_existing)}</div>
     <div class="k">Preview</div><div>${esc(c.preview)}</div><div class="k">Publish</div><div><b>${esc(c.publish)}</b></div>
+    <div class="k">Rollback</div><div>${esc(c.rollback)}</div>
     <div class="k">Geprüft</div><div>${fmtDate(w.checked)} · Zugangsdaten: ${esc(w.credentials)}</div></div>
-    ${(w.risks || []).length ? `<div class="callout amber mt"><b>Vor dem ersten Schreibzugriff</b>${ul(w.risks)}</div>` : ""}
+    ${sbHtml}${(w.risks || []).length ? `<div class="callout amber mt"><b>Vor dem ersten Schreibzugriff</b>${ul(w.risks)}</div>` : ""}
     <div class="s mt">Workflow-Ziel: Gate 2 → WordPress-Draft → QA → finale Freigabe → Veröffentlichen. Nie automatisch: Veröffentlichen, URL/Slug, Redirects, Canonical, Indexierung, Plugin-/Server-Konfiguration.</div></div></div>`;
 }
 function kpCard() {

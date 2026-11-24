@@ -148,18 +148,107 @@
     "seo": "Yoast lesen/schreiben über Site-Fähigkeiten",
     "capabilities": {
       "create_draft": "YES",
-      "optimize_existing": "WITH LIMITATIONS (Draft-Kopie, Live-Seite nie direkt)",
+      "optimize_existing": "BLOCKED für Seiten mit <script>-Widgets (Firewall) – sonst WITH LIMITATIONS",
       "preview": "YES (Login)",
       "publish": "technisch YES – gesperrt",
-      "rollback": "unavailable – Sandbox-Schreibtest ausstehend"
+      "rollback": "unavailable – Sandbox-Test: Elementor write capability insufficient (Firewall 403 bei <script>)"
     },
     "risks": [
-      "Rollback protection unavailable bis zum Sandbox-Schreibtest (_elementor_data)",
-      "WordPress-Konnektor noch nicht an der Runner-Routine",
-      "Duplicator: keine Backups (nicht Voraussetzung; eigener Snapshot ist primärer Rollback)"
+      "Elementor write capability insufficient: Firewall des Hostings blockiert Schreibaufrufe mit <script> (Baudoku: 2 Trustindex-Widgets)",
+      "Jeder Schreibvorgang überträgt das komplette _elementor_data inline (Baudoku 91.626 Zeichen) – kein serverseitiger Kopierweg",
+      "Rollback protection unavailable (Meta-Änderungen erzeugen keine WP-Revision)",
+      "WordPress-Konnektor noch nicht an der Runner-Routine (wp_connector_unavailable)",
+      "Duplicator: keine Backups (nicht Voraussetzung)"
     ],
     "doc": "docs/wordpress-integration.md",
     "credentials": "keine im Repository/Artifact",
-    "workflow": "Gate 2 → WordPress Draft → QA → Gate 3 → Live → Monitoring (Schreibsperre: tools/wordpress.py guard)"
+    "workflow": "Gate 2 → WordPress Draft → QA → Gate 3 → Live → Monitoring (Schreibsperre: tools/wordpress.py guard)",
+    "sandbox_test": {
+      "status": "elementor_write_insufficient",
+      "label": "WordPress Sandbox Test – Elementor write capability insufficient",
+      "date": "2026-11-24",
+      "approved_by": "Noel (24.11.2026, isolierter Sandbox-Test)",
+      "source_page": {
+        "id": 5401,
+        "slug": "drohnen-baudokumentation",
+        "use": "ausschließlich READ-ONLY",
+        "modified_before": "2026-07-16T14:27:04",
+        "modified_after": "2026-07-16T14:27:04",
+        "unchanged": true,
+        "elementor_sha256_prefix": "b122af8ac8330810",
+        "elementor_chars": 91626,
+        "sections": 13
+      },
+      "test_draft": {
+        "id": 6955,
+        "title": "[TEST SEO-Autopilot] Elementor-Kopie",
+        "slug": "test-seo-autopilot-elementor-kopie",
+        "status": "draft",
+        "published": false,
+        "content": "nur Hero-Abschnitt (Probe)",
+        "edit_url": "https://www.spreewald-luftaufnahmen.de/wp-admin/post.php?post=6955&action=elementor",
+        "preview_url": "https://www.spreewald-luftaufnahmen.de/?page_id=6955&preview=true",
+        "preview_note": "Vorschau nur eingeloggt (Entwurf)",
+        "delete": "erst nach Bestätigung durch Noel"
+      },
+      "write_ops": [
+        {
+          "op": "create_draft",
+          "post": 6955,
+          "payload": "Hero-Container (3.078 Zeichen) + _elementor_edit_mode/_template_type/_page_settings",
+          "result": "OK – keine _content_warnings"
+        },
+        {
+          "op": "update_draft",
+          "post": 6955,
+          "payload": "Hero + Abschnitte 1, 2, 5, 6 (~30.000 Zeichen, alle Widget-Typen)",
+          "result": "HTTP 403 (Firewall des Hostings, kein JSON) – nichts geschrieben"
+        },
+        {
+          "op": "update_draft",
+          "post": 6955,
+          "payload": "Diagnose: nur HTML-Widget mit <script>-Tag (Trustindex)",
+          "result": "HTTP 403 – Ursache bestätigt"
+        }
+      ],
+      "results": {
+        "test1_copy": "gestoppt – 1:1-Kopie nicht möglich (2 HTML-Widgets mit <script> werden von der Firewall blockiert)",
+        "test2_preview": "nicht durchgeführt (Test gestoppt) – Draft-Links vorhanden, Inhalt nur Hero",
+        "test3_heading_edit": "nicht durchgeführt (Test gestoppt)",
+        "test4_restore": "nicht durchgeführt (Test gestoppt)",
+        "test5_yoast": "nicht durchgeführt (Test gestoppt)"
+      },
+      "comparison": {
+        "identical": [
+          "Hero-Container 5592b59e inkl. H1, Responsive-Werte, __globals__, Hintergrundbild-ID 5165",
+          "_elementor_edit_mode",
+          "_elementor_template_type",
+          "_elementor_page_settings (Schlüsselreihenfolge anders, Inhalt gleich)"
+        ],
+        "different_but_functionally_equivalent": [
+          "Kodierung: gesendet ohne \\/ und mit echten Umlauten – JSON-identisch"
+        ],
+        "field_lost": [],
+        "not_writable": [
+          "HTML-Widgets mit <script> (d8af34e Abschnitt 1, 568d6a7 Abschnitt 9) – Firewall 403"
+        ],
+        "unknown": [
+          "Abschnitte 1–12 nicht übertragen (Test gestoppt)",
+          "post_content (Elementor-Fallback-HTML) nicht übertragen",
+          "Yoast-Felder"
+        ]
+      },
+      "findings": [
+        "Konnektor schreibt _elementor_data als registriertes Meta und liest es strukturell identisch zurück (Probe).",
+        "Die Firewall des Hostings blockiert Schreibaufrufe, deren Inhalt <script> enthält (HTTP 403, atomar – nichts geschrieben). Die Baudoku-Seite enthält 2 solche Widgets (Trustindex-Bewertungen).",
+        "Kein serverseitiger Kopier-/Elementor-Weg: jeder Schreibvorgang muss das komplette _elementor_data inline übertragen (Baudoku: 91.626 Zeichen).",
+        "Meta-Änderungen erzeugen keine WordPress-Revision – Revisionen sind für Elementor-Rollback kein verlässlicher zweiter Weg."
+      ],
+      "options": [
+        "Firewall-Ausnahme für die REST-Route /wp/v2/pages bzw. für den Jetpack-Zugang beim Hosting freigeben (Entscheidung Noel/Hosting) – danach Test wiederholen",
+        "Trustindex-Widgets auf Shortcode/Plugin-Widget umstellen (kein <script> im Seiteninhalt) – Änderung an der Live-Seite, nur nach ausdrücklicher Freigabe",
+        "OPTIMIZE bis dahin als Drive-Change-Set + manuelle Übernahme in Elementor (kein automatischer Schreibweg)"
+      ]
+    }
   }
 }

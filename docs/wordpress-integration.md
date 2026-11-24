@@ -109,6 +109,28 @@ Beobachtungen sammeln (`tools` geladen, `wpcom-user-sites` gefiltert auf die Dom
 4. Zurücklesen und mit dem Draft vergleichen; bei Abweichung Rollback aus Snapshot und `publish_failed`.
 5. `wordpress.status = published`, `published.at`, `published.change_entry = wordpress.change_log_entry(...)` (Baseline + T+7/14/30/60/90 mit Ranking Protection + Kannibalisierung); `workflow.py mirror` übernimmt den Eintrag ins Change Log. Research-Log-Eintrag „Live-Update veröffentlicht“.
 
+## Sandbox-Schreibtest 24.11.2026 – Ergebnis: `Elementor write capability insufficient`
+
+Freigegeben als isolierter Sandbox-Test. Quelle: Baudoku-Seite 5401 (`/drohnen-baudokumentation/`), **ausschließlich gelesen** – vorher/nachher `modified 2026-07-16T14:27:04`, Status `publish`, unverändert. Alle Schreibaufrufe gingen nur an den neuen Entwurf **6955 „[TEST SEO-Autopilot] Elementor-Kopie“** (`test-seo-autopilot-elementor-kopie`, Status `draft`, nie veröffentlicht).
+
+| # | Schreibaufruf (nur 6955) | Ergebnis |
+|---|---|---|
+| 1 | `pages-create` (draft): Hero-Container (3.078 Zeichen) + `_elementor_edit_mode`, `_elementor_template_type`, `_elementor_page_settings` | OK, keine `_content_warnings`; Rücklesen **strukturell identisch** |
+| 2 | `pages-update`: Hero + Abschnitte 1, 2, 5, 6 (~30.000 Zeichen, alle Widget-Typen der Seite) | **HTTP 403, Antwort kein JSON** (Firewall des Hostings) – nichts geschrieben (atomar) |
+| 3 | Diagnose: nur ein HTML-Widget mit `<script>` (Trustindex-Loader) | **HTTP 403** – Ursache bestätigt |
+
+**Strukturvergleich (Probe):** *identical* – Hero `5592b59e` inkl. H1, Responsive-Werte, `__globals__`, Bild-ID 5165, Page Settings (Schlüsselreihenfolge anders) · *different but functionally equivalent* – Kodierung (`/` statt `\/`, echte Umlaute statt `\u…`), JSON-identisch · *field lost* – keine · *not writable* – HTML-Widgets mit `<script>` (`d8af34e` Abschnitt 1, `568d6a7` Abschnitt 9) · *unknown* – übrige Abschnitte, `post_content`, Yoast (Test gestoppt).
+
+**Gemäß Vorgabe gestoppt** – keine Umgehung (z. B. Kodierung des `<script>`-Tags), Tests 2–5 (Vorschau mit Volltext, H2-Änderung, Restore, Yoast) nicht ausgeführt. Der Test-Draft bleibt bestehen, bis Noel das Löschen bestätigt.
+
+Weitere Erkenntnisse:
+- Kein serverseitiger Kopier-/Elementor-Weg: jeder Schreibvorgang muss das **komplette** `_elementor_data` inline übertragen (Baudoku: 91.626 Zeichen ≈ 35k+ Tokens pro Schreibvorgang; Kopie + Änderung + Restore = 3×).
+- Meta-only-Änderungen erzeugen **keine WordPress-Revision** (Draft 6955: 0 Revisionen) → Revisionen sind für Elementor kein verlässlicher Rollback-Weg.
+- Code: `tools/wordpress.py firewall_risk` / `firewall-check` erkennt blockierte Widgets **vor** dem Schreibaufruf; `guard(..., payload=…)` liefert `payload_blocked_by_firewall`. Bei `capabilities_verified.elementor_write_status = insufficient` liefert der Guard für OPTIMIZE-Live-Updates `elementor_write_insufficient`.
+- Runner-Routine hat weiterhin keinen WordPress-Konnektor → `wp_connector_unavailable` (kein automatisierter Runner-Schreibtest).
+
+**Optionen (Entscheidung offen):** (a) Firewall-Ausnahme beim Hosting für die REST-Schreibroute/Jetpack, danach Test wiederholen; (b) Trustindex-Bewertungen ohne `<script>` im Seiteninhalt einbinden (Shortcode/Plugin-Widget) – Änderung an der Live-Seite, nur nach ausdrücklicher Freigabe; (c) bis dahin OPTIMIZE als Drive-Change-Set mit manueller Übernahme in Elementor.
+
 ## Rollback
 
-Primär: eigener Pre-change Snapshot (Elementor-Daten, Content, Yoast, Seiteneinstellungen, Zeitstempel, SHA-256) in Drive. Sekundär: WordPress-Revisionen (lesbar, z. B. Baudoku-Seite mit Revisionen vom 16.07.2026). Duplicator ist nicht Voraussetzung (aktuell ohne Backups). Rollback gilt erst als verfügbar, wenn der Sandbox-Test bestätigt, dass `_elementor_data` per Konnektor geschrieben und identisch zurückgelesen werden kann.
+Primär: eigener Pre-change Snapshot (Elementor-Daten, Content, Yoast, Seiteneinstellungen, Zeitstempel, SHA-256) in Drive. Sekundär: WordPress-Revisionen (lesbar, z. B. Baudoku-Seite mit Revisionen vom 16.07.2026). Duplicator ist nicht Voraussetzung (aktuell ohne Backups). Rollback gilt erst als verfügbar, wenn ein Sandbox-Test bestätigt, dass `_elementor_data` per Konnektor vollständig geschrieben und identisch zurückgelesen werden kann – Stand 24.11.2026: **unavailable** (Firewall blockiert `<script>`-Widgets, siehe oben).

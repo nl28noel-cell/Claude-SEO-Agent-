@@ -93,7 +93,12 @@
       "elementor_meta_write_verified": false,
       "yoast_write_available": true,
       "revisions_available": true,
-      "verified_note": "Lesend geprüft 24.11.2026; Schreiben von _elementor_data erst nach freigegebenem Sandbox-Test bestätigt"
+      "verified_note": "Sandbox-Test 24.11.2026: Schreiben ohne <script> funktioniert; Payloads mit <script> → HTTP 403 der Hosting-Firewall. Rollback bleibt unavailable.",
+      "elementor_write_status": "insufficient",
+      "elementor_small_payload_write": "verified 2026-11-24 (Probe, strukturell identisch)",
+      "firewall_blocks_patterns": [
+        "<script"
+      ]
     }
   }
 }
