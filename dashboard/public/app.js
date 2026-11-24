@@ -571,7 +571,7 @@ function renderAdTab() {
    Der Agent liest sie in seiner nächsten Session (ArtifactData), verarbeitet sie und setzt agent_status = "processed".
    Keine Entscheidung löst hier eine Website-Aktion aus. Lokal (ohne Claude-Viewer) ist der Speicher nicht verfügbar. */
 const DB = { state: "loading", reason: "", ns: null, canWrite: false, decisions: [], fromCache: false, error: "" };
-const DEC = { research_retry: ["Research nachholen", "blue"], approve: ["Approve", "green"], approve_override: ["Approve (Override)", "amber"], request_changes: ["Request changes", "amber"], reject: ["Reject", "red"], retry: ["Erneut versucht", "blue"] };
+const DEC = { wp_retry: ["WordPress-Draft erneut", "blue"], research_retry: ["Research nachholen", "blue"], approve: ["Approve", "green"], approve_override: ["Approve (Override)", "amber"], request_changes: ["Request changes", "amber"], reject: ["Reject", "red"], retry: ["Erneut versucht", "blue"] };
 const AGENT = { pending: ["Waiting for agent", "amber"], processed: ["Processed by agent", "green"], superseded: ["Test phase · superseded", ""] };
 async function initDb() {
   const fail = (reason, error = "") => { DB.state = "unavailable"; DB.reason = reason; DB.error = error; dbChanged(); };
@@ -905,6 +905,49 @@ function localMatrix() {
       { key: "rec", label: "Recommendation", render: r => `${chip(r.e.recommendation, LREC[r.e.recommendation] || "", true)}<div class="s">${esc(r.e.why)}</div>${r.recommendation ? `<div class="s">Notiz: ${esc(r.recommendation)}</div>` : ""}` },
     ] });
 }
+/* ------------------------------------------------------------ WordPress: Gate 2 → Draft → QA → Gate 3 → Live (Schreibsperre im Runner: tools/wordpress.py guard) */
+const WP_LABEL = { queued: ["WordPress Draft queued", "blue"], preparing: ["WordPress Draft wird vorbereitet", "blue"], draft_ready: ["WordPress Draft ready · QA läuft", "blue"],
+  qa_failed: ["WordPress QA failed", "red"], qa_passed: ["Ready for Publish", "green"], blocked: ["WordPress blocked", "red"], publish_queued: ["Publish freigegeben · Agent startet", "blue"],
+  publishing: ["Wird veröffentlicht …", "blue"], published: ["Published · Monitoring", "green"], publish_failed: ["Publish fehlgeschlagen", "red"], rolled_back: ["Zurückgerollt", "amber"] };
+const QA_ST = { passed: ["Passed", "green"], failed: ["Failed", "red"], manual_review_required: ["Manual review required", "amber"] };
+function wpLinks(wp, mode) {
+  return (wp.documents || []).map(d => `<div class="row">${d.role === "companion" ? chip("Companion", "amber") : ""}
+    ${d.preview_link ? `<a class="btn primary" href="${esc(d.preview_link)}" target="_blank" rel="noopener">WordPress Preview ↗</a>` : ""}
+    ${mode === "OPTIMIZE" && d.original_link ? `<a class="btn" href="${esc(d.original_link)}" target="_blank" rel="noopener">Original Page ↗</a>` : ""}
+    ${d.edit_link ? `<a class="btn" href="${esc(d.edit_link)}" target="_blank" rel="noopener">In Elementor bearbeiten ↗</a>` : ""}<span class="s path">${esc(d.url || "")}</span></div>`).join("") || `<span class="mini">Noch kein WordPress-Draft.</span>`;
+}
+function wpQa(qa) {
+  if (!qa) return `<span class="mini">QA noch nicht gelaufen.</span>`;
+  const row = (k, l) => { const x = qa[k] || {}, [t, c] = QA_ST[x.status] || [x.status || "–", ""]; return `<div class="k">${l}</div><div>${chip(t, c, true)}${(x.issues || []).length ? ul(x.issues) : ""}${x.note ? `<div class="s">${esc(x.note)}</div>` : ""}</div>`; };
+  return `<div class="kv">${row("content", "Content QA")}${row("seo", "SEO QA")}${row("technical", "Technical/Layout QA")}${row("visual", "Visual QA")}</div>`;
+}
+function wpCounts(c) { return c ? `${fmtN(c.NEW)} NEW · ${fmtN(c.EDIT)} EDIT · ${fmtN(c.KEEP)} KEEP · ${fmtN(c.REMOVE)} REMOVE` : "–"; }
+/** Drawer-Abschnitt für WordPress-Spalten; Gate 3 nur in „Ready for Publish“ */
+function wpAction(o, w, col, canWrite) {
+  const wp = w.wordpress || {}, [l, c] = WP_LABEL[wp.status] || ["WordPress: nicht gestartet", ""];
+  const head = `<div class="wf-action"><h3>${esc(l)}</h3><div class="kv"><div class="k">Modus</div><div>${typeChip(wp.mode || o.type)} ${wp.mode === "OPTIMIZE" ? `<span class="s">Review-Version als separater Draft – die Live-Seite bleibt bis Gate 3 unverändert</span>` : `<span class="s">neue Elementor-Seite, Status draft</span>`}</div>
+    <div class="k">Gate 2</div><div>${fmtDateTime(w.gate2?.at)}${w.gate2?.comment ? ` · „${esc(w.gate2.comment)}“` : ""}</div>
+    ${wp.block_reason ? `<div class="k">Blockiert</div><div class="down"><code>${esc(wp.block_reason)}</code> ${esc(wp.block_detail || "")}</div>` : ""}</div>
+    <div class="mt">${wpLinks(wp, wp.mode)}</div>`;
+  if (col === "live") return `${head}<div class="kv mt"><div class="k">Veröffentlicht</div><div>${fmtDateTime(wp.published?.at)}</div><div class="k">Monitoring</div><div>T+7 · T+14 · T+30 · T+60 · T+90 (Ranking Protection + Kannibalisierung)</div></div></div>`;
+  if (col !== "publish") return `${head}<h4>WordPress QA</h4>${wpQa(wp.qa)}${["blocked", "qa_failed"].includes(wp.status) ? `<div class="row mt"><button class="btn primary" data-act="wp_retry" ${canWrite ? "" : "disabled"}>WordPress-Draft erneut vorbereiten</button><span class="mini" data-msg></span></div>` : ""}</div>`;
+  // Gate 3
+  const rb = wp.rollback || {}, needRb = wp.mode === "OPTIMIZE", rbOk = !needRb || rb.status === "available";
+  const visualManual = (wp.qa || {}).overall === "passed_manual_visual";
+  return `${head}<div class="kv mt">
+      <div class="k">Drive Change Set</div><div>${w.production?.doc_url ? `<a href="${esc(w.production.doc_url)}" target="_blank" rel="noopener">${esc(w.production.doc_title || "Entwurf")} ↗</a>` : "–"}</div>
+      <div class="k">Changes</div><div><b>${esc(wpCounts(wp.change_counts))}</b></div>
+      <div class="k">Ranking Risk</div><div>${o.ranking_protection ? riskChip(o.ranking_protection.loss_risk.level, "") : wp.mode === "CREATE" ? "– (neue Seite)" : "–"}</div>
+      <div class="k">Cannibalization</div><div>${o.cannibalization ? riskChip(o.cannibalization.risk, "") : "–"}</div>
+      <div class="k">WordPress QA</div><div>${chip(visualManual ? "Passed · Visual: manual review" : (wp.qa?.overall === "passed" ? "Passed" : wp.qa?.overall || "–"), wp.qa?.overall?.startsWith("passed") ? "green" : "red", true)}</div>
+      <div class="k">Rollback</div><div>${needRb ? (rbOk ? chip("Pre-change snapshot gesichert", "green", true) + `<span class="s"> ${fmtDateTime((wp.snapshots || [])[0]?.taken_at)}${rb.secondary ? " · zusätzlich " + esc(rb.secondary) : ""}</span>` : chip("Rollback protection unavailable", "red", true) + ul(rb.why || [])) : `<span class="s">Neue Seite – Rollback = wieder auf Entwurf setzen</span>`}</div></div>
+    <h4>Was wird beim Publish tatsächlich verändert?</h4>${ul(wp.publish_summary || [])}
+    <details class="mt"><summary class="mini">WordPress QA im Detail</summary>${wpQa(wp.qa)}</details>
+    ${visualManual ? `<label class="row mt"><input type="checkbox" id="wf-vis"> Ich habe die Vorschau auf Desktop, Tablet und Mobile geprüft (Visual QA ist automatisch nicht möglich)</label>` : ""}
+    <label class="mini mt" for="wf-c3" style="display:block">Kommentar (optional)</label><textarea id="wf-c3"></textarea>
+    <div class="row"><button class="btn primary" data-act="gate3" ${canWrite && rbOk ? "" : "disabled"}>Änderungen veröffentlichen</button><span class="mini" data-msg></span></div>
+    <p class="s">Gate 3: Erst jetzt darf der Agent ${wp.mode === "OPTIMIZE" ? "die freigegebene Draft-Version in die Live-Seite übernehmen (URL, Slug, Canonical, Indexierung bleiben unverändert)" : "den Draft veröffentlichen"}. ${rbOk ? "" : "<b>Gesperrt: Rollback protection unavailable.</b>"}</p></div>`;
+}
 /* ------------------------------------------------------------ Research-Retry: fehlende Research gezielt nachholen (generisch für alle Opportunities) */
 const COMP_ST = { complete: ["Complete", "green"], missing: ["Missing", "amber"], failed: ["Failed", "red"], stale: ["Veraltet", "amber"], blocked_budget: ["Budget-Reserve", ""], blocked: ["Blockiert", "red"], "n/a": ["n/a", ""] };
 const RR_LABEL = { queued: ["Research retry queued", "blue"], running: ["Research running", "blue"], complete: ["Research complete", "green"], blocked: ["Research blocked", "red"] };
@@ -1063,7 +1106,9 @@ const WF_COLS = [
   ["review", "Zur Prüfung", "Gate 1 steht aus"],
   ["production", "Freigegeben / Produktion", "Gate 1 erteilt · Claude produziert"],
   ["draft", "Entwurf fertig / Review", "Dein Review"],
-  ["final", "Final freigegeben", "Gate 2 · bereit für WordPress-Draft"],
+  ["wordpress", "WordPress-Draft & QA", "Gate 2 erteilt · Draft in WordPress"],
+  ["publish", "Ready for Publish", "Gate 3 · deine Sichtprüfung"],
+  ["live", "Live / Monitoring", "veröffentlicht · T+7…T+90"],
 ];
 const WF = { items: {}, live: false, trigger: { state: "unknown", note: "" } };
 const BLOCK_TEXT = { workflow_state_unavailable: "Workflow-State aus dem Artifact nicht lesbar", repository_unavailable: "Repository im Agentenlauf nicht verfügbar", wrong_branch: "Falscher Branch im Agentenlauf", repository_outdated: "Repository nicht aktuell", runbook_missing: "Ablaufbeschreibung fehlt", business_profile_missing: "Business-Profil fehlt", style_guide_missing: "Content-Style-Guide fehlt", drive_tool_unavailable: "Google Drive ist im Agentenlauf nicht verfügbar (Konnektor nicht an der Routine hinterlegt)", drive_folder_unavailable: "Kein Schreibzugriff auf den Ordner „Claude Landingpages“", production_error: "Fehler während der Produktion" };
@@ -1084,7 +1129,7 @@ const wfLegacy = w => w?.gate1?.status === "approved" && !wfStrategy(w).ok && w.
 let WF_PENDING_OPEN = null;
 function wfCol(w) {
   if (!w || w.gate1?.status !== "approved") return "review";
-  if (w.gate2?.status === "approved") return "final";
+  if (w.gate2?.status === "approved") { const s = w.wordpress?.status; return s === "published" || s === "rolled_back" ? "live" : ["qa_passed", "publish_queued", "publishing", "publish_failed"].includes(s) ? "publish" : "wordpress"; }
   if (wfLegacy(w)) return "review";
   if (w.review?.status === "revision_requested") return "production";
   if (w.production?.status === "draft_ready") return "draft";
@@ -1093,7 +1138,7 @@ function wfCol(w) {
 function wfLabel(w) {
   const c = wfCol(w);
   if (c === "review") return wfLegacy(w) || w?.gate1?.superseded?.length ? ["Strategie-Freigabe ausstehend", "amber"] : ["Zur Prüfung", ""];
-  if (c === "final") return ["Final approved · Ready for WordPress Draft", "green"];
+  if (["wordpress", "publish", "live"].includes(c)) return WP_LABEL[w.wordpress?.status] || ["Gate 2 erteilt · WordPress Draft ausstehend", "amber"];
   if (c === "draft") return [`Entwurf v${w.production.version || 1} · Review`, "blue"];
   if (w.review?.status === "revision_requested" && w.production?.status !== "blocked") return [w.production?.status === "running" ? "Revision in Arbeit" : "Revision requested · Waiting for agent", "amber"];
   if (w.production?.status === "running" || w.production?.status === "in_progress") return ["Producing", "blue"];
@@ -1139,7 +1184,7 @@ function wfCard({ id, o }) {
   </article>`;
 }
 pages.approvals = () => {
-  view().innerHTML = `<div class="page-head"><div><h1>Workflow</h1><div class="sub">Gate 1 (Strategie) → Entwurf in Google Drive → dein Review → Gate 2 (final). Freigaben ändern nie die Website und veröffentlichen nichts.</div></div>
+  view().innerHTML = `<div class="page-head"><div><h1>Workflow</h1><div class="sub">Gate 1 (Strategie) → Entwurf in Google Drive → Gate 2 (Inhalt) → WordPress-Draft + QA → Gate 3 (Publish) → Live + Monitoring. Gate 1 und 2 ändern nie die Website; veröffentlicht wird nur nach Gate 3.</div></div>
     <a class="btn" href="${esc(S.d.workflow?.drive_folder_url || "#")}" target="_blank" rel="noopener">Drive-Ordner „Claude Landingpages“ ↗</a></div>
     <div id="store-notice"></div>
     <div class="wf-board mt" id="wf-board"></div>
@@ -1198,7 +1243,8 @@ function openCard(id, opts = {}) {
         ${w.production.preflight ? `<div class="k">Preflight</div><div class="s">${Object.entries(w.production.preflight).map(([k, v]) => `${v ? "✓" : "✗"} ${esc(k)}`).join(" · ")}</div>` : ""}` : ""}</div>
       ${w.production?.status === "blocked" ? `<div class="row mt"><button class="btn primary" data-act="retry" ${canWrite ? "" : "disabled"}>Erneut versuchen</button><span class="mini" data-msg></span></div><p class="s">Stößt den Agenten erneut an. Deine Gate-1-Freigabe und dein Kommentar bleiben unverändert.</p>`
         : w.production?.status === "running" ? "" : `<div class="row mt"><button class="btn" data-act="retrigger" ${canWrite ? "" : "disabled"}>Agentenlauf erneut anstoßen</button><span class="mini" data-msg></span></div>`}</div>`;
-  else if (col === "draft" || col === "final") { const p = w.production || {};
+  else if (["wordpress", "publish", "live"].includes(col)) action = wpAction(o, w, col, canWrite);
+  else if (col === "draft") { const p = w.production || {};
     action = `<div class="wf-action"><h3>${esc(l)}</h3>
       <div class="row"><a class="btn primary" href="${esc(p.doc_url)}" target="_blank" rel="noopener">Entwurf öffnen ↗</a><span class="s">${esc(p.doc_title || "")}</span></div>
       ${(p.documents || []).filter(d => d.role === "companion").map(d => `<div class="row mt"><a class="btn" href="${esc(d.doc_url)}" target="_blank" rel="noopener">Companion öffnen ↗</a><span class="s">${esc(d.doc_title || d.url)} · gehört zum selben Change Set</span></div>`).join("")}
@@ -1208,8 +1254,8 @@ function openCard(id, opts = {}) {
       <div class="k">Content-Strategie</div><div>${esc(p.strategy_summary || "–")}</div>
       ${w.gate2?.status === "approved" ? `<div class="k">Gate 2</div><div>${fmtDateTime(w.gate2.at)}${w.gate2.comment ? ` · „${esc(w.gate2.comment)}“` : ""}</div>` : ""}</div>
       ${col === "draft" ? `<label class="mini mt" for="wf-c2" style="display:block">Kommentar (Pflicht bei „Änderungen anfordern“)</label><textarea id="wf-c2" placeholder="z. B. Einstieg kürzer, FAQ zu Kosten ergänzen"></textarea>
-      <div class="row"><button class="btn" data-act="revise" ${canWrite ? "" : "disabled"}>Änderungen anfordern</button><button class="btn primary" data-act="final" ${canWrite ? "" : "disabled"}>Final freigeben</button><span class="mini" data-msg></span></div>
-      <p class="s">„Final freigeben“ ist Gate 2: Der Text ist fachlich freigegeben und darf für die spätere WordPress-Umsetzung genutzt werden. Es wird nichts veröffentlicht.</p>` : ""}</div>`; }
+      <div class="row"><button class="btn" data-act="revise" ${canWrite ? "" : "disabled"}>Änderungen anfordern</button><button class="btn primary" data-act="final" ${canWrite ? "" : "disabled"}>Inhalt freigeben (Gate 2)</button><span class="mini" data-msg></span></div>
+      <p class="s">Gate 2: Der Inhalt ist freigegeben. Claude bereitet danach einen <b>WordPress-Draft</b> vor (CREATE: neue Seite als Entwurf · OPTIMIZE: separate Review-Version, die Live-Seite bleibt unverändert). Es wird nichts veröffentlicht – dafür gibt es Gate 3.</p>` : ""}</div>`; }
   $("#wf-panel-body").innerHTML = `<div class="wf-ph"><div><div class="row"><span class="wf-id">${esc(id)}</span>${typeChip(o.type)}${o.test ? chip("TEST", "amber") : prioChip(o.priority)}${chip(l, lc, true)}</div><h2 id="wf-title">${esc(o.name)}</h2></div><button class="btn" data-close aria-label="Schließen">✕</button></div>
     ${canWrite ? "" : `<div class="notice">${esc(storeStatus()[2])}</div>`}
     ${action}
@@ -1263,9 +1309,20 @@ async function wfAct(act, c) {
     patch = { review: { status: "revision_requested", comment, at: now, for_version: cur?.production?.version || 1 } };
     ev = { gate: 2, decision: "request_changes", comment };
   } else if (act === "final") {
-    const comment = ($("#wf-c2")?.value || "").trim();
-    patch = { gate2: { status: "approved", at: now, comment }, review: { status: "approved", at: now, comment } };
+    const comment = ($("#wf-c2")?.value || "").trim(), mode = cur?.gate1?.change_set?.action || (o.test ? "CREATE" : agentPlan(o).action);
+    patch = { gate2: { status: "approved", at: now, comment }, review: { status: "approved", at: now, comment },
+      wordpress: { status: "queued", mode: mode === "CREATE" ? "CREATE" : "OPTIMIZE", requested_at: now, draft_version: 0 } };
     ev = { gate: 2, decision: "approve", comment };
+  } else if (act === "wp_retry") {
+    patch = { wordpress: { ...(cur?.wordpress || {}), status: "queued", block_reason: null, block_detail: null, retry_requested_at: now } };
+    ev = { gate: 2, decision: "wp_retry", comment: "" };
+  } else if (act === "gate3") {
+    const wp = cur?.wordpress || {}, comment = ($("#wf-c3")?.value || "").trim(), vis = !!$("#wf-vis")?.checked;
+    if (wp.status !== "qa_passed") return say("Gate 3 ist nur für eine Version mit bestandener WordPress QA möglich.");
+    if (wp.qa?.overall === "passed_manual_visual" && !vis) return say("Bitte zuerst die Sichtprüfung (Desktop/Tablet/Mobile) bestätigen.");
+    if (wp.mode === "OPTIMIZE" && wp.rollback?.status !== "available") return say("Rollback protection unavailable – Gate 3 gesperrt.");
+    patch = { gate3: { status: "approved", at: now, comment, for_draft_version: wp.draft_version, visual_review_confirmed: vis }, wordpress: { ...wp, status: "publish_queued" } };
+    ev = { gate: 3, decision: "approve", comment: `[Publish v${wp.draft_version}${vis ? " · Sichtprüfung bestätigt" : ""}] ${comment}` };
   } else if (act === "retry") {
     if (cur?.production?.status !== "blocked") return say("Nur blockierte Aufträge können erneut versucht werden.");
     patch = { production: { status: "waiting", retry_requested_at: now, block_reason: null, block_detail: null } };
@@ -1275,9 +1332,9 @@ async function wfAct(act, c) {
   try {
     if (cur) await ref.update(patch); else await ref.set({ opp_id: id, title: o.name, client: S.client, schema: 1, ...patch });
     const eid = `${S.client}--${id}--g${ev.gate}--${Date.now()}`.replace(/[^A-Za-z0-9_.~:@+-]/g, "-");
-    await DB.ns.collection("decisions").doc(eid).set({ schema: 1, client: S.client, item_id: id, item_title: o.name, gate: ev.gate, decision: ev.decision, comment: ev.comment, decided_at: now, agent_status: act === "final" ? "processed" : "pending", agent_processed_at: act === "final" ? now : null, agent_note: act === "final" ? "Gate 2 – keine Agentenaktion nötig (kein Publishing)" : null });
+    await DB.ns.collection("decisions").doc(eid).set({ schema: 1, client: S.client, item_id: id, item_title: o.name, gate: ev.gate, decision: ev.decision, comment: ev.comment, decided_at: now, agent_status: "pending", agent_processed_at: null, agent_note: act === "final" ? "Gate 2 – WordPress-Draft wird vorbereitet (kein Publishing)" : null });
     say("Gespeichert.");
-    if (act === "approve" || act === "revise" || act === "retry") { await wfTrigger(id, act); say("Gespeichert. " + WF.trigger.note); }
+    if (["approve", "revise", "retry", "final", "wp_retry", "gate3"].includes(act) && !(o.test && act === "final")) { await wfTrigger(id, act); say("Gespeichert. " + WF.trigger.note); }
   } catch (e) { say(`Nicht gespeichert (${e.code || "error"}): ${e.message || ""}`); $("#wf-panel-body").querySelectorAll("[data-act]").forEach(b => b.disabled = false); }
 }
 /** Agentenlauf anstoßen: geplante Aufgabe (nur auf Anstoß) über den Konnektor "Claude Code Remote". Ohne Konnektor bleibt die Freigabe gespeichert und wird beim nächsten Lauf verarbeitet. */

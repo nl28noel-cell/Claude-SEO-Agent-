@@ -1,0 +1,355 @@
+#!/usr/bin/env python3
+"""WordPress-Produktion: Gate 2 → WordPress Draft → WordPress QA → Gate 3 → Live Update → Monitoring.
+
+Dieses Modul ruft WordPress nie selbst auf. Der Runner liest/schreibt über den WordPress.com-Konnektor (Jetpack) und
+MUSS vor JEDEM Schreibaufruf `guard` ausführen – Exit ≠ 0 = Aufruf verboten. Die Sperre liegt damit im Code
+(Status der Artifact-db), nicht nur im Prompt.
+
+    python3 tools/wordpress.py preflight <observed.json>                       -> WordPress-Preflight (Exit 2 = blocked)
+    python3 tools/wordpress.py guard <op> <wf_doc.json> [--post <id>] [--fields a,b] [--status s] [--slug s]
+                                                                               -> Schreibsperre (Exit 0 = erlaubt, 3 = verboten)
+    python3 tools/wordpress.py snapshot <page_edit.json> <yoast.json> <out.json> -> Pre-change Snapshot (+ SHA-256)
+    python3 tools/wordpress.py verify-snapshot <snapshot.json> [--sha <hash>]  -> vollständig & unverändert?
+    python3 tools/wordpress.py qa <change_set.json> <original_edit.json|-> <draft_edit.json> <draft_yoast.json> [--opp OPP]
+                                                                               -> WordPress QA (Content · SEO · Technical · Visual)
+Konfiguration: clients/<client>/client.json → "wordpress".
+"""
+import hashlib, json, os, re, sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DEFAULT_CLIENT = "spreewald-luftaufnahmen"
+
+# Schreiboperationen und ihre Bedingungen. Alles, was hier nicht steht, ist verboten.
+DRAFT_OPS = {"create_draft", "update_draft", "yoast_update_draft", "media_upload"}
+LIVE_OPS = {"live_update", "publish_draft", "yoast_update_live"}
+CONFIRM_OPS = {"delete", "slug_change_live", "redirect", "canonical_change", "robots_change", "settings_change", "plugin_change", "menu_change", "unpublish"}
+SENSITIVE_FIELDS = {"slug": "slug_change_live", "status": "unpublish", "canonical": "canonical_change", "noindex": "robots_change",
+                    "nofollow": "robots_change", "noarchive": "robots_change", "nosnippet": "robots_change", "noimageindex": "robots_change"}
+STATES = ("not_started", "queued", "preparing", "draft_ready", "qa_failed", "qa_passed", "blocked", "publish_queued", "publishing", "published", "publish_failed", "rolled_back")
+
+
+def cfg(client=DEFAULT_CLIENT):
+    c = json.load(open(os.path.join(ROOT, "clients", client, "client.json"), encoding="utf-8"))
+    return c.get("wordpress") or {}
+
+
+# ---------------------------------------------------------------- Preflight
+def preflight(obs, client=DEFAULT_CLIENT):
+    """obs (vom Runner beobachtet): {tools: [...geladene Tool-Namen], sites: [{blog_id, site_url, platform}], role, abilities: [...]}.
+    Nie auf eine andere Website ausweichen: Ziel ausschließlich per konfigurierter Blog-ID + Domain."""
+    c = cfg(client)
+    want_id, want_dom = str(c.get("blog_id")), (c.get("domain") or "").lower()
+    tools = set(obs.get("tools") or [])
+    checks = {"connector_available": any(t.startswith("mcp__WordPress_com__") for t in tools)}
+    site = next((s for s in obs.get("sites") or [] if str(s.get("blog_id")) == want_id), None)
+    checks["target_site"] = bool(site) and want_dom in (site.get("site_url") or "").lower()
+    checks["correct_blog_id"] = bool(site)
+    need_tools = {f"mcp__WordPress_com__{t}" for t in c.get("required_tools", [])}
+    checks["read_write_capabilities"] = need_tools <= tools and obs.get("role") in tuple(c.get("allowed_roles", ["administrator", "editor"]))
+    checks["yoast_abilities"] = set(c.get("required_abilities", [])) <= set(obs.get("abilities") or [])
+    reason = None
+    if not checks["connector_available"]:
+        reason = "wp_connector_unavailable"
+    elif not checks["correct_blog_id"] or not checks["target_site"]:
+        reason = "wp_wrong_site"
+    elif not checks["read_write_capabilities"]:
+        reason = "wp_capabilities_missing"
+    elif not checks["yoast_abilities"]:
+        reason = "wp_yoast_unavailable"
+    return {"ok": reason is None, "checks": checks, "block_reason": reason, "blog_id": want_id,
+            "detail": {"wp_connector_unavailable": "WordPress.com-Konnektor im Lauf nicht verfügbar – kein WordPress-Schreibzugriff",
+                       "wp_wrong_site": f"Zielwebsite {want_dom} (Blog-ID {want_id}) nicht erreichbar – nie auf eine andere Website ausweichen",
+                       "wp_capabilities_missing": "Benötigte Lese-/Schreibrechte oder Werkzeuge fehlen",
+                       "wp_yoast_unavailable": "Yoast-Fähigkeiten der Website nicht verfügbar"}.get(reason)}
+
+
+# ---------------------------------------------------------------- Harte Schreibsperre
+def guard(op, w, post=None, fields=None, status=None, slug=None, live_slugs=(), client=DEFAULT_CLIENT):
+    """Darf diese WordPress-Schreiboperation jetzt ausgeführt werden? w = Workflow-Dokument (Artifact-db)."""
+    c, wp = cfg(client), (w or {}).get("wordpress") or {}
+    fields = set(fields or [])
+    deny = lambda code, why: {"allowed": False, "op": op, "code": code, "why": why}  # noqa: E731
+    if op in CONFIRM_OPS:
+        conf = [x for x in (w.get("confirmations") or []) if x.get("op") == op and str(x.get("post")) == str(post) and x.get("status") == "confirmed"]
+        if not conf:
+            return deny("requires_explicit_confirmation", f"{op} nie automatisch – gesonderte ausdrückliche Bestätigung nötig")
+        return {"allowed": True, "op": op, "code": "confirmed", "why": "ausdrücklich bestätigt"}
+    if op not in DRAFT_OPS | LIVE_OPS:
+        return deny("unknown_operation", "Operation nicht vorgesehen")
+    if (w.get("gate2") or {}).get("status") != "approved":
+        return deny("gate2_missing", "Ohne Gate 2 kein WordPress-Schreibzugriff")
+    # sensible Felder sind nie Teil eines automatischen Schreibvorgangs
+    bad = sorted(f for f in fields if f in SENSITIVE_FIELDS and not (op in ("create_draft",) and f in ("slug", "status")))
+    if bad:
+        return deny("sensitive_field", f"Felder {', '.join(bad)} nie automatisch ändern")
+    registry = {str(d.get("draft_post_id")) for d in wp.get("documents") or [] if d.get("draft_post_id")}
+    if op == "create_draft":
+        if status not in ("draft", None):
+            return deny("status_not_draft", "Neue Seiten nur mit status=draft")
+        if slug and slug in set(live_slugs):
+            return deny("slug_in_use", f"Slug „{slug}“ gehört einer veröffentlichten Seite")
+        return {"allowed": True, "op": op, "code": "ok", "why": "Draft nach Gate 2"}
+    if op in ("update_draft", "yoast_update_draft", "media_upload"):
+        if op != "media_upload" and str(post) not in registry:
+            return deny("not_agent_draft", "Nur vom Agenten angelegte Draft-Seiten dürfen bearbeitet werden – nie eine veröffentlichte Seite")
+        if status and status != "draft":
+            return deny("status_not_draft", "Draft bleibt draft")
+        return {"allowed": True, "op": op, "code": "ok", "why": "Bearbeitung des eigenen Drafts"}
+    # LIVE: Gate 3 + exakte Version + QA + Snapshot + Rollback
+    g3 = w.get("gate3") or {}
+    if g3.get("status") != "approved":
+        return deny("gate3_missing", "gate3 != approved – jeder Live-Schreibvorgang gesperrt")
+    if g3.get("for_draft_version") != wp.get("draft_version"):
+        return deny("gate3_version_mismatch", "Gate 3 bezieht sich auf eine andere Draft-Version")
+    if wp.get("qa", {}).get("overall") not in ("passed", "passed_manual_visual"):
+        return deny("qa_not_passed", "WordPress QA nicht bestanden")
+    if wp.get("qa", {}).get("overall") == "passed_manual_visual" and not g3.get("visual_review_confirmed"):
+        return deny("visual_review_missing", "Sichtprüfung (Desktop/Tablet/Mobile) nicht bestätigt")
+    if op in ("live_update", "yoast_update_live"):
+        rb = wp.get("rollback") or {}
+        if rb.get("status") != "available":
+            return deny("rollback_unavailable", "Rollback protection unavailable – kein Live-Update")
+        targets = {str(d.get("wp_post_id")) for d in wp.get("documents") or [] if d.get("wp_post_id")}
+        if str(post) not in targets:
+            return deny("not_in_change_set", "Seite gehört nicht zum freigegebenen Change Set")
+        snaps = {str(s.get("post")) for s in wp.get("snapshots") or [] if s.get("verified")}
+        if str(post) not in snaps:
+            return deny("snapshot_missing", "Kein verifizierter Pre-change Snapshot für diese Seite")
+    if op == "publish_draft" and str(post) not in registry:
+        return deny("not_agent_draft", "Nur der freigegebene Agenten-Draft darf veröffentlicht werden")
+    return {"allowed": True, "op": op, "code": "ok", "why": "Gate 3 erteilt, QA bestanden, Rollback gesichert"}
+
+
+# ---------------------------------------------------------------- Snapshot & Rollback
+def snapshot(page_edit, yoast, taken_at):
+    """Pre-change Snapshot einer Live-Seite: Elementor-Daten, Content, Yoast, Seiteneinstellungen, Zeitstempel."""
+    d = page_edit.get("data", page_edit)
+    m = d.get("meta") or {}
+    y = (yoast.get("data") if isinstance(yoast, dict) else yoast) or []
+    y = y[0] if isinstance(y, list) and y else y
+    snap = {"post": d.get("id"), "slug": d.get("slug"), "status": d.get("status"), "link": d.get("link"), "template": d.get("template"),
+            "modified": d.get("modified"), "title": (d.get("title") or {}).get("raw") if isinstance(d.get("title"), dict) else d.get("title"),
+            "content_raw": (d.get("content") or {}).get("raw") if isinstance(d.get("content"), dict) else d.get("content"),
+            "elementor": {k: m.get(k) for k in ("_elementor_data", "_elementor_page_settings", "_elementor_edit_mode", "_elementor_template_type", "_elementor_conditions") if k in m},
+            "yoast": {k: y.get(k) for k in ("seo_title", "meta_description", "focus_keyphrase", "canonical", "noindex", "nofollow", "schema_page_type", "open_graph_title", "open_graph_description")} if isinstance(y, dict) else None,
+            "taken_at": taken_at}
+    snap["sha256"] = hashlib.sha256(json.dumps(snap, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+    return snap
+
+
+def verify_snapshot(snap, sha=None):
+    """Vollständig (alle Rollback-relevanten Teile vorhanden, Elementor-JSON lesbar) und unverändert (Hash)?"""
+    missing = [k for k in ("post", "slug", "status", "taken_at") if not snap.get(k)]
+    el = snap.get("elementor") or {}
+    try:
+        tree = json.loads(el["_elementor_data"]) if isinstance(el.get("_elementor_data"), str) else el.get("_elementor_data")
+        if not isinstance(tree, list) or not tree:
+            missing.append("_elementor_data")
+    except Exception:
+        missing.append("_elementor_data (nicht lesbar)")
+    if el.get("_elementor_edit_mode") != "builder":
+        missing.append("_elementor_edit_mode")
+    if not snap.get("yoast"):
+        missing.append("yoast")
+    body = {k: v for k, v in snap.items() if k != "sha256"}
+    actual = hashlib.sha256(json.dumps(body, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+    ok_hash = actual == (sha or snap.get("sha256"))
+    return {"verified": not missing and ok_hash, "missing": missing, "hash_ok": ok_hash, "sha256": actual}
+
+
+def rollback_status(snapshots, capabilities):
+    """Rollback geschützt, wenn: jede Ziel-Seite einen verifizierten Snapshot hat, der Snapshot dauerhaft gespeichert ist (Drive)
+    und der Schreibweg für _elementor_data + Yoast nachweislich funktioniert (Schreibtest). WP-Revisionen sind zweite Linie."""
+    why = []
+    if not snapshots:
+        why.append("kein Pre-change Snapshot")
+    if any(not s.get("verified") for s in snapshots or []):
+        why.append("Snapshot nicht verifiziert")
+    if any(not s.get("stored_doc_id") for s in snapshots or []):
+        why.append("Snapshot nicht dauerhaft gespeichert (Drive)")
+    if not capabilities.get("elementor_meta_write_verified"):
+        why.append("Schreiben von _elementor_data nicht durch Schreibtest bestätigt")
+    if not capabilities.get("yoast_write_available"):
+        why.append("Yoast-Schreibweg nicht verfügbar")
+    return {"status": "available" if not why else "unavailable", "why": why,
+            "secondary": "WordPress-Revisionen (wpcom-manage-revisions)" if capabilities.get("revisions_available") else None}
+
+
+# ---------------------------------------------------------------- Elementor-Analyse & QA
+def _tree(x):
+    d = x.get("data", x) if isinstance(x, dict) else {}
+    raw = ((d.get("meta") or {}).get("_elementor_data")) if "meta" in d else d.get("_elementor_data")
+    return json.loads(raw) if isinstance(raw, str) else (raw or [])
+
+
+def _strip(h):
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", h or "")).strip()
+
+
+def widgets(tree):
+    """Flache Liste der Widgets in Reihenfolge: (id, type, text, extras)."""
+    out = []
+    def walk(nodes):
+        for n in nodes:
+            wt = n.get("widgetType")
+            s = n.get("settings") or {}
+            if wt:
+                text = _strip(s.get("title") or s.get("editor") or s.get("text") or s.get("description_text") or "")
+                out.append({"id": n.get("id"), "type": wt, "tag": s.get("header_size"), "text": text,
+                            "link": (s.get("link") or {}).get("url") if isinstance(s.get("link"), dict) else None,
+                            "image": (s.get("image") or {}).get("url") if isinstance(s.get("image"), dict) else None,
+                            "images": [i.get("url") for i in s.get("carousel") or [] if isinstance(i, dict)]})
+            walk(n.get("elements") or [])
+    walk(tree)
+    return out
+
+
+def sections(ws):
+    """Abschnitte = Überschrift (H1–H3) + folgende Widgets bis zur nächsten Überschrift."""
+    secs, cur = [], {"heading": "(Anfang)", "tag": None, "widgets": []}
+    for w in ws:
+        if w["type"] == "heading" and (w.get("tag") in (None, "h1", "h2", "h3")):
+            secs.append(cur); cur = {"heading": w["text"], "tag": w.get("tag") or "h2", "widgets": [w]}
+        else:
+            cur["widgets"].append(w)
+    secs.append(cur)
+    return [s for s in secs if s["widgets"]]
+
+
+def _norm(t):
+    return re.sub(r"[^a-z0-9äöüß ]+", "", (t or "").lower()).strip()
+
+
+def qa(change_set, original, draft, draft_yoast, plan=None):
+    """WordPress QA gegen das freigegebene Change Set. change_set = {mode, sections: [{heading, action, existing}], seo: {title, meta_description, h1},
+    internal_links: [{to, anchor}], canonical, companions: [...] }. Visuelle Prüfung wird nie erfunden."""
+    res = {"content": {"status": "passed", "issues": []}, "seo": {"status": "passed", "issues": []}, "technical": {"status": "passed", "issues": []},
+           "visual": {"status": "manual_review_required", "note": "Keine visuelle Prüfung technisch möglich (Vorschau nur eingeloggt) – Desktop/Tablet/Mobile manuell prüfen"}}
+    fail = lambda part, msg: (res[part]["issues"].append(msg), res[part].__setitem__("status", "failed"))  # noqa: E731
+    dw = widgets(_tree(draft)) if draft else []
+    if not dw:
+        fail("technical", "Draft ohne Elementor-Struktur (_elementor_data leer oder nicht lesbar)")
+    ds = {_norm(s["heading"]): s for s in sections(dw)}
+    cs = {_norm(x.get("existing") if x.get("existing") not in (None, "gleich") else x["heading"]): x for x in change_set.get("sections", [])}
+    if original:
+        ow = widgets(_tree(original))
+        for s in sections(ow):
+            key = _norm(s["heading"])
+            plan_s = cs.get(key)
+            act = (plan_s or {}).get("action", "KEEP")
+            target = ds.get(_norm(plan_s["heading"])) if plan_s else ds.get(key)
+            if act == "REMOVE" or act == "REDUCE":
+                continue
+            if not target:
+                fail("content", f"Abschnitt fehlt im Draft: „{s['heading']}“ ({act})")
+                continue
+            if act == "KEEP":
+                otext = [w["text"] for w in s["widgets"]]
+                ttext = [w["text"] for w in target["widgets"]]
+                if otext != ttext:
+                    fail("content", f"[KEEP] „{s['heading']}“ wurde verändert – unbeabsichtigte Textänderung")
+                oimg = [w.get("image") for w in s["widgets"] if w.get("image")] + [i for w in s["widgets"] for i in w.get("images") or []]
+                timg = [w.get("image") for w in target["widgets"] if w.get("image")] + [i for w in target["widgets"] for i in w.get("images") or []]
+                if oimg != timg:
+                    fail("technical", f"[KEEP] „{s['heading']}“: Bilder geändert/fehlen")
+        removed = [x["heading"] for x in change_set.get("sections", []) if x.get("action") == "REMOVE" and _norm(x["heading"]) in ds]
+        for h in removed:
+            fail("content", f"[REMOVE] „{h}“ ist noch im Draft")
+    for x in change_set.get("sections", []):
+        if x.get("action") in ("NEW", "EDIT") and _norm(x["heading"]) not in ds:
+            fail("content", f"[{x['action']}] „{x['heading']}“ fehlt im Draft")
+    # Technisch: Bilder, Buttons/Links, Überschriften
+    for w in dw:
+        if w["type"] == "image" and not w.get("image"):
+            fail("technical", f"Bild-Widget ohne Bild ({w['id']})")
+        if w["type"] in ("button", "call-to-action") and w.get("link") in (None, "", "#"):
+            fail("technical", f"Button ohne Ziel: „{w['text'][:40]}“")
+    h1 = [w for w in dw if w["type"] == "heading" and w.get("tag") == "h1"]
+    if len(h1) != 1:
+        fail("seo", f"{len(h1)} H1 im Draft (erwartet 1)")
+    seo = change_set.get("seo") or {}
+    if seo.get("h1") and h1 and _norm(h1[0]["text"]) != _norm(seo["h1"]):
+        fail("seo", f"H1 weicht ab: „{h1[0]['text']}“ ≠ „{seo['h1']}“")
+    y = (draft_yoast.get("data") if isinstance(draft_yoast, dict) and "data" in draft_yoast else draft_yoast) or {}
+    y = y[0] if isinstance(y, list) and y else y
+    if seo.get("title") and (y.get("seo_title") or "") != seo["title"]:
+        fail("seo", "SEO-Title entspricht nicht dem freigegebenen Change Set")
+    if seo.get("meta_description") and (y.get("meta_description") or "") != seo["meta_description"]:
+        fail("seo", "Meta Description entspricht nicht dem freigegebenen Change Set")
+    if change_set.get("mode") == "OPTIMIZE" and change_set.get("canonical") and y.get("canonical") not in (None, "", change_set["canonical"]):
+        fail("seo", "Canonical abweichend – Canonical wird nie automatisch geändert")
+    links = [w.get("link") for w in dw if w.get("link")]
+    alltext = " ".join(w["text"] for w in dw)
+    for l in change_set.get("internal_links") or []:
+        if not any(l["to"].strip("/") in (x or "") for x in links) and l["to"].strip("/") not in json.dumps(_tree(draft)):
+            fail("seo", f"Interner Link fehlt: {l['to']}")
+    for q in (plan or {}).get("protected_queries", []):
+        if not all(t in alltext.lower() for t in q.lower().split() if t not in ("mit", "per", "drohne", "drohnen")):
+            fail("seo", f"Schutz-Query nicht mehr abgedeckt: „{q}“")
+    overall = "passed_manual_visual" if all(res[p]["status"] == "passed" for p in ("content", "seo", "technical")) else "failed"
+    res["overall"] = overall
+    return res
+
+
+def change_counts(change_set):
+    c = {"NEW": 0, "EDIT": 0, "KEEP": 0, "REMOVE": 0}
+    for x in change_set.get("sections", []):
+        a = {"REDUCE": "REMOVE", "KEEP/EDIT": "EDIT"}.get(x.get("action"), x.get("action"))
+        if a in c:
+            c[a] += 1
+    for x in change_set.get("meta_changes", []):
+        a = x.get("action")
+        if a in c:
+            c[a] += 1
+    return c
+
+
+def publish_summary(change_set, mode):
+    """Was wird beim Publish tatsächlich verändert? (kompakt, für Gate 3)"""
+    out = []
+    if mode == "CREATE":
+        out.append(f"Neue Seite wird öffentlich unter {change_set.get('slug') or '(geplanter Slug)'}")
+    for x in change_set.get("meta_changes", []):
+        out.append(f"{x['area']}: „{x.get('current', '–')}“ → „{x.get('proposed')}“")
+    for x in change_set.get("sections", []):
+        if x.get("action") in ("NEW", "EDIT", "REMOVE", "REDUCE"):
+            out.append(f"{x['action']}: {x['heading']}")
+    out.append("Unverändert: URL/Slug, Canonical, Indexierung, Menüs, Einstellungen" if mode == "OPTIMIZE" else "Indexierbar nach Veröffentlichung (Yoast-Standard)")
+    return out
+
+
+def change_log_entry(w, opp, published_at, baseline):
+    """Change-Log-Eintrag nach Publish inkl. Monitoring T+7…T+90 (Ranking Protection + Kannibalisierung)."""
+    import datetime as dt
+    d = dt.date.fromisoformat(published_at[:10])
+    wp = w.get("wordpress") or {}
+    return {"id": f"CL-WP-{opp}-{published_at[:10]}", "date": published_at[:10], "url": wp.get("documents", [{}])[0].get("url"), "title": f"{opp}: WordPress-Veröffentlichung ({wp.get('mode')})",
+            "action": "; ".join(wp.get("publish_summary") or []), "by": "Workflow-Runner nach Gate 3", "status": "monitoring", "related_opportunity": opp,
+            "ranking_protection_baseline": baseline, "cannibalization_watch": {"target": wp.get("documents", [{}])[0].get("url")},
+            "checkpoints": [{"label": f"T+{n}", "due": (d + dt.timedelta(days=n)).isoformat(), "status": "planned", "checks": ["ranking_protection", "cannibalization"]} for n in (7, 14, 30, 60, 90)]}
+
+
+if __name__ == "__main__":
+    a = sys.argv[1:]
+    if not a:
+        sys.exit(__doc__)
+    opt = lambda k: a[a.index(k) + 1] if k in a else None  # noqa: E731
+    if a[0] == "preflight":
+        r = preflight(json.load(open(a[1], encoding="utf-8"))); print(json.dumps(r, ensure_ascii=False, indent=2)); sys.exit(0 if r["ok"] else 2)
+    elif a[0] == "guard":
+        w = json.load(open(a[2], encoding="utf-8")); w = w.get("data", w)
+        r = guard(a[1], w, opt("--post"), (opt("--fields") or "").split(",") if opt("--fields") else [], opt("--status"), opt("--slug"),
+                  (opt("--live-slugs") or "").split(","))
+        print(json.dumps(r, ensure_ascii=False)); sys.exit(0 if r["allowed"] else 3)
+    elif a[0] == "snapshot":
+        import datetime as dt
+        s = snapshot(json.load(open(a[1], encoding="utf-8")), json.load(open(a[2], encoding="utf-8")), dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"))
+        json.dump(s, open(a[3], "w", encoding="utf-8"), ensure_ascii=False); print(json.dumps({**verify_snapshot(s), "out": a[3]}))
+    elif a[0] == "verify-snapshot":
+        r = verify_snapshot(json.load(open(a[1], encoding="utf-8")), opt("--sha")); print(json.dumps(r)); sys.exit(0 if r["verified"] else 1)
+    elif a[0] == "qa":
+        orig = None if a[2] == "-" else json.load(open(a[2], encoding="utf-8"))
+        r = qa(json.load(open(a[1], encoding="utf-8")), orig, json.load(open(a[3], encoding="utf-8")), json.load(open(a[4], encoding="utf-8")))
+        print(json.dumps(r, ensure_ascii=False, indent=2)); sys.exit(0 if r["overall"] != "failed" else 1)
+    else:
+        sys.exit(__doc__)

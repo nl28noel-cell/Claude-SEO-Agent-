@@ -475,7 +475,23 @@
           "url": "https://github.com/nl28noel-cell/Claude-SEO-Agent-/blob/claude/semsharks-seo-autopilot-6j1cxc/docs/wordpress-integration.md"
         }
       ]
+    },
+    {
+      "id": "EVT-027",
+      "source_ids": [
+        "SRC-029"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-24T14:07:13Z",
+      "at_precision": "exact",
+      "opp": null,
+      "action": "integration_preflight",
+      "title": "WordPress-Produktionsarchitektur vorbereitet",
+      "summary": "Gate 2 → WordPress Draft → QA → Gate 3 → Live → Monitoring implementiert und mit simulierten WordPress-Ergebnissen getestet. Keine WordPress-Seite erstellt, kopiert, geändert oder veröffentlicht.",
+      "found": "Harte Schreibsperre (tools/wordpress.py guard), WordPress-Preflight im Runner, Pre-change Snapshot + Rollback-Prüfung, WordPress QA (Visual: manual review), Gate 3 im Artifact",
+      "insight": "Rollback protection bleibt „unavailable“, bis ein freigegebener Sandbox-Test bestätigt, dass _elementor_data per Konnektor geschrieben und identisch zurückgelesen werden kann. WordPress-Konnektor ist noch nicht an der Runner-Routine."
     }
   ],
-  "updated": "2026-11-24T13:13:30Z"
+  "updated": "2026-11-24T14:07:13Z"
 }

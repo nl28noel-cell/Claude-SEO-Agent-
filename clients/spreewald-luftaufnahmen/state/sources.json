@@ -150,14 +150,16 @@
       "create_draft": "YES",
       "optimize_existing": "WITH LIMITATIONS (Draft-Kopie, Live-Seite nie direkt)",
       "preview": "YES (Login)",
-      "publish": "technisch YES – gesperrt"
+      "publish": "technisch YES – gesperrt",
+      "rollback": "unavailable – Sandbox-Schreibtest ausstehend"
     },
     "risks": [
-      "Duplicator: keine Backups",
-      "Elementor-JSON statt Inhaltsfeld",
-      "Runner-Routine hat den Konnektor noch nicht"
+      "Rollback protection unavailable bis zum Sandbox-Schreibtest (_elementor_data)",
+      "WordPress-Konnektor noch nicht an der Runner-Routine",
+      "Duplicator: keine Backups (nicht Voraussetzung; eigener Snapshot ist primärer Rollback)"
     ],
     "doc": "docs/wordpress-integration.md",
-    "credentials": "keine im Repository/Artifact"
+    "credentials": "keine im Repository/Artifact",
+    "workflow": "Gate 2 → WordPress Draft → QA → Gate 3 → Live → Monitoring (Schreibsperre: tools/wordpress.py guard)"
   }
 }

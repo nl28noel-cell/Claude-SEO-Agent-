@@ -15,6 +15,11 @@ Dokumentschema workflow/<OPP-ID>:
   review:     {status: pending|revision_requested|approved, comment, at, for_version}
   gate2:      {status: "approved", at, comment}
   trigger:    {requested_at, result}
+  wordpress:  {status: not_started|queued|preparing|draft_ready|qa_failed|qa_passed|blocked|publish_queued|publishing|published|publish_failed|rolled_back,
+               mode CREATE|OPTIMIZE, draft_version, documents[{role, url, wp_post_id, draft_post_id, edit_link, preview_link, original_link}],
+               change_counts, publish_summary[], qa{content,seo,technical,visual,overall}, snapshots[], rollback{status,why}, baseline, published{at, change_entry}}
+  gate3:      {status: approved, at, comment, for_draft_version, visual_review_confirmed}   – einzige Freigabe für Live-Schreibvorgänge (tools/wordpress.py guard)
+  confirmations: [{op, post, status: confirmed, at}] – gesonderte Bestätigung für delete/slug/redirect/canonical/robots (nie automatisch)
   research_retry: {status: queued|running|complete|blocked, requested_at, started_at, finished_at, components[], blocked[],
                    done[], attempt, block_reason, note}   – gezielter Research-Retry (kein neuer Datensatz, kein zweites Dossier)
 
@@ -71,6 +76,20 @@ def actions(docs, client=DEFAULT_CLIENT):
         if rr.get("status") == "queued" or (rr.get("status") == "running" and _age_min(rr.get("started_at")) >= STALE_RUN_MIN):
             out.append({"doc": did, "action": "research", "components": rr.get("components", []), "blocked": rr.get("blocked", []),
                         "attempt": rr.get("attempt", 1), "test": bool(w.get("test")), "version": w.get("_version")})
+        # WordPress (nach Gate 2): Draft vorbereiten bzw. – nur mit Gate 3 – veröffentlichen
+        wp = w.get("wordpress") or {}
+        if (w.get("gate2") or {}).get("status") == "approved" and not w.get("test"):
+            if wp.get("status") == "queued" or (wp.get("status") == "preparing" and _age_min(wp.get("started_at")) >= STALE_RUN_MIN):
+                out.append({"doc": did, "action": "wp_draft", "mode": wp.get("mode"), "test": False, "version": w.get("_version")})
+                continue
+            if wp.get("status") == "publish_queued":
+                sys.path.insert(0, os.path.join(ROOT, "tools"))
+                import wordpress
+                g = wordpress.guard("live_update" if wp.get("mode") == "OPTIMIZE" else "publish_draft", w,
+                                    post=(wp.get("documents") or [{}])[0].get("wp_post_id" if wp.get("mode") == "OPTIMIZE" else "draft_post_id"))
+                out.append({"doc": did, "action": "wp_publish" if g["allowed"] else "wp_publish_blocked", "reason": g["code"], "why": g["why"],
+                            "test": False, "version": w.get("_version")})
+                continue
         g1 = (w.get("gate1") or {}).get("status")
         prod = w.get("production") or {}
         rev = w.get("review") or {}
@@ -362,6 +381,17 @@ def render(src, out):
 
 def mirror(d, client=DEFAULT_CLIENT):
     docs = load_export(d)
+    # Veröffentlichte WordPress-Änderungen ins Change Log übernehmen (Monitoring T+7…T+90), idempotent
+    chp = os.path.join(ROOT, "clients", client, "state", "changes.json")
+    if os.path.exists(chp):
+        ch = json.load(open(chp, encoding="utf-8")); ids = {x["id"] for x in ch.get("changes", [])}; added = 0
+        for did, w in docs.items():
+            e = ((w.get("wordpress") or {}).get("published") or {}).get("change_entry")
+            if e and e.get("id") not in ids:
+                ch["changes"].append(e); ids.add(e["id"]); added += 1
+        if added:
+            json.dump(ch, open(chp, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+            print(f"✓ {added} WordPress-Veröffentlichung(en) ins Change Log übernommen")
     items = []
     for did, w in sorted(docs.items()):
         w = {k: v for k, v in w.items() if not k.startswith("_")}

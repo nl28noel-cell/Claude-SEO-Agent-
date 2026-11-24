@@ -58,3 +58,57 @@ Offen vor dem Bau:
 2. Backup-Strategie klären (Duplicator ohne Backups; BackWPup prüfen) – vor dem ersten Schreibzugriff.
 3. Optional ein eingeschränkter WordPress-Benutzer (Rolle Redakteur) für den Autopiloten statt Administrator.
 4. Erster Test an der privaten Seite „testumgebung“ bzw. einer neuen Test-Draft-Seite.
+
+---
+
+# Produktionsarchitektur (vorbereitet 24.11.2026 – noch kein Schreibzugriff ausgeführt)
+
+```
+Research → Gate 1 (Strategie) → Drive-Entwurf → Gate 2 (Inhalt) → WordPress Draft → WordPress QA → Gate 3 (Publish) → Live Update → Monitoring
+```
+
+| Gate | Bedeutung | Technische Wirkung |
+|---|---|---|
+| Gate 1 | Strategie, Scope, geplante Änderungen | Drive-Entwurf (Change Set) |
+| Gate 2 | Inhalt aus Drive für die technische Umsetzung | `wordpress.status = queued` → Runner erstellt **nur Drafts**. Nie Publish |
+| Gate 3 | Die in WordPress vorbereitete Version nach Sichtprüfung | `gate3.status = approved` + `for_draft_version` → einziger Weg zu Live-Schreibvorgängen |
+
+## Harte Schreibsperre (`tools/wordpress.py guard`)
+
+Vor **jedem** WordPress-Schreibaufruf: `python3 tools/wordpress.py guard <op> <wf_doc.json> [--post ID] [--fields …] [--status …] [--slug …] [--live-slugs …]`. Exit 0 = erlaubt, Exit 3 = verboten (Aufruf unterbleibt, Grund wird im Workflow vermerkt). `workflow.py queue` liefert `wp_publish` nur, wenn der Guard es erlaubt – sonst `wp_publish_blocked` mit Grund.
+
+| Operation | Bedingung |
+|---|---|
+| `create_draft` | Gate 2 · status `draft` · Slug keiner veröffentlichten Seite |
+| `update_draft`, `yoast_update_draft` | Gate 2 · nur vom Agenten angelegte Draft-Seiten (Registry `wordpress.documents[].draft_post_id`) · bleibt `draft` |
+| `live_update`, `yoast_update_live` (OPTIMIZE) | Gate 3 für genau diese Draft-Version · QA bestanden (bei manueller Sichtprüfung: bestätigt) · verifizierter Pre-change Snapshot dieser Seite · Rollback verfügbar · Seite im Change Set |
+| `publish_draft` (CREATE) | Gate 3 · QA bestanden · eigener Draft |
+| `delete`, `slug_change_live`, `redirect`, `canonical_change`, `robots_change`, `unpublish`, Einstellungen/Plugins/Menüs | **nie automatisch** – nur mit gesonderter Bestätigung (`confirmations[]`) |
+| sensible Felder (`slug`, `status`, `canonical`, `noindex`, …) bei Updates | immer verboten |
+
+## Runner: Preflight WordPress
+
+Beobachtungen sammeln (`tools` geladen, `wpcom-user-sites` gefiltert auf die Domain, Rolle via `remote:core/get-user-info` nur Feld „roles“, Fähigkeiten via `search_remote_abilities`) → `python3 tools/wordpress.py preflight obs.json`. Exit 2 → `wordpress.status = blocked` mit `block_reason` (`wp_connector_unavailable`, `wp_wrong_site`, `wp_capabilities_missing`, `wp_yoast_unavailable`). **Nie** auf eine andere verbundene Website ausweichen; Ziel immer Blog-ID aus `client.json`.
+
+## Runner: `wp_draft`
+
+1. Claim `wordpress.status = preparing`, `started_at`.
+2. **Change Set** aus dem freigegebenen Drive-Dokument + Dossier (`P_diagnosis.change_summary`, `G_structure.sections[].action`, Yoast-Vorschläge, `H_ia.internal_links`, Companions) als `change_set.json` aufbauen. Drive Change Set = verbindliche Produktionsanweisung.
+3. **CREATE**: Vorlage = bestehende Landingpage mit gleichem Aufbau (nur lesen) → `_elementor_data` kopieren, Texte gemäß Change Set ersetzen, `pages-create` mit `status: draft`, gewünschtem Slug, Titel; Yoast über `update-post-seo-data` am Draft.
+4. **OPTIMIZE**: Ranking Protection Snapshot (GSC-Queries, Klicks, Impressionen, Positionen, Title/H1/H2, Canonical, Robots, interne Links) als `wordpress.baseline` speichern → Live-Seite **nur lesen** (`context=edit`) → Review-Version als **eigene Draft-Seite** (Slug + `-entwurf-seo-autopilot`, Titel mit Präfix) mit kopiertem `_elementor_data`; darin nur [EDIT]/[NEW] ändern, [KEEP] byte-gleich, [REMOVE] nur mit Freigabe.
+5. Pro Change-Set-Dokument (inkl. Companion) ein Draft; Registry `wordpress.documents[]` mit `url`, `wp_post_id` (Live), `draft_post_id`, `edit_link` (`/wp-admin/post.php?post=<ID>&action=elementor`), `preview_link` (`/?page_id=<ID>&preview=true`), `original_link`; `draft_version + 1`.
+6. **QA**: Draft + Yoast zurücklesen → `python3 tools/wordpress.py qa change_set.json original.json|- draft.json yoast.json` (Content · SEO · Technical; Visual immer „Manual review required“, nie erfunden). `wordpress.qa`, `change_counts`, `publish_summary` schreiben → `qa_passed` bzw. `qa_failed`.
+7. **OPTIMIZE**: Pre-change Snapshot der Live-Seite (`wordpress.py snapshot` → als JSON-Datei in Drive speichern, zurücklesen, `verify-snapshot` mit Hash) → `wordpress.snapshots[]` mit `stored_doc_id`, `verified`; `rollback = rollback_status(...)` (Schreibweg `_elementor_data` muss durch den Sandbox-Test bestätigt sein, sonst **Rollback protection unavailable** → Gate 3 gesperrt).
+8. Research-Log-Eintrag „WordPress Draft vorbereitet“ (Quellen: Draft, Live-Seite, Snapshot).
+
+## Runner: `wp_publish` (nur nach Gate 3)
+
+1. `workflow.py queue` muss `wp_publish` liefern; vor jedem Aufruf erneut `wordpress.py guard`.
+2. Snapshot unmittelbar vorher erneut prüfen (Live-Seite seit Snapshot unverändert? sonst `publish_failed`, neuer Snapshot + erneutes Gate 3).
+3. **CREATE**: Draft → `status: publish` (einziger erlaubter Statuswechsel). **OPTIMIZE**: `_elementor_data` (+ Page-Settings) und Yoast-Felder des Drafts in die Live-Seite übernehmen; Titel/Slug/Canonical/Robots der Live-Seite bleiben unverändert. Danach Review-Draft **nicht** löschen (Löschen braucht Bestätigung) – nur als erledigt markieren.
+4. Zurücklesen und mit dem Draft vergleichen; bei Abweichung Rollback aus Snapshot und `publish_failed`.
+5. `wordpress.status = published`, `published.at`, `published.change_entry = wordpress.change_log_entry(...)` (Baseline + T+7/14/30/60/90 mit Ranking Protection + Kannibalisierung); `workflow.py mirror` übernimmt den Eintrag ins Change Log. Research-Log-Eintrag „Live-Update veröffentlicht“.
+
+## Rollback
+
+Primär: eigener Pre-change Snapshot (Elementor-Daten, Content, Yoast, Seiteneinstellungen, Zeitstempel, SHA-256) in Drive. Sekundär: WordPress-Revisionen (lesbar, z. B. Baudoku-Seite mit Revisionen vom 16.07.2026). Duplicator ist nicht Voraussetzung (aktuell ohne Backups). Rollback gilt erst als verfügbar, wenn der Sandbox-Test bestätigt, dass `_elementor_data` per Konnektor geschrieben und identisch zurückgelesen werden kann.

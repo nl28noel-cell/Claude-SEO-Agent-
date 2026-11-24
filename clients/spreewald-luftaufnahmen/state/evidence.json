@@ -695,6 +695,19 @@
       "meta": {
         "note": "Nur lesend: Seitenliste inkl. Entwürfe, Seite 5401 im Bearbeitungskontext (Struktur), Remote-Fähigkeiten, Rolle, Yoast-Daten 5401, Backup-Status, Umgebung. Keine Zugangsdaten gespeichert."
       }
+    },
+    {
+      "id": "SRC-029",
+      "type": "agent",
+      "key": "wpcom-revisions-5401-2026-11-24",
+      "opp_ids": [],
+      "title": "WordPress.com-Konnektor · Revisionen /drohnen-baudokumentation/ (lesend)",
+      "url": null,
+      "fetched": "2026-11-24T14:07:13Z",
+      "fetched_precision": "exact",
+      "meta": {
+        "note": "Revisionsliste lesbar (u. a. 16.07.2026); Update-Werkzeug warnt: Änderungen an veröffentlichten Seiten gehen sofort live; Jetpack speichert nur registrierte Meta-Felder"
+      }
     }
   ],
   "findings": [
@@ -836,5 +849,5 @@
       ]
     }
   ],
-  "updated": "2026-11-24T13:13:30Z"
+  "updated": "2026-11-24T14:07:13Z"
 }

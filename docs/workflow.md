@@ -9,7 +9,9 @@ Stand 23.11.2026. WordPress folgt separat – **in diesem Workflow wird nichts v
 | Zur Prüfung | kein Dokument, `gate1.status ≠ approved` oder Gate 1 ohne Bezug zur aktuellen Research-Version | Standard für **alle** Opportunities (CREATE/OPTIMIZE/MERGE); Research-Status auf der Karte; alte Freigaben: „Strategie-Freigabe ausstehend“ |
 | Freigegeben / Produktion | `gate1.status = approved`, Entwurf noch nicht fertig, oder `review.status = revision_requested` | „Approved · Waiting for agent“ · „In Produktion“ · „Revision requested · Waiting for agent“ · „Produktion fehlgeschlagen“ |
 | Entwurf fertig / Review | `production.status = draft_ready` | Drive-Link, erstellt/geändert, QA, Content-Strategie, Buttons „Änderungen anfordern“ / „Final freigeben“ |
-| Final freigegeben | `gate2.status = approved` | „Final approved · Ready for WordPress Draft“ |
+| WordPress-Draft & QA | `gate2.status = approved`, `wordpress.status` queued … qa_failed/blocked | „WordPress Draft queued/ready“, Links Preview/Edit/Original, QA |
+| Ready for Publish | `wordpress.status = qa_passed` (bzw. publish_queued/publishing/publish_failed) | Gate 3: Preview, Original, Drive Change Set, Changes, Ranking Risk, Cannibalization, QA, Rollback, „Was wird verändert?“, Button „Änderungen veröffentlichen“ |
+| Live / Monitoring | `wordpress.status = published` | „Published · Monitoring“ (T+7…T+90) |
 
 ## Gate 1 = Strategie-Freigabe
 
@@ -50,3 +52,8 @@ Ohne Google-Docs-Editor-Konnektor kann der Agent bestehende Docs nicht bearbeite
 ## Cleanup 24.11.2026 (vor dem produktiven Start)
 
 Alle Produktions-/Testläufe der Aufbauphase wurden bereinigt: OPP-01 bis OPP-05 stehen wieder auf `gate1.status = pending`, `production.status = not_started`, `review.status = not_started`, ohne aktiven Drive-Entwurf. Die alten Gate-1-Freigaben bleiben unter `gate1.superseded[]` (`superseded_as: test-phase approval`) und im Entscheidungsprotokoll („Test phase · superseded“) erhalten und lösen keine Produktion aus. Frühere Produktionsdaten stehen unter `test_phase`; die Testentwürfe von OPP-03 und OPP-05 liegen im Drive-Papierkorb. Research Log: Ereignis „Workflow Cleanup“ plus die beiden Testentwürfe als superseded. Research-Dossiers und Evidence unverändert. Kein Agentenlauf ausgelöst.
+
+
+## WordPress (ab 24.11.2026)
+
+Gate 2 stößt den Runner an (`wordpress.status = queued`) – es entstehen nur Drafts. Gate 3 (`gate3.status = approved` für genau die geprüfte Draft-Version, Sichtprüfung bestätigt) ist die einzige Freigabe für Live-Schreibvorgänge; die Sperre steckt in `tools/wordpress.py guard` und `workflow.py queue`. Details: [`wordpress-integration.md`](wordpress-integration.md).

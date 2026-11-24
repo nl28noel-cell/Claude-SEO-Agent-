@@ -597,6 +597,95 @@ class ArtifactQA(unittest.TestCase):
         o = next(x for x in self.d["opportunities"] if x["id"] == "OPP-01")
         self.assertEqual(o["research_status"]["retry"]["run"], ["web_research", "competitors", "content_gap", "strategy"])
 
+    def test_wordpress_architecture(self):
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import wordpress as WP, workflow, copy
+        # --- Preflight: richtige Website / falsche Website / kein Konnektor
+        tools = [f"mcp__WordPress_com__{t}" for t in WP.cfg()["required_tools"]]
+        ab = WP.cfg()["required_abilities"]
+        ok = WP.preflight({"tools": tools, "sites": [{"blog_id": 174454219, "site_url": "https://www.spreewald-luftaufnahmen.de"}, {"blog_id": 111, "site_url": "https://andere-website.example"}], "role": "administrator", "abilities": ab})
+        self.assertTrue(ok["ok"]); self.assertEqual(ok["blog_id"], "174454219")
+        wrong = WP.preflight({"tools": tools, "sites": [{"blog_id": 111, "site_url": "https://andere-website.example"}], "role": "administrator", "abilities": ab})
+        self.assertEqual((wrong["ok"], wrong["block_reason"]), (False, "wp_wrong_site"))          # nie ausweichen
+        self.assertEqual(WP.preflight({"tools": [], "sites": []})["block_reason"], "wp_connector_unavailable")
+        self.assertEqual(WP.preflight({"tools": tools, "sites": ok and [{"blog_id": 174454219, "site_url": "https://www.spreewald-luftaufnahmen.de"}], "role": "subscriber", "abilities": ab})["block_reason"], "wp_capabilities_missing")
+        # --- Guard: harte Schreibsperre
+        w = {"gate2": {"status": "approved"}, "wordpress": {"status": "draft_ready", "mode": "OPTIMIZE", "draft_version": 2,
+             "documents": [{"role": "primary", "url": "/drohnen-baudokumentation/", "wp_post_id": 5401, "draft_post_id": 9001}],
+             "qa": {"overall": "passed_manual_visual"}, "snapshots": [{"post": 5401, "verified": True, "stored_doc_id": "d1"}], "rollback": {"status": "available"}}}
+        g = lambda *a, **k: WP.guard(*a, **k)["code"]  # noqa: E731
+        self.assertEqual(g("create_draft", {"gate2": {}}), "gate2_missing")
+        self.assertEqual(g("create_draft", w, status="publish"), "status_not_draft")
+        self.assertEqual(g("create_draft", w, status="draft", slug="drohnen-baudokumentation", live_slugs=["drohnen-baudokumentation"]), "slug_in_use")
+        self.assertEqual(g("create_draft", w, status="draft", slug="neu"), "ok")
+        self.assertEqual(g("update_draft", w, post=5401), "not_agent_draft")                         # Live-Seite nie als „Draft“ bearbeiten
+        self.assertEqual(g("update_draft", w, post=9001), "ok")
+        self.assertEqual(g("update_draft", w, post=9001, fields=["slug"]), "sensitive_field")
+        self.assertEqual(g("live_update", w, post=5401), "gate3_missing")                           # gate3 != approved → gesperrt
+        w3 = copy.deepcopy(w); w3["gate3"] = {"status": "approved", "for_draft_version": 1}
+        self.assertEqual(g("live_update", w3, post=5401), "gate3_version_mismatch")
+        w3["gate3"]["for_draft_version"] = 2
+        self.assertEqual(g("live_update", w3, post=5401), "visual_review_missing")
+        w3["gate3"]["visual_review_confirmed"] = True
+        self.assertEqual(g("live_update", w3, post=5401), "ok")
+        self.assertEqual(g("live_update", w3, post=5401, fields=["canonical"]), "sensitive_field")
+        self.assertEqual(g("live_update", w3, post=4857), "not_in_change_set")
+        w4 = copy.deepcopy(w3); w4["wordpress"]["rollback"] = {"status": "unavailable"}
+        self.assertEqual(g("live_update", w4, post=5401), "rollback_unavailable")
+        w5 = copy.deepcopy(w3); w5["wordpress"]["snapshots"] = []
+        self.assertEqual(g("live_update", w5, post=5401), "snapshot_missing")
+        for op in ("delete", "redirect", "canonical_change", "robots_change", "slug_change_live", "unpublish", "plugin_change"):
+            self.assertEqual(g(op, w3, post=5401), "requires_explicit_confirmation")
+        self.assertEqual(g("delete", {**w3, "confirmations": [{"op": "delete", "post": 9001, "status": "confirmed"}]}, post=9001), "confirmed")
+        # --- Snapshot + Rollback
+        tree = [{"id": "c1", "elType": "container", "elements": [
+            {"id": "h1", "widgetType": "heading", "settings": {"title": "Baudokumentation Drohne in Berlin und Brandenburg", "header_size": "h1"}},
+            {"id": "h2a", "widgetType": "heading", "settings": {"title": "Baufortschritt per Drohne jederzeit im Blick behalten", "header_size": "h2"}},
+            {"id": "t1", "widgetType": "text-editor", "settings": {"editor": "<p>Die Baubegleitung mit Drohne bietet …</p>"}},
+            {"id": "i1", "widgetType": "image", "settings": {"image": {"url": "https://x/a.jpg"}}},
+            {"id": "h2b", "widgetType": "heading", "settings": {"title": "Mehrjährige Begleitung", "header_size": "h2"}},
+            {"id": "t2", "widgetType": "text-editor", "settings": {"editor": "<p>Alt</p>"}},
+            {"id": "b1", "widgetType": "button", "settings": {"text": "Anfragen", "link": {"url": "/kontakt/"}}}]}]
+        page = {"data": {"id": 5401, "slug": "drohnen-baudokumentation", "status": "publish", "link": "https://www.spreewald-luftaufnahmen.de/drohnen-baudokumentation/", "template": "",
+                "meta": {"_elementor_data": json.dumps(tree), "_elementor_edit_mode": "builder", "_elementor_page_settings": {}}}}
+        snap = WP.snapshot(page, {"data": [{"seo_title": "T", "meta_description": "D", "canonical": "c", "noindex": None}]}, "2026-11-24T14:00:00+00:00")
+        self.assertTrue(WP.verify_snapshot(snap)["verified"])
+        bad = copy.deepcopy(snap); bad["elementor"]["_elementor_data"] = json.dumps(tree).replace("Alt", "Neu")
+        self.assertFalse(WP.verify_snapshot(bad)["hash_ok"])                                        # Manipulation erkannt
+        self.assertEqual(WP.rollback_status([{**snap, "verified": True, "stored_doc_id": "d"}], {"elementor_meta_write_verified": False, "yoast_write_available": True})["status"], "unavailable")
+        self.assertEqual(WP.rollback_status([{**snap, "verified": True, "stored_doc_id": "d"}], {"elementor_meta_write_verified": True, "yoast_write_available": True, "revisions_available": True})["status"], "available")
+        self.assertFalse(WP.cfg()["capabilities_verified"]["elementor_meta_write_verified"])         # noch kein Schreibtest → Gate 3 bei OPTIMIZE gesperrt
+        # --- QA: KEEP unverändert, EDIT/NEW vorhanden, Bilder/Buttons, H1, Yoast, Visual nie erfunden
+        new = copy.deepcopy(tree); c = new[0]["elements"]
+        c[5]["settings"]["editor"] = "<p>Neu: Turnus nach Bauphasen</p>"
+        c.append({"id": "h2c", "widgetType": "heading", "settings": {"title": "Häufige Fragen zur Baustellendokumentation mit Drohne", "header_size": "h2"}})
+        c.append({"id": "t3", "widgetType": "text-editor", "settings": {"editor": "<p>FAQ … baudokumentation drohne berlin</p>"}})
+        cs = {"mode": "OPTIMIZE", "sections": [{"heading": "Baufortschritt per Drohne jederzeit im Blick behalten", "action": "KEEP"}, {"heading": "Mehrjährige Begleitung", "action": "EDIT"},
+              {"heading": "Häufige Fragen zur Baustellendokumentation mit Drohne", "action": "NEW"}],
+              "seo": {"title": "T2", "meta_description": "D2", "h1": "Baudokumentation Drohne in Berlin und Brandenburg"}, "canonical": "c", "internal_links": [{"to": "/kontakt/"}]}
+        dy = {"data": [{"seo_title": "T2", "meta_description": "D2", "canonical": "c"}]}
+        q = WP.qa(cs, page, {"meta": {"_elementor_data": json.dumps(new)}}, dy, {"protected_queries": ["baudokumentation drohne berlin"]})
+        self.assertEqual(q["overall"], "passed_manual_visual", q); self.assertEqual(q["visual"]["status"], "manual_review_required")
+        broken = copy.deepcopy(new); broken[0]["elements"][2]["settings"]["editor"] = "<p>Umformuliert</p>"; broken[0]["elements"][3]["settings"]["image"] = {"url": ""}
+        q2 = WP.qa(cs, page, {"meta": {"_elementor_data": json.dumps(broken)}}, dy)
+        self.assertEqual(q2["overall"], "failed")
+        self.assertTrue(any("[KEEP]" in i for i in q2["content"]["issues"])); self.assertTrue(q2["technical"]["issues"])
+        q3 = WP.qa(cs, page, {"meta": {"_elementor_data": json.dumps(new)}}, {"data": [{"seo_title": "falsch", "meta_description": "D2", "canonical": "c"}]})
+        self.assertTrue(any("SEO-Title" in i for i in q3["seo"]["issues"]))
+        self.assertEqual(WP.change_counts(cs), {"NEW": 1, "EDIT": 1, "KEEP": 1, "REMOVE": 0})
+        self.assertIn("Unverändert: URL/Slug, Canonical, Indexierung, Menüs, Einstellungen", WP.publish_summary(cs, "OPTIMIZE"))
+        # --- Queue: Gate 2 → wp_draft; Gate 3 nur mit Guard → wp_publish, sonst wp_publish_blocked
+        docs = {"OPP-02": {"opp_id": "OPP-02", "gate1": {"status": "approved", "research_version": 2}, "gate2": {"status": "approved"}, "production": {"status": "draft_ready"},
+                           "wordpress": {"status": "queued", "mode": "OPTIMIZE"}}}
+        self.assertEqual([(x["doc"], x["action"]) for x in workflow.actions(docs)], [("OPP-02", "wp_draft")])
+        docs["OPP-02"]["wordpress"] = {**w["wordpress"], "status": "publish_queued"}
+        a = workflow.actions(docs)[0]; self.assertEqual((a["action"], a["reason"]), ("wp_publish_blocked", "gate3_missing"))
+        docs["OPP-02"]["gate3"] = {"status": "approved", "for_draft_version": 2, "visual_review_confirmed": True}
+        self.assertEqual(workflow.actions(docs)[0]["action"], "wp_publish")
+        e = WP.change_log_entry(docs["OPP-02"], "OPP-02", "2026-12-01T10:00:00Z", {"queries": []})
+        self.assertEqual([c["label"] for c in e["checkpoints"]], ["T+7", "T+14", "T+30", "T+60", "T+90"])
+        self.assertTrue(all(set(c["checks"]) == {"ranking_protection", "cannibalization"} for c in e["checkpoints"]))
+
     def test_workflow_render_html(self):
         import tempfile
         sys.path.insert(0, os.path.join(ROOT, "tools"))

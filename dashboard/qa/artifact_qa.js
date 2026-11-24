@@ -183,10 +183,34 @@ const MOCK = () => {
     await p.waitForTimeout(200); await p.click(`[data-card="${first}"]`); await p.waitForTimeout(150);
     await p.click('[data-act="final"]'); await p.waitForTimeout(300);
     w = await p.evaluate(id => window.__all.workflow[id], first);
-    check('gate2 persisted', w.gate2?.status === 'approved' && !!Date.parse(w.gate2.at));
+    check('gate2 persisted + WordPress draft queued (never publish)', w.gate2?.status === 'approved' && !!Date.parse(w.gate2.at) && w.wordpress?.status === 'queued' && !w.gate3, JSON.stringify(w.wordpress));
     await p.click('#wf-panel-body [data-close]');
-    check('final column label "Ready for WordPress Draft"', /Ready for WordPress Draft/.test(await p.locator(`.wf-col[data-col="final"] [data-card="${first}"]`).innerText()));
-    check('after reload: revision fired trigger, gate 2 did not (nothing to publish)', (await p.evaluate(() => (window.__fired || []).length)) === 1, String(await p.evaluate(() => (window.__fired || []).length)));
+    check('after gate 2: card in „WordPress-Draft & QA“ with honest label', /WordPress Draft queued/.test(await p.locator(`.wf-col[data-col="wordpress"] [data-card="${first}"]`).innerText()));
+    check('revision and gate 2 both triggered the agent', (await p.evaluate(() => (window.__fired || []).length)) === 2, String(await p.evaluate(() => (window.__fired || []).length)));
+    // Simulierte WordPress-Ergebnisse (kein echter WordPress-Zugriff)
+    const wpSim = { status: 'qa_passed', mode: 'OPTIMIZE', draft_version: 1, documents: [{ role: 'primary', url: '/drohnen-baudokumentation/', wp_post_id: 5401, draft_post_id: 9001, edit_link: 'https://www.spreewald-luftaufnahmen.de/wp-admin/post.php?post=9001&action=elementor', preview_link: 'https://www.spreewald-luftaufnahmen.de/?page_id=9001&preview=true', original_link: 'https://www.spreewald-luftaufnahmen.de/drohnen-baudokumentation/' }],
+      change_counts: { NEW: 5, EDIT: 4, KEEP: 6, REMOVE: 0 }, publish_summary: ['Title: „A“ → „B“', 'NEW: Häufige Fragen zur Baustellendokumentation mit Drohne', 'Unverändert: URL/Slug, Canonical, Indexierung, Menüs, Einstellungen'],
+      qa: { content: { status: 'passed', issues: [] }, seo: { status: 'passed', issues: [] }, technical: { status: 'passed', issues: [] }, visual: { status: 'manual_review_required', note: 'Vorschau nur eingeloggt' }, overall: 'passed_manual_visual' },
+      snapshots: [], rollback: { status: 'unavailable', why: ['Schreiben von _elementor_data nicht durch Schreibtest bestätigt'] } };
+    await p.evaluate(([id, wp]) => window.claude.use('db').then(db => db.collection('workflow').doc(id).update({ wordpress: wp })), [first, wpSim]); await p.waitForTimeout(300);
+    check('qa passed → card in „Ready for Publish“', (await p.locator(`.wf-col[data-col="publish"] [data-card="${first}"]`).count()) === 1);
+    await p.click(`[data-card="${first}"]`); await p.waitForTimeout(200);
+    let g3 = await p.locator('#wf-panel-body').innerText();
+    check('gate 3 panel: preview + original + change set + counts + risks + QA + summary', (await p.locator('#wf-panel-body a', { hasText: 'WordPress Preview' }).count()) === 1 && (await p.locator('#wf-panel-body a', { hasText: 'Original Page' }).count()) === 1 && /Drive Change Set/.test(g3) && /5 NEW · 4 EDIT · 6 KEEP · 0 REMOVE/.test(g3) && /Ranking Risk/.test(g3) && /Cannibalization/.test(g3) && /Visual: manual review/.test(g3) && /Was wird beim Publish tatsächlich verändert/i.test(g3));
+    check('gate 3 locked without rollback protection', /Rollback protection unavailable/.test(g3) && await p.locator('#wf-panel-body [data-act="gate3"]').isDisabled());
+    await p.click('#wf-panel-body [data-close]');
+    await p.evaluate(([id, wp]) => window.claude.use('db').then(db => db.collection('workflow').doc(id).update({ wordpress: { ...wp, snapshots: [{ post: 5401, verified: true, stored_doc_id: 'd1', taken_at: new Date().toISOString() }], rollback: { status: 'available', secondary: 'WordPress-Revisionen' } } })), [first, wpSim]); await p.waitForTimeout(300);
+    await p.click(`[data-card="${first}"]`); await p.waitForTimeout(200);
+    const firedG3 = await p.evaluate(() => (window.__fired || []).length);
+    await p.click('#wf-panel-body [data-act="gate3"]'); await p.waitForTimeout(250);
+    check('gate 3 requires confirmed visual review (nothing saved)', !(await p.evaluate(id => window.__all.workflow[id].gate3, first)));
+    await p.check('#wf-vis'); await p.click('#wf-panel-body [data-act="gate3"]'); await p.waitForTimeout(400);
+    w = await p.evaluate(id => window.__all.workflow[id], first);
+    check('gate 3 stored for exact draft version → publish queued + agent triggered', w.gate3?.status === 'approved' && w.gate3.for_draft_version === 1 && w.gate3.visual_review_confirmed === true && w.wordpress.status === 'publish_queued' && (await p.evaluate(() => (window.__fired || []).length)) === firedG3 + 1, JSON.stringify(w.gate3));
+    await p.click('#wf-panel-body [data-close]');
+    await p.evaluate(id => window.claude.use('db').then(db => db.collection('workflow').doc(id).update({ wordpress: { ...window.__all.workflow[id].wordpress, status: 'published', published: { at: new Date().toISOString() } } })), first); await p.waitForTimeout(300);
+    check('published → „Live / Monitoring“', /Published · Monitoring/.test(await p.locator(`.wf-col[data-col="live"] [data-card="${first}"]`).innerText()));
+    if (SHOTS) { await p.screenshot({ path: `${out}/mock-workflow-wp-board.png`, fullPage: true }); }
     if (SHOTS) { await p.screenshot({ path: `${out}/mock-workflow-board.png`, fullPage: true }); await p.click(`[data-card="${second}"]`); await p.waitForTimeout(150); await p.screenshot({ path: `${out}/mock-workflow-drawer.png` }); }
     // Alte Gate-1-Freigabe ohne Strategie-Bezug → zurück in „Zur Prüfung“, keine Produktion
     const third = dd.opportunities.filter(o => ['CREATE', 'OPTIMIZE', 'MERGE'].includes(o.type))[2].id;

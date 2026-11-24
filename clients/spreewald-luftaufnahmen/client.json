@@ -62,5 +62,38 @@
     "templates_folder_id": "1eJ-KPFDT0DHT6NWAvYDMVbOFASn4QrJJ",
     "style_guide": "content-style-guide.md",
     "trigger_mode": "fresh session per run (create_new_session_on_fire), environment Claude-SEO-Agent"
+  },
+  "wordpress": {
+    "blog_id": "174454219",
+    "domain": "spreewald-luftaufnahmen.de",
+    "platform": "jetpack",
+    "editor": "elementor",
+    "allowed_roles": [
+      "administrator",
+      "editor"
+    ],
+    "required_tools": [
+      "wpcom-user-sites",
+      "wpcom-mcp-pages-get",
+      "wpcom-mcp-pages-list",
+      "wpcom-mcp-pages-create",
+      "wpcom-mcp-pages-update",
+      "wpcom-manage-revisions",
+      "execute_remote_read_ability",
+      "execute_remote_ability"
+    ],
+    "required_abilities": [
+      "remote:yoast-seo/get-post-seo-data",
+      "remote:yoast-seo/update-post-seo-data"
+    ],
+    "draft_title_prefix": "[Entwurf SEO-Autopilot] ",
+    "optimize_draft_slug_suffix": "-entwurf-seo-autopilot",
+    "snapshot_drive_folder": "1x0fEXsxRh_xcxKFaCjh_jw9dcFQILpY9",
+    "capabilities_verified": {
+      "elementor_meta_write_verified": false,
+      "yoast_write_available": true,
+      "revisions_available": true,
+      "verified_note": "Lesend geprüft 24.11.2026; Schreiben von _elementor_data erst nach freigegebenem Sandbox-Test bestätigt"
+    }
   }
 }
