@@ -93,12 +93,20 @@
       "elementor_meta_write_verified": false,
       "yoast_write_available": true,
       "revisions_available": true,
-      "verified_note": "Sandbox-Test 24.11.2026: Schreiben ohne <script> funktioniert; Payloads mit <script> → HTTP 403 der Hosting-Firewall. Rollback bleibt unavailable.",
-      "elementor_write_status": "insufficient",
+      "verified_note": "Sandbox 24.11.2026: Standard-Widgets schreib-/lesbar (strukturell identisch); Payloads mit <script> → HTTP 403 (Firewall). Live OPTIMIZE gesperrt, CREATE bis zur vollständigen Sandbox-Validierung ausstehend, Rollback nicht verifiziert.",
       "elementor_small_payload_write": "verified 2026-11-24 (Probe, strukturell identisch)",
       "firewall_blocks_patterns": [
         "<script"
-      ]
+      ],
+      "elementor": {
+        "write": "PARTIAL",
+        "standard_widgets": "VERIFIED",
+        "script_widgets": "BLOCKED_BY_FIREWALL",
+        "live_optimize_automation": "BLOCKED",
+        "create_automation": "PENDING_FULL_SANDBOX_VALIDATION",
+        "rollback": "NOT_YET_VERIFIED"
+      },
+      "firewall_source": "vermutlich NinjaFirewall (WP-Plugin, aktiv) – nicht Hosting; nicht abschließend bestimmt (Firewall-Log nicht eingesehen)"
     }
   }
 }

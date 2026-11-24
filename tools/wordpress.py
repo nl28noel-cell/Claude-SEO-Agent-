@@ -66,7 +66,7 @@ def preflight(obs, client=DEFAULT_CLIENT):
 
 # ---------------------------------------------------------------- Harte Schreibsperre
 def firewall_risk(tree_or_raw, client=DEFAULT_CLIENT):
-    """Sandbox-Test 24.11.2026: Die Hosting-Firewall beantwortet Schreibaufrufe, deren Inhalt <script> enthält, mit HTTP 403
+    """Sandbox-Test 24.11.2026: Die Firewall (vermutlich NinjaFirewall-Plugin) beantwortet Schreibaufrufe, deren Inhalt <script> enthält, mit HTTP 403
     (atomar, nichts geschrieben). Liefert die betroffenen Widgets, BEVOR ein Schreibaufruf versucht wird."""
     pats = ((cfg(client).get("capabilities_verified") or {}).get("firewall_blocks_patterns")) or ["<script"]
     tree = json.loads(tree_or_raw) if isinstance(tree_or_raw, str) else (_tree(tree_or_raw) if isinstance(tree_or_raw, dict) else tree_or_raw or [])
@@ -80,7 +80,7 @@ def firewall_risk(tree_or_raw, client=DEFAULT_CLIENT):
     for i, n in enumerate(tree):
         walk([n], i)
     return {"blocked": bool(hits), "widgets": hits, "patterns": pats,
-            "why": f"{len(hits)} Widget(s) mit {', '.join(sorted({h['pattern'] for h in hits}))} – Hosting-Firewall antwortet mit HTTP 403" if hits else None}
+            "why": f"{len(hits)} Widget(s) mit {', '.join(sorted({h['pattern'] for h in hits}))} – Firewall antwortet mit HTTP 403" if hits else None}
 
 
 def guard(op, w, post=None, fields=None, status=None, slug=None, live_slugs=(), client=DEFAULT_CLIENT, payload=None):
@@ -129,9 +129,11 @@ def guard(op, w, post=None, fields=None, status=None, slug=None, live_slugs=(), 
         return deny("qa_not_passed", "WordPress QA nicht bestanden")
     if wp.get("qa", {}).get("overall") == "passed_manual_visual" and not g3.get("visual_review_confirmed"):
         return deny("visual_review_missing", "Sichtprüfung (Desktop/Tablet/Mobile) nicht bestätigt")
-    if op in ("live_update", "yoast_update_live") and (c.get("capabilities_verified") or {}).get("elementor_write_status") == "insufficient" \
-            and (w.get("wordpress") or {}).get("mode") == "OPTIMIZE":
-        return deny("elementor_write_insufficient", "Sandbox-Test: Elementor write capability insufficient – kein automatisches Live-Update bestehender Seiten")
+    em = (c.get("capabilities_verified") or {}).get("elementor") or {}
+    if wp.get("mode") == "OPTIMIZE" and op in ("live_update", "yoast_update_live") and em.get("live_optimize_automation") != "VERIFIED":
+        return deny("live_optimize_blocked", f"Live OPTIMIZE automation: {em.get('live_optimize_automation', 'NOT VERIFIED')} (Sandbox-Status) – kein automatisches Live-Update bestehender Seiten")
+    if wp.get("mode") == "CREATE" and op == "publish_draft" and em.get("create_automation") != "VERIFIED":
+        return deny("create_automation_pending", f"CREATE automation: {em.get('create_automation', 'NOT VERIFIED')} – Veröffentlichen erst nach vollständiger Sandbox-Validierung")
     if op in ("live_update", "yoast_update_live"):
         rb = wp.get("rollback") or {}
         if rb.get("status") != "available":

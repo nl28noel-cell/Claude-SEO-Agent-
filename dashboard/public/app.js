@@ -646,16 +646,28 @@ function adsCard() {
 function wpCard() {
   const w = S.d.sources.wordpress; if (!w) return "";
   const c = w.capabilities || {};
-  const sb = w.sandbox_test, sbOk = sb?.status === "verified";
-  const sbHtml = !sb ? "" : `<div class="callout ${sbOk ? "green" : "red"} mt" id="wp-sandbox"><b>${esc(sb.label)}</b>
+  const sb = w.sandbox_test, sbOk = sb?.status === "verified", ti = w.trustindex, ar = w.architecture, nx = w.next_test_proposal;
+  const mTone = v => /^VERIFIED/.test(v) ? "green" : /BLOCKED/.test(v) ? "red" : "amber";
+  const matrix = sb?.matrix ? `<table class="tbl mt" id="wp-matrix"><tbody>${sb.matrix.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${chip(v, mTone(v), true)}</td></tr>`).join("")}</tbody></table>` : "";
+  const tiHtml = !ti ? "" : `<details class="mt" id="wp-trustindex"><summary><b>Trustindex – technische Analyse</b> <span class="mini">(nur lesend, ${fmtDate(ti.checked)})</span></summary><div class="kv mt">
+    <div class="k">Einbindung</div><div class="s">${esc(ti.embedding)}</div><div class="k">Ursache</div><div class="s">${esc(ti.cause)}</div>
+    <div class="k">Auf 5401</div><div class="s">${ti.widgets_on_5401.map(x => `${esc(x.elementor_id)} · Abschnitt ${esc(x.section)} · Trustindex ${esc(x.trustindex_id)}`).join("<br>")}</div>
+    <div class="k">Plugin</div><div class="s">${esc(ti.plugin)}</div><div class="k">Andere Seiten</div><div class="s">${esc(ti.sitewide)}</div>
+    <div class="k">Gleiche Konfiguration</div><div class="s">${esc(ti.same_config)}</div><div class="k">Vorbild</div><div class="s">${esc(ti.related)}</div></div></details>`;
+  const arHtml = !ar ? "" : `<details class="mt" id="wp-architecture"><summary><b>Architektur – Lösungsoptionen</b></summary><div class="s mt"><b>Ziel:</b> ${esc(ar.target)}</div>
+    <div class="tbl-wrap mt"><table class="tbl"><thead><tr><th>Option</th><th>Darstellung</th><th>SEO</th><th>Neues Plugin</th><th>Ladezeit</th><th>API</th><th>Zentral</th><th>Sicherheit</th><th>Bewertung</th></tr></thead><tbody>
+    ${ar.options.map(o => `<tr><td><b>${esc(o.id)}</b> ${esc(o.name)}</td><td>${esc(o.same_look)}</td><td>${esc(o.seo)}</td><td>${esc(o.new_plugin)}</td><td>${esc(o.load_time)}</td><td>${esc(o.api)}</td><td>${esc(o.central)}</td><td>${esc(o.security)}</td><td><b>${esc(o.verdict)}</b></td></tr>`).join("")}</tbody></table></div>
+    <div class="kv mt"><div class="k">CREATE</div><div class="s">${esc(ar.create)}</div><div class="k">OPTIMIZE</div><div class="s">${esc(ar.optimize)}</div></div></details>`;
+  const nxHtml = !nx ? "" : `<div class="callout amber mt" id="wp-next-test"><b>Vorgeschlagener nächster Test (${esc(nx.status)})</b><div class="s">${esc(nx.test)}</div><div class="s mt">Rahmen: ${esc(nx.scope)}</div>${ul(nx.checks)}<div class="mini">Nicht enthalten: ${esc(nx.not_included)}</div></div>`;
+  const sbHtml = !sb ? "" : `<div class="callout ${sbOk ? "green" : "amber"} mt" id="wp-sandbox"><b>${esc(sb.label)}</b>${matrix}
     <div class="s">Test vom ${fmtDate(sb.date)} · Quelle: Seite ${esc(sb.source_page.id)} (${esc(sb.source_page.use)}) – ${sb.source_page.unchanged ? "<b>unverändert</b> (modified " + esc(sb.source_page.modified_after) + ")" : "<b>GEÄNDERT – prüfen!</b>"}</div>
     <div class="kv mt"><div class="k">Test-Draft</div><div>${esc(sb.test_draft.title)} · ID ${esc(sb.test_draft.id)} · ${esc(sb.test_draft.status)} · ${esc(sb.test_draft.content)}<br>
       <a href="${esc(sb.test_draft.edit_url)}" target="_blank" rel="noopener">In Elementor öffnen</a> · <a href="${esc(sb.test_draft.preview_url)}" target="_blank" rel="noopener">Vorschau</a> <span class="mini">(${esc(sb.test_draft.preview_note)})</span><br><span class="mini">Löschen: ${esc(sb.test_draft.delete)}</span></div>
     <div class="k">Schreibvorgänge</div><div class="s">${sb.write_ops.map(o => `${esc(o.op)} → ${esc(o.result)}<br><span class="mini">${esc(o.payload)}</span>`).join("<br>")}</div>
     <div class="k">Tests</div><div class="s">${Object.entries(sb.results).map(([k, v]) => `${esc(k)}: ${esc(v)}`).join("<br>")}</div>
     <div class="k">Vergleich</div><div class="s">${Object.entries(sb.comparison).map(([k, v]) => `<b>${esc(k.replace(/_/g, " "))}</b>: ${v.length ? v.map(esc).join(" · ") : "–"}`).join("<br>")}</div></div>
-    <div class="mt"><b>Erkenntnisse</b>${ul(sb.findings)}</div><div class="mt"><b>Optionen (Entscheidung offen)</b>${ul(sb.options)}</div></div>`;
-  return `<div class="card" id="wp-card"><div class="card-h"><h2>WordPress</h2>${chip(sb ? (sbOk ? "Sandbox-Test bestanden" : "Sandbox: Elementor write insufficient") : "Verbunden · nur lesend geprüft", sb && !sbOk ? "red" : "green", true)}</div><div class="card-b"><div class="kv">
+    <div class="mt"><b>Erkenntnisse</b>${ul(sb.findings)}</div><div class="mt"><b>Optionen (Entscheidung offen)</b>${ul(sb.options)}</div>${tiHtml}${arHtml}</div>${nxHtml}`;
+  return `<div class="card" id="wp-card"><div class="card-h"><h2>WordPress</h2>${chip(sb ? (sbOk ? "Sandbox-Test bestanden" : "Elementor Write: PARTIAL") : "Verbunden · nur lesend geprüft", sb && !sbOk ? "amber" : "green", true)}</div><div class="card-b"><div class="kv">
     <div class="k">Zugriff</div><div>${esc(w.access)}</div><div class="k">Rolle</div><div>${esc(w.role)}</div>
     <div class="k">Editor</div><div>${esc(w.editor)}</div><div class="k">SEO</div><div>${esc(w.seo)}</div>
     <div class="k">CREATE Draft</div><div>${esc(c.create_draft)}</div><div class="k">OPTIMIZE</div><div>${esc(c.optimize_existing)}</div>

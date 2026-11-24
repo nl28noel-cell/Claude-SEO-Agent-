@@ -313,7 +313,10 @@ const MOCK = () => {
     await p.goto(base2 + '#sources', { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
     const wpc = await p.locator('#wp-card').innerText();
     check('data sources: WordPress card (read-only tested, publish locked, no credentials)', /administrator/.test(wpc) && /gesperrt/.test(wpc) && /Elementor/.test(wpc) && !/password|passwort|token/i.test(wpc.replace(/Zugangsdaten: keine im Repository\/Artifact/, '')));
-    check('WordPress sandbox: status, test draft 6955 (draft), live page unchanged, stop result, options', /Elementor write capability insufficient/.test(wpc) && /6955/.test(wpc) && /draft/.test(wpc) && /unverändert/.test(wpc) && /HTTP 403/.test(wpc) && /Optionen/.test(wpc) && (await p.locator('#wp-sandbox a[href*="post=6955"]').count()) === 1 && (await p.locator('#wp-sandbox a[href*="post=5401"]').count()) === 0);
+    check('WordPress sandbox: PARTIAL status matrix (6 rows, VERIFIED/BLOCKED/PENDING/NOT YET VERIFIED)', (await p.locator('#wp-matrix tr').count()) === 6 && /Elementor Write: PARTIAL/.test(wpc) && /Standard Elementor widgets\s*VERIFIED/.test(wpc) && /Live OPTIMIZE automation\s*BLOCKED/.test(wpc) && /PENDING FULL SANDBOX VALIDATION/.test(wpc) && /NOT YET VERIFIED/.test(wpc) && !/insufficient/i.test(wpc));
+    check('WordPress: Trustindex analysis + architecture options + next test proposed (not executed)', (await p.locator('#wp-trustindex').count()) === 1 && (await p.locator('#wp-architecture tbody tr').count()) === 5 && /nicht ausgeführt/.test(await p.locator('#wp-next-test').innerText()) && /kein Trustindex-Plugin/.test(await p.locator('#wp-trustindex').textContent()));
+    check('WordPress sandbox: test draft 6955 kept (not deleted)', /nicht löschen/.test(wpc));
+    check('WordPress sandbox: status, test draft 6955 (draft), live page unchanged, stop result, options', /PARTIAL/.test(wpc) && /6955/.test(wpc) && /draft/.test(wpc) && /unverändert/.test(wpc) && /HTTP 403/.test(wpc) && /Optionen/.test(wpc) && (await p.locator('#wp-sandbox a[href*="post=6955"]').count()) === 1 && (await p.locator('#wp-sandbox a[href*="post=5401"]').count()) === 0);
     // Local Opportunity Matrix
     await p.goto(base2 + '#local', { waitUntil: 'networkidle' }); await p.waitForTimeout(300);
     const lm = await p.locator('#local-matrix').innerText();

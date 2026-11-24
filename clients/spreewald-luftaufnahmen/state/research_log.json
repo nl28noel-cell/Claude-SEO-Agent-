@@ -507,7 +507,21 @@
       "summary": "Isolierter Schreibtest: Baudoku-Seite 5401 nur gelesen; Test-Draft 6955 „[TEST SEO-Autopilot] Elementor-Kopie“ angelegt (Entwurf). 3 Schreibaufrufe nur auf 6955.",
       "found": "Elementor write capability insufficient – Probe (Hero) strukturell identisch; Payload mit <script> (Trustindex-Widgets) → HTTP 403 der Hosting-Firewall, nichts geschrieben. Tests 2–5 gestoppt. Live-Seite unverändert (modified 2026-07-16T14:27:04).",
       "insight": "Rollback bleibt unavailable. Weiter nur nach Entscheidung: Firewall-Ausnahme oder Trustindex ohne <script>. Runner: wp_connector_unavailable. Test-Draft bleibt bis zur Bestätigung bestehen."
+    },
+    {
+      "id": "EVT-029",
+      "source_ids": [],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-24T17:28:19Z",
+      "at_precision": "exact",
+      "opp": "OPP-02",
+      "action": "integration_preflight",
+      "title": "Trustindex & Elementor-Architektur analysiert (nur lesend)",
+      "summary": "Trustindex-Einbindung, Plugins, Elementor-Templates, Custom Code und alle Sitemap-URLs gelesen. Nichts geändert; Draft 6955 bleibt Sandbox.",
+      "found": "Elementor Write: PARTIAL · Standard-Widgets VERIFIED · Script-Widgets BLOCKED (Firewall, vermutlich NinjaFirewall) · Trustindex ohne Plugin als HTML-Widget-Kopie auf 12 Seiten (2 IDs, überall gleich) · Heyflow bereits modular (Custom Code + Platzhalter)",
+      "insight": "Empfehlung A + B: Trustindex per zentralem Elementor-Template referenzieren; CREATE über kontrolliertes Landingpage-Template. Firewall-Ausnahme nur Fallback. Nächster Test S2 nur in Draft 6955 vorgeschlagen."
     }
   ],
-  "updated": "2026-11-24T14:35:59Z"
+  "updated": "2026-11-24T17:28:19Z"
 }

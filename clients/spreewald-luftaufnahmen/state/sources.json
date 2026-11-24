@@ -147,25 +147,25 @@
     "editor": "Elementor + Elementor Pro (Hello-Theme)",
     "seo": "Yoast lesen/schreiben über Site-Fähigkeiten",
     "capabilities": {
-      "create_draft": "YES",
-      "optimize_existing": "BLOCKED für Seiten mit <script>-Widgets (Firewall) – sonst WITH LIMITATIONS",
+      "create_draft": "YES (Draft) – CREATE automation: PENDING FULL SANDBOX VALIDATION",
+      "optimize_existing": "Live OPTIMIZE automation: BLOCKED (Script-Widgets) – Draft-Bearbeitung möglich",
       "preview": "YES (Login)",
       "publish": "technisch YES – gesperrt",
-      "rollback": "unavailable – Sandbox-Test: Elementor write capability insufficient (Firewall 403 bei <script>)"
+      "rollback": "NOT YET VERIFIED"
     },
     "risks": [
-      "Elementor write capability insufficient: Firewall des Hostings blockiert Schreibaufrufe mit <script> (Baudoku: 2 Trustindex-Widgets)",
-      "Jeder Schreibvorgang überträgt das komplette _elementor_data inline (Baudoku 91.626 Zeichen) – kein serverseitiger Kopierweg",
-      "Rollback protection unavailable (Meta-Änderungen erzeugen keine WP-Revision)",
-      "WordPress-Konnektor noch nicht an der Runner-Routine (wp_connector_unavailable)",
-      "Duplicator: keine Backups (nicht Voraussetzung)"
+      "Script-Widgets (Trustindex) werden von der Firewall blockiert – vermutlich NinjaFirewall-Plugin, nicht Hosting",
+      "Trustindex ist auf 12 Seiten jeweils als eigenes HTML-Widget kopiert (nicht zentral) – F-024",
+      "Jeder Schreibvorgang überträgt das komplette _elementor_data inline (Baudoku 91.626 Zeichen)",
+      "Rollback NOT YET VERIFIED (Meta-Änderungen erzeugen keine WP-Revision)",
+      "WordPress-Konnektor noch nicht an der Runner-Routine (wp_connector_unavailable)"
     ],
     "doc": "docs/wordpress-integration.md",
     "credentials": "keine im Repository/Artifact",
     "workflow": "Gate 2 → WordPress Draft → QA → Gate 3 → Live → Monitoring (Schreibsperre: tools/wordpress.py guard)",
     "sandbox_test": {
-      "status": "elementor_write_insufficient",
-      "label": "WordPress Sandbox Test – Elementor write capability insufficient",
+      "status": "partial",
+      "label": "WordPress Sandbox Test – Elementor Write: PARTIAL",
       "date": "2026-11-24",
       "approved_by": "Noel (24.11.2026, isolierter Sandbox-Test)",
       "source_page": {
@@ -189,7 +189,7 @@
         "edit_url": "https://www.spreewald-luftaufnahmen.de/wp-admin/post.php?post=6955&action=elementor",
         "preview_url": "https://www.spreewald-luftaufnahmen.de/?page_id=6955&preview=true",
         "preview_note": "Vorschau nur eingeloggt (Entwurf)",
-        "delete": "erst nach Bestätigung durch Noel"
+        "delete": "nicht löschen – bleibt isolierte WordPress-Sandbox (Entscheidung Noel 24.11.2026)"
       },
       "write_ops": [
         {
@@ -202,7 +202,7 @@
           "op": "update_draft",
           "post": 6955,
           "payload": "Hero + Abschnitte 1, 2, 5, 6 (~30.000 Zeichen, alle Widget-Typen)",
-          "result": "HTTP 403 (Firewall des Hostings, kein JSON) – nichts geschrieben"
+          "result": "HTTP 403 (Firewall (vermutlich NinjaFirewall-Plugin), kein JSON) – nichts geschrieben"
         },
         {
           "op": "update_draft",
@@ -212,7 +212,7 @@
         }
       ],
       "results": {
-        "test1_copy": "gestoppt – 1:1-Kopie nicht möglich (2 HTML-Widgets mit <script> werden von der Firewall blockiert)",
+        "test1_copy": "gestoppt – Standard-Widgets OK; 1:1-Kopie scheitert nur an 2 HTML-Widgets mit <script> (Firewall 403)",
         "test2_preview": "nicht durchgeführt (Test gestoppt) – Draft-Links vorhanden, Inhalt nur Hero",
         "test3_heading_edit": "nicht durchgeführt (Test gestoppt)",
         "test4_restore": "nicht durchgeführt (Test gestoppt)",
@@ -240,15 +240,151 @@
       },
       "findings": [
         "Konnektor schreibt _elementor_data als registriertes Meta und liest es strukturell identisch zurück (Probe).",
-        "Die Firewall des Hostings blockiert Schreibaufrufe, deren Inhalt <script> enthält (HTTP 403, atomar – nichts geschrieben). Die Baudoku-Seite enthält 2 solche Widgets (Trustindex-Bewertungen).",
+        "Die Firewall (vermutlich NinjaFirewall-Plugin) blockiert Schreibaufrufe, deren Inhalt <script> enthält (HTTP 403, atomar – nichts geschrieben). Die Baudoku-Seite enthält 2 solche Widgets (Trustindex-Bewertungen).",
         "Kein serverseitiger Kopier-/Elementor-Weg: jeder Schreibvorgang muss das komplette _elementor_data inline übertragen (Baudoku: 91.626 Zeichen).",
         "Meta-Änderungen erzeugen keine WordPress-Revision – Revisionen sind für Elementor-Rollback kein verlässlicher zweiter Weg."
       ],
       "options": [
-        "Firewall-Ausnahme für die REST-Route /wp/v2/pages bzw. für den Jetpack-Zugang beim Hosting freigeben (Entscheidung Noel/Hosting) – danach Test wiederholen",
-        "Trustindex-Widgets auf Shortcode/Plugin-Widget umstellen (kein <script> im Seiteninhalt) – Änderung an der Live-Seite, nur nach ausdrücklicher Freigabe",
-        "OPTIMIZE bis dahin als Drive-Change-Set + manuelle Übernahme in Elementor (kein automatischer Schreibweg)"
+        "A – Trustindex modularisieren (zentrales Elementor-Template, Seite referenziert nur die Template-ID) – empfohlen",
+        "B – kontrolliertes Elementor-Landingpage-Template für CREATE (Module per Template-Widget, SEO-Text als Standard-Widgets) – empfohlen",
+        "C – Firewall-Ausnahme (NinjaFirewall/Hosting) – nur Fallback, nicht bevorzugt, nicht umgehen",
+        "D – anderer WordPress-Zugriff – aktuell nicht nötig"
+      ],
+      "matrix": [
+        [
+          "Elementor Write",
+          "PARTIAL"
+        ],
+        [
+          "Standard Elementor widgets",
+          "VERIFIED"
+        ],
+        [
+          "Script-containing widgets",
+          "BLOCKED BY FIREWALL (vermutlich NinjaFirewall-Plugin)"
+        ],
+        [
+          "Live OPTIMIZE automation",
+          "BLOCKED"
+        ],
+        [
+          "CREATE automation",
+          "PENDING FULL SANDBOX VALIDATION"
+        ],
+        [
+          "Rollback",
+          "NOT YET VERIFIED"
+        ]
       ]
+    },
+    "trustindex": {
+      "checked": "2026-11-24",
+      "method": "nur lesend: _elementor_data der Seite 5401, öffentliches HTML aller 13 Sitemap-URLs, Plugin-Liste, Elementor-Templates & Custom Code",
+      "embedding": "Elementor HTML-Widget (widgetType html), Inhalt ausschließlich ein <script defer async src='https://cdn.trustindex.io/loader.js?<Widget-ID>'> – das Script lädt das Widget aus der Trustindex-Cloud und rendert es an seiner Position",
+      "cause": "das <script>-Tag im Feld settings.html des HTML-Widgets",
+      "widgets_on_5401": [
+        {
+          "elementor_id": "d8af34e",
+          "section": "1 (Intro, unter Bild/Button)",
+          "trustindex_id": "486a09d6…"
+        },
+        {
+          "elementor_id": "568d6a7",
+          "section": "9 (Testimonials/Kundenstimmen)",
+          "trustindex_id": "4b8ac4b6…"
+        }
+      ],
+      "plugin": "kein Trustindex-Plugin installiert (21 Plugins geprüft) – reine Cloud-Einbindung; keine Shortcodes/Elementor-Widgets von Trustindex verfügbar",
+      "sitewide": "12 von 13 Sitemap-URLs laden dieselben zwei Trustindex-IDs (Startseite, Kontakt, alle Leistungsseiten) – jeweils als eigene HTML-Widget-Kopie im _elementor_data der Seite (unterschiedliche Elementor-IDs), nicht über Header/Footer/Template",
+      "same_config": "ja – überall dieselben zwei Widget-IDs; Konfiguration/Design liegt zentral in der Trustindex-Cloud",
+      "related": "Heyflow ist bereits modular gelöst: Script zentral im Elementor-Custom-Code „Heyflow-Verknüpfung“ (<head>), Seiten enthalten nur <heyflow-wrapper> (kein <script>) – Vorbild",
+      "existing_template": "Template „Trust: Bewertungen“ (5479) ist ein älterer statischer Testimonial-Block ohne Trustindex"
+    },
+    "architecture": {
+      "target": "Elementor-Seite → Template-Widget (template_id) → zentrales Elementor-Template mit Trustindex-HTML → Trustindex-Cloud rendert",
+      "options": [
+        {
+          "id": "T1",
+          "name": "Zentrales Elementor-Template je Trustindex-Widget + Elementor-Pro-Widget „Template“ auf der Seite",
+          "same_look": "ja (identisches HTML, nur ein Wrapper-div mehr)",
+          "seo": "neutral (Trustindex wird heute wie künftig per JS gerendert)",
+          "new_plugin": "nein (Elementor Pro vorhanden)",
+          "load_time": "gleich (+1 kleiner Template-Render serverseitig)",
+          "elementor": "ja",
+          "api": "ja – Seite enthält nur {widgetType: template, template_id}",
+          "central": "ja – eine Stelle für 12 Seiten",
+          "security": "gut – Script nur in einem Template, das ein Admin im Elementor-Editor pflegt",
+          "verdict": "empfohlen"
+        },
+        {
+          "id": "T2",
+          "name": "Shortcode-Widget [elementor-template id=…]",
+          "same_look": "ja",
+          "seo": "neutral",
+          "new_plugin": "nein",
+          "load_time": "gleich",
+          "elementor": "ja",
+          "api": "ja",
+          "central": "ja",
+          "security": "gut",
+          "verdict": "gleichwertige Alternative zu T1 (falls Template-Widget nicht gewünscht)"
+        },
+        {
+          "id": "T3",
+          "name": "Script zentral im Elementor Custom Code + Platzhalter-Element auf der Seite (wie Heyflow)",
+          "same_look": "unklar – Trustindex-loader.js rendert an der Script-Position; Platzhalter-Unterstützung von Trustindex nicht belegt",
+          "seo": "neutral",
+          "new_plugin": "nein",
+          "load_time": "gleich/leicht schlechter (Script auf allen Seiten)",
+          "elementor": "ja",
+          "api": "ja",
+          "central": "ja",
+          "security": "gut",
+          "verdict": "nur nach Prüfung der Trustindex-Doku"
+        },
+        {
+          "id": "T4",
+          "name": "Trustindex-WordPress-Plugin mit Shortcode",
+          "same_look": "wahrscheinlich",
+          "seo": "neutral",
+          "new_plugin": "JA – neues Plugin",
+          "load_time": "eher schlechter",
+          "elementor": "ja",
+          "api": "ja",
+          "central": "ja",
+          "security": "zusätzliche Angriffsfläche",
+          "verdict": "nicht empfohlen"
+        },
+        {
+          "id": "T5",
+          "name": "Firewall-Ausnahme für REST-Schreibzugriff",
+          "same_look": "ja",
+          "seo": "neutral",
+          "new_plugin": "nein",
+          "load_time": "gleich",
+          "elementor": "ja",
+          "api": "ja",
+          "central": "nein (12 Kopien bleiben)",
+          "security": "schwächer – <script> über API schreibbar",
+          "verdict": "nur Fallback"
+        }
+      ],
+      "create": "CREATE über kontrollierte Landingpage-Vorlage: Seite = wenige Template-Widgets (Hero-Stil, Trust/Bewertungen, Prozess, CTA/Heyflow) + SEO-Inhalte als Standard-Widgets (Heading/Text/Bild/FAQ). Erwartete Payload ca. 5–15 KB statt ~92 KB; nie eine Live-Seite klonen. Vorhandene Ansätze: „Landingpage-Vorlage 2026“ (6813), „Vorlage: Dachinspektion LP“ (6905), „Hero-Area“ (6758), Bausteine Trust/Preise/Ablauf.",
+      "optimize": "OPTIMIZE erhält die bestehende Struktur: nur freigegebene Widgets (per Elementor-ID) ändern, alle übrigen Knoten unverändert übernehmen; Script-Widgets vorher durch Template-Referenzen ersetzen (einmalig, freigabepflichtig), sonst bleibt Live OPTIMIZE blockiert. Payload bleibt seitengroß, sinkt aber mit jeder modularisierten Sektion.",
+      "methods_differ": "CREATE und OPTIMIZE verwenden bewusst unterschiedliche Produktionsmethoden"
+    },
+    "next_test_proposal": {
+      "scope": "ausschließlich Draft 6955; keine Live-Seite, kein Plugin, keine Firewall, kein neues Template",
+      "test": "S2 – Template-Referenz: in 6955 einen Container mit einem Elementor-Pro-Widget „Template“ schreiben, das auf das bestehende statische Template „Trust: Bewertungen“ (5479) verweist; dazu ein Standard-Abschnitt (Abschnitt 2, Icon-Boxen).",
+      "checks": [
+        "Schreiben ohne 403",
+        "Rücklesen strukturell identisch",
+        "Vorschau (eingeloggt) zeigt den Template-Inhalt",
+        "Seite 5401 und Template 5479 unverändert (modified)"
+      ],
+      "proves": "dass eine scriptfreie Referenz statt eines HTML-Widgets über den Konnektor funktioniert – Grundlage für Option A und B",
+      "not_included": "Anlegen eines Trustindex-Templates (würde ein neues, seitenweit nutzbares Objekt anlegen → erst nach Freigabe)",
+      "status": "vorgeschlagen – nicht ausgeführt"
     }
   }
 }

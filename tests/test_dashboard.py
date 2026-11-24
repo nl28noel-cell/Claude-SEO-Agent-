@@ -627,9 +627,9 @@ class ArtifactQA(unittest.TestCase):
         w3["gate3"]["for_draft_version"] = 2
         self.assertEqual(g("live_update", w3, post=5401), "visual_review_missing")
         w3["gate3"]["visual_review_confirmed"] = True
-        self.assertEqual(g("live_update", w3, post=5401), "elementor_write_insufficient")          # realer Status nach Sandbox-Test
+        self.assertEqual(g("live_update", w3, post=5401), "live_optimize_blocked")          # realer Status nach Sandbox-Test
         real_cfg = WP.cfg
-        WP.cfg = lambda client=WP.DEFAULT_CLIENT: {**real_cfg(client), "capabilities_verified": {"elementor_write_status": "verified"}}  # simuliert: Schreibweg bestätigt
+        WP.cfg = lambda client=WP.DEFAULT_CLIENT: {**real_cfg(client), "capabilities_verified": {"elementor": {"live_optimize_automation": "VERIFIED", "create_automation": "VERIFIED"}}}  # simuliert: Schreibweg bestätigt
         try:
             self.assertEqual(g("live_update", w3, post=5401), "ok")
             self.assertEqual(g("live_update", w3, post=5401, fields=["canonical"]), "sensitive_field")
@@ -687,9 +687,9 @@ class ArtifactQA(unittest.TestCase):
         docs["OPP-02"]["wordpress"] = {**w["wordpress"], "status": "publish_queued"}
         a = workflow.actions(docs)[0]; self.assertEqual((a["action"], a["reason"]), ("wp_publish_blocked", "gate3_missing"))
         docs["OPP-02"]["gate3"] = {"status": "approved", "for_draft_version": 2, "visual_review_confirmed": True}
-        a = workflow.actions(docs)[0]; self.assertEqual((a["action"], a["reason"]), ("wp_publish_blocked", "elementor_write_insufficient"))
+        a = workflow.actions(docs)[0]; self.assertEqual((a["action"], a["reason"]), ("wp_publish_blocked", "live_optimize_blocked"))
         real_cfg = WP.cfg
-        WP.cfg = lambda client=WP.DEFAULT_CLIENT: {**real_cfg(client), "capabilities_verified": {"elementor_write_status": "verified"}}
+        WP.cfg = lambda client=WP.DEFAULT_CLIENT: {**real_cfg(client), "capabilities_verified": {"elementor": {"live_optimize_automation": "VERIFIED", "create_automation": "VERIFIED"}}}
         try:
             self.assertEqual(workflow.actions(docs)[0]["action"], "wp_publish")
         finally:
@@ -715,11 +715,21 @@ class ArtifactQA(unittest.TestCase):
         self.assertEqual(WP.guard("update_draft", w, post=9001, payload=[tree[0]["elements"][0]])["code"], "ok")
         # Status aus dem Sandbox-Test: kein automatisches Live-Update bestehender (OPTIMIZE) Seiten
         cv = WP.cfg()["capabilities_verified"]
-        self.assertEqual(cv["elementor_write_status"], "insufficient"); self.assertFalse(cv["elementor_meta_write_verified"])
+        em = cv["elementor"]
+        self.assertEqual((em["write"], em["standard_widgets"], em["script_widgets"], em["live_optimize_automation"], em["create_automation"], em["rollback"]),
+                         ("PARTIAL", "VERIFIED", "BLOCKED_BY_FIREWALL", "BLOCKED", "PENDING_FULL_SANDBOX_VALIDATION", "NOT_YET_VERIFIED"))
+        self.assertFalse(cv["elementor_meta_write_verified"])
+        wc = {"gate2": {"status": "approved"}, "gate3": {"status": "approved", "for_draft_version": 1, "visual_review_confirmed": True},
+              "wordpress": {"mode": "CREATE", "draft_version": 1, "qa": {"overall": "passed"}, "documents": [{"draft_post_id": 9002}]}}
+        self.assertEqual(WP.guard("publish_draft", wc, post=9002)["code"], "create_automation_pending")
+        self.assertEqual(WP.guard("create_draft", wc, status="draft", slug="neu")["code"], "ok")             # Drafts bleiben erlaubt
+        f = {x["id"]: x for x in json.load(open(os.path.join(ROOT, "clients/spreewald-luftaufnahmen/state/findings.json")))["findings"]}
+        self.assertEqual(f["F-025"]["title"], "Runner repository write/push unavailable"); self.assertNotIn("WordPress", f["F-025"]["title"])
+        self.assertEqual(f["F-024"]["status"], "open")
         w3 = {"gate2": {"status": "approved"}, "gate3": {"status": "approved", "for_draft_version": 1, "visual_review_confirmed": True},
               "wordpress": {"mode": "OPTIMIZE", "draft_version": 1, "qa": {"overall": "passed"}, "rollback": {"status": "available"},
                             "documents": [{"wp_post_id": 5401, "draft_post_id": 9001}], "snapshots": [{"post": 5401, "verified": True}]}}
-        self.assertEqual(WP.guard("live_update", w3, post=5401)["code"], "elementor_write_insufficient")
+        self.assertEqual(WP.guard("live_update", w3, post=5401)["code"], "live_optimize_blocked")
         st = json.load(open(os.path.join(ROOT, "clients/spreewald-luftaufnahmen/state/sources.json")))["wordpress"]["sandbox_test"]
         self.assertTrue(st["source_page"]["unchanged"]); self.assertEqual(st["test_draft"]["status"], "draft")
         self.assertFalse(st["test_draft"]["published"])

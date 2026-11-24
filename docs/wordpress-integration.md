@@ -109,14 +109,14 @@ Beobachtungen sammeln (`tools` geladen, `wpcom-user-sites` gefiltert auf die Dom
 4. Zurücklesen und mit dem Draft vergleichen; bei Abweichung Rollback aus Snapshot und `publish_failed`.
 5. `wordpress.status = published`, `published.at`, `published.change_entry = wordpress.change_log_entry(...)` (Baseline + T+7/14/30/60/90 mit Ranking Protection + Kannibalisierung); `workflow.py mirror` übernimmt den Eintrag ins Change Log. Research-Log-Eintrag „Live-Update veröffentlicht“.
 
-## Sandbox-Schreibtest 24.11.2026 – Ergebnis: `Elementor write capability insufficient`
+## Sandbox-Schreibtest 24.11.2026 – Ergebnis: Elementor Write **PARTIAL**
 
 Freigegeben als isolierter Sandbox-Test. Quelle: Baudoku-Seite 5401 (`/drohnen-baudokumentation/`), **ausschließlich gelesen** – vorher/nachher `modified 2026-07-16T14:27:04`, Status `publish`, unverändert. Alle Schreibaufrufe gingen nur an den neuen Entwurf **6955 „[TEST SEO-Autopilot] Elementor-Kopie“** (`test-seo-autopilot-elementor-kopie`, Status `draft`, nie veröffentlicht).
 
 | # | Schreibaufruf (nur 6955) | Ergebnis |
 |---|---|---|
 | 1 | `pages-create` (draft): Hero-Container (3.078 Zeichen) + `_elementor_edit_mode`, `_elementor_template_type`, `_elementor_page_settings` | OK, keine `_content_warnings`; Rücklesen **strukturell identisch** |
-| 2 | `pages-update`: Hero + Abschnitte 1, 2, 5, 6 (~30.000 Zeichen, alle Widget-Typen der Seite) | **HTTP 403, Antwort kein JSON** (Firewall des Hostings) – nichts geschrieben (atomar) |
+| 2 | `pages-update`: Hero + Abschnitte 1, 2, 5, 6 (~30.000 Zeichen, alle Widget-Typen der Seite) | **HTTP 403, Antwort kein JSON** (Firewall – vermutlich das aktive Plugin NinjaFirewall, nicht das Hosting; Firewall-Log nicht eingesehen) – nichts geschrieben (atomar) |
 | 3 | Diagnose: nur ein HTML-Widget mit `<script>` (Trustindex-Loader) | **HTTP 403** – Ursache bestätigt |
 
 **Strukturvergleich (Probe):** *identical* – Hero `5592b59e` inkl. H1, Responsive-Werte, `__globals__`, Bild-ID 5165, Page Settings (Schlüsselreihenfolge anders) · *different but functionally equivalent* – Kodierung (`/` statt `\/`, echte Umlaute statt `\u…`), JSON-identisch · *field lost* – keine · *not writable* – HTML-Widgets mit `<script>` (`d8af34e` Abschnitt 1, `568d6a7` Abschnitt 9) · *unknown* – übrige Abschnitte, `post_content`, Yoast (Test gestoppt).
@@ -126,10 +126,61 @@ Freigegeben als isolierter Sandbox-Test. Quelle: Baudoku-Seite 5401 (`/drohnen-b
 Weitere Erkenntnisse:
 - Kein serverseitiger Kopier-/Elementor-Weg: jeder Schreibvorgang muss das **komplette** `_elementor_data` inline übertragen (Baudoku: 91.626 Zeichen ≈ 35k+ Tokens pro Schreibvorgang; Kopie + Änderung + Restore = 3×).
 - Meta-only-Änderungen erzeugen **keine WordPress-Revision** (Draft 6955: 0 Revisionen) → Revisionen sind für Elementor kein verlässlicher Rollback-Weg.
-- Code: `tools/wordpress.py firewall_risk` / `firewall-check` erkennt blockierte Widgets **vor** dem Schreibaufruf; `guard(..., payload=…)` liefert `payload_blocked_by_firewall`. Bei `capabilities_verified.elementor_write_status = insufficient` liefert der Guard für OPTIMIZE-Live-Updates `elementor_write_insufficient`.
+- Code: `tools/wordpress.py firewall_risk` / `firewall-check` erkennt blockierte Widgets **vor** dem Schreibaufruf; `guard(..., payload=…)` liefert `payload_blocked_by_firewall`. Statusmatrix `capabilities_verified.elementor` → Guard: `live_optimize_blocked` (OPTIMIZE live), `create_automation_pending` (CREATE veröffentlichen); Drafts bleiben erlaubt.
 - Runner-Routine hat weiterhin keinen WordPress-Konnektor → `wp_connector_unavailable` (kein automatisierter Runner-Schreibtest).
 
-**Optionen (Entscheidung offen):** (a) Firewall-Ausnahme beim Hosting für die REST-Schreibroute/Jetpack, danach Test wiederholen; (b) Trustindex-Bewertungen ohne `<script>` im Seiteninhalt einbinden (Shortcode/Plugin-Widget) – Änderung an der Live-Seite, nur nach ausdrücklicher Freigabe; (c) bis dahin OPTIMIZE als Drive-Change-Set mit manueller Übernahme in Elementor.
+**Statusmatrix (ersetzt das pauschale „insufficient“):**
+
+| Bereich | Status |
+|---|---|
+| Elementor Write | PARTIAL |
+| Standard Elementor widgets | VERIFIED |
+| Script-containing widgets | BLOCKED BY FIREWALL (vermutlich NinjaFirewall) |
+| Live OPTIMIZE automation | BLOCKED |
+| CREATE automation | PENDING FULL SANDBOX VALIDATION |
+| Rollback | NOT YET VERIFIED |
+
+Test-Draft 6955 bleibt als isolierte Sandbox bestehen (nicht löschen).
+
+## Trustindex – technische Analyse (24.11.2026, nur lesend)
+
+- **Einbindung:** Elementor-**HTML-Widget**, Inhalt nur `<script defer async src='https://cdn.trustindex.io/loader.js?<ID>'>`. Das Script lädt das Widget aus der Trustindex-Cloud und rendert es an seiner Position. Auslöser des 403 ist dieses `<script>` in `settings.html`.
+- **Plugin:** keins – Trustindex ist reine Cloud-Einbindung (21 Plugins geprüft). Keine Trustindex-Shortcodes/-Elementor-Widgets verfügbar.
+- **Verbreitung:** 12 von 13 Sitemap-URLs (Startseite, Kontakt, alle Leistungsseiten) laden **dieselben zwei** Widget-IDs (`486a09d6…`, `4b8ac4b6…`) – jeweils als **eigene Kopie** im `_elementor_data` der Seite (unterschiedliche Elementor-IDs), nicht über Header/Footer/Template. Konfiguration liegt zentral in der Trustindex-Cloud → überall gleich.
+- **Vorbild auf der eigenen Website:** Heyflow ist bereits modular: Script zentral im Elementor-Custom-Code „Heyflow-Verknüpfung“ (`<head>`), Seiten enthalten nur `<heyflow-wrapper>` (kein `<script>`).
+- Das vorhandene Template „Trust: Bewertungen“ (5479) ist ein älterer statischer Testimonial-Block ohne Trustindex.
+- Firewall-Plugins aktiv: NinjaFirewall (WP Edition), All-In-One Security. Der Elementor-Editor (eingeloggter Admin) speichert Script-Widgets offenbar problemlos; abgewiesen wird der Schreibweg über die REST-API/Jetpack.
+
+## Architektur: Referenz statt Script
+
+Ziel: `Elementor-Seite → Template-Referenz → zentrales Template mit Trustindex → Trustindex rendert` statt `Elementor-Seite → HTML-Widget mit <script>`.
+
+| Option | Darstellung | SEO | Neues Plugin | Ladezeit | API-kompatibel | Zentral | Sicherheit | Bewertung |
+|---|---|---|---|---|---|---|---|---|
+| T1 Zentrales Elementor-Template + Pro-Widget „Template“ | gleich | neutral | nein | gleich | ja (nur `template_id`) | ja | gut | **empfohlen** |
+| T2 Shortcode `[elementor-template id=…]` | gleich | neutral | nein | gleich | ja | ja | gut | gleichwertig |
+| T3 Custom Code + Platzhalter (wie Heyflow) | unklar (Trustindex rendert an Script-Position) | neutral | nein | gleich/leicht schlechter | ja | ja | gut | nur nach Prüfung Trustindex-Doku |
+| T4 Trustindex-WordPress-Plugin | wahrscheinlich gleich | neutral | **ja** | eher schlechter | ja | ja | mehr Angriffsfläche | nicht empfohlen |
+| T5 Firewall-Ausnahme | gleich | neutral | nein | gleich | ja | nein (12 Kopien bleiben) | schwächer | **nur Fallback** |
+
+Umsetzung T1 (später, freigabepflichtig): Noel legt im Elementor-Editor zwei Templates an („Trustindex – Bewertungen A/B“) – das Script wird dabei vom eingeloggten Editor gespeichert, nicht über die API. Seiten referenzieren nur noch die Template-ID. Live-Seiten werden erst nach eigener Freigabe umgestellt.
+
+## Brauchen wir überhaupt 1:1-Kopien? – CREATE ≠ OPTIMIZE
+
+- **CREATE:** nie eine Live-Seite klonen. Kontrollierte SEO-Landingpage-Vorlage: wenige Template-Widgets (Hero-Stil, Trust/Bewertungen, Ablauf, CTA/Heyflow) + SEO-Inhalte als Standard-Widgets (Heading, Text, Bild, FAQ). Payload ca. 5–15 KB statt ~92 KB, keine Scripts, gleichbleibendes Design. Ausgangsmaterial vorhanden: „Landingpage-Vorlage 2026“ (6813), „Vorlage: Dachinspektion LP“ (6905), „Hero-Area“ (6758), Bausteine Trust/Preise/Ablauf.
+- **OPTIMIZE:** bestehende Struktur erhalten; nur freigegebene Widgets (per Elementor-ID) ändern, alle übrigen Knoten unverändert übernehmen. Solange die Seite Script-Widgets enthält, bleibt Live OPTIMIZE blockiert; nach Umstellung auf Template-Referenzen ist sie API-schreibbar. Die Payload bleibt seitengroß, sinkt aber mit jeder modularisierten Sektion.
+
+## Nächster Test (vorgeschlagen, nicht ausgeführt) – S2 Template-Referenz
+
+Nur Draft 6955; keine Live-Seite, kein Plugin, keine Firewall, kein neues Template. In 6955 einen Container mit dem Elementor-Pro-Widget „Template“ schreiben, das auf das bestehende statische Template 5479 verweist, plus Abschnitt 2 (Icon-Boxen). Prüfen: kein 403 · Rücklesen strukturell identisch · Vorschau zeigt Template-Inhalt · 5401 und 5479 unverändert.
+
+## Fallback: Firewall-Ausnahme
+
+Möglich (Whitelist für den REST-Schreibweg in NinjaFirewall bzw. beim Hosting), aber **nicht bevorzugt**: Scripts blieben über die API schreibbar, die 12 Kopien blieben dezentral. Die Firewall wird nicht umgangen und ihre Regeln werden nicht verändert.
+
+## Separater Blocker (nicht WordPress): F-025 Runner repository write/push unavailable
+
+Die Runner-Routine kann nicht ins Repository pushen (403); Ergebnisse wie das OPP-01-Research-Nachholen gehen im Repository verloren. Wird separat gelöst.
 
 ## Rollback
 

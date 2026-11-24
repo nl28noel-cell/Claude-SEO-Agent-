@@ -1,6 +1,6 @@
 {
   "_doc": "Single Source of Truth für SEO-Findings. seo-findings.md wird daraus generiert (tools/render_state_md.py). Status: open | monitoring | resolved | note.",
-  "updated": "2026-11-23",
+  "updated": "2026-11-24",
   "findings": [
     {
       "id": "F-001",
@@ -302,6 +302,34 @@
       "date": "2026-11-23",
       "resolution": "Keyword Planner integration intentionally not pursued; Semrush remains primary keyword-demand source.",
       "closed": "2026-11-23"
+    },
+    {
+      "id": "F-024",
+      "severity": "medium",
+      "category": "Integration",
+      "title": "Trustindex auf 12 Seiten als kopiertes Script-HTML-Widget eingebunden",
+      "description": "Beide Trustindex-Bewertungswidgets (2 IDs) stecken auf 12 Seiten jeweils als eigenes Elementor-HTML-Widget mit <script> im Seiteninhalt. Nicht zentral wartbar und für den SEO-Autopiloten blockierend: Payloads mit <script> werden von der Firewall (vermutlich NinjaFirewall) mit HTTP 403 abgewiesen.",
+      "evidence": "Sandbox-Test 24.11.2026 (Draft 6955); öffentliches HTML aller Sitemap-URLs; _elementor_data Seite 5401 (d8af34e, 568d6a7); Plugin-Liste ohne Trustindex",
+      "url": "https://www.spreewald-luftaufnahmen.de/drohnen-baudokumentation/",
+      "status": "open",
+      "related_opportunity": "OPP-02",
+      "related_change": null,
+      "date": "2026-11-24",
+      "resolution": null
+    },
+    {
+      "id": "F-025",
+      "severity": "high",
+      "category": "Integration",
+      "title": "Runner repository write/push unavailable",
+      "description": "Die Workflow-Runner-Routine kann nicht ins Repository pushen (HTTP 403). Ergebnisse von Runner-Läufen (z. B. OPP-01 Research-Nachholen vom 24.11.2026: Web Research + Strategie) gehen im Repository verloren; nur Artifact-db-Notizen bleiben. Separater Infrastrukturfehler – unabhängig von WordPress.",
+      "evidence": "Runner-Lauf 24.11.2026 12:52–13:08 UTC (Research-Retry OPP-01), Push 403; Repository-Dossier OPP-01 weiterhin v1",
+      "url": null,
+      "status": "open",
+      "related_opportunity": "OPP-01",
+      "related_change": null,
+      "date": "2026-11-24",
+      "resolution": null
     }
   ]
 }
