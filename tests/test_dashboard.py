@@ -353,6 +353,58 @@ class ArtifactQA(unittest.TestCase):
         p = serp.plan("spreewald-luftaufnahmen", "OPP-02")
         self.assertEqual([(w["keyword"], w["action"]) for w in p["web_research"]], [("baudokumentation drohne", "done")])
 
+    def test_research_log_audit_trail(self):
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import research_log as RL, serp
+        self.assertEqual(RL.validate("spreewald-luftaufnahmen"), [])
+        rl = self.d["research_log"]
+        ev = rl["events"]; src = {s["id"]: s for s in rl["sources"]}
+        o2 = [e for e in ev if e["opp"] == "OPP-02"]
+        acts = {e["action"] for e in o2}
+        for need in ("gsc_analysis", "semrush_keyword", "web_research", "competitor_analysis", "own_page_analysis", "cannibalization", "content_gap", "ia_review", "dossier"):
+            self.assertIn(need, acts)
+        # keine erfundenen Zeitpunkte: Uhrzeit nur bei exact/commit, sonst reines Datum
+        for e in ev:
+            self.assertEqual(len(e["at"]) == 10, e["at_precision"] == "date", e["id"])
+        # Website-Quellen: anklickbare URL + echter Abrufzeitpunkt aus dem Seitenprofil
+        for s in src.values():
+            if s["type"] in ("competitor",):
+                self.assertTrue(s["url"].startswith("https://")); self.assertEqual(s["fetched_precision"], "exact")
+        # Semrush-Nachweis: Report, Endpoint, DB, Kosten (oder ausdrücklich unbekannt), Modus, kein erfundener Link
+        sem = [s for s in src.values() if s["type"] == "semrush"]
+        self.assertTrue(sem)
+        for s in sem:
+            m = s["semrush"]
+            self.assertTrue(m["endpoint"] and m["database"] and m["mode"] in ("live", "cache"))
+            self.assertTrue(isinstance(m["units"], int) or "metadata unavailable" in m["units_note"])
+            self.assertIsNone(m["link"])
+        # Findings referenzieren existierende Quellen; Wettbewerbs-Erkenntnis ist belegt
+        for f in rl["findings"]:
+            self.assertTrue(all(i in src for i in f["source_ids"]))
+        rec = next(f for f in rl["findings"] if "regelmäßigen" in f["text"])
+        self.assertGreaterEqual(len(rec["source_ids"]), 3)
+        self.assertTrue(all(src[i]["type"] == "competitor" for i in rec["source_ids"]))
+        # Agent Activity nutzt dieselben Events (keine zweite Liste)
+        logt = [t for t in self.d["tasks"] if t.get("from_log")]
+        self.assertTrue(logt)
+        self.assertEqual(sum(int(re.search(r"\((\d+) Aktionen\)", t["title"]).group(1)) for t in logt), len(ev))
+        # Bezahlte SERP: Rohdaten unveränderlich + Log-Eintrag mit Kosten (im Temp-Ordner, ohne echte Abfrage)
+        import tempfile, shutil
+        tmp = tempfile.mkdtemp(); ob, oc, orr = serp.BUDGET, serp.CACHE, RL.ROOT
+        try:
+            b = serp.budget(); serp.BUDGET = os.path.join(tmp, "b.json"); json.dump(b, open(serp.BUDGET, "w")); serp.CACHE = os.path.join(tmp, "cache")
+            os.makedirs(os.path.join(tmp, "clients", "t", "state")); RL.ROOT = tmp
+            f = os.path.join(tmp, "r.csv"); open(f, "w").write("Dn;Ur\na.de;https://a.de/x\nb.de;https://b.de/y\n")
+            e = serp.ingest("baudokumentation drohne", f, client="t", opp="OPP-X")
+            self.assertTrue(os.path.exists(os.path.join(serp.CACHE, "raw", e["raw_id"] + ".json")))
+            self.assertRegex(e["raw_id"], r"^SERP-\d{4}-\d{2}-\d{2}-baudokumentation-drohne-DE$")
+            evd, lgd = RL.load("t")
+            s0 = evd["sources"][0]["semrush"]
+            self.assertEqual((s0["endpoint"], s0["database"], s0["units"], s0["mode"], s0["results"][0]["url"]), ("phrase_organic", "DE", 20, "live", "https://a.de/x"))
+            self.assertEqual((lgd["events"][0]["action"], lgd["events"][0]["units"]), ("semrush_serp", 20))
+        finally:
+            serp.BUDGET, serp.CACHE, RL.ROOT = ob, oc, orr; shutil.rmtree(tmp)
+
     def test_workflow_render_html(self):
         import tempfile
         sys.path.insert(0, os.path.join(ROOT, "tools"))

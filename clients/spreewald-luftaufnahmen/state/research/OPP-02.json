@@ -400,8 +400,23 @@
           "baufortschritt drohne dokumentieren dienstleister brandenburg"
         ],
         "found": 13,
-        "profiled": 8,
-        "note": "Standard-Suche lieferte überwiegend Fachartikel/PDFs, Extended-Suche Anbieter-Landingpages – Ergebnisse hängen vom Suchmodus ab und sind nicht reproduzierbar. Keine Positionen erfasst."
+        "profiled": 7,
+        "note": "Standard-Suche lieferte überwiegend Fachartikel/PDFs, Extended-Suche Anbieter-Landingpages – Ergebnisse hängen vom Suchmodus ab und sind nicht reproduzierbar. 8 Anbieterseiten abgerufen, 7 erfolgreich analysiert (dronext.de: SSL-Fehler). Keine Positionen erfasst.",
+        "source_ids": [
+          "SRC-001",
+          "SRC-002",
+          "SRC-003",
+          "SRC-004",
+          "SRC-005",
+          "SRC-006",
+          "SRC-007",
+          "SRC-009",
+          "SRC-016",
+          "SRC-017",
+          "SRC-018",
+          "SRC-019",
+          "SRC-020"
+        ]
       },
       "secondary_rule": "„baustellendokumentation drohne“: gleicher Intent angenommen → keine eigene Semrush-Abfrage; Web Research nur mit Berlin-Variante als Discovery."
     }

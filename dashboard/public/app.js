@@ -364,7 +364,7 @@ pages.opportunity = id => {
   view().innerHTML = `<a class="back" href="#opportunities">← Opportunities</a>
   <div class="page-head"><div><div class="detail-head"><h1>${esc(o.name)}</h1>${typeChip(o.type)}${prioChip(o.priority)}${confChip(o.confidence)}${statusChip(o.status)}${o.freeze ? chip("Change freeze", "amber", true) : ""}</div>
     <div class="sub">${esc(o.id)} · Business fit ${o.business_fit}/10 · Primary keyword „${esc(o.primary_keyword)}“</div></div></div>
-  ${resStatus(o) ? `${researchBanner(o)}<div class="grid mt">${researchView(o)}${gate1Card(o)}</div><h2 class="sec-h">Evidenz &amp; Rohdaten</h2>` : ""}
+  ${resStatus(o) ? `${researchBanner(o)}<div class="grid mt">${evidenceCard(o)}${researchView(o)}${gate1Card(o)}</div><h2 class="sec-h">Evidenz &amp; Rohdaten</h2>` : ""}
   <div class="grid g-main">
     <div class="grid">
       <div class="card"><div class="card-h"><h2>Why this matters</h2></div><div class="card-b"><p style="margin:0 0 10px">${esc(o.why)}</p><div class="callout"><b>Recommendation:</b> ${esc(o.recommendation)}</div>
@@ -671,6 +671,98 @@ function oppBusinessCard(o) {
     ${lp ? `<div class="k">Diese Seite</div><div>${fmtN(lp.ga4_sessions)} Sitzungen (${fmtN(lp.ga4_organic)} organisch) · Engagement ${lp.eng_rate === null || lp.eng_rate === undefined ? "–" : fmtPct(lp.eng_rate, 0)} · Intent ${fmtN(lp.micro_sessions)} · <b>${fmtN(leadsOf(lp))} Leads</b> (${lp.lead_form} F · ${lp.lead_contact} K)${lp.paid_sessions_hist ? ` · ${fmtN(lp.paid_sessions_hist)} Paid-Sitzungen (hist.)` : ""}</div>` : o.existing_page ? `<div class="k">Diese Seite</div><div class="s">Keine GA4-Sitzungen im Zeitraum</div>` : ""}
     </div>${f ? `<div class="row mt">${f.signals.filter(x => ["weak", "paid", "lead", "intent", "nolead"].includes(x.kind)).map(x => chip(SIG_LABEL[x.kind], SIG[x.kind])).join("")}</div>` : ""}</div></div>`;
 }
+/* ------------------------------------------------------------ Research Log / Evidence (Audit Trail) */
+/* Eine Event-Quelle (state/research_log.json + evidence.json) für Research Log, Research Evidence und Agent Activity. */
+const RLD = () => S.d.research_log || { events: [], sources: [], findings: [], summary: {}, actions: {}, source_types: {} };
+const srcMap = () => Object.fromEntries(RLD().sources.map(s => [s.id, s]));
+const ST_COLOR = { gsc: "blue", ga4: "blue", semrush: "amber", website: "green", competitor: "red", web_search: "", agent: "" };
+const RLF = { opp: "", type: "", action: "", date: "", q: "" };
+const NA_TXT = "metadata unavailable";
+function rlWhen(at, prec) {
+  if (!at) return NA_TXT;
+  if (prec === "date" || at.length === 10) return `${fmtDate(at)} <span class="s">· Uhrzeit nicht protokolliert</span>`;
+  return `${fmtDateTime(at)}${prec === "commit" ? ` <span class="s">· Zeitpunkt des Commits</span>` : ""}`;
+}
+function semrushBlock(s) {
+  const m = s.semrush || {};
+  const rows = (m.results || []).map(r => r.url ? `<div>#${esc(r.position)} ${esc(r.domain)} → <a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a></div>` : `<div>${esc(r.keyword)} · Vol. ${fmtN(r.volume)} · KD ${fmtD(r.kd, 0)} · CPC ${fmtD(r.cpc, 2)}</div>`).join("");
+  return `<div class="rl-sem"><div class="kv"><div class="k">Report</div><div><b>Semrush · ${esc(m.report)}</b> <code>${esc(m.endpoint)}</code></div>
+    <div class="k">Keyword</div><div>${esc(m.keyword)}</div><div class="k">Database</div><div>${esc(m.database)}${m.display_limit ? ` · Top ${esc(m.display_limit)}` : ""}</div>
+    <div class="k">Ergebnisse</div><div>${fmtN(m.results_count)}</div>
+    <div class="k">Kosten</div><div>${Number.isInteger(m.units) ? `<b>${fmtN(m.units)} Units</b>` : `<span class="s">${esc(m.units_note || NA_TXT)}</span>`}</div>
+    <div class="k">Abruf</div><div>${chip(m.mode === "live" ? "Live query" : "Cache hit", m.mode === "live" ? "amber" : "green")} ${rlWhen(s.fetched, s.fetched_precision)}${m.mode_note ? `<div class="s">${esc(m.mode_note)}</div>` : ""}</div>
+    <div class="k">Rohdaten</div><div class="s path">${esc(m.raw_id || m.raw_path || "–")}</div></div>
+    ${rows ? `<div class="rl-res">${rows}</div>` : ""}
+    <div class="s mt">${m.link ? `<a href="${esc(m.link)}" target="_blank" rel="noopener">In Semrush öffnen ↗</a>` : esc(m.link_note || "Kein Semrush-Link verfügbar – Parameter und Ergebnisse oben dokumentiert.")}</div></div>`;
+}
+function srcItem(s, full = false) {
+  const t = RLD().source_types[s.type] || s.type, m = s.meta || {};
+  const head = `${chip(t, ST_COLOR[s.type] || "")} ${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>` : `<b>${esc(s.title)}</b>`} <span class="mini">${esc(s.id)}</span>`;
+  const sub = [s.domain && s.url ? esc(s.domain) : "", s.url ? `<span class="path">${esc(s.url)}</span>` : "", `Abruf: ${rlWhen(s.fetched, s.fetched_precision)}`, s.error ? `<span class="down">nicht abrufbar (${esc(s.error.slice(0, 60))})</span>` : "",
+    m.property ? `Property ${esc(m.property)}` : "", m.period ? `Zeitraum ${esc(m.period)}` : "", m.dimensions ? `Dimensionen ${esc(m.dimensions)}` : "", m.filter ? `Filter ${esc(m.filter)}` : "", m.tool ? esc(m.tool) : "", m.note ? esc(m.note) : ""].filter(Boolean).join(" · ");
+  return `<div class="rl-src">${head}<div class="s">${sub}</div>${full && s.type === "semrush" ? semrushBlock(s) : ""}</div>`;
+}
+/** „N Quellen anzeigen“ für ein Finding */
+function findingRefs(f) {
+  const M = srcMap(), ss = f.source_ids.map(i => M[i]).filter(Boolean);
+  return `<div class="rl-find"><div>${esc(f.text)}</div>${ss.length ? `<details><summary class="mini">${ss.length} ${ss.length === 1 ? "Quelle" : "Quellen"} anzeigen</summary>${ss.map(s => srcItem(s)).join("")}</details>` : `<span class="mini">ohne Quellenbeleg</span>`}</div>`;
+}
+const oppFindings = (opp, sec) => RLD().findings.filter(f => f.opp === opp && (!sec || f.section === sec));
+function evidenceCard(o) {
+  const D = RLD(), src = D.sources.filter(s => (s.opp_ids || []).includes(o.id));
+  if (!src.length && !oppFindings(o.id).length) return "";
+  const LABEL = { gsc: "GSC", semrush: "Semrush", competitor: "Competitor Websites", website: "Own Website", ga4: "GA4", web_search: "Web Search", agent: "Agent" };
+  const order = ["gsc", "semrush", "competitor", "website", "ga4", "web_search", "agent"].filter(t => src.some(s => s.type === t));
+  const ev = D.events.filter(e => e.opp === o.id);
+  return `<div class="card" id="rs-evidence"><div class="card-h"><div><h2>Research Evidence</h2><div class="hint">${fmtN(src.length)} Quellen · ${fmtN(oppFindings(o.id).length)} belegte Erkenntnisse · ${fmtN(ev.length)} Log-Einträge</div></div><a href="#research-log" class="mini" data-rl-opp="${esc(o.id)}">Im Research Log ansehen →</a></div>
+    <div class="card-b">${order.map(t => { const xs = src.filter(s => s.type === t); return `<details class="rl-grp"><summary>${chip(`${LABEL[t]} (${xs.length})`, ST_COLOR[t] || "")}</summary>${xs.map(s => srcItem(s, true)).join("")}</details>`; }).join("")}
+    ${oppFindings(o.id).length ? `<h4>Belegte Erkenntnisse</h4>${oppFindings(o.id).map(f => `<div class="row" style="align-items:flex-start"><span class="chip outline">${esc(f.section)}</span>${findingRefs(f)}</div>`).join("")}` : ""}</div></div>`;
+}
+function rlEvent(e) {
+  const D = RLD(), M = srcMap(), o = S.d.opportunities.find(x => x.id === e.opp), ss = (e.source_ids || []).map(i => M[i]).filter(Boolean);
+  const fs = (e.finding_ids || []).map(i => D.findings.find(f => f.id === i)).filter(Boolean);
+  return `<article class="rl-ev" data-ev="${esc(e.id)}"><div class="rl-head"><span class="rl-when">${rlWhen(e.at, e.at_precision)}</span>${e.opp ? ` — <a href="#opp-${esc(e.opp)}">${esc(e.opp)}${o ? " " + esc(o.name) : ""}</a>` : ""}</div>
+    <h3>${esc(e.title || D.actions[e.action] || e.action)} ${chip(D.actions[e.action] || e.action, "outline")}${e.units ? chip(fmtN(e.units) + " Units", "amber") : ""}${e.units === null ? chip("Units: " + NA_TXT, "") : ""}</h3>
+    ${e.summary ? `<p>${esc(e.summary)}</p>` : ""}
+    ${e.found ? `<div><b>Gefunden:</b> ${esc(e.found)}</div>` : ""}
+    ${e.insight ? `<div class="mt"><b>Erkenntnis:</b> ${esc(e.insight)}</div>` : ""}
+    ${fs.length ? `<div class="mt">${fs.map(findingRefs).join("")}</div>` : ""}
+    ${ss.length ? `<details class="mt" ${ss.length <= 3 ? "open" : ""}><summary><b>Quellen (${ss.length})</b></summary>${ss.map(s => srcItem(s, true)).join("")}</details>` : ""}
+    ${(e.links || []).map(l => `<a class="mini" href="${esc(l.url)}" target="_blank" rel="noopener">→ ${esc(l.label)}</a>`).join(" ")}</article>`;
+}
+function rlMatch(e) {
+  const M = srcMap(), ss = (e.source_ids || []).map(i => M[i]).filter(Boolean);
+  if (RLF.opp && e.opp !== RLF.opp) return false;
+  if (RLF.action && e.action !== RLF.action) return false;
+  if (RLF.type && !ss.some(s => s.type === RLF.type) && !(RLF.type === "agent" && !ss.length)) return false;
+  if (RLF.date && (e.at || "").slice(0, 10) !== RLF.date) return false;
+  if (RLF.q) { const q = RLF.q.toLowerCase(); const hay = [e.opp, e.title, e.summary, e.found, e.insight, ...ss.map(s => [s.title, s.domain, s.url, s.semrush?.keyword].join(" "))].join(" ").toLowerCase(); if (!hay.includes(q)) return false; }
+  return true;
+}
+pages["research-log"] = () => {
+  const D = RLD(), sm = D.summary || {}, b = D.semrush_budget || {};
+  const dates = [...new Set(D.events.map(e => (e.at || "").slice(0, 10)))].sort().reverse();
+  const opts = (arr, cur) => arr.map(([v, l]) => `<option value="${esc(v)}" ${v === cur ? "selected" : ""}>${esc(l)}</option>`).join("");
+  view().innerHTML = `<div class="page-head"><div><h1>Research Log</h1><div class="sub">Arbeitsprotokoll des SEO-Agenten: was gemacht wurde, was gefunden wurde, auf welchen Quellen es beruht. Kein Debug-Log, keine internen Gedankengänge.</div></div></div>
+    <div class="kpis k4">
+      <div class="kpi card"><div class="k-label">Log-Einträge</div><div class="k-val">${fmtN(sm.events)}</div><div class="s">${fmtN(sm.sources)} Quellen · ${fmtN(sm.findings)} belegte Erkenntnisse</div></div>
+      <div class="kpi card"><div class="k-label">Semrush-Units (protokolliert)</div><div class="k-val">${fmtN(sm.semrush_units_known)}</div><div class="s">${Object.entries(sm.semrush_by_report || {}).map(([r, x]) => `${esc(r)}: ${x.queries} Abfr. · ${fmtN(x.units)} Units${x.unknown ? ` (${x.unknown}× Kosten unbekannt)` : ""}`).join("<br>") || "keine Abfragen"}</div></div>
+      <div class="kpi card"><div class="k-label">Semrush-Kontostand</div><div class="k-val">${fmtN(b.balance)}</div><div class="s">Reserve ${fmtN(b.reserve)} · Stand ${fmtDate(b.checked_at)} · ${b.automatic_read ? "automatisch gelesen" : "fortgeschrieben (Konnektor liefert keinen Kontostand)"}</div></div>
+      <div class="kpi card"><div class="k-label">SERP-Kosten</div><div class="k-val">${fmtN(b.cost_per_line * b.display_limit)}</div><div class="s">Units je Keyword (Top ${fmtN(b.display_limit)} × ${fmtN(b.cost_per_line)})</div></div>
+    </div>
+    <div class="card mt"><div class="card-b rl-filters">
+      <label>Opportunity<select data-f="opp"><option value="">Alle</option>${opts([...new Set(D.events.map(e => e.opp).filter(Boolean))].map(x => [x, x]), RLF.opp)}</select></label>
+      <label>Source Type<select data-f="type"><option value="">Alle</option>${opts(Object.entries(D.source_types), RLF.type)}</select></label>
+      <label>Action Type<select data-f="action"><option value="">Alle</option>${opts(Object.entries(D.actions).filter(([k]) => D.events.some(e => e.action === k)), RLF.action)}</select></label>
+      <label>Datum<select data-f="date"><option value="">Alle</option>${opts(dates.map(d => [d, fmtDate(d)]), RLF.date)}</select></label>
+      <label class="grow">Suche<input type="search" data-f="q" value="${esc(RLF.q)}" placeholder="Keyword, Domain, Opportunity …"></label>
+    </div></div>
+    <div id="rl-list" class="mt"></div>`;
+  const draw = () => { const xs = D.events.filter(rlMatch).slice().reverse(); $("#rl-list").innerHTML = xs.length ? xs.map(rlEvent).join("") : `<div class="card empty">Keine Einträge für diese Filter.</div>`; };
+  view().querySelectorAll("[data-f]").forEach(el => el.addEventListener(el.tagName === "INPUT" ? "input" : "change", () => { RLF[el.dataset.f] = el.value; draw(); }));
+  draw();
+};
+document.addEventListener("click", e => { const a = e.target.closest("[data-rl-opp]"); if (a) { Object.assign(RLF, { opp: a.dataset.rlOpp, type: "", action: "", date: a.dataset.rlDate || "", q: "" }); } });
 /* ------------------------------------------------------------ Research-/Strategy-Stufe (A–J, vor Gate 1) */
 const RES_READY = ["complete", "complete_with_limits"];
 const RES_COLOR = { complete: "green", complete_with_limits: "blue", incomplete: "amber", not_started: "" };
@@ -679,7 +771,9 @@ const resChip = o => { const r = resStatus(o); return r ? chip(r.label, RES_COLO
 const REL = { business_competitor: ["Wettbewerber", "red"], platform: ["Plattform", "amber"], software: ["Software", ""], guide: ["Ratgeber", ""], directory: ["Verzeichnis", ""], partner: ["Partner", "green"], own: ["Eigene Seite", "blue"], other: ["Sonstiges", ""] };
 const ROLE = { primary: ["Primary", "blue"], secondary: ["Secondary", "green"], supporting: ["Supporting", ""], do_not_target: ["Do not target", "red"] };
 const ul = a => a?.length ? `<ul class="list">${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<span class="mini">–</span>`;
-const rsCard = (key, title, body, hint = "") => `<section class="card rs" id="rs-${key}"><div class="card-h"><div><h2>${esc(title)}</h2>${hint ? `<div class="hint">${esc(hint)}</div>` : ""}</div></div><div class="card-b">${body}</div></section>`;
+let RS_OPP = null; // Opportunity, deren Dossier gerade gerendert wird (für belegte Erkenntnisse je Abschnitt)
+const rsCard = (key, title, body, hint = "") => { const fs = RS_OPP ? oppFindings(RS_OPP, key) : [];
+  return `<section class="card rs" id="rs-${key}"><div class="card-h"><div><h2>${esc(title)}</h2>${hint ? `<div class="hint">${esc(hint)}</div>` : ""}</div></div><div class="card-b">${body}${fs.length ? `<div class="rs-ev"><h4>Belegt durch</h4>${fs.map(findingRefs).join("")}</div>` : ""}</div></section>`; };
 const RS_TITLES = [["A", "Executive Decision"], ["B", "Search Demand"], ["C", "Live SERP"], ["D", "Competitor Insights"], ["E", "Content Gap"], ["F", "Recommended Page Scope"], ["G", "Proposed Structure"], ["H", "Information Architecture"], ["I", "How We Can Win"], ["J", "Risks / Unknowns"]];
 /** Statuszeile über dem Dossier – fehlende Research wird nie still übergangen */
 function researchBanner(o) {
@@ -709,6 +803,7 @@ function serpValidation(o) {
 function researchView(o) {
   const R = o.research;
   if (!R) return `<div class="card"><div class="card-h"><h2>Research & Strategy (A–J)</h2></div><div class="card-b"><div class="rs-toc">${RS_TITLES.map(([k, t]) => `<span class="chip">${k} · ${esc(t)}</span>`).join("")}</div><p class="mini mt">Noch kein Dossier. Der Agent erstellt es in der Kostenreihenfolge Cache → GSC → Website → vorhandene Semrush-Daten → Web/SERP → Semrush nur nach Freigabe.</p></div></div>`;
+  RS_OPP = o.id;
   const A = R.A_decision || {}, B = R.B_demand || {}, C = R.C_serp || {}, E = R.E_gap || {}, F = R.F_scope || {}, G = R.G_structure || {}, H = R.H_ia || {};
   const pos = v => v === null || v === undefined ? "–" : fmtD(v);
   const out = [];
@@ -1090,7 +1185,7 @@ function renderFinding(x) {
 pages.activity = () => {
   const t = S.d.tasks, groups = [["blocked", "Blocked"], ["needs_review", "Needs review"], ["waiting_for_approval", "Waiting for approval"], ["monitoring", "Monitoring"], ["planned", "Planned"], ["completed", "Completed"]];
   view().innerHTML = `<div class="page-head"><div><h1>Agent Activity</h1><div class="sub">Honest states only. The agent works on demand in Claude Code sessions – nothing is shown as „running“.</div></div></div>
-  <div class="grid g2">${groups.filter(([k]) => t.some(x => x.state === k)).map(([k, l]) => `<div class="card"><div class="card-h"><h2>${l}</h2><span class="hint">${t.filter(x => x.state === k).length}</span></div><div class="act">${t.filter(x => x.state === k).map(x => `<div class="act-item"><div>${chip(STATE[k][0], STATE[k][1], true)}<div class="s" style="margin-top:4px">${fmtDate(x.date)}</div></div><div><div class="t">${esc(x.title)} <span class="mini">${esc(x.id)}</span></div><div class="d">${esc(x.detail || "")}</div>${x.blocked_reason ? `<div class="d down">Reason: ${esc(x.blocked_reason)}</div>` : ""}${x.next_check ? `<div class="d">Next check: ${fmtDate(x.next_check)}</div>` : ""}</div></div>`).join("")}</div></div>`).join("")}</div>`;
+  <div class="grid g2">${groups.filter(([k]) => t.some(x => x.state === k)).map(([k, l]) => `<div class="card"><div class="card-h"><h2>${l}</h2><span class="hint">${t.filter(x => x.state === k).length}</span></div><div class="act">${t.filter(x => x.state === k).map(x => `<div class="act-item"><div>${chip(STATE[k][0], STATE[k][1], true)}<div class="s" style="margin-top:4px">${fmtDate(x.date)}</div></div><div><div class="t">${esc(x.title)} <span class="mini">${esc(x.id)}</span></div><div class="d">${esc(x.detail || "")}</div>${x.blocked_reason ? `<div class="d down">Reason: ${esc(x.blocked_reason)}</div>` : ""}${x.next_check ? `<div class="d">Next check: ${fmtDate(x.next_check)}</div>` : ""}${x.log ? `<div class="d"><a href="#research-log" data-rl-opp="${esc(x.log.opp)}" data-rl-date="${esc(x.log.date)}">Im Research Log ansehen →</a></div>` : ""}</div></div>`).join("")}</div></div>`).join("")}</div>`;
 };
 
 pages.sources = () => {
@@ -1127,7 +1222,7 @@ pages.sources = () => {
 
 /* ------------------------------------------------------------ router */
 /* Artifact-taugliches Routing: nur einfache Hash-Namen (#overview, #opp-OPP-02). Alte #/pfad-Links werden umgeschrieben. */
-const TITLES = { overview: "Overview", performance: "Performance", funnel: "Search → Business", analytics: "Analytics (GA4)", ads: "Google Ads", opportunities: "Opportunities", approvals: "Workflow", changes: "Changes & Impact", market: "Market Opportunities", local: "Local SEO", findings: "Findings", activity: "Agent Activity", sources: "Data Sources" };
+const TITLES = { overview: "Overview", performance: "Performance", funnel: "Search → Business", analytics: "Analytics (GA4)", ads: "Google Ads", opportunities: "Opportunities", approvals: "Workflow", changes: "Changes & Impact", market: "Market Opportunities", local: "Local SEO", findings: "Findings", activity: "Agent Activity", sources: "Data Sources", "research-log": "Research Log" };
 /** Jede Tabelle scrollt in ihrem eigenen Container – die Seite selbst scrollt nie horizontal. */
 function wrapTables(root = view()) { root.querySelectorAll("table").forEach(t => { if (!t.parentElement.classList.contains("tbl-wrap")) { const w = document.createElement("div"); w.className = "tbl-wrap"; t.replaceWith(w); w.appendChild(t); } }); }
 function parseHash() {

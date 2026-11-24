@@ -329,3 +329,27 @@ textarea{width:100%;min-height:64px;resize:vertical}
 .path{overflow-wrap:anywhere}
 .rs-val{border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:12px 0;background:var(--panel-2)}
 .rs-val h4{margin-top:0}
+
+/* ---------- Research Log / Evidence */
+.rl-filters{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.rl-filters label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text-2);min-width:140px}
+.rl-filters label.grow{flex:1 1 220px}
+.rl-filters select,.rl-filters input{font:inherit;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--panel);color:var(--text);max-width:100%}
+.rl-ev{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;overflow-wrap:anywhere}
+.rl-ev h3{margin:6px 0;font-size:15px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.rl-ev p{margin:6px 0}
+.rl-head{font-size:12.5px;color:var(--text-2)}
+.rl-when{font-weight:600;color:var(--text)}
+.rl-src{padding:8px 0;border-top:1px solid var(--border);overflow-wrap:anywhere}
+.rl-src:first-of-type{border-top:0}
+.rl-sem{margin-top:6px;padding:8px 10px;border-radius:8px;background:var(--panel-2);border:1px solid var(--border)}
+.rl-res{margin-top:6px;font-size:12.5px;display:grid;gap:2px}
+.rl-find{flex:1;min-width:0;padding:4px 0}
+.rl-find details summary{cursor:pointer;color:var(--blue)}
+.rl-grp{margin-bottom:6px}
+.rl-grp summary{cursor:pointer;list-style-position:outside}
+.rs-ev{margin-top:14px;padding-top:10px;border-top:1px dashed var(--border)}
+
+/* Chips in Schlüssel-Wert-Zellen dürfen umbrechen (lange Freshness-Texte) */
+.kv>div{min-width:0}
+.kv .chip{white-space:normal;max-width:100%}

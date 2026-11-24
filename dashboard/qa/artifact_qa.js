@@ -48,7 +48,7 @@ const MOCK = () => {
   const check = (n, c, i = '') => (c ? ok : bad).push(n + (i ? ' — ' + i : ''));
   const b = await chromium.launch();
   const srv = await serve(); const base = `http://127.0.0.1:${srv.address().port}/`;
-  const routes = ['overview', 'performance', 'funnel', 'analytics', 'ads', 'opportunities', 'opp-OPP-02', 'approvals', 'changes', 'market', 'local', 'findings', 'activity', 'sources'];
+  const routes = ['overview', 'performance', 'funnel', 'analytics', 'ads', 'opportunities', 'opp-OPP-02', 'approvals', 'changes', 'market', 'local', 'findings', 'activity', 'sources', 'research-log'];
   const widths = [1440, 1180, 900, 400];
   for (const scheme of ['light', 'dark']) {
     for (const W of widths) {
@@ -65,7 +65,7 @@ const MOCK = () => {
         const bg = await p.evaluate(() => getComputedStyle(document.body).backgroundColor);
         const dark = await p.evaluate(() => { const c = getComputedStyle(document.body).backgroundColor.match(/\d+/g).map(Number); return (c[0] + c[1] + c[2]) / 3 < 80; });
         check(`[${scheme} ${W}] ${r} body background follows theme`, scheme === 'dark' ? dark : !dark, bg);
-        if (SHOTS && (W === 1440 || (W === 400 && ['overview', 'opp-OPP-02', 'approvals', 'funnel', 'analytics'].includes(r)) || (W === 1180 && ['overview', 'performance'].includes(r))))
+        if (SHOTS && (W === 1440 || (W === 400 && ['overview', 'opp-OPP-02', 'approvals', 'funnel', 'analytics', 'research-log'].includes(r)) || (W === 1180 && ['overview', 'performance'].includes(r))))
           await p.screenshot({ path: `${out}/${scheme}-${W}-${r}.png`, fullPage: true });
       }
       check(`[${scheme} ${W}] no console/page errors`, errs.length === 0, errs.join(' | '));
@@ -201,6 +201,36 @@ const MOCK = () => {
       check('detail: TOC jumps without changing route', (await p.evaluate(() => location.hash)) === '#opp-' + rOpp.id);
       if (SHOTS) await p.screenshot({ path: `${out}/mock-research-detail.png`, fullPage: true });
     }
+    // Research Log / Evidence
+    const RLd = dd.research_log;
+    await p.goto(base2 + '#research-log', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
+    check('research log: nav item is last', await p.evaluate(() => [...document.querySelectorAll('#nav a')].pop()?.dataset.route === 'research-log'));
+    check('research log: all events listed', (await p.locator('.rl-ev').count()) === RLd.events.length, String(await p.locator('.rl-ev').count()));
+    check('research log: newest first', await p.evaluate(() => document.querySelector('.rl-ev')?.dataset.ev) === RLd.events[RLd.events.length - 1].id);
+    await p.selectOption('[data-f="type"]', 'semrush'); await p.waitForTimeout(100);
+    const nSem = RLd.events.filter(e => e.source_ids.some(i => RLd.sources.find(s => s.id === i)?.type === 'semrush')).length;
+    check('research log: source-type filter', (await p.locator('.rl-ev').count()) === nSem, String(nSem));
+    const semTxt = await p.locator('#rl-list').innerText();
+    check('research log: Semrush evidence (report, endpoint, DB, units/unknown, mode, no invented link)', /Batch Keyword Overview/.test(semTxt) && /phrase_these/.test(semTxt) && /DE/.test(semTxt) && /metadata unavailable/.test(semTxt) && /Cache hit|Live query/.test(semTxt) && /keine Report-URL/.test(semTxt) && (await p.locator('#rl-list a', { hasText: 'In Semrush öffnen' }).count()) === 0);
+    await p.selectOption('[data-f="type"]', ''); await p.fill('[data-f="q"]', 'techpic'); await p.waitForTimeout(100);
+    check('research log: search by domain', (await p.locator('.rl-ev').count()) >= 1 && (await p.locator('.rl-ev').count()) < RLd.events.length);
+    await p.fill('[data-f="q"]', ''); await p.selectOption('[data-f="action"]', 'competitor_analysis'); await p.waitForTimeout(100);
+    const compLinks = await p.locator('.rl-ev a[href^="https://"]').evaluateAll(as => as.map(a => a.href));
+    check('research log: competitor URLs clickable', compLinks.some(h => h.includes('berlinskycrew.de')) && compLinks.some(h => h.includes('techpic.de')), compLinks.length);
+    check('research log: exact fetch time shown for page analysis', !/Uhrzeit nicht protokolliert/.test(await p.locator('.rl-ev .rl-when').first().innerText()));
+    await p.selectOption('[data-f="action"]', 'gsc_analysis'); await p.waitForTimeout(100);
+    const gTxt = await p.locator('#rl-list').innerText();
+    check('research log: GSC source with property/period/dimensions; missing time marked', /Property/.test(gTxt) && /2025-07-21 – 2026-11-20/.test(gTxt) && /query \+ page|query/.test(gTxt) && /Uhrzeit nicht protokolliert/.test(gTxt));
+    if (SHOTS) { await p.selectOption('[data-f="action"]', ''); await p.waitForTimeout(100); await p.screenshot({ path: `${out}/mock-research-log.png`, fullPage: true }); }
+    // Evidence je Opportunity + Findings mit Quellen
+    await p.goto(base2 + '#opp-OPP-02', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
+    const evTxt = await p.locator('#rs-evidence').innerText();
+    check('evidence card: grouped counts', /GSC \(3\)/.test(evTxt) && /Semrush \(1\)/.test(evTxt) && /Competitor Websites \(8\)/.test(evTxt) && /Own Website \(2\)/.test(evTxt) && /GA4 \(1\)/.test(evTxt), evTxt.slice(0, 200));
+    check('findings link to sources ("Quellen anzeigen")', (await p.locator('section.rs summary', { hasText: 'Quellen anzeigen' }).count()) >= 3);
+    await p.click('#rs-evidence [data-rl-opp]'); await p.waitForTimeout(250);
+    check('evidence → research log filtered by opportunity', (await p.evaluate(() => location.hash)) === '#research-log' && (await p.locator('[data-f="opp"]').inputValue()) === 'OPP-02');
+    await p.goto(base2 + '#activity', { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
+    check('agent activity: research groups from same log + link', /Research \(\d+ Aktionen\)/.test(await p.locator('body').innerText()) && (await p.locator('a[data-rl-opp]').count()) >= 1);
     const nOpp = dd.opportunities.find(o => ['CREATE', 'OPTIMIZE', 'MERGE'].includes(o.type) && !o.research);
     if (nOpp) { await p.goto(base2 + '#opp-' + nOpp.id, { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
       check('detail without dossier: "Research not started" visible', /Research not started/.test(await p.locator('body').innerText())); }

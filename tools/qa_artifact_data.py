@@ -67,7 +67,13 @@ for c in d["changes"]:
     s = sc[c["id"]]
     check(f"{c['id']} checkpoints", [(x["label"], x["due"], x["status"]) for x in s["checkpoints"]] == [(x["label"], x["due"], x["status"]) for x in c["checkpoints"]])
     check(f"{c['id']} date/url/freeze", (s["date"], s["url"], s.get("freeze")) == (c["date"], c["url"], c.get("freeze")))
-check("tasks", [t["id"] for t in st("agent_tasks")["tasks"]] == [t["id"] for t in d["tasks"]])
+check("tasks", [t["id"] for t in st("agent_tasks")["tasks"]] == [t["id"] for t in d["tasks"] if not t.get("from_log")])
+# Research Log: Agent Activity „Completed“ aus denselben Events, keine Doppelpflege
+rl = d.get("research_log", {})
+check("research log: events + sources present", len(rl.get("events", [])) > 0 and len(rl.get("sources", [])) > 0)
+check("research log: activity groups cover all events", sum(int(t["title"].split("(")[-1].split()[0]) for t in d["tasks"] if t.get("from_log")) == len(rl.get("events", [])))
+check("research log: no credentials in sources", not re.search(r"private[_]key|client[_]email", json.dumps(rl)))
+check("research log: semrush sources carry endpoint/units/mode", all(s["semrush"].get("endpoint") and "units" in s["semrush"] and s["semrush"].get("mode") for s in rl.get("sources", []) if s["type"] == "semrush"))
 check("no 'running' task state", all(t["state"] != "running" for t in d["tasks"]))
 
 # Security

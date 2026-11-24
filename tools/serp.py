@@ -9,7 +9,7 @@ Ablauf je Opportunity (docs/research-strategy.md):
   4. Ranking-URLs mit tools/page_profile.py abrufen → Dossier C/D/E/I aktualisieren (SERP competitors ≠ Research competitors)
 
     python3 tools/serp.py plan   <client> <OPP>                          -> Plan als JSON (führt NICHTS aus)
-    python3 tools/serp.py ingest <keyword> <datei.csv|json> [--units N] [--db de]   -> Cache + Budget
+    python3 tools/serp.py ingest <keyword> <datei.csv|json> [--units N] [--db de] --client <c> --opp <OPP>  -> Cache, Rohdaten, Budget, Research Log
     python3 tools/serp.py show   <keyword> [--db de]                     -> Cache-Eintrag
     python3 tools/serp.py cost   <anzahl_keywords> [--lines 10]          -> Kostenrechnung
     python3 tools/serp.py set-balance <units>                            -> Kontostand nach Aufladung/Abgleich setzen
@@ -202,14 +202,22 @@ def validation(client, opp):
             "cross": cross_validate(C)}
 
 
-def ingest(kw, path, units=None, db="de"):
+def ingest(kw, path, units=None, db="de", client=None, opp=None):
+    """Bezahlte SERP-Abfrage persistieren: Cache (aktuell), unveränderliche Rohdaten (SERP-…), Budget, Research Log + Evidence."""
     res = _rows(path)
     b = budget()
     spent = units if units is not None else len(res) * b["serp"]["cost_per_line"]
-    entry = {"keyword": kw, "key": norm(kw), "database": db, "fetched": dt.date.today().isoformat(), "source": "semrush " + b["serp"]["report"],
-             "lines": len(res), "units_spent": spent, "results": res}
+    now = dt.datetime.now(dt.timezone.utc)
+    raw_id = f"SERP-{now.date().isoformat()}-{re.sub(r'[^a-z0-9]+', '-', norm(kw)).strip('-')}-{db.upper()}"
+    entry = {"keyword": kw, "key": norm(kw), "database": db, "fetched": now.date().isoformat(), "fetched_at": now.isoformat(timespec="seconds").replace("+00:00", "Z"),
+             "source": "semrush " + b["serp"]["report"], "report": b["serp"]["report"], "display_limit": b["serp"]["display_limit"],
+             "lines": len(res), "units_spent": spent, "raw_id": raw_id, "results": res}
     os.makedirs(os.path.join(CACHE, db), exist_ok=True)
     json.dump(entry, open(cache_path(kw, db), "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    raw = os.path.join(CACHE, "raw", raw_id + ".json")      # nie überschreiben: Historie bleibt nutzbar ohne erneute Units
+    os.makedirs(os.path.dirname(raw), exist_ok=True)
+    if not os.path.exists(raw):
+        json.dump(entry, open(raw, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     b["units_balance"] = b["units_balance"] - spent
     b["balance_checked_at"] = dt.date.today().isoformat()
     b["balance_source"] = "berechnet nach Abfrage (tools/serp.py ingest)"
@@ -221,7 +229,11 @@ def ingest(kw, path, units=None, db="de"):
         if new:
             w.writerow(["date", "report", "database", "keyword", "lines", "units"])
         w.writerow([entry["fetched"], b["serp"]["report"], db, kw, len(res), spent])
-    print(f"✓ {kw}: {len(res)} Ergebnisse gecacht · {spent} Units verbucht · Kontostand {b['units_balance']}")
+    if client:
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import research_log
+        research_log.log_serp(client, opp, entry, raw)
+    print(f"✓ {kw}: {len(res)} Ergebnisse gecacht ({raw_id}) · {spent} Units verbucht · Kontostand {b['units_balance']}")
     return entry
 
 
@@ -233,7 +245,8 @@ if __name__ == "__main__":
     if a[0] == "plan":
         print(json.dumps(plan(a[1], a[2]), ensure_ascii=False, indent=2))
     elif a[0] == "ingest":
-        ingest(a[1], a[2], int(a[a.index("--units") + 1]) if "--units" in a else None, db)
+        ingest(a[1], a[2], int(a[a.index("--units") + 1]) if "--units" in a else None, db,
+               a[a.index("--client") + 1] if "--client" in a else None, a[a.index("--opp") + 1] if "--opp" in a else None)
     elif a[0] == "show":
         print(json.dumps(cached(a[1], db, ttl_days=10**6), ensure_ascii=False, indent=2))
     elif a[0] == "set-balance":

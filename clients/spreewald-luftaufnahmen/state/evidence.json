@@ -1,0 +1,635 @@
+{
+  "sources": [
+    {
+      "id": "SRC-001",
+      "type": "competitor",
+      "key": "https://berlinskycrew.de/baudokumentation/",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "Baudokumentation mit Drohne Berlin | Berlinskycrew",
+      "domain": "berlinskycrew.de",
+      "url": "https://berlinskycrew.de/baudokumentation/",
+      "fetched": "2026-11-23T16:13:11Z",
+      "fetched_precision": "exact",
+      "status": 200,
+      "error": null,
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-02/pages/berlinskycrew-de-baudokumentation.json",
+      "meta": {
+        "h1": "Baudokumentation mit Drohne – lückenloser Baufortschritt aus der Luft",
+        "words": 982,
+        "faq_questions": 1,
+        "schema_types": [
+          "BreadcrumbList",
+          "EntryPoint",
+          "ListItem",
+          "PropertyValueSpecification",
+          "ReadAction",
+          "SearchAction",
+          "WebPage",
+          "WebSite"
+        ],
+        "has_form": false
+      }
+    },
+    {
+      "id": "SRC-002",
+      "type": "competitor",
+      "key": "https://www.bondar-sky-images.de/bau-architektur/",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "Drohnen für Bau & Architektur | Bondar Sky Images",
+      "domain": "bondar-sky-images.de",
+      "url": "https://www.bondar-sky-images.de/bau-architektur/",
+      "fetched": "2026-11-23T16:13:12Z",
+      "fetched_precision": "exact",
+      "status": 200,
+      "error": null,
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-02/pages/bondar-sky-images-de-baudokumentation.json",
+      "meta": {
+        "h1": "Bauprojekte dokumentieren. Gebäude digital erfassen.",
+        "words": 1975,
+        "faq_questions": 0,
+        "schema_types": [
+          "Answer",
+          "Audience",
+          "CollectionPage",
+          "ContactPoint",
+          "Country",
+          "FAQPage",
+          "LocalBusiness",
+          "Offer",
+          "OfferCatalog",
+          "OpeningHoursSpecification",
+          "Person",
+          "PostalAddress",
+          "Question",
+          "Service",
+          "WebSite"
+        ],
+        "has_form": true
+      }
+    },
+    {
+      "id": "SRC-003",
+      "type": "competitor",
+      "key": "https://drohnenflugvismann.de/landingpage-baufirmen/",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "Drohnenvermessung & Baustellendokumentation Für Baufirmen | Drohnenflug Vismann",
+      "domain": "drohnenflugvismann.de",
+      "url": "https://drohnenflugvismann.de/landingpage-baufirmen/",
+      "fetched": "2026-11-23T16:13:21Z",
+      "fetched_precision": "exact",
+      "status": 200,
+      "error": null,
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-02/pages/drohnenflugvismann-de-landingpage-baufirmen.json",
+      "meta": {
+        "h1": "Drohne Baustellen Dokumentation für Baufirmen? Effiziente Vermessung & Dokumentation",
+        "words": 612,
+        "faq_questions": 1,
+        "schema_types": [
+          "Article",
+          "BreadcrumbList",
+          "GeoCoordinates",
+          "ImageObject",
+          "ListItem",
+          "Person",
+          "Place",
+          "PostalAddress",
+          "WebPage",
+          "WebSite"
+        ],
+        "has_form": false
+      }
+    },
+    {
+      "id": "SRC-004",
+      "type": "competitor",
+      "key": "https://drone-connect.de/einsatzbereiche/baustellendokumentation",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "Baustellendokumentation mit Drohne – regional & nach Verfügbarkeit | Drone Connect",
+      "domain": "drone-connect.de",
+      "url": "https://drone-connect.de/einsatzbereiche/baustellendokumentation",
+      "fetched": "2026-11-23T16:13:22Z",
+      "fetched_precision": "exact",
+      "status": 200,
+      "error": null,
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-02/pages/drone-connect-de-einsatzbereiche-baustellendokumentation.json",
+      "meta": {
+        "h1": "Baustellendokumentation mit Drohne regional und nach Verfügbarkeit.",
+        "words": 626,
+        "faq_questions": 6,
+        "schema_types": [
+          "Answer",
+          "BreadcrumbList",
+          "FAQPage",
+          "ListItem",
+          "Question",
+          "Service",
+          "ServiceChannel",
+          "WebPage"
+        ],
+        "has_form": false
+      }
+    },
+    {
+      "id": "SRC-005",
+      "type": "competitor",
+      "key": "https://www.dronext.de/baustellendokumentation-drohne/",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "dronext.de",
+      "domain": "dronext.de",
+      "url": "https://www.dronext.de/baustellendokumentation-drohne/",
+      "fetched": "2026-11-23T16:13:16Z",
+      "fetched_precision": "exact",
+      "status": null,
+      "error": "HTTPSConnectionPool(host='www.dronext.de', port=443): Max retries exceeded with url: /baustellendokumentation-drohne/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] ",
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-02/pages/dronext-de-baustellendokumentation-drohne.json",
+      "meta": {
+        "h1": null,
+        "words": null,
+        "faq_questions": 0,
+        "schema_types": null,
+        "has_form": null
+      }
+    },
+    {
+      "id": "SRC-006",
+      "type": "competitor",
+      "key": "https://www.luftbild-drohne-360.de/luftbilder/luftaufnahmen-baufortschrittsdokumentation-bauueberwachung.htm",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "Luftbilder mit Drohne für Baufortschritt und Bauüberwachung",
+      "domain": "luftbild-drohne-360.de",
+      "url": "https://www.luftbild-drohne-360.de/luftbilder/luftaufnahmen-baufortschrittsdokumentation-bauueberwachung.htm",
+      "fetched": "2026-11-23T16:13:19Z",
+      "fetched_precision": "exact",
+      "status": 200,
+      "error": null,
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-02/pages/luftbild-drohne-360-de-luftbilder-luftaufnahmen-baufortschrittsdokumentation-bauueberwachu.json",
+      "meta": {
+        "h1": "Luftbilder mit Drohne für Baufortschrittsdokumentation und Bauüberwachung",
+        "words": 984,
+        "faq_questions": 0,
+        "schema_types": [
+          "BreadcrumbList",
+          "GeoCoordinates",
+          "ImageObject",
+          "ListItem",
+          "Offer",
+          "OfferCatalog",
+          "OpeningHoursSpecification",
+          "Organization",
+          "PostalAddress",
+          "ProfessionalService",
+          "ReadAction",
+          "Service",
+          "WebPage",
+          "WebSite"
+        ],
+        "has_form": false
+      }
+    },
+    {
+      "id": "SRC-007",
+      "type": "competitor",
+      "key": "https://www.skynamic.net/drohnenaufnahmen-baustelle/",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "Drohnenaufnahmen für Bauprojekte & Baustellen aus der Luft",
+      "domain": "skynamic.net",
+      "url": "https://www.skynamic.net/drohnenaufnahmen-baustelle/",
+      "fetched": "2026-11-23T16:13:17Z",
+      "fetched_precision": "exact",
+      "status": 200,
+      "error": null,
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-02/pages/skynamic-net-drohnenaufnahmen-baustelle.json",
+      "meta": {
+        "h1": "Drohnenaufnahmen für Bauprojekte und Baustellen",
+        "words": 908,
+        "faq_questions": 0,
+        "schema_types": [
+          "Answer",
+          "BreadcrumbList",
+          "Country",
+          "EntryPoint",
+          "FAQPage",
+          "ImageObject",
+          "ListItem",
+          "Organization",
+          "PostalAddress",
+          "PropertyValueSpecification",
+          "Question",
+          "ReadAction",
+          "SearchAction",
+          "Service",
+          "WebPage"
+        ],
+        "has_form": true
+      }
+    },
+    {
+      "id": "SRC-008",
+      "type": "website",
+      "key": "https://www.spreewald-luftaufnahmen.de/drohnen-baudokumentation/",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "Baudokumentation Drohne | Baustellendokumentation Berlin",
+      "domain": "spreewald-luftaufnahmen.de",
+      "url": "https://www.spreewald-luftaufnahmen.de/drohnen-baudokumentation/",
+      "fetched": "2026-11-23T16:13:08Z",
+      "fetched_precision": "exact",
+      "status": 200,
+      "error": null,
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-02/pages/spreewald-luftaufnahmen-de-drohnen-baudokumentation.json",
+      "meta": {
+        "h1": "Baudokumentation Drohne in Berlin und Brandenburg",
+        "words": 925,
+        "faq_questions": 2,
+        "schema_types": [
+          "BreadcrumbList",
+          "EntryPoint",
+          "ImageObject",
+          "ListItem",
+          "Organization",
+          "PropertyValueSpecification",
+          "ReadAction",
+          "SearchAction",
+          "WebPage",
+          "WebSite"
+        ],
+        "has_form": true
+      }
+    },
+    {
+      "id": "SRC-009",
+      "type": "competitor",
+      "key": "https://techpic.de/baustellendokumentation-mit-baufortschrittsverfolgung/",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "Baustellendokumentation per Drohne NRW | TechPic",
+      "domain": "techpic.de",
+      "url": "https://techpic.de/baustellendokumentation-mit-baufortschrittsverfolgung/",
+      "fetched": "2026-11-23T16:13:20Z",
+      "fetched_precision": "exact",
+      "status": 200,
+      "error": null,
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-02/pages/techpic-de-baustellendokumentation-mit-baufortschrittsverfolgung.json",
+      "meta": {
+        "h1": "Baustellendokumentation mit Baufortschrittsverfolgung",
+        "words": 3126,
+        "faq_questions": 3,
+        "schema_types": [
+          "Article",
+          "ImageObject",
+          "Person",
+          "Place",
+          "PostalAddress",
+          "WebPage",
+          "WebSite"
+        ],
+        "has_form": true
+      }
+    },
+    {
+      "id": "SRC-010",
+      "type": "gsc",
+      "key": "gsc-query-baudoku",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "GSC · Queries Cluster Baudokumentation",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "property": "https://www.spreewald-luftaufnahmen.de/ (URL-Präfix)",
+        "period": "2025-07-21 – 2026-11-20",
+        "dimensions": "query",
+        "filter": "Cluster „baudokumentation“ (27 Queries)",
+        "raw_path": "clients/spreewald-luftaufnahmen/data/gsc-2026-11/gsc_query.csv"
+      }
+    },
+    {
+      "id": "SRC-011",
+      "type": "gsc",
+      "key": "gsc-query-page-baudoku",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "GSC · Query × Page",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "property": "https://www.spreewald-luftaufnahmen.de/ (URL-Präfix)",
+        "period": "2025-07-21 – 2026-11-20",
+        "dimensions": "query + page",
+        "filter": "Cluster-Queries · /drohnen-baudokumentation/",
+        "raw_path": "clients/spreewald-luftaufnahmen/data/gsc-2026-11/gsc_query_page.csv"
+      }
+    },
+    {
+      "id": "SRC-012",
+      "type": "gsc",
+      "key": "gsc-query-date-baudoku",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "GSC · Query × Datum (90-Tage-Vergleich)",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "property": "https://www.spreewald-luftaufnahmen.de/ (URL-Präfix)",
+        "period": "2025-07-21 – 2026-11-20 (Vergleich letzte 90 vs. vorherige 90 Tage)",
+        "dimensions": "query + date",
+        "filter": "Cluster „baudokumentation“",
+        "raw_path": "clients/spreewald-luftaufnahmen/data/gsc-2026-11/gsc_query_date.csv"
+      }
+    },
+    {
+      "id": "SRC-013",
+      "type": "ga4",
+      "key": "ga4-landing-baudoku",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "GA4 · Landingpages + Conversions",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "property": "321987676",
+        "period": "2025-07-21 – 2026-11-20",
+        "dimensions": "landingPage + sessionDefaultChannelGroup; eventName (Lead-Taxonomie A–D)",
+        "filter": "Landingpages des Clusters (/drohnen-baudokumentation/)",
+        "raw_path": "clients/spreewald-luftaufnahmen/data/ga4-2026-11/"
+      }
+    },
+    {
+      "id": "SRC-014",
+      "type": "semrush",
+      "key": "semrush-phrase_these-baudoku-2026-11-23",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "Semrush Batch Keyword Overview · 6 Keywords · DE",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "semrush": {
+        "report": "Batch Keyword Overview",
+        "endpoint": "phrase_these",
+        "keyword": "baudokumentation, baudokumentation drohne, baufortschrittsdokumentation, baustellendokumentation, baustellendokumentation drohne, drohne baustelle",
+        "database": "DE",
+        "results_count": 6,
+        "units": null,
+        "units_note": "metadata unavailable – Verbrauch wurde bei dieser Abfrage nicht protokolliert",
+        "mode": "cache",
+        "mode_note": "Damals live abgefragt; heute aus dem Keyword-Cache gelesen (0 Units)",
+        "raw_path": "data/keyword-cache.csv",
+        "results": [
+          {
+            "keyword": "baudokumentation",
+            "volume": 720,
+            "kd": 25.0,
+            "cpc": 5.13
+          },
+          {
+            "keyword": "baudokumentation drohne",
+            "volume": 140,
+            "kd": 5.0,
+            "cpc": 2.3
+          },
+          {
+            "keyword": "baufortschrittsdokumentation",
+            "volume": 20,
+            "kd": 0.0,
+            "cpc": 0.0
+          },
+          {
+            "keyword": "baustellendokumentation",
+            "volume": 880,
+            "kd": 19.0,
+            "cpc": 8.37
+          },
+          {
+            "keyword": "baustellendokumentation drohne",
+            "volume": 110,
+            "kd": 0.0,
+            "cpc": 2.11
+          },
+          {
+            "keyword": "drohne baustelle",
+            "volume": 70,
+            "kd": 15.0,
+            "cpc": 1.59
+          }
+        ],
+        "link": null,
+        "link_note": "Der Semrush-Konnektor liefert keine Report-URL."
+      }
+    },
+    {
+      "id": "SRC-015",
+      "type": "website",
+      "key": "inventory-2026-11-22",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "Website-Inventar + interne Links (17 URLs)",
+      "fetched": "2026-11-22",
+      "fetched_precision": "date",
+      "url": "https://www.spreewald-luftaufnahmen.de/drohnen-baudokumentation/",
+      "meta": {
+        "raw_path": "clients/spreewald-luftaufnahmen/data/baseline-2026-11/links.csv",
+        "note": "Interne Links auf die Seite: nur Startseite"
+      }
+    },
+    {
+      "id": "SRC-016",
+      "type": "web_search",
+      "key": "ws-baudokumentation drohne (Standard-Suche)",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "WebSearch · baudokumentation drohne (Standard-Suche)",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "tool": "Claude WebSearch (US-Index, keine Google.de-SERP, keine Positionen)",
+        "note": "Wortlaut der Suchanfrage nicht protokolliert; Ergebnis überwiegend Fachartikel/PDFs"
+      }
+    },
+    {
+      "id": "SRC-017",
+      "type": "web_search",
+      "key": "ws-baudokumentation drohne (Extended-Suche)",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "WebSearch · baudokumentation drohne (Extended-Suche)",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "tool": "Claude WebSearch (US-Index, keine Google.de-SERP, keine Positionen)",
+        "note": "Wortlaut nicht protokolliert; Ergebnis: Anbieter-Landingpages"
+      }
+    },
+    {
+      "id": "SRC-018",
+      "type": "web_search",
+      "key": "ws-Domain-gefilterte Suche (Software/Wettbewerber 2024)",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "WebSearch · Domain-gefilterte Suche (Software/Wettbewerber 2024)",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "tool": "Claude WebSearch (US-Index, keine Google.de-SERP, keine Positionen)",
+        "note": "Wortlaut nicht protokolliert; Ergebnis: airclip, capmo, airteam, schicker-allmedia"
+      }
+    },
+    {
+      "id": "SRC-019",
+      "type": "web_search",
+      "key": "ws-baustellendokumentation drohne berlin anbieter",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "WebSearch · baustellendokumentation drohne berlin anbieter",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "tool": "Claude WebSearch (US-Index, keine Google.de-SERP, keine Positionen)",
+        "note": "Wortlaut protokolliert; Ergebnis überwiegend Plattformen/Technik, keine neuen Wettbewerber"
+      }
+    },
+    {
+      "id": "SRC-020",
+      "type": "web_search",
+      "key": "ws-baufortschritt drohne dokumentieren dienstleister brandenburg",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "WebSearch · baufortschritt drohne dokumentieren dienstleister brandenburg",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "tool": "Claude WebSearch (US-Index, keine Google.de-SERP, keine Positionen)",
+        "note": "Wortlaut protokolliert; Ergebnis überwiegend Fachartikel"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "FND-001",
+      "opp": "OPP-02",
+      "section": "D",
+      "text": "Mehrere Research competitors stellen Baudokumentation als regelmäßigen/laufenden Prozess dar (Intervalle, laufende Begleitung).",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002",
+        "SRC-004",
+        "SRC-007",
+        "SRC-009"
+      ]
+    },
+    {
+      "id": "FND-002",
+      "opp": "OPP-02",
+      "section": "D",
+      "text": "Nur einzelne Seiten erklären, wie Aufnahmen über die Bauzeit vergleichbar werden (Wiederholbarkeit, einmalig vs. laufend, Lieferformate).",
+      "source_ids": [
+        "SRC-009",
+        "SRC-002"
+      ]
+    },
+    {
+      "id": "FND-003",
+      "opp": "OPP-02",
+      "section": "E",
+      "text": "FAQ mit FAQPage-Schema bei mehreren Research competitors; unsere Seite hat keine FAQ.",
+      "source_ids": [
+        "SRC-002",
+        "SRC-004",
+        "SRC-007",
+        "SRC-008"
+      ]
+    },
+    {
+      "id": "FND-004",
+      "opp": "OPP-02",
+      "section": "E",
+      "text": "Eigene Seite: „Baustellendokumentation“ nur im Title und einmal im Text, keine FAQ, kein sichtbarer Ablauf, keine Angaben zu Übergabe/Lieferzeit; Meta Description verspricht „3D-Modellierung“.",
+      "source_ids": [
+        "SRC-008"
+      ]
+    },
+    {
+      "id": "FND-005",
+      "opp": "OPP-02",
+      "section": "B",
+      "text": "Kern-Keywords mit messbarer Nachfrage und sehr niedriger KD: baudokumentation drohne 140 (KD 5), baustellendokumentation drohne 110 (KD 0); Varianten ohne „Drohne“ 720/880 mit Software-Muster.",
+      "source_ids": [
+        "SRC-014"
+      ]
+    },
+    {
+      "id": "FND-006",
+      "opp": "OPP-02",
+      "section": "B",
+      "text": "Schwache Positionen: Cluster Ø 30, 0 Klicks; „baustellendokumentation drohne“ 24,9 (90 Tage 14,5); Berlin-Variante Pos. 2,3.",
+      "source_ids": [
+        "SRC-010",
+        "SRC-012"
+      ]
+    },
+    {
+      "id": "FND-007",
+      "opp": "OPP-02",
+      "section": "H",
+      "text": "Keine Kannibalisierung: 3.289 von 3.291 Cluster-Impressionen auf /drohnen-baudokumentation/.",
+      "source_ids": [
+        "SRC-011"
+      ]
+    },
+    {
+      "id": "FND-008",
+      "opp": "OPP-02",
+      "section": "B",
+      "text": "GA4: Cluster mit 2 Sitzungen und 1 Lead (Kontaktaktion) im Zeitraum – Richtung, keine Statistik.",
+      "source_ids": [
+        "SRC-013"
+      ]
+    },
+    {
+      "id": "FND-009",
+      "opp": "OPP-02",
+      "section": "H",
+      "text": "Einziger interner Link auf die Seite kommt von der Startseite.",
+      "source_ids": [
+        "SRC-015"
+      ]
+    }
+  ],
+  "updated": "2026-11-23T17:46:28Z"
+}

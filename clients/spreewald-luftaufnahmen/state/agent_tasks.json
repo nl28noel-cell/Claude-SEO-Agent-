@@ -104,11 +104,11 @@
     },
     {
       "id": "T-201",
-      "title": "SERP-/Wettbewerbs-Check für 7 Kernbegriffe",
+      "title": "Semrush SERP für OPP-02 (baudokumentation drohne, Top 10)",
       "state": "blocked",
       "date": "2026-11-23",
-      "blocked_reason": "Semrush API Units: zuletzt 250 verfügbar, benötigt ~700–1.000. Wartet auf Kontingent-Reset bzw. Freigabe.",
-      "detail": "drohnenvermessung, baudokumentation drohne, baustellendokumentation drohne, gebäudeinspektion drohne, 3d-modell drohne, fassadenaufmaß, bestandsaufnahme gebäude."
+      "blocked_reason": "Budget hold – Kontostand 250 = Reserve 250",
+      "detail": "Geplant: 100 Units. Läuft automatisch, sobald der Kontostand die Reserve übersteigt."
     },
     {
       "id": "T-202",
@@ -119,10 +119,10 @@
     },
     {
       "id": "T-203",
-      "title": "Approval-Gate-1-Paket erstellen",
-      "state": "planned",
+      "title": "OPP-02 Strategie (Research v2) – Gate 1",
+      "state": "waiting_for_approval",
       "date": "2026-11-23",
-      "detail": "Nach SERP-Check; Kandidaten: OPP-02, OPP-04, OPP-05, OPP-07."
+      "detail": "Dossier A–J fertig (Research complete · with limits). Entscheidung liegt bei Noel."
     },
     {
       "id": "T-204",

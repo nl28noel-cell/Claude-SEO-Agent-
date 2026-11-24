@@ -120,3 +120,25 @@ python3 tools/page_profile.py <url ...> --out <dir>    # Seitenprofile für C/D/
 ```
 
 Im Artifact: Opportunity-Detail zeigt Status, A–J und „Gate 1 – Strategie freigeben“; Workflow-Karten zeigen den Research-Status.
+
+## Research Log / Audit Trail (`tools/research_log.py`)
+
+Ziel: in 30–60 Sekunden nachvollziehen, warum der Agent zu einer Empfehlung kommt – und die Originalquellen selbst öffnen.
+
+Modell: **Event** (Aktion) → **Sources** (Belege) → **Findings** (Erkenntnisse mit `source_ids`) → Opportunity/Dossier.
+
+| Datei | Inhalt |
+|---|---|
+| `clients/<c>/state/research_log.json` | Events: Zeitpunkt + Genauigkeit (`exact` · `date` · `commit`), Opportunity, Aktionstyp, Zusammenfassung, Gefunden, Erkenntnis, `source_ids`, `finding_ids`, Units |
+| `clients/<c>/state/evidence.json` | Quellen (`SRC-…`: Typ GSC/GA4/Semrush/Website/Competitor/Web Search/Agent, Titel, URL, Abrufzeitpunkt, Parameter) und Findings (`FND-…`) |
+| `data/serp-cache/raw/SERP-<datum>-<keyword>-<DB>.json` | Unveränderliche Rohdaten jeder bezahlten SERP-Abfrage (wiederverwendbar ohne Units) |
+
+Regeln:
+- Keine erfundenen Zeitpunkte, Quellen, Kosten oder Links. Fehlende Angaben = `metadata unavailable`.
+- Semrush-Quellen enthalten immer Report, Endpoint, Keyword, Datenbank, Ergebnisanzahl, Units (oder ausdrücklich unbekannt), Live/Cache und die Ergebnisse. Der Semrush-Konnektor liefert keine Report-URL → kein „In Semrush öffnen“-Link.
+- `serp.py ingest … --client <c> --opp <OPP>` schreibt Cache, Rohdaten, Budget und Log-Eintrag in einem Schritt.
+- Seitenprofile: `python3 tools/research_log.py add-profiles <c> <OPP> <ordner>` (Abrufzeit aus dem Profil).
+- Agent Activity zeigt abgeschlossene Research-Aktionen aus **demselben** Log (gruppiert je Opportunity und Tag) – kein zweites Protokoll.
+- `python3 tools/research_log.py validate <c>` prüft Referenzen, Zeitgenauigkeit und Semrush-Nachweise.
+
+Im Artifact: Navigation „Research Log“ (Filter Opportunity, Source Type, Action Type, Datum, Suche; Semrush-Kosten und Kontostand oben), je Opportunity die Karte „Research Evidence“ (Quellen nach Typ) und an den Dossier-Abschnitten „N Quellen anzeigen“.

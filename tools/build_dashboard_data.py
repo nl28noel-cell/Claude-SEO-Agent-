@@ -18,6 +18,7 @@ from gsc_analyze import cluster as classify_cluster, places as find_places  # no
 import build_ga4_ads  # noqa: E402
 import research  # noqa: E402
 import serp  # noqa: E402
+import research_log  # noqa: E402
 
 OUT_ROOT = os.path.join(ROOT, "dashboard", "public", "data")
 
@@ -331,6 +332,25 @@ def build_client(slug, today):
 
     # ---- Tasks / Sources
     tasks = st("agent_tasks").get("tasks", [])
+    # ---- Research Log / Evidence (eine Event-Quelle für Research Log UND Agent Activity)
+    rl_ev, rl_log = research_log.load(slug)
+    for e in research_log.validate(slug):
+        warnings.append(f"Research Log: {e}")
+    rl_sum = research_log.summary(slug)
+    bud = serp.budget()
+    rlog = {"events": rl_log["events"], "sources": rl_ev["sources"], "findings": rl_ev["findings"], "summary": rl_sum,
+            "actions": research_log.ACTIONS, "source_types": research_log.SOURCE_TYPES,
+            "semrush_budget": {"balance": bud["units_balance"], "reserve": bud["reserve_units"], "checked_at": bud.get("balance_checked_at"),
+                               "balance_source": bud.get("balance_source"), "automatic_read": bud.get("balance_tracking", {}).get("automatic_read"),
+                               "cost_per_line": bud["serp"]["cost_per_line"], "display_limit": bud["serp"]["display_limit"]}}
+    # Agent Activity „Completed“: Research-Aktionen kommen aus dem Research Log (gruppiert je Opportunity + Tag), nicht doppelt gepflegt
+    groups = {}
+    for e in rl_log["events"]:
+        groups.setdefault((e.get("opp") or "–", (e.get("at") or "")[:10]), []).append(e)
+    for (opp, day), es in sorted(groups.items()):
+        o = next((x for x in opps if x["id"] == opp), None)
+        tasks.append({"id": f"RL-{opp}-{day}", "title": f"{opp} {o['name'] if o else ''} · Research ({len(es)} Aktionen)", "state": "completed", "date": day,
+                      "detail": " · ".join(dict.fromkeys(research_log.ACTIONS[x["action"]] for x in es)), "log": {"opp": opp, "date": day}, "from_log": True})
     sources = st("sources")
     cache_rows = rcsv(os.path.join(ROOT, "data", "keyword-cache.csv"))
     sources["semrush"]["cache"] = {"entries": len(cache_rows), "no_data": sum(1 for r in cache_rows if r["status"] == "no_data"),
@@ -382,6 +402,7 @@ def build_client(slug, today):
     for fn in sorted(os.listdir(os.path.join(cdir, "state"))):
         if fn.endswith(".json"):
             state_files[fn[:-5]] = jload(os.path.join(cdir, "state", fn), {}).get("updated")
+            state_files[fn[:-5]] = state_files[fn[:-5]][:10] if state_files[fn[:-5]] else None
     freshness = {
         "gsc_data_through": sources.get("gsc", {}).get("data_to"),
         "gsc_fetched": sources.get("gsc", {}).get("last_fetch"),
@@ -424,6 +445,7 @@ def build_client(slug, today):
         "findings": findings,
         "changes": changes,
         "tasks": tasks,
+        "research_log": rlog,
         "workflow": {"items": st("workflow").get("items", []), "mirrored": st("workflow").get("updated"),
                      "trigger_id": cfg.get("workflow", {}).get("trigger_id"), "drive_folder_url": cfg.get("workflow", {}).get("drive_folder_url")},
         "approvals": {"gate1": appr.get("gate1", []), "gate2": appr.get("gate2", []), "gate1_candidates": candidates,

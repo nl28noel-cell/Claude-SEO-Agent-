@@ -1,0 +1,242 @@
+{
+  "events": [
+    {
+      "id": "EVT-001",
+      "source_ids": [
+        "SRC-010",
+        "SRC-012"
+      ],
+      "finding_ids": [
+        "FND-006"
+      ],
+      "units": 0,
+      "opp": "OPP-02",
+      "at": "2026-11-23",
+      "at_precision": "date",
+      "action": "gsc_analysis",
+      "title": "GSC-Auswertung Cluster Baudokumentation",
+      "summary": "27 Cluster-Queries über 16 Monate ausgewertet, inkl. 90-Tage-Vergleich und Analyse des Sichtbarkeitsrückgangs.",
+      "found": "3.291 Impressionen, 0 Klicks, Ø Pos. 30; Rückgang ab 18.05.2026 überwiegend themenfremde Queries; echter Verlust: „baustellendokumentation drohne“."
+    },
+    {
+      "id": "EVT-002",
+      "source_ids": [
+        "SRC-014"
+      ],
+      "finding_ids": [
+        "FND-005"
+      ],
+      "units": null,
+      "opp": "OPP-02",
+      "at": "2026-11-23",
+      "at_precision": "date",
+      "action": "semrush_keyword",
+      "title": "Semrush Keyword Research",
+      "summary": "Suchvolumen, KD und CPC für 6 Keywords des Clusters (DE).",
+      "found": "140 / 110 / 70 / 20 / 720 / 880 Suchen pro Monat",
+      "units_note": "metadata unavailable (nicht protokolliert)"
+    },
+    {
+      "id": "EVT-003",
+      "source_ids": [
+        "SRC-013"
+      ],
+      "finding_ids": [
+        "FND-008"
+      ],
+      "units": 0,
+      "opp": "OPP-02",
+      "at": "2026-11-23",
+      "at_precision": "date",
+      "action": "ga4_analysis",
+      "title": "GA4 Search → Business",
+      "summary": "Sitzungen, Funnel Intent und Leads der Cluster-Landingpage.",
+      "found": "2 Sitzungen · 1 Lead (Kontakt)"
+    },
+    {
+      "id": "EVT-004",
+      "source_ids": [
+        "SRC-016",
+        "SRC-017",
+        "SRC-018",
+        "SRC-019",
+        "SRC-020"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "opp": "OPP-02",
+      "at": "2026-11-23",
+      "at_precision": "date",
+      "action": "web_research",
+      "title": "Independent Web Research",
+      "summary": "Eigenständige Websuche für „baudokumentation drohne“ und zwei regionale Varianten (5 Suchen, Standard/Extended/Domainfilter). Keine Google.de-SERP, keine Positionen.",
+      "found": "13 Domains gefunden, davon 8 Anbieterseiten zur Analyse ausgewählt."
+    },
+    {
+      "id": "EVT-005",
+      "source_ids": [
+        "SRC-008",
+        "SRC-015"
+      ],
+      "finding_ids": [
+        "FND-004",
+        "FND-009"
+      ],
+      "units": 0,
+      "opp": "OPP-02",
+      "at": "2026-11-23T16:13:08Z",
+      "at_precision": "exact",
+      "action": "own_page_analysis",
+      "title": "Eigene Seite analysiert",
+      "summary": "/drohnen-baudokumentation/ live abgerufen und mit Inventar/internen Links abgeglichen.",
+      "found": "„Baustellendokumentation“ nur im Title, keine FAQ, kein Ablauf, keine Übergabe-/Lieferangaben; nur 1 interner Link (Startseite).",
+      "links": [
+        {
+          "label": "Eigene Seite öffnen",
+          "url": "https://www.spreewald-luftaufnahmen.de/drohnen-baudokumentation/"
+        }
+      ]
+    },
+    {
+      "id": "EVT-006",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002",
+        "SRC-003",
+        "SRC-004",
+        "SRC-005",
+        "SRC-006",
+        "SRC-007",
+        "SRC-009"
+      ],
+      "finding_ids": [
+        "FND-001",
+        "FND-002",
+        "FND-003"
+      ],
+      "units": 0,
+      "opp": "OPP-02",
+      "at": "2026-11-23T16:13:22Z",
+      "at_precision": "exact",
+      "action": "competitor_analysis",
+      "title": "Wettbewerberseiten analysiert",
+      "summary": "8 Anbieterseiten abgerufen und profiliert (Gliederung, Themen, Zielgruppen, Trust, Conversion).",
+      "found": "7 Seiten erfolgreich analysiert, 1 nicht abrufbar (dronext.de, SSL-Fehler).",
+      "insight": "Mehrere Anbieter positionieren die Leistung als regelmäßige Baufortschrittsdokumentation; nur einzelne erklären, wie Aufnahmen vergleichbar werden."
+    },
+    {
+      "id": "EVT-007",
+      "source_ids": [
+        "SRC-011"
+      ],
+      "finding_ids": [
+        "FND-007"
+      ],
+      "units": 0,
+      "opp": "OPP-02",
+      "at": "2026-11-23T16:25:47Z",
+      "at_precision": "commit",
+      "action": "cannibalization",
+      "title": "Kannibalisierung geprüft",
+      "summary": "Query × Page für alle Cluster-Queries geprüft.",
+      "found": "Risiko gering – nur eine URL erhält Impressionen."
+    },
+    {
+      "id": "EVT-008",
+      "source_ids": [
+        "SRC-008",
+        "SRC-001",
+        "SRC-002",
+        "SRC-003",
+        "SRC-004",
+        "SRC-006",
+        "SRC-007",
+        "SRC-009"
+      ],
+      "finding_ids": [
+        "FND-004",
+        "FND-003"
+      ],
+      "units": 0,
+      "opp": "OPP-02",
+      "at": "2026-11-23T16:25:47Z",
+      "at_precision": "commit",
+      "action": "content_gap",
+      "title": "Content Gap erstellt",
+      "summary": "Wettbewerberthemen gegen eigene Seite und belegte Business-Assets gestellt.",
+      "found": "Fehlend: Methode, FAQ, Ablauf, Übergabe, Abgrenzung, Begriff „Baustellendokumentation“."
+    },
+    {
+      "id": "EVT-009",
+      "source_ids": [
+        "SRC-015",
+        "SRC-011"
+      ],
+      "finding_ids": [
+        "FND-009",
+        "FND-007"
+      ],
+      "units": 0,
+      "opp": "OPP-02",
+      "at": "2026-11-23T16:25:47Z",
+      "at_precision": "commit",
+      "action": "ia_review",
+      "title": "Information Architecture geprüft",
+      "summary": "Parent/Siblings/Keyword Ownership, interne Links.",
+      "found": "OPTIMIZE bestehende URL; keine Child Pages; interne Links ergänzen."
+    },
+    {
+      "id": "EVT-010",
+      "source_ids": [],
+      "finding_ids": [],
+      "units": 0,
+      "opp": "OPP-02",
+      "at": "2026-11-23T16:25:47Z",
+      "at_precision": "commit",
+      "action": "dossier",
+      "title": "Research Dossier v1 erstellt",
+      "summary": "Dossier A–J; Entscheidung OPTIMIZE; Status Research complete · with limits.",
+      "found": "Status Opportunity: Strategy ready for Gate 1"
+    },
+    {
+      "id": "EVT-011",
+      "source_ids": [],
+      "finding_ids": [],
+      "units": 0,
+      "opp": "OPP-02",
+      "at": "2026-11-23T16:45:10Z",
+      "at_precision": "commit",
+      "action": "semrush_serp",
+      "title": "Semrush SERP Research – nicht ausgeführt",
+      "summary": "Organic Results für „baudokumentation drohne“ geplant (DE, Top 10, 100 Units).",
+      "found": "Budget hold: Kontostand 250 = Reserve 250 → keine Abfrage, 0 Units"
+    },
+    {
+      "id": "EVT-012",
+      "source_ids": [],
+      "finding_ids": [],
+      "units": 0,
+      "opp": "OPP-02",
+      "at": "2026-11-23T16:45:10Z",
+      "at_precision": "commit",
+      "action": "reassessment",
+      "title": "Research Dossier v2 – Strategie geschärft",
+      "summary": "SERP-Aussagen an Datenlage angepasst; Scope, Struktur, How We Can Win auf strukturierte, wiederholbare Baufortschrittsdokumentation; IA Current/Recommended.",
+      "found": "Entscheidung bleibt OPTIMIZE"
+    },
+    {
+      "id": "EVT-013",
+      "source_ids": [],
+      "finding_ids": [],
+      "units": 0,
+      "opp": "OPP-02",
+      "at": "2026-11-23T17:41:12Z",
+      "at_precision": "commit",
+      "action": "dossier",
+      "title": "Research Dossier v2 aktualisiert",
+      "summary": "SERP Validation (Semrush pending, Independent Web Research completed); Übergabe- und Intervallformulierung nach Antwort Noel.",
+      "found": "Status: Research complete · with limits"
+    }
+  ],
+  "updated": "2026-11-23T17:46:28Z"
+}
