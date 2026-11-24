@@ -428,9 +428,11 @@ class ArtifactQA(unittest.TestCase):
         self.assertEqual((R["version"], research.derive(R)["state"]), (2, "complete_with_limits"))
         ev = self.d["research_log"]["events"]
         self.assertTrue(any(e["action"] == "workflow_cleanup" for e in ev))
-        drafts = [e for e in ev if e["action"] == "draft"]
+        cleanup_at = next(e["at"] for e in ev if e["action"] == "workflow_cleanup")
+        drafts = [e for e in ev if e["action"] == "draft" and e["at"] < cleanup_at]           # Testphase
         self.assertEqual({e["opp"] for e in drafts}, {"OPP-03", "OPP-05"})
         self.assertTrue(all(e["superseded"] == "Test phase · superseded" for e in drafts))
+        self.assertFalse([e for e in ev if e["action"] == "draft" and e["at"] > cleanup_at and e.get("superseded")])   # echte Entwürfe danach
         self.assertGreaterEqual(len([e for e in ev if e["opp"] == "OPP-02"]), 13)   # OPP-02-Research-Log unverändert
 
     def test_cannibalization_engine(self):
