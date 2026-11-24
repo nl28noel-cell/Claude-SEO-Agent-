@@ -63,7 +63,22 @@
       },
       "client": "spreewald-luftaufnahmen",
       "gate1": {
-        "status": "pending",
+        "at": "2026-11-24T12:27:46.132Z",
+        "cannibalization": {
+          "choice": "no_warning",
+          "engine_decision": "OPTIMIZE",
+          "risk": "low"
+        },
+        "change_set": {
+          "action": "OPTIMIZE",
+          "companions": [],
+          "url": "/drohnen-baudokumentation/"
+        },
+        "comment": "",
+        "research_override": false,
+        "research_state": "complete_with_limits",
+        "research_version": 2,
+        "status": "approved",
         "superseded": [
           {
             "at": "2026-11-23T15:08:37.269Z",
@@ -76,10 +91,56 @@
       },
       "opp_id": "OPP-02",
       "production": {
-        "status": "not_started"
+        "attempt": 1,
+        "block_detail": null,
+        "block_reason": null,
+        "created_at": "2026-11-24T12:31:30Z",
+        "doc_id": "1Te06thQSZe-4MOFMqYmK5zUCQkLf7HZJu4QAhn-dd7U",
+        "doc_title": "OPP-02 – Baudokumentation – Optimierung",
+        "doc_url": "https://docs.google.com/document/d/1Te06thQSZe-4MOFMqYmK5zUCQkLf7HZJu4QAhn-dd7U/edit",
+        "documents": [
+          {
+            "doc_id": "1Te06thQSZe-4MOFMqYmK5zUCQkLf7HZJu4QAhn-dd7U",
+            "doc_title": "OPP-02 – Baudokumentation – Optimierung",
+            "doc_url": "https://docs.google.com/document/d/1Te06thQSZe-4MOFMqYmK5zUCQkLf7HZJu4QAhn-dd7U/edit",
+            "role": "primary",
+            "url": "/drohnen-baudokumentation/"
+          }
+        ],
+        "finished_at": "2026-11-24T12:32:30Z",
+        "history": [
+          {
+            "at": "2026-11-24T12:32:30Z",
+            "doc_id": "1Te06thQSZe-4MOFMqYmK5zUCQkLf7HZJu4QAhn-dd7U",
+            "doc_url": "https://docs.google.com/document/d/1Te06thQSZe-4MOFMqYmK5zUCQkLf7HZJu4QAhn-dd7U/edit",
+            "note": "Erstentwurf nach Gate 1 (Strategie Research v2, kein Gate-1-Kommentar)",
+            "run_id": "run_20261124T1228Z_session_01ACEsmJioBNKLTTo9frH4rM",
+            "type": "produce",
+            "version": 1
+          }
+        ],
+        "preflight": {
+          "business_profile": true,
+          "content_style_guide": true,
+          "correct_branch": true,
+          "docs_workflow": true,
+          "google_drive_write": true,
+          "repository": true,
+          "target_folder": true,
+          "up_to_date": true,
+          "workflow_state": true
+        },
+        "qa_notes": "check-draft Exit 0 (Change Summary, KEEP/EDIT/NEW + Reason, Schutz-Queries critical/high abgedeckt). Profil §8/§10 und Style-Guide §6 eingehalten: keine Pauschalpreise, keine Formate/Plattform/Hosting, kein Zeitraffer/Portal, kein 3D, kein festes Intervall, Bodenaufnahmen optional. Bestehende Abschnitte mit Schutz-Queries wortgleich übernommen. Offen für Noel: (1) FAQ-Formulierung zu Nutzungsrechten (Weitergabe/Vermarktung) bestätigen; (2) Title 70 Zeichen (laut Strategie freigegeben, Anzeige kann abschneiden); (3) bestehende H3 '… garantiert' unverändert gelassen, Style-Guide rät ab – optional später; (4) echte SERP-Prüfung steht aus. Kosmetik im Doc: '\\|' im Title doppelt maskiert, Fettdruck in einer Tabellenzelle als ** sichtbar.",
+        "qa_status": "passed_with_notes",
+        "run_id": "run_20261124T1228Z_session_01ACEsmJioBNKLTTo9frH4rM",
+        "started_at": "2026-11-24T12:28:30Z",
+        "status": "draft_ready",
+        "strategy_summary": "OPTIMIZE /drohnen-baudokumentation/ (keine neue URL, H1 bleibt): Preserve what works → fix what is weak → add what is missing. Title + '& Brandenburg', Meta ohne '3D-Modellierung' und mit 'Jetzt anfragen'. Neu: Methode (feste Perspektiven, projektspezifischer Turnus nach Bauphasen oder festen Abständen, Luft + optional Boden), 'Was Sie erhalten' (strukturierte digitale Übergabe, 5–7 Werktage), Nutzen je Rolle (Bauträger, Bauunternehmen, Architekten), Ablauf statt leerer Überschrift, Abgrenzung Bestandsaufnahme/Inspektion/Vermessung mit Links, Kosten (Festpreisangebot, Link Preisseite), FAQ 'Baustellendokumentation'. Schutz-Queries: baudokumentation drohne berlin, baubegleitung mit drohne, drohnen tour bau. Vorlage: Baudokumentation.docx.",
+        "updated_at": "2026-11-24T12:31:30Z",
+        "version": 1
       },
       "review": {
-        "status": "not_started"
+        "status": "pending"
       },
       "schema": 1,
       "test_phase": {
@@ -104,7 +165,11 @@
           "result": "Agentenlauf blockiert (2026-11-23): Session ohne Repository (docs/workflow.md, state/workflow.json fehlen) und ohne Google-Drive-Connector – kein Entwurf erstellt. production bleibt 'waiting'; bitte Trigger erneut auslösen, sobald Repo + Drive-Zugriff in der Routine-Umgebung konfiguriert sind."
         }
       },
-      "title": "Baudokumentation"
+      "title": "Baudokumentation",
+      "trigger": {
+        "requested_at": "2026-11-24T12:27:48.923Z",
+        "result": "Agentenlauf angestoßen"
+      }
     },
     {
       "id": "OPP-03",

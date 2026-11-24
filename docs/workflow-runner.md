@@ -54,3 +54,17 @@ Eine Opportunity hat genau einen Workflow-Eintrag und eine Produktionshistorie (
 
 Konnektor Google Drive von Noel an der Routine hinterlegt (`mcp_connections`: Google_Drive, Semrush). Ergebnis: frische Session → Repo geklont → Preflight 9/9 grün → TEST-Doc im Ordner „Claude Landingpages“ → `draft_ready` mit Doc-Link, QA und Historie zurück in die Artifact-db. Echte Einträge unverändert.
 Nebenbefunde (behoben): `brief` baut `dashboard.json` jetzt selbst, wenn es fehlt; Git-Push des Spiegels scheitert ohne Repo-Quelle an der Routine (403) → nur ein Versuch, nicht blockierend.
+
+## Research-Retry („Fehlende Research nachholen“)
+
+Ausgelöst im Artifact über den Button an einer Opportunity mit `Research incomplete`/`not started`. Das Artifact schreibt **am bestehenden Workflow-Eintrag** `research_retry = {status: "queued", components: [...], blocked: [...], done: [], attempt}` (kein neuer Datensatz, kein zweites Dossier) und stößt den Runner an. `workflow.py queue` liefert dafür `action: "research"` – unabhängig von Gate 1 und ohne Drive.
+
+1. **Claim**: `research_retry.status = "running"`, `started_at` (if_version). Läuft ein Retry länger als 45 min ohne Fortschritt, gilt er als abgebrochen und wird erneut angeboten.
+2. **Plan**: `python3 tools/research.py retry-plan <client> <OPP>` – Komponenten (`complete · missing · failed · stale · blocked_budget · n/a`), `run` (nachzuholen inkl. abhängiger Auswertungen), `reuse` (vorhanden, valide, frisch – nicht erneut ausführen), `blocked` (kostenpflichtig ohne Budget – **nie** ausführen).
+3. **Ausführen** nur der `run`-Schritte in Reihenfolge (Anleitung je Schritt in `steps[].how`); nach jedem Schritt `research_retry.done` ergänzen (das Artifact zeigt „x von n Schritten abgeschlossen“).
+4. **Fehlschlag** eines Schritts (z. B. Host nicht erreichbar): im Dossier `status.failed[<key>] = "<Ursache>"` vermerken, weitere unabhängige Schritte fortsetzen; neue Evidence ergänzen, alte nie löschen (fehlgeschlagene Abrufe bleiben als Quelle mit `error` sichtbar).
+5. **Dossier fortschreiben**: dieselbe Datei; bei inhaltlicher Änderung `version + 1` und `changelog`-Eintrag (eine frühere Gate-1-Freigabe gilt dann nicht für die neue Version). Erfolgreich nachgeholte Schritte aus `status.failed` entfernen.
+6. **Validieren**: `python3 tools/research.py validate <client> <OPP>` und `research_log.py validate`; Research-Log-Einträge je Aktion (Web Research, Competitor Analysis, Content Gap …) mit Quellen.
+7. **Ergebnis**: `research_retry.status = "complete"` + `finished_at` – oder `"blocked"` + `block_reason` (verständlich, z. B. „Wettbewerber-Hosts im Netzwerk nicht freigegeben“ oder „Nur Semrush SERP fehlt – Budget-Reserve“). Commit + genau ein Push-Versuch.
+
+Budgetregel: Eine kostenpflichtige Semrush-Abfrage läuft nur, wenn `tools/serp.py plan` → `verdict = run`. Fehlt ausschließlich kostenpflichtige Research, bietet das Artifact keinen Retry an und erklärt den Grund.

@@ -260,6 +260,32 @@ const MOCK = () => {
     await p.goto(base2 + '#opp-OPP-07', { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
     const d7 = await p.locator('#rs-diagnosis').innerText();
     check('ranking protection shown for OPTIMIZE without dossier (list + loss risk)', /Ranking Protection List/i.test(d7) && /Ranking loss: Medium/i.test(d7) && (await p.locator('#rs-diagnosis tbody tr').count()) >= 40, String(await p.locator('#rs-diagnosis tbody tr').count()));
+    // Research-Retry (simulierte Zustände; kein echter Agentenlauf)
+    await p.goto(base2 + '#opp-OPP-01', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
+    let rb = await p.locator('.rr.banner').innerText();
+    check('retry: missing components listed + primary button', /Fehlend:/.test(rb) && /Independent Web Research: ?Missing/i.test(rb.replace(/\n/g, ' ')) && /GSC-Auswertung: ?Complete/i.test(rb.replace(/\n/g, ' ')) && (await p.locator('.rr.banner [data-rr="OPP-01"]').innerText()) === 'Fehlende Research nachholen');
+    check('retry: paid SERP stays blocked (budget) and is explained', /Budget-Reserve/.test(rb));
+    const firedBefore = await p.evaluate(() => (window.__fired || []).length);
+    await p.click('.rr.banner [data-rr="OPP-01"]'); await p.waitForTimeout(400);
+    let rr = await p.evaluate(() => window.__all.workflow['OPP-01']?.research_retry);
+    check('retry: queued on the existing workflow entry (no new record), only missing steps', rr?.status === 'queued' && JSON.stringify(rr.components) === JSON.stringify(['web_research', 'competitors', 'content_gap', 'strategy']) && JSON.stringify(rr.blocked) === '["serp"]' && (await p.evaluate(() => Object.keys(window.__all.workflow).filter(k => k.startsWith('OPP-01')).length)) === 1, JSON.stringify(rr));
+    check('retry: agent triggered + decision logged', (await p.evaluate(() => (window.__fired || []).length)) === firedBefore + 1 && /research_retry/.test(await p.evaluate(() => JSON.stringify((window.__fired || []).slice(-1)))) && await p.evaluate(() => Object.values(window.__all.decisions).some(x => x.decision === 'research_retry' && x.item_id === 'OPP-01')));
+    await p.waitForTimeout(200);
+    check('retry: button disabled while queued (no double click)', await p.locator('.rr.banner [data-rr="OPP-01"]').isDisabled() && /Research retry queued/.test(await p.locator('.rr.banner').innerText()));
+    await p.evaluate(() => window.claude.use('db').then(db => db.collection('workflow').doc('OPP-01').update({ research_retry: { ...window.__all.workflow['OPP-01'].research_retry, status: 'running', started_at: new Date().toISOString(), done: ['web_research', 'competitors'] } })));
+    await p.waitForTimeout(300);
+    check('retry: progress „2 von 4“ while running', /Research running/.test(await p.locator('.rr.banner').innerText()) && /2 von 4 fehlenden Schritten abgeschlossen/.test(await p.locator('.rr.banner').innerText()));
+    await p.evaluate(() => window.claude.use('db').then(db => db.collection('workflow').doc('OPP-01').update({ research_retry: { ...window.__all.workflow['OPP-01'].research_retry, status: 'blocked', block_reason: 'Wettbewerber-Hosts im Netzwerk nicht freigegeben' } })));
+    await p.waitForTimeout(300);
+    rb = await p.locator('.rr.banner').innerText();
+    check('retry: blocked with understandable cause, retry possible again', /Research blocked/.test(rb) && /Wettbewerber-Hosts im Netzwerk nicht freigegeben/.test(rb) && !(await p.locator('.rr.banner [data-rr="OPP-01"]').isDisabled()));
+    await p.goto(base2 + '#opp-OPP-02', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
+    check('retry: only paid research missing → no retry button, explanation', (await p.locator('[data-rr="OPP-02"]').count()) === 0 && /Nur kostenpflichtige Research fehlt/.test(await p.locator('.rr.banner').innerText()));
+    await p.goto(base2 + '#approvals', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
+    await p.click('[data-card="OPP-05"]'); await p.waitForTimeout(200);
+    check('drawer (not started): primary „Research starten“, override secondary + collapsed', (await p.locator('#wf-panel-body [data-rr="OPP-05"]').innerText()) === 'Research starten' && await p.locator('#wf-panel-body [data-rr="OPP-05"]').evaluate(b => b.classList.contains('primary')) && !(await p.locator('#wf-panel-body details.ovr').evaluate(d => d.open)) && !(await p.locator('#wf-panel-body [data-act="approve"]').evaluate(b => b.classList.contains('primary'))));
+    if (SHOTS) await p.screenshot({ path: `${out}/mock-research-retry-drawer.png` });
+    await p.click('#wf-panel-body [data-close]'); await p.waitForTimeout(100);
     // Local Opportunity Matrix
     await p.goto(base2 + '#local', { waitUntil: 'networkidle' }); await p.waitForTimeout(300);
     const lm = await p.locator('#local-matrix').innerText();

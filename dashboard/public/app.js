@@ -571,7 +571,7 @@ function renderAdTab() {
    Der Agent liest sie in seiner nächsten Session (ArtifactData), verarbeitet sie und setzt agent_status = "processed".
    Keine Entscheidung löst hier eine Website-Aktion aus. Lokal (ohne Claude-Viewer) ist der Speicher nicht verfügbar. */
 const DB = { state: "loading", reason: "", ns: null, canWrite: false, decisions: [], fromCache: false, error: "" };
-const DEC = { approve: ["Approve", "green"], approve_override: ["Approve (Override)", "amber"], request_changes: ["Request changes", "amber"], reject: ["Reject", "red"], retry: ["Erneut versucht", "blue"] };
+const DEC = { research_retry: ["Research nachholen", "blue"], approve: ["Approve", "green"], approve_override: ["Approve (Override)", "amber"], request_changes: ["Request changes", "amber"], reject: ["Reject", "red"], retry: ["Erneut versucht", "blue"] };
 const AGENT = { pending: ["Waiting for agent", "amber"], processed: ["Processed by agent", "green"], superseded: ["Test phase · superseded", ""] };
 async function initDb() {
   const fail = (reason, error = "") => { DB.state = "unavailable"; DB.reason = reason; DB.error = error; dbChanged(); };
@@ -590,6 +590,7 @@ async function initDb() {
   db.collection("workflow").onSnapshot(snap => {
     WF.items = Object.fromEntries(snap.docs.map(d => [d.id, { _id: d.id, ...d.data() }])); WF.live = !snap.metadata.fromCache || snap.size > 0;
     if (parseHash().key === "approvals") { renderBoard(); if (WF_OPEN && !document.activeElement?.matches("textarea")) openCard(WF_OPEN); }
+    document.querySelectorAll("[data-rr-opp]").forEach(el => { const o = S.d.opportunities.find(x => x.id === el.dataset.rrOpp); if (o && !el.closest("#wf-drawer")) el.outerHTML = researchActions(o, el.dataset.rrPlace); });
     updateBadges();
   }, () => { /* Board fällt auf den Git-Spiegel zurück */ });
 }
@@ -758,6 +759,7 @@ pages["research-log"] = () => {
       <label>Datum<select data-f="date"><option value="">Alle</option>${opts(dates.map(d => [d, fmtDate(d)]), RLF.date)}</select></label>
       <label class="grow">Suche<input type="search" data-f="q" value="${esc(RLF.q)}" placeholder="Keyword, Domain, Opportunity …"></label>
     </div></div>
+    ${(() => { const live = Object.entries(wfAll()).filter(([, w]) => w.research_retry); return live.length ? `<div class="card mt"><div class="card-h"><div><h2>Research-Retries</h2><div class="hint">Live aus dem Workflow · der Agent protokolliert Ergebnisse anschließend als Log-Einträge</div></div></div><div class="card-b">${live.map(([id, w]) => { const rr = w.research_retry, [l, c] = RR_LABEL[rr.status] || [rr.status, ""]; return `<div class="row">${chip(l, c, true)}<a href="#opp-${esc(id)}">${esc(id)}</a><span class="s">angefordert ${fmtDateTime(rr.requested_at)} · ${esc((rr.components || []).join(", "))} · ${fmtN((rr.done || []).length)}/${fmtN((rr.components || []).length)}${rr.block_reason ? ` · ${esc(rr.block_reason)}` : ""}</span></div>`; }).join("")}</div></div>` : ""; })()}
     <div id="rl-list" class="mt"></div>`;
   const draw = () => { const xs = D.events.filter(rlMatch).slice().reverse(); $("#rl-list").innerHTML = xs.length ? xs.map(rlEvent).join("") : `<div class="card empty">Keine Einträge für diese Filter.</div>`; };
   view().querySelectorAll("[data-f]").forEach(el => el.addEventListener(el.tagName === "INPUT" ? "input" : "change", () => { RLF[el.dataset.f] = el.value; draw(); }));
@@ -891,6 +893,52 @@ function localMatrix() {
       { key: "rec", label: "Recommendation", render: r => `${chip(r.e.recommendation, LREC[r.e.recommendation] || "", true)}<div class="s">${esc(r.e.why)}</div>${r.recommendation ? `<div class="s">Notiz: ${esc(r.recommendation)}</div>` : ""}` },
     ] });
 }
+/* ------------------------------------------------------------ Research-Retry: fehlende Research gezielt nachholen (generisch für alle Opportunities) */
+const COMP_ST = { complete: ["Complete", "green"], missing: ["Missing", "amber"], failed: ["Failed", "red"], stale: ["Veraltet", "amber"], blocked_budget: ["Budget-Reserve", ""], blocked: ["Blockiert", "red"], "n/a": ["n/a", ""] };
+const RR_LABEL = { queued: ["Research retry queued", "blue"], running: ["Research running", "blue"], complete: ["Research complete", "green"], blocked: ["Research blocked", "red"] };
+const rrOf = id => wfDoc(id)?.research_retry || null;
+const rrActive = rr => rr && (rr.status === "queued" || rr.status === "running");
+function researchActions(o, place = "banner") {
+  const r = resStatus(o); if (!r?.components) return "";
+  const plan = r.retry || { run: [], blocked: [] }, rr = rrOf(o.id), active = rrActive(rr);
+  const missingLabels = r.components.filter(c => ["missing", "failed", "stale"].includes(c.status)).map(c => c.label);
+  const comps = `<div class="rr-comps">${r.components.filter(c => c.status !== "n/a").map(c => `<span data-tip="${esc(c.why || "")}">${esc(c.label)}: ${chip(COMP_ST[c.status]?.[0] || c.status, COMP_ST[c.status]?.[1] || "")}</span>`).join("")}</div>`;
+  let st = "";
+  if (rr) {
+    const [l, c] = RR_LABEL[rr.status] || [rr.status, ""], n = (rr.components || []).length, d = (rr.done || []).length;
+    st = `<div class="rr-status">${chip(l, c, true)}${active ? ` <span>Research wird nachgeholt … ${rr.status === "running" ? `${d} von ${n} fehlenden Schritten abgeschlossen` : `(${n} Schritte: ${esc((rr.components || []).map(k => r.components.find(x => x.key === k)?.label || k).join(" · "))})`}</span>` : ""}
+      ${rr.status === "blocked" ? `<div class="down s">Ursache: ${esc(rr.block_reason || "unbekannt")}</div>` : ""}${rr.status === "complete" && rr.finished_at ? `<span class="s"> · ${fmtDateTime(rr.finished_at)}</span>` : ""}
+      ${(rr.blocked || []).length ? `<div class="s">Nicht ausgeführt: ${esc(rr.blocked.map(k => (r.components.find(x => x.key === k)?.label || k) + " – Budget-Reserve").join(" · "))}</div>` : ""}</div>`;
+  }
+  const canRun = plan.run.length > 0;
+  const btnLabel = r.state === "not_started" ? "Research starten" : missingLabels.length ? "Fehlende Research nachholen" : "Research neu anstoßen";
+  const btn = canRun ? `<button class="btn primary" data-rr="${esc(o.id)}" ${active ? "disabled" : ""}>${active ? "Research wird nachgeholt …" : esc(btnLabel)}</button>` : "";
+  const blockedNote = plan.blocked.length ? `<div class="s">${plan.only_paid_missing ? esc(plan.explain) : `Semrush SERP weiterhin blockiert – Budget-Reserve (wird nicht ausgeführt, kostenlose Schritte laufen trotzdem).`}</div>` : "";
+  return `<div class="rr ${place}" data-rr-opp="${esc(o.id)}" data-rr-place="${esc(place)}">${missingLabels.length ? `<div><b>Fehlend:</b> ${esc(missingLabels.join(" · "))}</div>` : ""}${comps}${st}
+    ${canRun ? `<div class="row mt">${btn}<span class="mini" data-rr-msg="${esc(o.id)}"></span></div><div class="s">Holt nur fehlende/fehlgeschlagene/veraltete Schritte nach (${esc(plan.run.map(k => r.components.find(x => x.key === k)?.label || k).join(" · "))}); vorhandene Research (${esc(plan.reuse.map(k => r.components.find(x => x.key === k)?.label || k).join(" · ") || "–")}) wird wiederverwendet. Dasselbe Dossier wird fortgeschrieben und versioniert.</div>` : ""}
+    ${blockedNote}</div>`;
+}
+/** Retry anstoßen: Auftrag am bestehenden Workflow-Eintrag (kein neuer Datensatz), Protokoll, Agentenlauf */
+async function researchRetry(id) {
+  const msg = $(`[data-rr-msg="${CSS.escape(id)}"]`), say = t => { document.querySelectorAll(`[data-rr-msg="${CSS.escape(id)}"]`).forEach(m => m.textContent = t); };
+  const o = S.d.opportunities.find(x => x.id === id), r = resStatus(o), plan = r?.retry;
+  if (!(DB.state === "ready" && DB.canWrite)) return say("Speichern ist in dieser Ansicht nicht möglich.");
+  if (!plan?.run?.length) return say(plan?.explain || "Keine nachholbaren Schritte.");
+  const cur = WF.items[id];
+  if (rrActive(cur?.research_retry)) return say("Research wird bereits nachgeholt.");
+  document.querySelectorAll(`[data-rr="${CSS.escape(id)}"]`).forEach(b => { b.disabled = true; b.textContent = "Research wird nachgeholt …"; });
+  const now = new Date().toISOString();
+  const rr = { status: "queued", requested_at: now, components: plan.run, blocked: plan.blocked, done: [], attempt: (cur?.research_retry?.attempt || 0) + 1, research_version: r.version ?? null };
+  try {
+    const ref = DB.ns.collection("workflow").doc(id);
+    if (cur) await ref.update({ research_retry: rr }); else await ref.set({ opp_id: id, title: o.name, client: S.client, schema: 1, gate1: { status: "pending" }, production: { status: "not_started" }, review: { status: "not_started" }, research_retry: rr });
+    const eid = `${S.client}--${id}--rr--${Date.now()}`.replace(/[^A-Za-z0-9_.~:@+-]/g, "-");
+    await DB.ns.collection("decisions").doc(eid).set({ schema: 1, client: S.client, item_id: id, item_title: o.name, gate: 0, decision: "research_retry", comment: `Nachholen: ${plan.run.join(", ")}${plan.blocked.length ? ` · nicht ausgeführt (Budget): ${plan.blocked.join(", ")}` : ""}`, decided_at: now, agent_status: "pending", agent_processed_at: null, agent_note: null });
+    say("Research retry queued.");
+    await wfTrigger(id, "research_retry"); say("Research retry queued. " + WF.trigger.note);
+  } catch (e) { say(`Nicht gespeichert (${e.code || "error"}): ${e.message || ""}`); document.querySelectorAll(`[data-rr="${CSS.escape(id)}"]`).forEach(b => { b.disabled = false; b.textContent = "Fehlende Research nachholen"; }); }
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-rr]"); if (b && !b.disabled) { e.preventDefault(); researchRetry(b.dataset.rr); } });
 /* ------------------------------------------------------------ Research-/Strategy-Stufe (A–J, vor Gate 1) */
 const RES_READY = ["complete", "complete_with_limits"];
 const RES_COLOR = { complete: "green", complete_with_limits: "blue", incomplete: "amber", not_started: "" };
@@ -910,7 +958,7 @@ function researchBanner(o) {
   const cls = { complete: "green", complete_with_limits: "", incomplete: "amber", not_started: "amber" }[r.state];
   return `<div class="callout ${cls} rs-banner"><div class="row">${resChip(o)}${r.version ? `<span class="mini">Research v${esc(r.version)} · ${fmtDateTime(r.updated)} · Semrush-Units ${fmtN(r.units || 0)} · SERP ${esc({ validated: "validiert", indicative: "indikativ", missing: "fehlt" }[r.serp_quality] || "–")}</span>` : ""}</div>
     ${r.limits?.length ? `<div class="mt"><b>Grenzen</b>${ul(r.limits)}</div>` : ""}
-    ${r.state === "incomplete" || r.state === "not_started" ? `<div class="mt"><b>Fehlt</b>${ul([...(r.pending || []), ...(r.missing || [])].filter((x, i, arr) => arr.findIndex(y => y.slice(0, 26) === x.slice(0, 26)) === i).slice(0, 10))}<div class="s">Ohne vollständige Research startet keine Produktion. Gate 1 ist nur mit ausdrücklichem Override möglich.</div></div>` : ""}
+    ${r.state === "incomplete" || r.state === "not_started" ? `<div class="mt">${researchActions(o)}<div class="s mt">Ohne vollständige Research startet keine Produktion. Gate 1 ist sonst nur mit ausdrücklichem Override möglich.</div></div>` : r.components ? `<div class="mt">${researchActions(o)}</div>` : ""}
     ${o.research?.status?.optional_validation ? `<div class="s mt">Optional: ${esc(o.research.status.optional_validation)}</div>` : ""}
     ${legacy ? `<div class="mt"><b>Gate 1 vom ${fmtDateTime(w.gate1.at)}</b> wurde vor der Research-Stufe erteilt und gilt nicht als Strategie-Freigabe. Bitte Strategie neu freigeben.</div>` : ""}</div>`;
 }
@@ -1074,7 +1122,7 @@ function wfCard({ id, o }) {
     <div class="wf-url s">${o.existing_page ? `Bestehend: ${esc(o.existing_page)}` : o.planned_url ? `Geplant: ${esc(o.planned_url)}` : o.test ? "Testdatei" : "Neue Seite (URL offen)"}</div>
     <p class="wf-why">${esc(short)}</p>
     <div class="wf-sig">${wfSignals(o).join("")}</div>
-    ${o.test ? "" : `<div class="wf-res">${resChip(o)}${o.cannibalization ? riskChip(o.cannibalization.risk) : ""}${agentPlan(o).companions.length ? chip("+ Companion", "amber") : ""}</div><div class="wf-state s">${wfStateLine(w)}</div>`}
+    ${o.test ? "" : `<div class="wf-res">${resChip(o)}${o.cannibalization ? riskChip(o.cannibalization.risk) : ""}${agentPlan(o).companions.length ? chip("+ Companion", "amber") : ""}${rrOf(id) ? chip(...(RR_LABEL[rrOf(id).status] || [rrOf(id).status, ""]), true) : ""}</div><div class="wf-state s">${wfStateLine(w)}</div>`}
     <div class="wf-foot">${chip(l, c, true)}${w?.production?.doc_url && col !== "review" ? `<a href="${esc(w.production.doc_url)}" target="_blank" rel="noopener" class="mini">Entwurf ↗</a>` : ""}</div>
   </article>`;
 }
@@ -1123,9 +1171,11 @@ function openCard(id, opts = {}) {
         ${wfLegacy(w) ? `<div class="notice mt">Die Gate-1-Freigabe vom ${fmtDateTime(w.gate1.at)}${w.gate1.comment ? ` („${esc(w.gate1.comment)}“)` : ""} wurde vor der Research-Stufe erteilt. Sie bleibt im Verlauf, startet aber keine Produktion.</div>` : ""}` : ""}
       ${o.test ? "" : gate1Brief(o)}
       <p class="s">Bedeutet: Du gibst die Strategie UND den fachlichen Scope der Seite frei (Entscheidung, Themen, Abgrenzung, Struktur, Auswirkungen auf andere Seiten). Danach erstellt Claude einen vollständigen Content-Entwurf als Google Doc im Ordner „Claude Landingpages“. Bedeutet nicht: Website/WordPress ändern, bestehende Seite überschreiben, veröffentlichen oder URLs ändern.</p>
-      ${rsReady ? "" : `<div class="callout amber"><b>${esc(rs.label)}</b><div class="s">Die Strategie ist nicht vollständig recherchiert. Eine Freigabe ist nur als bewusster Override möglich und wird protokolliert.</div><label class="row mt"><input type="checkbox" id="wf-ovr"> Ohne vollständige Research freigeben (Override)</label></div>`}
+      ${rsReady ? "" : `<div class="callout amber"><b>${esc(rs.label)}</b>${researchActions(o, "drawer")}</div>`}
       <label class="mini" for="wf-c1">Kommentar / Scope-Änderungen (werden verbindlich in die Produktionsvorgabe übernommen, Vorrang vor dem Dossier)</label><textarea id="wf-c1" placeholder="z. B. Bodenaufnahmen bitte nicht als Standardleistung darstellen. · Versicherungen als zusätzliche Zielgruppe berücksichtigen."></textarea>
-      <div class="row"><button class="btn primary" data-act="approve" ${canWrite ? "" : "disabled"}>${rsReady ? "Strategie freigeben" : "Mit Override freigeben"}</button>${opts.approve ? `<span class="mini">Per Drag & Drop gewählt – zum Freigeben bestätigen.</span>` : ""}<span class="mini" data-msg></span></div></div>`;
+      ${rsReady ? `<div class="row"><button class="btn primary" data-act="approve" ${canWrite ? "" : "disabled"}>Strategie freigeben</button>${opts.approve ? `<span class="mini">Per Drag & Drop gewählt – zum Freigeben bestätigen.</span>` : ""}<span class="mini" data-msg></span></div>`
+        : `<details class="ovr" ${opts.approve ? "open" : ""}><summary>Ohne vollständige Research freigeben (Override)</summary><div class="s">Die Strategie ist nicht vollständig recherchiert. Ein Override wird im Entscheidungsprotokoll deutlich vermerkt.</div><label class="row mt"><input type="checkbox" id="wf-ovr"> Ich gebe bewusst ohne vollständige Research frei</label>
+          <div class="row"><button class="btn" data-act="approve" ${canWrite ? "" : "disabled"}>Mit Override freigeben</button>${opts.approve ? `<span class="mini">Per Drag & Drop gewählt.</span>` : ""}<span class="mini" data-msg></span></div></details>`}</div>`;
   else if (col === "production") action = `<div class="wf-action"><h3>${esc(l)}</h3>
       <div class="kv"><div class="k">Gate 1</div><div>${fmtDateTime(w.gate1.at)}${w.gate1.comment ? ` · „${esc(w.gate1.comment)}“` : ""}</div>
       ${w.review?.status === "revision_requested" ? `<div class="k">Änderungswunsch</div><div>„${esc(w.review.comment)}“ · ${fmtDateTime(w.review.at)}</div>` : ""}

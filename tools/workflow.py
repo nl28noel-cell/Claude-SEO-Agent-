@@ -15,6 +15,8 @@ Dokumentschema workflow/<OPP-ID>:
   review:     {status: pending|revision_requested|approved, comment, at, for_version}
   gate2:      {status: "approved", at, comment}
   trigger:    {requested_at, result}
+  research_retry: {status: queued|running|complete|blocked, requested_at, started_at, finished_at, components[], blocked[],
+                   done[], attempt, block_reason, note}   – gezielter Research-Retry (kein neuer Datensatz, kein zweites Dossier)
 
 Befehle (Export vorher per ArtifactData list collection=workflow out_dir=<dir>):
   python3 tools/workflow.py queue  <dir>                   -> offene Arbeit (produce / revise) als JSON
@@ -65,6 +67,10 @@ def actions(docs, client=DEFAULT_CLIENT):
     Erstproduktion zusätzlich nur mit freigegebener Strategie (Research-Stufe); sonst Eintrag `hold` (nicht bearbeiten)."""
     out = []
     for did, w in sorted(docs.items()):
+        rr = w.get("research_retry") or {}
+        if rr.get("status") == "queued" or (rr.get("status") == "running" and _age_min(rr.get("started_at")) >= STALE_RUN_MIN):
+            out.append({"doc": did, "action": "research", "components": rr.get("components", []), "blocked": rr.get("blocked", []),
+                        "attempt": rr.get("attempt", 1), "test": bool(w.get("test")), "version": w.get("_version")})
         g1 = (w.get("gate1") or {}).get("status")
         prod = w.get("production") or {}
         rev = w.get("review") or {}

@@ -431,7 +431,28 @@
       "title": "Research Dossier – Diagnose ergänzt",
       "summary": "KEEP/IMPROVE/ADD/REMOVE, Sensitive Changes, Change Summary; Struktur auf minimal notwendige Veränderung umgestellt.",
       "found": "Title behält „Dachkontrolle“ (Pos. 12,9)"
+    },
+    {
+      "id": "EVT-025",
+      "source_ids": [
+        "SRC-026"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-24T12:32:30Z",
+      "at_precision": "exact",
+      "opp": "OPP-02",
+      "action": "draft",
+      "title": "Entwurf produziert (Optimierung v1)",
+      "summary": "Workflow-Runner erstellte den Optimierungsentwurf nach Gate 1 (Strategie Research v2, kein Kommentar) im Change-Modus.",
+      "found": "QA passed_with_notes · check-draft Exit 0 (Change Summary, KEEP/EDIT/NEW + Reason, Schutz-Queries abgedeckt)",
+      "links": [
+        {
+          "label": "Entwurf öffnen",
+          "url": "https://docs.google.com/document/d/1Te06thQSZe-4MOFMqYmK5zUCQkLf7HZJu4QAhn-dd7U/edit"
+        }
+      ]
     }
   ],
-  "updated": "2026-11-24T12:20:12Z"
+  "updated": "2026-11-24T12:39:52Z"
 }

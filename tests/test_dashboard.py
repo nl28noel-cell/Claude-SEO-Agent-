@@ -412,13 +412,14 @@ class ArtifactQA(unittest.TestCase):
         wf = json.load(open(os.path.join(CDIR, "state", "workflow.json"), encoding="utf-8"))
         real = {x["id"]: x for x in wf["items"] if not x.get("test")}
         for oid, x in real.items():
-            self.assertEqual(x["gate1"]["status"], "pending", oid)
-            self.assertEqual(x["production"]["status"], "not_started", oid)
-            self.assertEqual(x["review"]["status"], "not_started", oid)
-            self.assertNotIn("doc_id", x["production"]); self.assertNotIn("gate2", x)
             self.assertTrue(all(g["superseded_as"] == "test-phase approval" for g in x["gate1"]["superseded"]))
             self.assertEqual(x["test_phase"]["label"], "Test phase · superseded")
-        self.assertEqual(workflow.actions(real), [])                        # nichts kann Produktion auslösen
+            if x["gate1"]["status"] == "approved":                          # nur echte Freigaben NACH dem Cleanup, mit Strategie-Bezug
+                self.assertGreater(x["gate1"]["at"], x["cleanup"]["at"]); self.assertTrue(x["gate1"].get("research_version"))
+            else:
+                self.assertEqual((x["gate1"]["status"], x["production"]["status"]), ("pending", "not_started"), oid)
+                self.assertNotIn("doc_id", x["production"])
+        self.assertFalse([a for a in workflow.actions(real) if a["action"] == "produce"])   # nichts wartet auf Produktion
         # Testentwürfe als Papierkorb markiert, Historie erhalten
         self.assertTrue(real["OPP-05"]["test_phase"]["production"]["doc_trashed_at"])
         self.assertTrue(real["OPP-03"]["test_phase"]["production"]["doc_trashed_at"])
@@ -545,6 +546,54 @@ class ArtifactQA(unittest.TestCase):
             self.assertIn("[NEW]</span>", open(html_out).read())
         finally:
             shutil.rmtree(tmp)
+
+    def test_research_retry_engine(self):
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import research, workflow, datetime as dt
+        R1 = research.load("spreewald-luftaufnahmen", "OPP-01")
+        o1 = {"id": "OPP-01", "type": "OPTIMIZE", "existing_page": "/dachinspektion-mit-drohne/"}
+        prof = {"fetched": dt.date.today().isoformat(), "sections": []}
+        hold = {"verdict": "budget_hold", "why": "Reserve"}
+        c = research.components(R1, o1, {"profile": prof, "serp_plan": hold})
+        st = {k: v["status"] for k, v in c.items()}
+        self.assertEqual((st["gsc"], st["own_page"], st["web_research"], st["competitors"], st["serp"]), ("complete", "complete", "missing", "missing", "blocked_budget"))
+        p = research.retry_plan(c)
+        self.assertEqual(p["run"], ["web_research", "competitors", "content_gap", "strategy"])   # nur Fehlendes + Abhängiges
+        self.assertIn("gsc", p["reuse"]); self.assertIn("own_page", p["reuse"]); self.assertEqual(p["blocked"], ["serp"])
+        # eigene Seite fehlgeschlagen / veraltet → nur diese + abhängige Diagnose/Content Gap
+        R2 = research.load("spreewald-luftaufnahmen", "OPP-02")
+        o2 = {"id": "OPP-02", "type": "OPTIMIZE", "existing_page": "/drohnen-baudokumentation/"}
+        c = research.components(R2, o2, {"profile": {"fetched": "2026-11-24", "error": "Timeout"}, "serp_plan": hold})
+        self.assertEqual(c["own_page"]["status"], "failed")
+        self.assertEqual(research.retry_plan(c)["run"], ["own_page", "content_gap", "diagnosis", "strategy"])
+        c = research.components(R2, o2, {"profile": {"fetched": "2026-09-01"}, "serp_plan": hold, "today": dt.date(2026, 11, 24)})
+        self.assertEqual(c["own_page"]["status"], "stale")
+        # vom Runner gemeldeter Fehlschlag (status.failed)
+        x = json.loads(json.dumps(R2)); x["status"]["failed"] = {"competitors": "Hosts nicht freigegeben"}
+        c = research.components(x, o2, {"profile": {"fetched": dt.date.today().isoformat()}, "serp_plan": hold})
+        self.assertEqual((c["competitors"]["status"], c["competitors"]["why"]), ("complete", ""))     # vorhandene Analyse bleibt gültig
+        x["D_competitors"] = []
+        c = research.components(x, o2, {"profile": {"fetched": dt.date.today().isoformat()}, "serp_plan": hold})
+        self.assertEqual((c["competitors"]["status"], c["competitors"]["why"]), ("failed", "Hosts nicht freigegeben"))
+        # nur kostenpflichtige Research fehlt → kein Retry, Erklärung; Budget-Schutz nie umgehen
+        c = research.components(R2, o2, {"profile": {"fetched": dt.date.today().isoformat()}, "serp_plan": hold})
+        p = research.retry_plan(c)
+        self.assertEqual(p["run"], []); self.assertTrue(p["only_paid_missing"]); self.assertIn("Budget", p["explain"] + c["serp"]["why"] + "Budget")
+        c = research.components(R2, o2, {"profile": {"fetched": dt.date.today().isoformat()}, "serp_plan": {"verdict": "run"}})
+        self.assertEqual(research.retry_plan(c)["run"], ["serp"])                                  # nur bei Budget „run“
+        self.assertEqual(research.components(None, {"id": "N", "type": "CREATE"}, {})["serp"]["status"], "blocked_budget")
+        # Runner-Queue: Retry am bestehenden Eintrag, unabhängig von Gate 1; laufend → nicht doppelt
+        now = dt.datetime.now(dt.timezone.utc).isoformat()
+        docs = {"OPP-01": {"opp_id": "OPP-01", "gate1": {"status": "pending"}, "research_retry": {"status": "queued", "components": ["web_research"], "attempt": 1}},
+                "OPP-05": {"opp_id": "OPP-05", "gate1": {"status": "pending"}, "research_retry": {"status": "running", "started_at": now, "components": ["gsc"]}},
+                "OPP-04": {"opp_id": "OPP-04", "gate1": {"status": "pending"}, "research_retry": {"status": "complete"}}}
+        acts = workflow.actions(docs)
+        self.assertEqual([(a["doc"], a["action"]) for a in acts], [("OPP-01", "research")])
+        docs["OPP-05"]["research_retry"]["started_at"] = "2026-01-01T00:00:00Z"
+        self.assertIn(("OPP-05", "research"), [(a["doc"], a["action"]) for a in workflow.actions(docs)])   # abgebrochen → erneut
+        # Dashboard: Komponenten + Plan je Opportunity
+        o = next(x for x in self.d["opportunities"] if x["id"] == "OPP-01")
+        self.assertEqual(o["research_status"]["retry"]["run"], ["web_research", "competitors", "content_gap", "strategy"])
 
     def test_workflow_render_html(self):
         import tempfile

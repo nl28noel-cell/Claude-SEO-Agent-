@@ -654,6 +654,21 @@
         "filter": "Cluster „dachinspektion“ (23 Queries)",
         "raw_path": "clients/spreewald-luftaufnahmen/data/gsc-2026-11/gsc_query_page.csv"
       }
+    },
+    {
+      "id": "SRC-026",
+      "type": "agent",
+      "key": "gdoc-1Te06thQSZe-4MOFMqYmK5zUCQkLf7HZJu4QAhn-dd7U",
+      "opp_ids": [
+        "OPP-02"
+      ],
+      "title": "Google Doc · OPP-02 – Baudokumentation – Optimierung",
+      "url": "https://docs.google.com/document/d/1Te06thQSZe-4MOFMqYmK5zUCQkLf7HZJu4QAhn-dd7U/edit",
+      "fetched": "2026-11-24T12:32:30Z",
+      "fetched_precision": "exact",
+      "meta": {
+        "note": "Workflow-Runner run_20261124T1228Z (Gate 1 Noel 12:27 UTC, Research v2)"
+      }
     }
   ],
   "findings": [
@@ -795,5 +810,5 @@
       ]
     }
   ],
-  "updated": "2026-11-24T12:20:12Z"
+  "updated": "2026-11-24T12:39:52Z"
 }
