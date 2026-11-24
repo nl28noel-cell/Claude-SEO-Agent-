@@ -21,7 +21,7 @@ ACTIONS = {
     "semrush_serp": "Semrush SERP Research", "web_research": "Independent Web Research", "competitor_analysis": "Wettbewerberseiten analysiert",
     "own_page_analysis": "Eigene Seite analysiert", "cannibalization": "Kannibalisierung geprüft", "content_gap": "Content Gap erstellt",
     "ia_review": "Information Architecture geprüft", "dossier": "Research Dossier", "reassessment": "Opportunity neu bewertet",
-    "monitoring": "Monitoring", "draft": "Entwurf produziert", "revision": "Revision produziert",
+    "monitoring": "Monitoring", "draft": "Entwurf produziert", "revision": "Revision produziert", "workflow_cleanup": "Workflow Cleanup",
 }
 SOURCE_TYPES = {"gsc": "GSC", "ga4": "GA4", "semrush": "Semrush", "website": "Website", "competitor": "Competitor", "web_search": "Web Search", "agent": "Agent"}
 PRECISION = ("exact", "date", "commit")

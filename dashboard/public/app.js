@@ -571,7 +571,7 @@ function renderAdTab() {
    Keine Entscheidung löst hier eine Website-Aktion aus. Lokal (ohne Claude-Viewer) ist der Speicher nicht verfügbar. */
 const DB = { state: "loading", reason: "", ns: null, canWrite: false, decisions: [], fromCache: false, error: "" };
 const DEC = { approve: ["Approve", "green"], approve_override: ["Approve (Override)", "amber"], request_changes: ["Request changes", "amber"], reject: ["Reject", "red"], retry: ["Erneut versucht", "blue"] };
-const AGENT = { pending: ["Waiting for agent", "amber"], processed: ["Processed by agent", "green"], superseded: ["Superseded", ""] };
+const AGENT = { pending: ["Waiting for agent", "amber"], processed: ["Processed by agent", "green"], superseded: ["Test phase · superseded", ""] };
 async function initDb() {
   const fail = (reason, error = "") => { DB.state = "unavailable"; DB.reason = reason; DB.error = error; dbChanged(); };
   if (!window.claude || typeof window.claude.use !== "function") return fail("local");
@@ -722,7 +722,7 @@ function rlEvent(e) {
   const D = RLD(), M = srcMap(), o = S.d.opportunities.find(x => x.id === e.opp), ss = (e.source_ids || []).map(i => M[i]).filter(Boolean);
   const fs = (e.finding_ids || []).map(i => D.findings.find(f => f.id === i)).filter(Boolean);
   return `<article class="rl-ev" data-ev="${esc(e.id)}"><div class="rl-head"><span class="rl-when">${rlWhen(e.at, e.at_precision)}</span>${e.opp ? ` — <a href="#opp-${esc(e.opp)}">${esc(e.opp)}${o ? " " + esc(o.name) : ""}</a>` : ""}</div>
-    <h3>${esc(e.title || D.actions[e.action] || e.action)} ${chip(D.actions[e.action] || e.action, "outline")}${e.units ? chip(fmtN(e.units) + " Units", "amber") : ""}${e.units === null ? chip("Units: " + NA_TXT, "") : ""}</h3>
+    <h3>${esc(e.title || D.actions[e.action] || e.action)} ${chip(D.actions[e.action] || e.action, "outline")}${e.units ? chip(fmtN(e.units) + " Units", "amber") : ""}${e.units === null ? chip("Units: " + NA_TXT, "") : ""}${e.superseded ? chip(e.superseded, "") : ""}</h3>
     ${e.summary ? `<p>${esc(e.summary)}</p>` : ""}
     ${e.found ? `<div><b>Gefunden:</b> ${esc(e.found)}</div>` : ""}
     ${e.insight ? `<div class="mt"><b>Erkenntnis:</b> ${esc(e.insight)}</div>` : ""}
@@ -903,7 +903,7 @@ function wfCol(w) {
 }
 function wfLabel(w) {
   const c = wfCol(w);
-  if (c === "review") return wfLegacy(w) ? ["Strategie-Freigabe ausstehend", "amber"] : ["Zur Prüfung", ""];
+  if (c === "review") return wfLegacy(w) || w?.gate1?.superseded?.length ? ["Strategie-Freigabe ausstehend", "amber"] : ["Zur Prüfung", ""];
   if (c === "final") return ["Final approved · Ready for WordPress Draft", "green"];
   if (c === "draft") return [`Entwurf v${w.production.version || 1} · Review`, "blue"];
   if (w.review?.status === "revision_requested" && w.production?.status !== "blocked") return [w.production?.status === "running" ? "Revision in Arbeit" : "Revision requested · Waiting for agent", "amber"];
@@ -912,6 +912,13 @@ function wfLabel(w) {
   const t = w.trigger?.requested_at && /angestoßen/.test(w.trigger?.result || "") ? (Date.now() - Date.parse(w.trigger.requested_at)) / 60000 : null;
   if (t !== null && t < 20) return ["Agent starting", "blue"];
   return ["Approved · Waiting for agent", "amber"];
+}
+/** Aktiver Zustand kompakt: Gate 1 · Production · Draft (Testphase-Daten zählen nicht) */
+const PROD_LABEL = { not_started: "Not started", waiting: "Waiting", running: "Producing", in_progress: "Producing", blocked: "Blocked", failed: "Failed", draft_ready: "Draft ready" };
+function wfStateLine(w) {
+  const g = w?.gate1?.status === "approved" ? (wfStrategy(w).ok ? "Approved" : "Approved (alt, ohne Strategie)") : "Pending";
+  const p = PROD_LABEL[w?.production?.status] || "Not started", d = w?.production?.doc_url ? `v${w.production.version || 1}` : "—";
+  return `Gate 1: ${esc(g)} · Production: ${esc(p)} · Draft: ${esc(d)}${w?.test_phase ? ` · <span data-tip="Frühere Testläufe sind im Verlauf erhalten">Test phase · superseded</span>` : ""}`;
 }
 /** Karten: alle CREATE/OPTIMIZE/MERGE-Opportunities + TEST-Einträge aus der db (nur für technische Tests, deutlich markiert) */
 function wfCards() {
@@ -938,7 +945,7 @@ function wfCard({ id, o }) {
     <div class="wf-url s">${o.existing_page ? `Bestehend: ${esc(o.existing_page)}` : o.planned_url ? `Geplant: ${esc(o.planned_url)}` : o.test ? "Testdatei" : "Neue Seite (URL offen)"}</div>
     <p class="wf-why">${esc(short)}</p>
     <div class="wf-sig">${wfSignals(o).join("")}</div>
-    ${o.test ? "" : `<div class="wf-res">${resChip(o)}</div>`}
+    ${o.test ? "" : `<div class="wf-res">${resChip(o)}</div><div class="wf-state s">${wfStateLine(w)}</div>`}
     <div class="wf-foot">${chip(l, c, true)}${w?.production?.doc_url && col !== "review" ? `<a href="${esc(w.production.doc_url)}" target="_blank" rel="noopener" class="mini">Entwurf ↗</a>` : ""}</div>
   </article>`;
 }
@@ -1026,7 +1033,10 @@ function openCard(id, opts = {}) {
       ${f ? `<h4>Search → Business (GA4)</h4><div class="s">${fmtN(f.engagement.sessions)} Sitzungen · ${fmtN(f.engagement.engaged)} engagiert · Intent ${fmtN(f.engagement.micro_sessions)} · ${fmtN(leadsOf(f.engagement))} Leads (${f.engagement.lead_form} F · ${f.engagement.lead_contact} K)</div><div class="row mt">${f.signals.map(x => chip(SIG_LABEL[x.kind] || x.kind, SIG[x.kind] || "")).join("")}</div>` : ""}
       ${o.test ? "" : `<p class="mt"><a href="#opp-${esc(id)}">Vollständige Analyse öffnen →</a></p>`}
     </div>
-    ${hist.length ? `<div class="wf-basis"><h3>Verlauf</h3>${hist.map(x => `<div class="s">${fmtDateTime(x.decided_at)} · Gate ${esc(x.gate)} · ${esc((DEC[x.decision] || [x.decision])[0])}${x.comment ? ` · „${esc(x.comment)}“` : ""}</div>`).join("")}</div>` : ""}`;
+    ${hist.length || w?.test_phase ? `<div class="wf-basis"><h3>Verlauf</h3>${hist.map(x => `<div class="s">${fmtDateTime(x.decided_at)} · Gate ${esc(x.gate)} · ${esc((DEC[x.decision] || [x.decision])[0])}${x.comment ? ` · „${esc(x.comment)}“` : ""}${x.superseded ? ` · ${chip("Test phase · superseded", "")}` : ""}</div>`).join("")}
+      ${w?.test_phase ? `<div class="callout mt"><b>Test phase · superseded</b>${(w.gate1?.superseded || []).map(g => `<div class="s">Gate 1 vom ${fmtDateTime(g.at)}${g.comment ? ` („${esc(g.comment)}“)` : ""} – ${esc(g.superseded_as)}, löst keine Produktion aus</div>`).join("")}
+        ${w.test_phase.production?.status ? `<div class="s">Produktion in der Testphase: ${esc(PROD_LABEL[w.test_phase.production.status] || w.test_phase.production.status)}${w.test_phase.production.doc_title ? ` · „${esc(w.test_phase.production.doc_title)}“ (${esc(w.test_phase.production.doc_trashed_note || "")})` : ""}</div>` : ""}
+        ${w.cleanup ? `<div class="s">${fmtDateTime(w.cleanup.at)} · Workflow Cleanup: ${esc(w.cleanup.note)}</div>` : ""}</div>` : ""}</div>` : ""}`;
   $("#wf-drawer").hidden = false; document.body.style.overflow = "hidden";
   $("#wf-panel-body").querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", () => wfAct(b.dataset.act, c)));
   setTimeout(() => ($("#wf-c1") || $("#wf-panel-body [data-close]"))?.focus(), 30);
@@ -1096,7 +1106,7 @@ function renderDecisionLog() {
   const d = clientDecisions();
   el.innerHTML = d.length ? `<div>${d.map(x => `<div class="dl-item"><div><div class="row"><b>${esc(x.item_title || x.item_id)}</b><span class="mini">${esc(x.item_id)} · Gate ${esc(x.gate)}</span></div>
       <div class="s">Decided ${fmtDateTime(x.decided_at)}${x.comment ? ` · „${esc(x.comment)}“` : ""}</div>
-      ${x.agent_status === "processed" ? `<div class="s">Agent: ${fmtDateTime(x.agent_processed_at)}${x.agent_note ? ` · ${esc(x.agent_note)}` : ""}</div>` : ""}</div>
+      ${x.agent_status === "processed" || x.superseded ? `<div class="s">Agent: ${fmtDateTime(x.agent_processed_at)}${x.agent_note ? ` · ${esc(x.agent_note)}` : ""}</div>` : ""}</div>
       <div class="row" style="align-content:start">${chip(DEC[x.decision]?.[0] || x.decision, DEC[x.decision]?.[1] || "", true)}${chip((AGENT[x.agent_status] || [x.agent_status])[0], (AGENT[x.agent_status] || [, ""])[1])}</div></div>`).join("")}</div>`
     : `<div class="empty">No decisions recorded yet.</div>`;
 }

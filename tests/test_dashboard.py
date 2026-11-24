@@ -405,6 +405,33 @@ class ArtifactQA(unittest.TestCase):
         finally:
             serp.BUDGET, serp.CACHE, RL.ROOT = ob, oc, orr; shutil.rmtree(tmp)
 
+    def test_workflow_cleanup_state(self):
+        """Nach dem Cleanup 24.11.: kein echter Eintrag produziert/freigegeben, Testphase im Audit Trail erhalten."""
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import workflow, research
+        wf = json.load(open(os.path.join(CDIR, "state", "workflow.json"), encoding="utf-8"))
+        real = {x["id"]: x for x in wf["items"] if not x.get("test")}
+        for oid, x in real.items():
+            self.assertEqual(x["gate1"]["status"], "pending", oid)
+            self.assertEqual(x["production"]["status"], "not_started", oid)
+            self.assertEqual(x["review"]["status"], "not_started", oid)
+            self.assertNotIn("doc_id", x["production"]); self.assertNotIn("gate2", x)
+            self.assertTrue(all(g["superseded_as"] == "test-phase approval" for g in x["gate1"]["superseded"]))
+            self.assertEqual(x["test_phase"]["label"], "Test phase · superseded")
+        self.assertEqual(workflow.actions(real), [])                        # nichts kann Produktion auslösen
+        # Testentwürfe als Papierkorb markiert, Historie erhalten
+        self.assertTrue(real["OPP-05"]["test_phase"]["production"]["doc_trashed_at"])
+        self.assertTrue(real["OPP-03"]["test_phase"]["production"]["doc_trashed_at"])
+        # Research bleibt erhalten
+        R = research.load("spreewald-luftaufnahmen", "OPP-02")
+        self.assertEqual((R["version"], research.derive(R)["state"]), (2, "complete_with_limits"))
+        ev = self.d["research_log"]["events"]
+        self.assertTrue(any(e["action"] == "workflow_cleanup" for e in ev))
+        drafts = [e for e in ev if e["action"] == "draft"]
+        self.assertEqual({e["opp"] for e in drafts}, {"OPP-03", "OPP-05"})
+        self.assertTrue(all(e["superseded"] == "Test phase · superseded" for e in drafts))
+        self.assertGreaterEqual(len([e for e in ev if e["opp"] == "OPP-02"]), 13)   # OPP-02-Research-Log unverändert
+
     def test_workflow_render_html(self):
         import tempfile
         sys.path.insert(0, os.path.join(ROOT, "tools"))

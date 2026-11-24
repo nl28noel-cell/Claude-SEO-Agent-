@@ -537,6 +537,36 @@
         "tool": "Claude WebSearch (US-Index, keine Google.de-SERP, keine Positionen)",
         "note": "Wortlaut protokolliert; Ergebnis überwiegend Fachartikel"
       }
+    },
+    {
+      "id": "SRC-021",
+      "type": "agent",
+      "key": "gdoc-1L38pK8SRcWTdFI1Oh2_WOS121uRLUjNCXOb1jzxS-PQ",
+      "opp_ids": [
+        "OPP-05"
+      ],
+      "title": "Google Doc · OPP-05 – Bestandsaufnahme Gebäude / Beweissicherung – Entwurf",
+      "url": "https://docs.google.com/document/d/1L38pK8SRcWTdFI1Oh2_WOS121uRLUjNCXOb1jzxS-PQ/edit",
+      "fetched": "2026-11-23T15:39:59Z",
+      "fetched_precision": "exact",
+      "meta": {
+        "note": "Testentwurf (run-20261123T153807Z-OPP-05); am 24.11.2026 in den Drive-Papierkorb verschoben"
+      }
+    },
+    {
+      "id": "SRC-022",
+      "type": "agent",
+      "key": "gdoc-1RmXbup0kwvrjMRu-ff0zwbAK5PH7MMkkxV7oJ5It390",
+      "opp_ids": [
+        "OPP-03"
+      ],
+      "title": "Google Doc · OPP-03 – Gebäudeinspektion-Hub – Optimierung",
+      "url": "https://docs.google.com/document/d/1RmXbup0kwvrjMRu-ff0zwbAK5PH7MMkkxV7oJ5It390/edit",
+      "fetched": "2026-11-23T16:07:30Z",
+      "fetched_precision": "exact",
+      "meta": {
+        "note": "Testentwurf (run-20261123T1610Z-OPP-03); am 24.11.2026 in den Drive-Papierkorb verschoben"
+      }
     }
   ],
   "findings": [
@@ -631,5 +661,5 @@
       ]
     }
   ],
-  "updated": "2026-11-23T17:46:28Z"
+  "updated": "2026-11-24T07:43:37Z"
 }

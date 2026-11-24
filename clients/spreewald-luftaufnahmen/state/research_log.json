@@ -73,6 +73,38 @@
       "found": "13 Domains gefunden, davon 8 Anbieterseiten zur Analyse ausgewählt."
     },
     {
+      "id": "EVT-014",
+      "source_ids": [
+        "SRC-021"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-23T15:39:59Z",
+      "at_precision": "exact",
+      "opp": "OPP-05",
+      "action": "draft",
+      "title": "Entwurf produziert (Testphase)",
+      "summary": "Workflow-Runner erstellte „OPP-05 – Bestandsaufnahme Gebäude / Beweissicherung – Entwurf“ nach Gate 1 vom 2026-11-23 15:10 UTC (altes Modell ohne Research-Stufe).",
+      "found": "Entwurf v1 · QA passed_with_notes",
+      "superseded": "Test phase · superseded"
+    },
+    {
+      "id": "EVT-015",
+      "source_ids": [
+        "SRC-022"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-23T16:07:30Z",
+      "at_precision": "exact",
+      "opp": "OPP-03",
+      "action": "draft",
+      "title": "Entwurf produziert (Testphase)",
+      "summary": "Workflow-Runner erstellte „OPP-03 – Gebäudeinspektion-Hub – Optimierung“ nach Gate 1 vom 2026-11-23 16:03 UTC (altes Modell ohne Research-Stufe).",
+      "found": "Entwurf v1 · QA passed_with_notes",
+      "superseded": "Test phase · superseded"
+    },
+    {
       "id": "EVT-005",
       "source_ids": [
         "SRC-008",
@@ -236,7 +268,23 @@
       "title": "Research Dossier v2 aktualisiert",
       "summary": "SERP Validation (Semrush pending, Independent Web Research completed); Übergabe- und Intervallformulierung nach Antwort Noel.",
       "found": "Status: Research complete · with limits"
+    },
+    {
+      "id": "EVT-016",
+      "source_ids": [
+        "SRC-021",
+        "SRC-022"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-24T07:17:45Z",
+      "at_precision": "exact",
+      "opp": null,
+      "action": "workflow_cleanup",
+      "title": "Workflow Cleanup",
+      "summary": "Previous production drafts were created during system testing and removed before productive use. Opportunities reset for approval under the new Research/Strategy workflow.",
+      "found": "Zurückgesetzt: OPP-01 (Gate 1 (Testphase) · Produktion blocked) · OPP-02 (Gate 1 (Testphase) · Produktion blocked) · OPP-03 (Gate 1 (Testphase) · Entwurf v1) · OPP-04 (Gate 1 (Testphase) · Produktion blocked) · OPP-05 (Gate 1 (Testphase) · Entwurf v1). 2 Drive-Entwürfe in den Papierkorb verschoben. Research-Dossiers, Evidence und Log unverändert."
     }
   ],
-  "updated": "2026-11-23T17:46:28Z"
+  "updated": "2026-11-24T07:43:37Z"
 }

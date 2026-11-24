@@ -46,3 +46,7 @@ Ohne Google-Docs-Editor-Konnektor kann der Agent bestehende Docs nicht bearbeite
 ## Tests
 
 `dashboard/qa/artifact_qa.js` testet Board, Drag & Drop, Button, Kommentar, Reload, Revision, Gate 2 und Trigger-Aufruf gegen eine simulierte Laufzeit. Echte End-to-End-Tests nur mit Dokumenten `test: true` (Karte „TEST“); Testdateien werden danach entfernt.
+
+## Cleanup 24.11.2026 (vor dem produktiven Start)
+
+Alle Produktions-/Testläufe der Aufbauphase wurden bereinigt: OPP-01 bis OPP-05 stehen wieder auf `gate1.status = pending`, `production.status = not_started`, `review.status = not_started`, ohne aktiven Drive-Entwurf. Die alten Gate-1-Freigaben bleiben unter `gate1.superseded[]` (`superseded_as: test-phase approval`) und im Entscheidungsprotokoll („Test phase · superseded“) erhalten und lösen keine Produktion aus. Frühere Produktionsdaten stehen unter `test_phase`; die Testentwürfe von OPP-03 und OPP-05 liegen im Drive-Papierkorb. Research Log: Ereignis „Workflow Cleanup“ plus die beiden Testentwürfe als superseded. Research-Dossiers und Evidence unverändert. Kein Agentenlauf ausgelöst.

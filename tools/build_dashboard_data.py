@@ -349,7 +349,8 @@ def build_client(slug, today):
         groups.setdefault((e.get("opp") or "–", (e.get("at") or "")[:10]), []).append(e)
     for (opp, day), es in sorted(groups.items()):
         o = next((x for x in opps if x["id"] == opp), None)
-        tasks.append({"id": f"RL-{opp}-{day}", "title": f"{opp} {o['name'] if o else ''} · Research ({len(es)} Aktionen)", "state": "completed", "date": day,
+        label = f"{opp} {o['name']} · Research" if o else "System · Workflow"
+        tasks.append({"id": f"RL-{opp}-{day}", "title": f"{label} ({len(es)} Aktionen)", "state": "completed", "date": day,
                       "detail": " · ".join(dict.fromkeys(research_log.ACTIONS[x["action"]] for x in es)), "log": {"opp": opp, "date": day}, "from_log": True})
     sources = st("sources")
     cache_rows = rcsv(os.path.join(ROOT, "data", "keyword-cache.csv"))
