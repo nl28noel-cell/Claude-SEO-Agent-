@@ -90,6 +90,16 @@ def validate(doc):
         err.append("Independent Web Research ohne Keywords/Datum")
     if web.get("positions"):
         err.append("Independent Web Research darf keine Rankingpositionen enthalten")
+    P = doc.get("P_diagnosis") or {}
+    for x in P.get("change_summary") or []:
+        if x.get("action") not in ("KEEP", "EDIT", "NEW", "REMOVE", "REDUCE", "KEEP/EDIT"):
+            err.append(f"change_summary action ungültig: {x.get('area')}")
+    for x in P.get("sensitive_changes") or []:
+        if not all(x.get(k) for k in ("element", "current", "proposed", "reason", "ranking_risk")):
+            err.append(f"sensitive_change unvollständig: {x.get('element')}")
+    for x in (doc.get("G_structure") or {}).get("sections") or []:
+        if x.get("action") and x["action"] not in ("KEEP", "EDIT", "NEW", "REMOVE", "REDUCE"):
+            err.append(f"G_structure action ungültig: {x.get('h2')}")
     if "results" in C:
         err.append("C_serp.results ist veraltet → serp_competitors / research_competitors")
     return err
@@ -108,6 +118,14 @@ def missing_sections(doc):
     C = doc.get("C_serp") or {}
     if C and _empty(C.get("serp_competitors")) and _empty(C.get("research_competitors")):
         out.append("C · Live SERP (keine Wettbewerber)")
+    # OPTIMIZE/MERGE: Current Page Diagnosis ist Pflicht (Preserve what works → fix what is weak → add what is missing)
+    if ((doc.get("A_decision") or {}).get("decision") in ("OPTIMIZE", "MERGE")):
+        P = doc.get("P_diagnosis") or {}
+        gaps = [f for f in ("works_well", "weak", "missing", "keep", "improve", "add", "recommended_changes", "expected_benefit", "change_summary") if _empty(P.get(f))]
+        if not P:
+            out.append("Current Page Diagnosis ausstehend")
+        elif gaps:
+            out.append(f"Current Page Diagnosis ({', '.join(gaps)})")
     # Standard: Independent Web Research je Primary Keyword (kostet keine Units) – auch wenn Semrush vorliegt
     if C and ((C.get("validation") or {}).get("independent_web") or {}).get("status") != "completed":
         out.append("Independent Web Research ausstehend")

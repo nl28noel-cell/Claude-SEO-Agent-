@@ -34,7 +34,7 @@ Gate 2 löst keinen Agentenlauf aus (es gibt nichts zu tun, außer später WordP
 2. Für jedes `produce`/`revise`: db-Dokument auf `production.status=in_progress` setzen (mit `if_version`).
 3. `python3 tools/workflow.py brief <tmp> <OPP> <brief.md>` (enthält die freigegebene Strategie A–J als verbindliche Vorgabe; verweigert ohne gültige Strategie); Business-Profil, `content-style-guide.md`, Live-Seite (bei OPTIMIZE) und relevante Drive-Vorlage lesen.
 4. Content-Paket schreiben (interner Block, SEO Title, Meta Description, H1, H2/H3, Volltexte, CTAs, FAQ, interne Links, Bildhinweise, Schema, Redirect-/Canonical-Hinweis nur als Empfehlung; bei OPTIMIZE: bleibt/ändert/ergänzt/warum).
-5. QA: Profil §10 (nichts erfunden), Style-Guide §6, Keyword-Natürlichkeit, keine Doorway-Formulierung, Freigabe-/Revisionskommentar umgesetzt.
+5. QA: Profil §10 (nichts erfunden), Style-Guide §6, Keyword-Natürlichkeit, keine Doorway-Formulierung, Freigabe-/Revisionskommentar umgesetzt. Bei OPTIMIZE/MERGE zusätzlich: Change Summary + [KEEP]/[EDIT]/[NEW]/[REMOVE] mit Reason, Schutz-Queries abgedeckt – `python3 tools/workflow.py check-draft <draft.md> --opp <OPP>` muss Exit 0 liefern.
 6. `python3 tools/workflow.py render <draft.md> <draft.html>` → Drive `create_file` (contentMimeType `text/html`, parentId Ordner „Claude Landingpages“) → natives Google Doc. Benennung: `OPP-04 – Drohnenvermessung Berlin & Brandenburg – Entwurf` bzw. `OPP-02 – Baudokumentation – Optimierung`; Revisionen `… – v2`.
 7. db `production` = `draft_ready` + doc_id/url/title, created_at/updated_at, version, history, qa_status, qa_notes, strategy_summary; `review.status = pending`.
 8. `python3 tools/workflow.py mirror <tmp>` → Artifact bauen/veröffentlichen → committen.

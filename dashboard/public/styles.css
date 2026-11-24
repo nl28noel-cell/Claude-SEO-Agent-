@@ -374,3 +374,5 @@ html.scroll-locked,html.scroll-locked body{overflow:hidden}
 
 /* lange Chip-Texte (z. B. Research-Status) auf Karten umbrechen */
 .wf-card .chip,.rs-banner .chip,.g1-brief .chip{white-space:normal;max-width:100%;overflow-wrap:anywhere}
+.g1-diag{margin-top:12px;padding-top:10px;border-top:1px dashed var(--border)}
+.g1-diag h4{margin:4px 0 8px}

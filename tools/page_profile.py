@@ -72,6 +72,19 @@ def profile(url, timeout=30):
     p["words"] = len(text.split())
     p["signals"] = {k: len(re.findall(v, text, re.I)) for k, v in SIGNALS.items()}
     p["faq_questions"] = [h for tg, h in heads if h.endswith("?")][:15]
+    # Abschnitte (Überschrift → Text) für die Ranking Protection: welcher Inhalt trägt welche Query?
+    parts = re.split(r"(<h[1-3][^>]*>.*?</h[1-3]>)", body, flags=re.S | re.I)
+    secs, cur = [], {"tag": "intro", "heading": "(vor der ersten Überschrift)", "text": ""}
+    for part in parts:
+        m = re.match(r"<(h[1-3])[^>]*>(.*?)</h[1-3]>", part, re.S | re.I)
+        if m:
+            if cur["text"].strip() or cur["tag"] != "intro":
+                secs.append(cur)
+            cur = {"tag": m.group(1).lower(), "heading": re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", m.group(2)))).strip(), "text": ""}
+        else:
+            cur["text"] += " " + re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", part)))
+    secs.append(cur)
+    p["sections"] = [{"tag": x["tag"], "heading": x["heading"][:160], "words": len(x["text"].split()), "text": x["text"].strip()[:1500]} for x in secs if x["heading"] or x["text"].strip()]
     p["has_form"] = bool(re.search(r"<form", t, re.I))
     p["has_phone_link"] = bool(re.search(r'href=["\']tel:', t, re.I))
     p["schema_types"] = sorted(set(re.findall(r'"@type"\s*:\s*"([A-Za-z]+)"', t)))[:15]

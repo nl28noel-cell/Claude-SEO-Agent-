@@ -3,13 +3,18 @@
   "opp_id": "OPP-01",
   "client": "spreewald-luftaufnahmen",
   "version": 1,
-  "updated": "2026-11-24T11:57:20Z",
+  "updated": "2026-11-24T12:14:16Z",
   "author": "agent",
   "changelog": [
     {
       "version": 1,
       "date": "2026-11-24",
       "note": "Erstes Dossier aus vorhandenen Daten (GSC, Inventar, Semrush-Cache, Live-Abruf eigener Seiten, Business-Profil). Wettbewerbsrecherche ausstehend."
+    },
+    {
+      "version": 1,
+      "date": "2026-11-24",
+      "note": "Current Page Diagnosis, Ranking Protection, Change Summary; Title-Vorschlag korrigiert („Dachkontrolle“ bleibt – trägt Pos. 12,9)"
     }
   ],
   "status": {
@@ -361,45 +366,64 @@
     ]
   },
   "G_structure": {
-    "title_proposal": "Dachinspektion mit Drohne | Berlin & Brandenburg – ohne Gerüst",
+    "title_proposal": "Dachinspektion & Dachkontrolle mit Drohne | Berlin & Brandenburg",
     "meta_note": "Nutzen + Region + Anfrage; „Vermessung“ nur als Option, kein „Jetzt buchen“.",
     "h1": "Dachinspektion mit Drohne in Berlin und Brandenburg",
     "sections": [
       {
-        "h2": "Dachinspektion per Drohne: Dachzustand sicher und ohne Gerüst prüfen",
-        "purpose": "Intent bestätigen, was die Inspektion leistet und was nicht (kein Gutachten)",
+        "h2": "Dachinspektion mit Drohne: Schnell & ohne Gerüst",
+        "action": "KEEP",
+        "existing": "gleich",
+        "purpose": "Trägt Berlin-Query; B2B-Fokus und „kein Gutachten“ ergänzen",
         "covers": [
           "Verständnis"
         ],
         "h3": []
       },
       {
-        "h2": "Wann sich eine Dachinspektion lohnt",
-        "purpose": "Anlässe für Hausverwaltungen/Bestandshalter",
+        "h2": "Darum ist eine Dachinspektion mit Drohne die unkomplizierte Wahl",
+        "action": "KEEP",
+        "existing": "gleich",
+        "purpose": "Vorteile ggü. Gerüst/Hubsteiger",
         "covers": [
           "Verständnis"
         ],
         "h3": []
       },
       {
-        "h2": "Was Sie erhalten",
-        "purpose": "Übersichts-/Detailaufnahmen, Foto/Video, digitale Übergabe, Weitergabe an Dachdecker/Versicherer",
+        "h2": "Wann lohnt sich eine Dachinspektion per Drohne?",
+        "action": "KEEP",
+        "existing": "gleich",
+        "purpose": "Anlässe",
         "covers": [
-          "Ergebnis"
+          "Verständnis"
         ],
         "h3": []
       },
       {
         "h2": "Für Hausverwaltungen, Bestandshalter und Gewerbe",
-        "purpose": "Nutzen je Zielgruppe, auch mehrere Objekte",
+        "action": "NEW",
+        "purpose": "B2B-Nutzen, mehrere Objekte",
         "covers": [
           "Organisation & Kosten"
         ],
         "h3": []
       },
       {
+        "h2": "Vom Luftbild zur Entscheidungsgrundlage",
+        "action": "EDIT",
+        "existing": "gleich",
+        "purpose": "Was Sie erhalten; Vermessung als Option + Link",
+        "covers": [
+          "Ergebnis"
+        ],
+        "h3": []
+      },
+      {
         "h2": "So läuft die Dachinspektion ab",
-        "purpose": "Schritte inkl. Genehmigungen, Wetter",
+        "action": "EDIT",
+        "existing": "„Wir übernehmen den gesamten Prozess für Sie!“ + leere „Unkompliziert zur perfekten Lösung!“",
+        "purpose": "Ablauf in Schritten",
         "covers": [
           "Organisation & Kosten"
         ],
@@ -407,6 +431,7 @@
       },
       {
         "h2": "Dachinspektion, Gebäudeinspektion oder Dachvermessung?",
+        "action": "NEW",
         "purpose": "Abgrenzung mit Links",
         "covers": [
           "Abgrenzung"
@@ -415,7 +440,8 @@
       },
       {
         "h2": "Kosten einer Dachinspektion",
-        "purpose": "Faktoren, individuelles Angebot, Link Preisseite",
+        "action": "NEW",
+        "purpose": "Faktoren, individuelles Angebot",
         "covers": [
           "Organisation & Kosten"
         ],
@@ -423,16 +449,36 @@
       },
       {
         "h2": "Häufige Fragen zur Dachinspektion mit Drohne",
+        "action": "NEW",
         "purpose": "FAQ",
         "covers": [
           "Ergebnis",
           "Organisation & Kosten"
         ],
         "h3": []
+      },
+      {
+        "h2": "Ihr Partner für Dachinspektionen mit Drohne",
+        "action": "EDIT",
+        "existing": "gleich",
+        "purpose": "Wir-Perspektive, Berlin/Brandenburg behalten",
+        "covers": [
+          "Organisation & Kosten"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Kundenstimmen · Unternehmen, die auf unsere Lösungen zählen · Was macht unsere Drohnenflüge so besonders?",
+        "action": "KEEP",
+        "existing": "gleich",
+        "purpose": "Trust unverändert",
+        "covers": [],
+        "h3": []
       }
     ],
-    "scope_check": "Alle Fragengruppen aus F zugeordnet. Struktur vorläufig – nach der Wettbewerbsrecherche prüfen.",
-    "derivation": "GSC-Intent + bestehende Inhalte der Dachseite + Abgrenzung zum Hub (Kannibalisierung)."
+    "scope_check": "Minimal notwendige Veränderung bei schwach rankender Seite: tragende Abschnitte (Einstieg, Anlässe, Partner/Berlin) bleiben, 4 NEW-Abschnitte, „Dachkontrolle“ bleibt im Title.",
+    "derivation": "GSC-Intent + bestehende Inhalte der Dachseite + Abgrenzung zum Hub (Kannibalisierung).",
+    "h1_action": "EDIT"
   },
   "H_ia": {
     "current": {
@@ -620,5 +666,248 @@
       "date": "2026-11-23",
       "path": "clients/spreewald-luftaufnahmen/business-profile.md"
     }
-  ]
+  ],
+  "P_diagnosis": {
+    "principle": "Seite rankt schwach (1 kritische Query: „dachinspektion per drohne berlin“ Pos. 8,9) → gezielte Überarbeitung vertretbar, aber alle Schutz-Queries behalten; bestehende Abschnitte werden erweitert statt ersetzt.",
+    "works_well": [
+      "„dachinspektion per drohne berlin“ Pos. 8,9 – getragen vom Einstieg und vom Abschnitt „Ihr Partner für Dachinspektionen …“ (Berlin & Brandenburg)",
+      "„dachkontrolle mit drohne“ Pos. 12,9 – getragen vom Title („Schnelle Dachkontrolle mit Drohne“)",
+      "Anlässe (Sturm/Hagel, Sanierung, Versicherung, Kauf) und Übergabe („Vom Luftbild zur Entscheidungsgrundlage“) bereits gut erklärt",
+      "Trust: rbb, Kundenstimmen, Logos, Formular"
+    ],
+    "weak": [
+      "Rankt deutlich hinter dem Gebäudeinspektion-Hub (Ø Pos. 38 vs. Hub als Haupt-URL für Dach-Queries)",
+      "Spricht Privat und B2B gleich an",
+      "Meta: „Mit Vermessung“ (nur optional über Partner) und „Jetzt buchen!“",
+      "„Als zertifizierter Drohnenpilot“ (Einzahl) statt Wir-Perspektive",
+      "Leere Überschrift „Unkompliziert zur perfekten Lösung!“",
+      "Keine Gutachten-Abgrenzung, kein Ablauf, keine FAQ, kaum interne Links"
+    ],
+    "missing": [
+      "B2B-Abschnitt (Hausverwaltungen, Bestandshalter, Gewerbe, mehrere Objekte)",
+      "Abgrenzung Dachinspektion / Gebäudeinspektion / Dachvermessung",
+      "Kosten-Abschnitt",
+      "FAQ",
+      "Hinweis „visuelle Inspektion ersetzt kein Gutachten“"
+    ],
+    "keep": [
+      {
+        "item": "Einstieg „Dachinspektion mit Drohne: Schnell & ohne Gerüst“",
+        "reason": "Trägt „dachinspektion per drohne berlin“ (Pos. 8,9)",
+        "evidence": "Schutzliste"
+      },
+      {
+        "item": "Begriff „Dachkontrolle“ im Title",
+        "reason": "Trägt „dachkontrolle mit drohne“ (Pos. 12,9)",
+        "evidence": "Schutzliste"
+      },
+      {
+        "item": "„Wann lohnt sich eine Dachinspektion per Drohne?“",
+        "reason": "Anlässe = Nutzerintention, bereits gut",
+        "evidence": "Seitenprofil"
+      },
+      {
+        "item": "„Vom Luftbild zur Entscheidungsgrundlage“",
+        "reason": "Übergabe bereits beschrieben",
+        "evidence": "Seitenprofil"
+      },
+      {
+        "item": "„Ihr Partner für Dachinspektionen mit Drohne“ (Berlin/Brandenburg)",
+        "reason": "Lokaler Bezug für die kritische Berlin-Query",
+        "evidence": "Schutzliste"
+      },
+      {
+        "item": "Trust-Elemente, Formular",
+        "reason": "Conversion",
+        "evidence": "Seitenprofil"
+      }
+    ],
+    "improve": [
+      {
+        "item": "Einstieg",
+        "reason": "B2B-Fokus und „kein Gutachten“ ergänzen, Berlin/Brandenburg behalten",
+        "evidence": "Profil §5/§8"
+      },
+      {
+        "item": "„Vom Luftbild zur Entscheidungsgrundlage“",
+        "reason": "Vermessung als Option mit Link statt Leistungsbestandteil",
+        "evidence": "Profil §3"
+      },
+      {
+        "item": "„Ihr Partner …“",
+        "reason": "„Als zertifizierter Drohnenpilot“ → Wir-Perspektive",
+        "evidence": "Profil §10"
+      },
+      {
+        "item": "„Wir übernehmen den gesamten Prozess für Sie!“",
+        "reason": "Zu einem Ablauf in Schritten ausbauen",
+        "evidence": "E"
+      },
+      {
+        "item": "H1",
+        "reason": "„in Berlin und Brandenburg“ ergänzen – stützt die kritische Berlin-Query",
+        "evidence": "Schutzliste"
+      },
+      {
+        "item": "Meta Description",
+        "reason": "„Mit Vermessung“ und „Jetzt buchen“ ersetzen",
+        "evidence": "Profil §3/§10"
+      }
+    ],
+    "add": [
+      {
+        "item": "H2 „Für Hausverwaltungen, Bestandshalter und Gewerbe“",
+        "reason": "B2B-Schärfung",
+        "evidence": "Profil §5"
+      },
+      {
+        "item": "H2 „Dachinspektion, Gebäudeinspektion oder Dachvermessung?“ + Links",
+        "reason": "Abgrenzung zum Hub (Kannibalisierung)",
+        "evidence": "Engine: High"
+      },
+      {
+        "item": "H2 „Kosten einer Dachinspektion“",
+        "reason": "Nutzerfrage",
+        "evidence": "F"
+      },
+      {
+        "item": "H2 FAQ",
+        "reason": "Nutzerfragen + Long Tail",
+        "evidence": "F"
+      },
+      {
+        "item": "Interne Links zu Hub und Dachvermessung",
+        "reason": "Rollen klären",
+        "evidence": "H"
+      }
+    ],
+    "remove": [
+      {
+        "item": "Gleichgewichtete Ansprache von Privatpersonen (REDUCE)",
+        "reason": "B2B-Fokus – Privat nur noch als Nebensatz (Bestätigung durch Noel offen)",
+        "evidence": "Profil §2/§5"
+      }
+    ],
+    "recommended_changes": [
+      "Title erweitern (Dachkontrolle bleibt)",
+      "H1 um Region ergänzen",
+      "4 neue Abschnitte",
+      "4 bestehende Abschnitte gezielt überarbeiten",
+      "Leere Überschrift ersetzen",
+      "Companion: Hub gibt Dach-Queries ab"
+    ],
+    "expected_benefit": [
+      "Dach-Queries landen auf der Dachseite statt auf dem Hub (Kannibalisierung lösen)",
+      "Bessere Positionen für die Kern-Queries (heute Ø 38–58)",
+      "Mehr B2B-Anfragen durch klare Zielgruppen und Abgrenzung"
+    ],
+    "sensitive_changes": [
+      {
+        "element": "Title",
+        "current": "Dachinspektion mit Drohne | Schnelle Dachkontrolle mit Drohne",
+        "proposed": "Dachinspektion & Dachkontrolle mit Drohne | Berlin & Brandenburg",
+        "reason": "Region ergänzen, „Dachkontrolle“ behalten (trägt Pos. 12,9)",
+        "ranking_risk": "Low – beide tragenden Begriffe bleiben"
+      },
+      {
+        "element": "H1",
+        "current": "Dachinspektion mit Drohne",
+        "proposed": "Dachinspektion mit Drohne in Berlin und Brandenburg",
+        "reason": "Stützt die kritische Berlin-Query, Kernbegriff bleibt am Anfang",
+        "ranking_risk": "Low"
+      },
+      {
+        "element": "Zielgruppenfokus",
+        "current": "Dachinspektion für Privat und B2B gleichgewichtet",
+        "proposed": "Dachinspektion mit B2B-Fokus (Privat als Nebensatz)",
+        "reason": "Business Fit (Profil §2/§5) – Suchintent bleibt unverändert (kommerziell, Dienstleister)",
+        "ranking_risk": "Low – Suchbegriffe sind nicht zielgruppenspezifisch; Bestätigung durch Noel offen"
+      }
+    ],
+    "not_changed": [
+      "URL",
+      "Canonical (Änderungsstopp CL-001)",
+      "Indexierung"
+    ],
+    "change_summary": [
+      {
+        "area": "Title",
+        "action": "EDIT",
+        "reason": "Region ergänzen, „Dachkontrolle“ behalten",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Meta Description",
+        "action": "EDIT",
+        "reason": "Vermessung nur optional, Anfrage-CTA",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "H1",
+        "action": "EDIT",
+        "reason": "„in Berlin und Brandenburg“ ergänzen",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Einstieg",
+        "action": "KEEP/EDIT",
+        "reason": "Trägt Berlin-Query; B2B + kein Gutachten ergänzen",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Wann lohnt sich …",
+        "action": "KEEP",
+        "reason": "Anlässe bereits gut",
+        "seo_risk": "—"
+      },
+      {
+        "area": "Vom Luftbild zur Entscheidungsgrundlage",
+        "action": "EDIT",
+        "reason": "Vermessung als Option + Link",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Ablauf (statt leerer Überschrift / Prozess-Abschnitt)",
+        "action": "EDIT",
+        "reason": "Schritte ergänzen",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "B2B-Zielgruppen",
+        "action": "NEW",
+        "reason": "Business Fit",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Abgrenzung",
+        "action": "NEW",
+        "reason": "Kannibalisierung mit dem Hub",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Kosten",
+        "action": "NEW",
+        "reason": "Nutzerfrage",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "FAQ",
+        "action": "NEW",
+        "reason": "Nutzerfragen",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Ihr Partner … (Berlin)",
+        "action": "EDIT",
+        "reason": "Wir-Perspektive; Berlin-Bezug behalten",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Trust, Logos, Kundenstimmen, Formular",
+        "action": "KEEP",
+        "reason": "Conversion",
+        "seo_risk": "—"
+      }
+    ]
+  }
 }

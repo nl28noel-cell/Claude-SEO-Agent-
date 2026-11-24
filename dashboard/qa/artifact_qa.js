@@ -246,13 +246,20 @@ const MOCK = () => {
     await p.goto(base2 + '#opp-OPP-02', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
     let gb = await p.locator('#g1-brief').innerText();
     check('gate-1 brief: four questions', ['Warum sollten wir das machen?', 'Was genau werden wir machen?', 'Was wird auf der Seite behandelt?', 'Was passiert mit unseren anderen Seiten?'].every(q => gb.toLowerCase().includes(q.toLowerCase())));
+    check('gate-1 brief OPP-02: H1 KEEP + diagnosis', /Current Page Diagnosis/i.test(gb) && /baudokumentation drohne berlin/i.test(gb) && /KEEP/.test(gb));
     check('gate-1 brief OPP-02: page preview (purpose, topics, excluded, structure)', /Page Purpose/.test(gb) && /Themen auf der Seite/.test(gb) && /Bewusst nicht enthalten/.test(gb) && /Rough Page Structure/.test(gb) && /Cannibalization: Low/.test(gb));
     await p.goto(base2 + '#opp-OPP-01', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
     gb = await p.locator('#g1-brief').innerText();
     check('gate-1 brief OPP-01: high risk + companion + affected URL', /Cannibalization: High/.test(gb) && /Companion Optimization required/.test(gb) && /drohne-dach-gebaeude-inspektion/.test(gb) && /OPP-03/.test(gb));
+    check('gate-1 brief OPP-01: current page diagnosis + protection + loss risk + sensitive changes', /Current Page Diagnosis/i.test(gb) && /Ranking Protection/i.test(gb) && /Risk of Ranking Loss/i.test(gb) && /Sensitive Changes/i.test(gb) && /dachkontrolle mit drohne/i.test(gb));
+    const dg = await p.locator('#rs-diagnosis').innerText();
+    check('diagnosis card: KEEP/IMPROVE/ADD/REMOVE + change summary + protection list', /KEEP/.test(dg) && /IMPROVE/.test(dg) && /ADD/.test(dg) && /REMOVE/.test(dg) && /Change Summary/i.test(dg) && /Ranking Protection List/i.test(dg));
     if (SHOTS) await p.screenshot({ path: `${out}/mock-gate1-OPP-01.png`, fullPage: true });
     await p.goto(base2 + '#opp-OPP-09', { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
     check('cannibalization shown for opportunity without dossier too', /Cannibalization/.test(await p.locator('#view, main').first().innerText()));
+    await p.goto(base2 + '#opp-OPP-07', { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
+    const d7 = await p.locator('#rs-diagnosis').innerText();
+    check('ranking protection shown for OPTIMIZE without dossier (list + loss risk)', /Ranking Protection List/i.test(d7) && /Ranking loss: Medium/i.test(d7) && (await p.locator('#rs-diagnosis tbody tr').count()) >= 40, String(await p.locator('#rs-diagnosis tbody tr').count()));
     // Local Opportunity Matrix
     await p.goto(base2 + '#local', { waitUntil: 'networkidle' }); await p.waitForTimeout(300);
     const lm = await p.locator('#local-matrix').innerText();

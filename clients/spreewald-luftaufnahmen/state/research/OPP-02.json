@@ -3,7 +3,7 @@
   "opp_id": "OPP-02",
   "client": "spreewald-luftaufnahmen",
   "version": 2,
-  "updated": "2026-11-24T11:57:20Z",
+  "updated": "2026-11-24T12:14:16Z",
   "author": "agent",
   "changelog": [
     {
@@ -25,6 +25,11 @@
       "version": 2,
       "date": "2026-11-24",
       "note": "Seitenvorschau (Page Purpose, Themen) für Gate 1 ergänzt; keine inhaltliche Änderung der Strategie"
+    },
+    {
+      "version": 2,
+      "date": "2026-11-24",
+      "note": "Current Page Diagnosis (KEEP/IMPROVE/ADD/REMOVE), Ranking Protection, Change Summary; Struktur auf minimal notwendige Veränderung umgestellt (H1 bleibt, bestehende H2 bleiben)"
     }
   ],
   "status": {
@@ -822,29 +827,35 @@
     ]
   },
   "G_structure": {
-    "title_proposal": "Baudokumentation & Baustellendokumentation mit Drohne | Berlin & Brandenburg",
+    "title_proposal": "Baudokumentation Drohne | Baustellendokumentation Berlin & Brandenburg",
     "meta_note": "Nutzen „Baufortschritt vergleichbar dokumentieren“ + Region + Anfrage; ohne „3D-Modellierung“, ohne „Jetzt buchen“.",
-    "h1": "Baudokumentation mit Drohne in Berlin und Brandenburg",
+    "h1": "Baudokumentation Drohne in Berlin und Brandenburg",
     "sections": [
       {
-        "h2": "Baustellendokumentation per Drohne: Baufortschritt strukturiert und vergleichbar festhalten",
-        "purpose": "Intent bestätigen, Begriffe Baudokumentation/Baustellendokumentation/Baufortschrittsdokumentation einordnen, Unterschied zu Einzelaufnahmen",
+        "h2": "Baudokumentation per Drohne: Ihr Bauprojekt professionell dokumentiert",
+        "action": "KEEP",
+        "existing": "gleich",
+        "purpose": "Bestehender Einstieg; „Baustellendokumentation“ einmal natürlich ergänzen",
         "covers": [
           "Verständnis & Entscheidung"
         ],
         "h3": []
       },
       {
-        "h2": "Einmalige Aufnahme oder Dokumentation über die gesamte Bauzeit",
-        "purpose": "Entscheidungshilfe mit typischen Anlässen; laufende Begleitung als Kernangebot",
+        "h2": "Mehrjährige Begleitung: Baudokumentation mit Drohne",
+        "action": "EDIT",
+        "existing": "gleich",
+        "purpose": "Einmalig vs. laufend, Turnus projektspezifisch (Bauphasen/Meilensteine oder feste zeitliche Abstände)",
         "covers": [
-          "Verständnis & Entscheidung"
+          "Verständnis & Entscheidung",
+          "Methode & Planung"
         ],
         "h3": []
       },
       {
         "h2": "So wird Ihre Baudokumentation vergleichbar",
-        "purpose": "Methode: Planung vor dem ersten Flug",
+        "action": "NEW",
+        "purpose": "Methode: Perspektiven, Turnus, Luft + optional Boden",
         "covers": [
           "Methode & Planung"
         ],
@@ -855,16 +866,49 @@
         ]
       },
       {
+        "h2": "Darum entscheiden sich Bauunternehmen für uns",
+        "action": "EDIT",
+        "existing": "„Darum entscheiden sich Bauunternehmen für uns:“",
+        "purpose": "Belegte Trust-Punkte ergänzen",
+        "covers": [
+          "Organisation & Risiko"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Baufortschritt per Drohne jederzeit im Blick behalten",
+        "action": "KEEP",
+        "existing": "gleich",
+        "purpose": "Trägt „baubegleitung mit drohne“ – unverändert",
+        "covers": [
+          "Methode & Planung"
+        ],
+        "h3": []
+      },
+      {
         "h2": "Was Sie erhalten: strukturierte Foto- und Videodokumentation",
-        "purpose": "Fotos und Videos, strukturierte digitale Übergabe der vereinbarten Dokumentation, i. d. R. 5–7 Werktage; Aufnahmen als fortlaufendes Projektarchiv beim Kunden – ohne Ordner-/Format-/Plattformversprechen",
+        "action": "NEW",
+        "purpose": "Fotos/Videos, strukturierte digitale Übergabe, 5–7 Werktage",
         "covers": [
           "Ergebnis & Übergabe"
         ],
         "h3": []
       },
       {
-        "h2": "Wofür Projektbeteiligte die Dokumentation nutzen",
-        "purpose": "Nutzen je Rolle statt Aufzählung",
+        "h2": "Warum lohnt sich eine professionelle Baudokumentation?",
+        "action": "KEEP",
+        "existing": "gleich",
+        "purpose": "Bestehender Nutzenabschnitt",
+        "covers": [
+          "Verständnis & Entscheidung"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Baudokumentation, die Ihre Projektarbeit erleichtert",
+        "action": "EDIT",
+        "existing": "gleich",
+        "purpose": "Nutzen je Projektbeteiligtem",
         "covers": [
           "Nutzung im Projekt"
         ],
@@ -875,8 +919,10 @@
         ]
       },
       {
-        "h2": "Ablauf: von der Anfrage bis zur letzten Übergabe",
-        "purpose": "Schritte inkl. Genehmigungen, Abstimmung, Wetter-Regel, fester Ansprechpartner",
+        "h2": "So läuft Ihre Baudokumentation ab",
+        "action": "EDIT",
+        "existing": "„Unkompliziert zur perfekten Lösung!“ (leer)",
+        "purpose": "Leere Überschrift durch Ablauf ersetzen",
         "covers": [
           "Organisation & Risiko"
         ],
@@ -884,23 +930,17 @@
       },
       {
         "h2": "Baudokumentation, Bestandsaufnahme, Inspektion oder Vermessung?",
-        "purpose": "Abgrenzungstabelle mit Links zu Nachbarleistungen",
+        "action": "NEW",
+        "purpose": "Abgrenzung mit Links",
         "covers": [
           "Abgrenzung"
         ],
         "h3": []
       },
       {
-        "h2": "Warum Bauunternehmen ihre Projekte mit uns dokumentieren",
-        "purpose": "Prozesserfahrung mit mehrjähriger Dokumentation + belegte Trust-Elemente, Logos, Kundenstimmen",
-        "covers": [
-          "Organisation & Risiko"
-        ],
-        "h3": []
-      },
-      {
         "h2": "Kosten einer Baudokumentation mit Drohne",
-        "purpose": "Festpreisangebot, Einflussfaktoren (Anzahl Termine, Umfang, Lage), Konditionen für laufende Projekte; Link Preisseite",
+        "action": "NEW",
+        "purpose": "Festpreisangebot, Faktoren, laufende Projekte; Link Preisseite",
         "covers": [
           "Kosten & Anfrage"
         ],
@@ -908,7 +948,8 @@
       },
       {
         "h2": "Häufige Fragen zur Baustellendokumentation mit Drohne",
-        "purpose": "Restliche Key Questions (Wetter, Versicherung, Weitergabe der Aufnahmen, Einsatzgebiet); FAQPage-Schema als Empfehlung",
+        "action": "NEW",
+        "purpose": "FAQ; FAQPage-Schema als Empfehlung",
         "covers": [
           "Organisation & Risiko",
           "Nutzung im Projekt",
@@ -917,16 +958,27 @@
         "h3": []
       },
       {
-        "h2": "Dokumentation für Ihr Bauprojekt anfragen",
-        "purpose": "CTA mit hilfreichen Angaben (Ort, Bauzeit, Turnus, Luft/Boden)",
+        "h2": "Ihr Partner für die Baudokumentation mit Drohne",
+        "action": "KEEP",
+        "existing": "gleich",
+        "purpose": "Bestehender Abschluss (Mengenaussage neutral)",
         "covers": [
-          "Kosten & Anfrage"
+          "Organisation & Risiko"
         ],
+        "h3": []
+      },
+      {
+        "h2": "Kundenstimmen · Unternehmen, die auf unsere Lösungen zählen · Was macht unsere Drohnenflüge … besonders?",
+        "action": "KEEP",
+        "existing": "gleich",
+        "purpose": "Trust-Elemente unverändert",
+        "covers": [],
         "h3": []
       }
     ],
-    "scope_check": "Jede Fragengruppe aus F ist mindestens einer H2 zugeordnet (Feld „covers“). Gegenüber v1 neu: Methodenabschnitt (Perspektiven, Turnus, Boden), Übergabe/Archiv, Abgrenzung. Reihenfolge folgt der Entscheidung des Auftraggebers (Was ist das? → einmalig/laufend → wie wird es gut? → was bekomme ich? → was nützt es mir? → wie läuft es? → passt das? → Vertrauen → Kosten → Anfrage), nicht dem Aufbau einer Wettbewerberseite.",
-    "derivation": "Search Intent (Dienstleister + „wie funktioniert das“-Long-Tail in GSC) + Scope F + bestehende Inhalte (Mehrjährige Begleitung, Turnus, einheitliche Perspektiven, Luft+Boden bleiben und werden konkretisiert) + Business Fit (wiederkehrende B2B-Aufträge)."
+    "scope_check": "Minimal notwendige Veränderung: H1 und alle tragenden H2 bleiben; 5 NEW-Abschnitte decken die fehlenden Fragengruppen ab; „Baustellendokumentation“ kommt über eine neue FAQ-Überschrift statt über Umbenennung bestehender H2. Jede Fragengruppe aus F ist zugeordnet (covers).",
+    "derivation": "Search Intent (Dienstleister + „wie funktioniert das“-Long-Tail in GSC) + Scope F + bestehende Inhalte (Mehrjährige Begleitung, Turnus, einheitliche Perspektiven, Luft+Boden bleiben und werden konkretisiert) + Business Fit (wiederkehrende B2B-Aufträge).",
+    "h1_action": "KEEP"
   },
   "H_ia": {
     "current": {
@@ -1248,5 +1300,251 @@
       "date": "2026-11-23",
       "path": null
     }
-  ]
+  ],
+  "P_diagnosis": {
+    "principle": "Preserve what works → fix what is weak → add what is missing. Seite rankt moderat (Berlin-Variante Pos. 2,3; baubegleitung mit drohne Pos. 12,6) → behutsam: alle bestehenden H2-Abschnitte bleiben, neue Abschnitte werden ergänzt, H1 bleibt unverändert.",
+    "works_well": [
+      "Lokale Relevanz: Pos. 2,3 für „baudokumentation drohne berlin“ – getragen von Title und H1 („Berlin“)",
+      "Abschnitt „Baufortschritt per Drohne jederzeit im Blick behalten“ trägt „baubegleitung mit drohne“ (Pos. 12,6, 233 Impr.)",
+      "Kern-Query „baudokumentation drohne“ verbessert sich (90 Tage Ø Pos. 9,2)",
+      "Inhaltlich bereits richtig: mehrjährige Begleitung, abgestimmter Turnus, einheitliche Perspektiven, Luft + Boden, komplette Abwicklung",
+      "Trust/Conversion: Kundenlogos, Kundenstimmen, rbb, Formular, mehrere CTAs"
+    ],
+    "weak": [
+      "„Baustellendokumentation“ nur im Title und einmal im Text, keine Überschrift – trotz 704 + 128 Impr. für die Varianten",
+      "Überschriften ohne eigenen Text („Unkompliziert zur perfekten Lösung!“, H3 unter „Was macht unsere Drohnenflüge … besonders?“)",
+      "Zielgruppen nur als Aufzählung, Nutzen je Rolle fehlt",
+      "Meta Description verspricht „3D-Modellierung“ (nicht belegt) und „Jetzt buchen!“",
+      "Nur 1 interner Link auf die Seite (Startseite), keine Links zu Nachbarleistungen"
+    ],
+    "missing": [
+      "Methode: wie Perspektiven und Turnus geplant werden",
+      "Übergabe/Lieferzeit (5–7 Werktage)",
+      "Ablauf in Schritten",
+      "Abgrenzung zu Bestandsaufnahme/Inspektion/Vermessung",
+      "Kostenlogik",
+      "FAQ (inkl. „Baustellendokumentation“)",
+      "Belegte Trust-Punkte: R+V, Wetterverschiebung, Festpreis"
+    ],
+    "keep": [
+      {
+        "item": "H1 „Baudokumentation Drohne in Berlin und Brandenburg“",
+        "reason": "Trägt die einzige Top-3-Query (Berlin) und die Kern-Query",
+        "evidence": "Ranking Protection: baudokumentation drohne berlin Pos. 2,3"
+      },
+      {
+        "item": "Abschnitt „Baudokumentation per Drohne: Ihr Bauprojekt professionell dokumentiert“",
+        "reason": "Einstieg mit Kernbegriffen, trägt „baufortschritt mit drohnen dokumentieren“",
+        "evidence": "Schutzliste (351 Impr.)"
+      },
+      {
+        "item": "Abschnitt „Baufortschritt per Drohne jederzeit im Blick behalten“",
+        "reason": "Trägt „baubegleitung mit drohne“ (Pos. 12,6)",
+        "evidence": "Schutzliste"
+      },
+      {
+        "item": "Abschnitte „Mehrjährige Begleitung“, „Warum lohnt sich …“, „Ihr Partner …“",
+        "reason": "Kernbotschaft der Strategie bereits vorhanden",
+        "evidence": "Seitenprofil 24.11."
+      },
+      {
+        "item": "Kundenlogos, Kundenstimmen, rbb-Abschnitt, Formular",
+        "reason": "Trust/Conversion",
+        "evidence": "Seitenprofil"
+      }
+    ],
+    "improve": [
+      {
+        "item": "Abschnitt „Mehrjährige Begleitung“",
+        "reason": "Turnus konkretisieren (Bauphasen/Meilensteine oder feste zeitliche Abstände, projektspezifisch), einmalig vs. laufend",
+        "evidence": "Content Gap E"
+      },
+      {
+        "item": "„Darum entscheiden sich Bauunternehmen für uns“",
+        "reason": "Belegte Trust-Punkte ergänzen (R+V, Wetter, Festpreis, 5–7 Werktage)",
+        "evidence": "Business-Profil §8"
+      },
+      {
+        "item": "„Baudokumentation, die Ihre Projektarbeit erleichtert“",
+        "reason": "Zu Nutzen je Projektbeteiligtem ausbauen (H3 je Rolle)",
+        "evidence": "Content Gap E"
+      },
+      {
+        "item": "Leere Überschrift „Unkompliziert zur perfekten Lösung!“",
+        "reason": "Durch beschreibende Überschrift ersetzen (Ablauf)",
+        "evidence": "Seitenprofil: 0 Wörter"
+      },
+      {
+        "item": "Title",
+        "reason": "„Brandenburg“ ergänzen, bestehende Begriffe unverändert lassen",
+        "evidence": "Schutzliste: Title trägt Berlin- und Baustellendokumentation-Queries"
+      },
+      {
+        "item": "Meta Description",
+        "reason": "Ohne „3D-Modellierung“, Anfrage statt „Jetzt buchen“",
+        "evidence": "Profil §10"
+      }
+    ],
+    "add": [
+      {
+        "item": "H2 „So wird Ihre Baudokumentation vergleichbar“ (Perspektiven, Turnus, Luft + optional Boden)",
+        "reason": "Methode = Differenzierung (I) + Long-Tail „baufortschritt mit drohnen dokumentieren“",
+        "evidence": "E, GSC"
+      },
+      {
+        "item": "H2 „Was Sie erhalten: strukturierte Foto- und Videodokumentation“",
+        "reason": "Übergabe/Lieferzeit fehlt",
+        "evidence": "E"
+      },
+      {
+        "item": "H2 „Baudokumentation, Bestandsaufnahme, Inspektion oder Vermessung?“ + Links",
+        "reason": "Abgrenzung + interne Verlinkung",
+        "evidence": "H, Kannibalisierung"
+      },
+      {
+        "item": "H2 „Kosten einer Baudokumentation mit Drohne“ + Link Preisseite",
+        "reason": "Nutzerfrage, Conversion",
+        "evidence": "F"
+      },
+      {
+        "item": "H2 „Häufige Fragen zur Baustellendokumentation mit Drohne“ (FAQ)",
+        "reason": "Begriff „Baustellendokumentation“ in eine Überschrift, ohne bestehende H2 umzubenennen",
+        "evidence": "GSC 704 + 128 Impr."
+      },
+      {
+        "item": "Interne Links zu Inspektion, Dachvermessung, Preisen",
+        "reason": "Bisher nur 1 eingehender, keine ausgehenden Fachlinks",
+        "evidence": "Inventar"
+      }
+    ],
+    "remove": [
+      {
+        "item": "„3D-Modellierung“ in der Meta Description",
+        "reason": "Nicht belegte Leistung; zieht themenfremde 3D-Queries (470 Impr., Pos. 11,9), die zum Vermessungs-Intent gehören",
+        "evidence": "Schutzliste off-topic; Profil §10",
+        "accepted_loss": "Themenfremde 3D-Impressionen können sinken – bewusst, kein Lead-Potenzial für Baudokumentation"
+      },
+      {
+        "item": "Mengenaussage „Bereits zahlreiche Bauunternehmen …“ (REDUCE)",
+        "reason": "Nicht belegt – neutral formulieren, Abschnitt bleibt",
+        "evidence": "Profil §10"
+      }
+    ],
+    "recommended_changes": [
+      "Title: „Brandenburg“ ergänzen",
+      "Meta Description neu (ohne 3D, mit Anfrage)",
+      "5 neue H2-Abschnitte ergänzen",
+      "3 bestehende Abschnitte gezielt erweitern",
+      "1 leere Überschrift ersetzen",
+      "Interne Links ergänzen"
+    ],
+    "expected_benefit": [
+      "„baustellendokumentation drohne“ (704 Impr., Pos. 24,9) und Varianten durch eigene Überschrift/FAQ zurückgewinnen",
+      "Methode/Übergabe/Ablauf beantworten die Long-Tail-Fragen (351 Impr. „baufortschritt mit drohnen dokumentieren“)",
+      "Bessere Conversion durch Nutzen je Rolle, Trust-Punkte, Kosten-Abschnitt",
+      "Berlin-Ranking bleibt geschützt (H1 unverändert, Title erweitert statt ersetzt)"
+    ],
+    "sensitive_changes": [
+      {
+        "element": "Title",
+        "current": "Baudokumentation Drohne | Baustellendokumentation Berlin",
+        "proposed": "Baudokumentation Drohne | Baustellendokumentation Berlin & Brandenburg",
+        "reason": "Region vervollständigen, alle bestehenden Begriffe bleiben in gleicher Reihenfolge",
+        "ranking_risk": "Low – trägt „baudokumentation drohne berlin“ (Pos. 2,3); Begriffe bleiben erhalten"
+      }
+    ],
+    "not_changed": [
+      "URL",
+      "H1",
+      "Canonical",
+      "Indexierung",
+      "bestehende H2-Überschriften (außer leerer Überschrift)"
+    ],
+    "change_summary": [
+      {
+        "area": "Title",
+        "action": "EDIT",
+        "reason": "„Brandenburg“ ergänzen, Begriffe behalten",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Meta Description",
+        "action": "EDIT",
+        "reason": "Unbelegtes 3D entfernen, Anfrage-CTA",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "H1",
+        "action": "KEEP",
+        "reason": "Trägt Berlin-Ranking (Pos. 2,3)",
+        "seo_risk": "—"
+      },
+      {
+        "area": "Einleitung „Baudokumentation per Drohne …“",
+        "action": "KEEP/EDIT",
+        "reason": "Behalten; „Baustellendokumentation“ einmal natürlich ergänzen, Mengenaussage neutral",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "„Mehrjährige Begleitung …“",
+        "action": "EDIT",
+        "reason": "Turnus/einmalig vs. laufend konkretisieren",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "„Baufortschritt per Drohne jederzeit im Blick behalten“",
+        "action": "KEEP",
+        "reason": "Trägt „baubegleitung mit drohne“ (Pos. 12,6)",
+        "seo_risk": "—"
+      },
+      {
+        "area": "Methode / Vergleichbarkeit",
+        "action": "NEW",
+        "reason": "Content Gap, Differenzierung",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Übergabe / Was Sie erhalten",
+        "action": "NEW",
+        "reason": "Content Gap",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Nutzen je Projektbeteiligtem",
+        "action": "EDIT",
+        "reason": "Bestehenden Abschnitt ausbauen",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Ablauf (statt leerer Überschrift)",
+        "action": "EDIT",
+        "reason": "Leere Überschrift durch Ablauf ersetzen",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Abgrenzung",
+        "action": "NEW",
+        "reason": "Kannibalisierung vermeiden, interne Links",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Kosten",
+        "action": "NEW",
+        "reason": "Nutzerfrage",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "FAQ Baustellendokumentation",
+        "action": "NEW",
+        "reason": "Verlorenen Begriff abdecken",
+        "seo_risk": "Low"
+      },
+      {
+        "area": "Trust, Logos, Kundenstimmen, Formular",
+        "action": "KEEP",
+        "reason": "Conversion",
+        "seo_risk": "—"
+      }
+    ]
+  }
 }

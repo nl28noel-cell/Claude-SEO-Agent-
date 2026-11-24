@@ -494,6 +494,58 @@ class ArtifactQA(unittest.TestCase):
         finally:
             shutil.rmtree(tmp)
 
+    def test_page_diagnosis_ranking_protection(self):
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import page_diagnosis as PD, research, workflow, tempfile, shutil
+        O = {o["id"]: o for o in self.d["opportunities"]}
+        rp2 = O["OPP-02"]["ranking_protection"]
+        crit = next(q for q in rp2["queries"] if q["query"] == "baudokumentation drohne berlin")
+        self.assertEqual(crit["tier"], "critical")
+        self.assertTrue({"Title", "H1"} <= {h["element"] for h in crit["supported_by"]})      # Inhalt, der das Ranking trägt
+        self.assertTrue(any(q["tier"] == "off_topic" and "3d" in q["query"] for q in rp2["queries"]))
+        self.assertEqual(O["OPP-07"]["ranking_protection"]["strength"]["level"], "strong")       # Preisseite → konservativ
+        self.assertTrue(O["OPP-01"]["ranking_protection"]["companions"])                         # Companion-Seite eigene Schutzliste
+        # Dossier: Diagnose Pflicht bei OPTIMIZE, H1 bei OPP-02 bleibt, Title behält tragende Begriffe
+        R2 = research.load("spreewald-luftaufnahmen", "OPP-02")
+        self.assertEqual(R2["G_structure"]["h1_action"], "KEEP")
+        self.assertIn("Baudokumentation Drohne", R2["G_structure"]["title_proposal"]); self.assertIn("Berlin", R2["G_structure"]["title_proposal"])
+        R1 = research.load("spreewald-luftaufnahmen", "OPP-01")
+        self.assertIn("Dachkontrolle", R1["G_structure"]["title_proposal"])                       # trägt Pos. 12,9
+        x = json.loads(json.dumps(R2)); del x["P_diagnosis"]
+        self.assertIn("Current Page Diagnosis ausstehend", research.derive(x)["missing"])
+        self.assertEqual(research.validate(R2), [])
+        # Risiko: sensible Änderung an tragendem Element → mindestens medium; URL/Redirect → high
+        pl = [{"query": "a b", "tier": "critical", "clicks": 5, "impressions": 100, "position": 3, "supported_by": [{"element": "Title", "text": "a b"}]}]
+        st = PD.strength(pl)
+        self.assertEqual(PD.loss_risk(pl, st, [])["level"], "low")
+        self.assertEqual(PD.loss_risk(pl, st, [{"element": "Title"}])["level"], "medium")
+        self.assertEqual(PD.loss_risk(pl, st, [{"element": "Redirect"}])["level"], "high")
+        # Monitoring nach OPTIMIZE: Verlust wichtiger Rankings → Finding
+        base = [{"query": "q1", "tier": "critical", "clicks": 4, "impressions": 300, "position": 4}, {"query": "q2", "tier": "high", "clicks": 0, "impressions": 200, "position": 12},
+                {"query": "q3", "tier": "high", "clicks": 0, "impressions": 100, "position": 15}]
+        after = [{"query": "q2", "impressions": 5, "clicks": 0, "position": 25}, {"query": "q3", "impressions": 10, "clicks": 0, "position": 14}, {"query": "neu", "impressions": 30, "clicks": 1, "position": 8}]
+        r = PD.protection_check(base, after, 30, 3, ["neu"])
+        self.assertEqual(r["status"], "negative_impact"); self.assertEqual(r["finding"]["title"], "Potential negative impact detected")
+        self.assertIn("q1", r["finding"]["affected_queries"]); self.assertEqual(r["gained_targets"], ["neu"])
+        ok = PD.protection_check(base, [{"query": q["query"], "impressions": q["impressions"] / 10, "clicks": q["clicks"], "position": q["position"]} for q in base], 30, 3)
+        self.assertEqual(ok["status"], "ok")
+        self.assertEqual(PD.merge_winner([{"url": "/a/", "clicks": 1, "impressions": 900}, {"url": "/b/", "clicks": 5, "impressions": 100}])["winner"], "/b/")
+        ch = next(c for c in self.d["changes"] if c["id"] == "CL-001")
+        self.assertTrue(ch["ranking_protection_baseline"]["queries"])
+        # Produktion: Change-Modus geprüft
+        tmp = tempfile.mkdtemp()
+        try:
+            good = os.path.join(tmp, "g.md"); open(good, "w").write("## Change Summary\n| Bereich | Aktion | Grund | SEO-Risiko |\n|---|---|---|---|\n| Title | EDIT | x | Low |\n\n## [KEEP] A\nbaudokumentation drohne berlin baubegleitung drohnen tour bau\n\n## [NEW] B\nReason: Content Gap\ntext\n")
+            self.assertTrue(workflow.check_draft(good, "OPP-02")["ok"])
+            bad = os.path.join(tmp, "b.md"); open(bad, "w").write("## Change Summary\n| Bereich | Aktion | Grund | SEO-Risiko |\n\n## [EDIT] A\nohne Begründung\n\n## C\nx\n")
+            r = workflow.check_draft(bad, "OPP-02")
+            self.assertFalse(r["ok"]); self.assertTrue(any("ohne Reason" in e for e in r["errors"])); self.assertTrue(any("ohne Change-Markierung" in e for e in r["errors"]))
+            self.assertTrue(any("baudokumentation drohne berlin" in w for w in r["warnings"]))
+            html_out = os.path.join(tmp, "g.html"); workflow.render(good, html_out)
+            self.assertIn("[NEW]</span>", open(html_out).read())
+        finally:
+            shutil.rmtree(tmp)
+
     def test_workflow_render_html(self):
         import tempfile
         sys.path.insert(0, os.path.join(ROOT, "tools"))

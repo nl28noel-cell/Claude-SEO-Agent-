@@ -9,7 +9,7 @@ data/** (CSV/JSON), data/keyword-cache.csv. Ausgabe enthält nur aggregierte SEO
 
 Aufruf: python3 tools/build_dashboard_data.py [--today YYYY-MM-DD]
 """
-import argparse, csv, datetime as dt, json, os, re, sys
+import argparse, csv, datetime as dt, glob, json, os, re, sys
 from collections import defaultdict, Counter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,6 +20,7 @@ import research  # noqa: E402
 import serp  # noqa: E402
 import research_log  # noqa: E402
 import cannibalization  # noqa: E402
+import page_diagnosis  # noqa: E402
 
 OUT_ROOT = os.path.join(ROOT, "dashboard", "public", "data")
 
@@ -319,6 +320,33 @@ def build_client(slug, today):
     sem_rank_n = [{"keyword": r["Keyword"], "position": num(r["Position"], int), "url": r["Url"].replace(host, "")} for r in sem_rank]
     for o in opps:
         o["cannibalization"] = cannibalization.analyze(o, qp, cluster_of, inv, opps, sem_rank_n)
+
+    # ---- Current Page Diagnosis: Ranking Protection je bestehender Zielseite (OPTIMIZE/MERGE) + Companion-Seiten
+    qmeta = {x["query"]: x for x in queries}
+    def _profile(oid):
+        fs = sorted(glob.glob(os.path.join(cdir, "data", "research", oid, "diagnosis", "*.json")))
+        return jload(fs[-1]) if fs else None
+    for o in opps:
+        if o["type"] not in ("OPTIMIZE", "MERGE") or not o.get("existing_page"):
+            continue
+        prof = _profile(o["id"])
+        rel = {o.get("gsc_cluster")} | {cluster_of.get(q) for q in o.get("gsc_queries", [])}
+        pl = page_diagnosis.protection_list(o["existing_page"], qp, qmeta, cluster_of, rel, sem_rank_n, prof)
+        stg = page_diagnosis.strength(pl)
+        rd = research.load(slug, o["id"]) or {}
+        o["ranking_protection"] = {"url": o["existing_page"], "queries": pl, "strength": stg,
+                                   "loss_risk": page_diagnosis.loss_risk(pl, stg, (rd.get("P_diagnosis") or {}).get("sensitive_changes")),
+                                   "profile_fetched": (prof or {}).get("fetched"), "content_mapped": bool(prof)}
+        comps = []
+        for c in o.get("cannibalization", {}).get("companions", []) + (((rd.get("H_ia") or {}).get("companion")) or []):
+            if c.get("url") and c["url"] not in [x["url"] for x in comps]:
+                cl_all = {v for v in cluster_of.values()} - {o.get("gsc_cluster")}
+                cpl = page_diagnosis.protection_list(c["url"], qp, qmeta, cluster_of, cl_all, sem_rank_n, None)
+                for x in cpl:
+                    if x["cluster"] == o.get("gsc_cluster"):
+                        x["tier"] = "release"
+                comps.append({"url": c["url"], "queries": cpl, "strength": page_diagnosis.strength([x for x in cpl if x["tier"] != "release"])})
+        o["ranking_protection"]["companions"] = comps
 
     # ---- Research-/Strategy-Stufe (vor Gate 1): Dossier A–J + abgeleiteter Status je CREATE/OPTIMIZE/MERGE
     for rid, r in research.all_for(slug, opps).items():

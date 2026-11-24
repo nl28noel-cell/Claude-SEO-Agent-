@@ -22,6 +22,7 @@ Befehle (Export vorher per ArtifactData list collection=workflow out_dir=<dir>):
   python3 tools/workflow.py render <draft.md> <out.html>   -> Entwurf (Markdown-Subset) → HTML für Google-Doc-Konvertierung
   python3 tools/workflow.py mirror <dir> [--client SLUG]   -> state/workflow.json aktualisieren
   python3 tools/workflow.py preflight <dir> [--drive-ok] [--folder-ok]  -> Preflight-Checks als JSON (Exit 0 = ok, 2 = blocked)
+  python3 tools/workflow.py check-draft <draft.md> [--opp <OPP>] -> QA OPTIMIZE: Change Summary, [KEEP]/[NEW]/[EDIT]/[REMOVE] + Reason, Schutz-Queries
   python3 tools/workflow.py doc-title <dir> <OPP-ID> [--companion <url>] -> deterministischer Doc-Titel (Idempotenz); --companion: 2. Dokument des Change Sets
 Keine Website-, WordPress- oder URL-Aktion.
 """
@@ -199,6 +200,8 @@ def brief(d, opp_id, out, client=DEFAULT_CLIENT):
               f"- Paid-Historie: {f['paid']['keyword_cost']} € / {f['paid']['keyword_clicks']} Klicks"] + [f"- Signal: {s['text']}" for s in f["signals"]]
     if R:
         L += _research_brief(R, (w.get("gate1") or {}))
+    if o.get("type") in ("OPTIMIZE", "MERGE") or (R or {}).get("P_diagnosis"):
+        L += _optimize_brief(R or {}, o)
     L += ["", "## Findings"] + [f"- {x['id']} {x['title']} ({x['status']})" for x in o.get("findings_detail", [])]
     L += ["", "## Verbindliche Regeln",
           "- clients/spreewald-luftaufnahmen/business-profile.md (insb. §8 belegte Vorteile, §10 Niemals erfinden)",
@@ -237,8 +240,68 @@ def _research_brief(R, g1):
     return L
 
 
+MARK_STYLE = {"KEEP": "#e6f4ea;color:#137333", "NEW": "#e8f0fe;color:#1a56c4", "EDIT": "#fef7e0;color:#9a6700", "REMOVE": "#fce8e6;color:#b3261e", "REDUCE": "#fce8e6;color:#b3261e"}
+
+
+def _optimize_brief(R, o):
+    """OPTIMIZE/MERGE: bestehende Rankings schützen, minimal notwendige Veränderung, Change-Modus im Dokument."""
+    P, rp = R.get("P_diagnosis") or {}, o.get("ranking_protection") or {}
+    L = ["", "## Bestehende Seite: Preserve what works → fix what is weak → add what is missing",
+         f"- Prinzip: {P.get('principle') or (rp.get('strength') or {}).get('mode') or 'Nicht neu schreiben, nur gezielt verbessern.'}",
+         "- **Nicht neu schreiben, nur weil man es besser schreiben könnte.** Bestehende Abschnitte, die Schutz-Queries tragen, bleiben inhaltlich erhalten."]
+    for k, lab in (("keep", "KEEP"), ("improve", "IMPROVE"), ("add", "ADD"), ("remove", "REMOVE/REDUCE")):
+        if P.get(k):
+            L += [f"- {lab}:"] + [f"  - {x['item']} – {x.get('reason', '')}" for x in P[k]]
+    if P.get("sensitive_changes"):
+        L += ["- SEO-sensible Änderungen (nur diese, genau so):"] + [f"  - {x['element']}: „{x['current']}“ → „{x['proposed']}“ ({x['reason']}; Risiko {x['ranking_risk']})" for x in P["sensitive_changes"]]
+    if P.get("not_changed"):
+        L += [f"- Nicht ändern: {', '.join(P['not_changed'])}. URL/Canonical/Redirect nie umsetzen, nur empfehlen."]
+    prot = [x for x in rp.get("queries", []) if x["tier"] in ("critical", "high", "watch")]
+    if prot:
+        L += ["", "### Ranking Protection List (diese Queries müssen im Text abgedeckt bleiben)"] + \
+             [f"- [{x['tier']}] {x['query']} – Pos. {x['position']}, {x.get('impressions')} Impr.; getragen von: {', '.join(h['element'] + ' „' + (h.get('text') or '')[:50] + '“' for h in x.get('supported_by', [])) or '–'}" for x in prot]
+    L += ["", "### Change-Modus im Dokument (Pflicht)",
+          "- Dokument beginnt mit `## Change Summary` als Tabelle: Bereich | Aktion | Grund | SEO-Risiko (Vorlage: Dossier P_diagnosis.change_summary).",
+          "- Jeder Abschnitt beginnt mit einer Markierung: [KEEP] bestehender Inhalt bleibt · [EDIT] bestehender Inhalt verändert · [NEW] neu · [REMOVE] soll entfernt werden.",
+          "- Nach jeder [EDIT]/[NEW]/[REMOVE]-Markierung eine Zeile `Reason: …` (z. B. Content Gap, Schutz-Query, Nutzerfrage).",
+          "- Bei [EDIT]: kurz den bisherigen Stand nennen („Bisher: …“). Bei [KEEP]: Text unverändert übernehmen.",
+          "- Vor dem Anlegen prüfen: `python3 tools/workflow.py check-draft <draft.md> --opp <OPP>` (Exit 0 nötig)."]
+    return L
+
+
+def check_draft(path, opp=None, client=DEFAULT_CLIENT):
+    """QA für OPTIMIZE-Entwürfe: Change Summary, Markierungen je Abschnitt, Begründungen, Schutz-Queries noch abgedeckt."""
+    t = open(path, encoding="utf-8").read()
+    errs, warns = [], []
+    if not re.search(r"^##\s+Change Summary", t, re.M):
+        errs.append("Change Summary fehlt (## Change Summary)")
+    elif not re.search(r"\|\s*Bereich\s*\|\s*Aktion\s*\|\s*Grund\s*\|\s*SEO-Risiko", t):
+        errs.append("Change Summary ohne Tabelle Bereich | Aktion | Grund | SEO-Risiko")
+    body = re.split(r"^##\s+Change Summary.*?$", t, flags=re.M)[-1]
+    secs = re.split(r"^(#{2,3}\s+.*)$", body, flags=re.M)
+    for i in range(1, len(secs), 2):
+        head, txt = secs[i], secs[i + 1] if i + 1 < len(secs) else ""
+        if re.match(r"^##\s+(Interner Block|SEO|Meta|Schema|Bildhinweise|Interne Links|Redirect)", head, re.I):
+            continue
+        m = re.search(r"\[(KEEP|NEW|EDIT|REMOVE|REDUCE)\]", head + txt[:300])
+        if not m:
+            errs.append(f"Abschnitt ohne Change-Markierung: {head.strip()[:60]}")
+        elif m.group(1) != "KEEP" and not re.search(r"^(Reason|Grund):", txt, re.M):
+            errs.append(f"[{m.group(1)}] ohne Reason: {head.strip()[:60]}")
+    if opp:
+        d = _dash(client)
+        o = next((x for x in d["opportunities"] if x["id"] == opp), {})
+        low = t.lower()
+        for q in (o.get("ranking_protection") or {}).get("queries", []):
+            if q["tier"] in ("critical", "high") and not all(tok in low for tok in re.split(r"\s+", q["query"].lower()) if tok not in ("mit", "per", "drohne", "drohnen")):
+                warns.append(f"Schutz-Query nicht mehr vollständig im Text: „{q['query']}“")
+    return {"ok": not errs and not warns, "errors": errs, "warnings": warns}
+
+
 def _inline(t):
     t = html.escape(t, quote=False)
+    t = re.sub(r"\[(KEEP|NEW|EDIT|REMOVE|REDUCE)\]", lambda m: f'<span style="background:{MARK_STYLE[m.group(1)].split(";")[0]};{MARK_STYLE[m.group(1)].split(";")[1]};font-weight:bold;padding:1px 4px">[{m.group(1)}]</span>', t)
+    t = re.sub(r"^(Reason|Grund):", r'<i style="color:#5f6368">\1:</i>', t)
     t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
     t = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"<i>\1</i>", t)
     t = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r'<a href="\2">\1</a>', t)
@@ -324,6 +387,9 @@ if __name__ == "__main__":
         except Exception:
             o = None
         print(doc_title(w, o, a[a.index("--companion") + 1] if "--companion" in a else None))
+    elif a[0] == "check-draft":
+        r = check_draft(a[1], a[a.index("--opp") + 1] if "--opp" in a else None)
+        print(json.dumps(r, ensure_ascii=False, indent=2)); sys.exit(0 if r["ok"] else 1)
     elif a[0] == "mirror":
         mirror(a[1], a[a.index("--client") + 1] if "--client" in a else DEFAULT_CLIENT)
     else:

@@ -45,31 +45,46 @@
           "label": "T+7",
           "due": "2026-11-30",
           "status": "pending",
-          "result": "Neuer Crawl? User-Canonical mit Slash? Sitemap erkannt?"
+          "result": "Neuer Crawl? User-Canonical mit Slash? Sitemap erkannt?",
+          "checks": [
+            "ranking_protection"
+          ]
         },
         {
           "label": "T+14",
           "due": "2026-12-07",
           "status": "pending",
-          "result": "+ Rankings Dachinspektion-Varianten"
+          "result": "+ Rankings Dachinspektion-Varianten",
+          "checks": [
+            "ranking_protection"
+          ]
         },
         {
           "label": "T+30",
           "due": "2026-12-23",
           "status": "pending",
-          "result": "+ GSC Impressions/Clicks/Position je Query"
+          "result": "+ GSC Impressions/Clicks/Position je Query",
+          "checks": [
+            "ranking_protection"
+          ]
         },
         {
           "label": "T+60",
           "due": "2027-01-22",
           "status": "pending",
-          "result": "Bewertung: Erfolgreich / Potenzial / Underperformer"
+          "result": "Bewertung: Erfolgreich / Potenzial / Underperformer",
+          "checks": [
+            "ranking_protection"
+          ]
         },
         {
           "label": "T+90",
           "due": "2027-02-21",
           "status": "pending",
-          "result": "Entscheidung über weitere Optimierung"
+          "result": "Entscheidung über weitere Optimierung",
+          "checks": [
+            "ranking_protection"
+          ]
         },
         {
           "label": "Kannibalisierung T+14",
@@ -105,6 +120,41 @@
           "target_share": 0.33,
           "competitor_share": 0.64
         }
+      },
+      "ranking_protection_baseline": {
+        "captured": "2026-11-24",
+        "source": "GSC Query × Page 2025-07-21 – 2026-11-20 (16 Monate, vor dem Re-Crawl des Fixes)",
+        "days": 488,
+        "queries": [
+          {
+            "query": "dachinspektion per drohne berlin",
+            "tier": "critical",
+            "clicks": 0,
+            "impressions": 68,
+            "position": 8.9
+          },
+          {
+            "query": "dachkontrolle mit drohne",
+            "tier": "high",
+            "clicks": 0,
+            "impressions": 25,
+            "position": 12.9
+          },
+          {
+            "query": "dachinspektion mit drohne",
+            "tier": "watch",
+            "clicks": 0,
+            "impressions": 133,
+            "position": 46.2
+          },
+          {
+            "query": "dachinspektion drohne",
+            "tier": "watch",
+            "clicks": 0,
+            "impressions": 51,
+            "position": 58.3
+          }
+        ]
       }
     }
   ]

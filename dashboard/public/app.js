@@ -364,8 +364,8 @@ pages.opportunity = id => {
   view().innerHTML = `<a class="back" href="#opportunities">← Opportunities</a>
   <div class="page-head"><div><div class="detail-head"><h1>${esc(o.name)}</h1>${typeChip(o.type)}${prioChip(o.priority)}${confChip(o.confidence)}${statusChip(o.status)}${o.freeze ? chip("Change freeze", "amber", true) : ""}</div>
     <div class="sub">${esc(o.id)} · Business fit ${o.business_fit}/10 · Primary keyword „${esc(o.primary_keyword)}“</div></div></div>
-  ${resStatus(o) ? `${researchBanner(o)}<div class="card mt" id="g1-brief"><div class="card-h"><div><h2>Gate 1 – Entscheidungsvorlage</h2><div class="hint">Freigabe = SEO-Maßnahme UND fachlicher Scope der Seite. Änderungen am Scope bitte im Gate-1-Kommentar.</div></div>${gate1Card(o, true)}</div><div class="card-b">${gate1Brief(o)}</div></div>` : `<div class="card mt"><div class="card-h"><h2>Cannibalization Risk</h2></div><div class="card-b">${cannibalBlock(o, true)}</div></div>`}
-  ${resStatus(o) ? `<div class="grid mt"><div class="card" id="rs-cannibal"><div class="card-h"><h2>Cannibalization &amp; Architecture</h2></div><div class="card-b">${cannibalBlock(o, true)}</div></div>${evidenceCard(o)}${researchView(o)}${gate1Card(o)}</div><h2 class="sec-h">Evidenz &amp; Rohdaten</h2>` : ""}
+  ${resStatus(o) ? `${researchBanner(o)}<div class="card mt" id="g1-brief"><div class="card-h"><div><h2>Gate 1 – Entscheidungsvorlage</h2><div class="hint">Freigabe = SEO-Maßnahme UND fachlicher Scope der Seite. Änderungen am Scope bitte im Gate-1-Kommentar.</div></div>${gate1Card(o, true)}</div><div class="card-b">${gate1Brief(o)}</div></div>` : `<div class="card mt"><div class="card-h"><h2>Cannibalization Risk</h2></div><div class="card-b">${cannibalBlock(o, true)}</div></div><div class="mt">${diagnosisCard(o)}</div>`}
+  ${resStatus(o) ? `<div class="grid mt"><div class="card" id="rs-cannibal"><div class="card-h"><h2>Cannibalization &amp; Architecture</h2></div><div class="card-b">${cannibalBlock(o, true)}</div></div>${diagnosisCard(o)}${evidenceCard(o)}${researchView(o)}${gate1Card(o)}</div><h2 class="sec-h">Evidenz &amp; Rohdaten</h2>` : ""}
   <div class="grid g-main">
     <div class="grid">
       <div class="card"><div class="card-h"><h2>Why this matters</h2></div><div class="card-b"><p style="margin:0 0 10px">${esc(o.why)}</p><div class="callout"><b>Recommendation:</b> ${esc(o.recommendation)}</div>
@@ -764,6 +764,41 @@ pages["research-log"] = () => {
   draw();
 };
 document.addEventListener("click", e => { const a = e.target.closest("[data-rl-opp]"); if (a) { Object.assign(RLF, { opp: a.dataset.rlOpp, type: "", action: "", date: a.dataset.rlDate || "", q: "" }); } });
+/* ------------------------------------------------------------ Current Page Diagnosis & Ranking Protection (OPTIMIZE/MERGE) */
+const TIER = { critical: ["Kritisch", "red"], high: ["Wichtig", "amber"], watch: ["Beobachten", "blue"], off_topic: ["Themenfremd", ""], release: ["Abgeben", ""] };
+const ACT = { KEEP: "green", EDIT: "amber", "KEEP/EDIT": "amber", NEW: "blue", REMOVE: "red", REDUCE: "red" };
+const actChip = a => chip(a, ACT[a] || "");
+const itemList = xs => (xs || []).length ? `<ul class="list">${xs.map(x => typeof x === "string" ? `<li>${esc(x)}</li>` : `<li><b>${esc(x.item)}</b><div class="s">${esc(x.reason || "")}${x.evidence ? ` · Beleg: ${esc(x.evidence)}` : ""}${x.accepted_loss ? ` · In Kauf genommen: ${esc(x.accepted_loss)}` : ""}</div></li>`).join("")}</ul>` : `<span class="mini">–</span>`;
+function protectionTable(rp, limit = 0) {
+  const qs = limit ? rp.queries.filter(q => ["critical", "high"].includes(q.tier)).slice(0, limit) : rp.queries;
+  return `<div class="tbl-wrap"><table><thead><tr><th>Query</th><th>Schutz</th><th class="num">Klicks</th><th class="num">Impr.</th><th class="num">Pos.</th><th class="num">Pos. 90d</th><th>Getragen von (bestehender Inhalt)</th></tr></thead><tbody>
+    ${qs.map(q => `<tr><td class="q">${esc(q.query)}${q.source ? `<div class="s">${esc(q.source)}</div>` : ""}</td><td>${chip(...(TIER[q.tier] || [q.tier, ""]))}</td><td class="num">${q.clicks == null ? "–" : fmtN(q.clicks)}</td><td class="num">${q.impressions == null ? "–" : fmtN(q.impressions)}</td><td class="num">${fmtD(q.position)}</td><td class="num">${q.pos_90d == null ? "–" : fmtD(q.pos_90d)}</td>
+      <td class="s">${(q.supported_by || []).map(h => `${esc(h.element)}: „${esc((h.text || "").slice(0, 60))}“${h.in === "Text" ? " (Text)" : ""}`).join("<br>") || (rp.content_mapped ? "nicht eindeutig zugeordnet" : "Seitenprofil fehlt")}</td></tr>`).join("") || `<tr><td colspan="7" class="empty">Keine Schutz-Queries</td></tr>`}</tbody></table></div>`;
+}
+/** Gate-1-Block: Warum überhaupt ändern? */
+function diagnosisBrief(o) {
+  const P = o.research?.P_diagnosis, rp = o.ranking_protection;
+  if (!rp && !P) return "";
+  const lr = rp?.loss_risk;
+  return `<div class="g1-diag"><h4>Warum überhaupt ändern? – Current Page Diagnosis</h4>
+    ${P ? `<div class="grid g2"><div><b>Funktioniert bereits gut</b>${ul(P.works_well)}</div><div><b>Aktuell schwach</b>${ul(P.weak)}</div><div><b>Fehlt</b>${ul(P.missing)}</div><div><b>Empfohlene Änderungen</b>${ul(P.recommended_changes)}<b>Expected SEO Benefit</b>${ul(P.expected_benefit)}</div></div>` : `<div class="notice">Diagnose im Dossier ausstehend – unten die automatisch ermittelte Ranking Protection.</div>`}
+    ${rp ? `<div class="mt"><b>Ranking Protection</b> <span class="s">${fmtN(rp.strength.critical)} kritische · ${fmtN(rp.strength.high)} wichtige Queries · Seite ${esc({ strong: "stark", moderate: "moderat", weak: "schwach" }[rp.strength.level])} → ${esc(rp.strength.mode)}</span>${protectionTable(rp, 6)}</div>` : ""}
+    ${lr ? `<div class="row mt"><b>Risk of Ranking Loss</b> ${riskChip(lr.level, "")}<span class="s">${esc(lr.reason)}</span></div>` : ""}
+    ${P?.sensitive_changes?.length ? `<h4>Sensitive Changes</h4><div class="tbl-wrap"><table><thead><tr><th>Element</th><th>Current</th><th>Proposed</th><th>Reason</th><th>Ranking risk</th></tr></thead><tbody>${P.sensitive_changes.map(x => `<tr><td><b>${esc(x.element)}</b></td><td class="s">${esc(x.current)}</td><td>${esc(x.proposed)}</td><td class="s">${esc(x.reason)}</td><td class="s">${esc(x.ranking_risk)}</td></tr>`).join("")}</tbody></table></div>` : ""}
+    ${P?.not_changed?.length ? `<div class="s mt">Unverändert: ${esc(P.not_changed.join(" · "))}. URL-/Canonical-/Redirect-Änderungen werden nie automatisch umgesetzt.</div>` : ""}</div>`;
+}
+/** Detail: KEEP / IMPROVE / ADD / REMOVE + Change Summary + vollständige Schutzliste (inkl. Companion) */
+function diagnosisCard(o) {
+  const P = o.research?.P_diagnosis, rp = o.ranking_protection;
+  if (!rp && !P) return "";
+  return `<div class="card" id="rs-diagnosis"><div class="card-h"><div><h2>Current Page Diagnosis &amp; Ranking Protection</h2><div class="hint">Preserve what works → fix what is weak → add what is missing. ${P?.principle ? esc(P.principle) : ""}</div></div>${rp ? riskChip(rp.loss_risk.level, "Ranking loss: ") : ""}</div><div class="card-b">
+    ${P ? `<div class="grid g2"><div><h4>${actChip("KEEP")} unbedingt erhalten</h4>${itemList(P.keep)}</div><div><h4>${actChip("EDIT")} IMPROVE – verbessern</h4>${itemList(P.improve)}</div>
+      <div><h4>${actChip("NEW")} ADD – fehlt aktuell</h4>${itemList(P.add)}</div><div><h4>${actChip("REMOVE")} REMOVE / REDUCE</h4>${itemList(P.remove)}</div></div>
+      ${P.change_summary?.length ? `<h4>Change Summary</h4><div class="tbl-wrap"><table><thead><tr><th>Bereich</th><th>Aktion</th><th>Grund</th><th>SEO-Risiko</th></tr></thead><tbody>${P.change_summary.map(x => `<tr><td>${esc(x.area)}</td><td>${actChip(x.action)}</td><td class="s">${esc(x.reason)}</td><td>${esc(x.seo_risk)}</td></tr>`).join("")}</tbody></table></div>` : ""}` : ""}
+    ${rp ? `<h4>Ranking Protection List · ${esc(rp.url)}</h4><div class="s">GSC Query × Page (16 Monate) + vorhandene Semrush-Rankings · Inhalte zugeordnet per Seitenprofil ${rp.profile_fetched ? fmtDateTime(rp.profile_fetched) : "– fehlt"} · Monitoring nach Veröffentlichung T+7/14/30/60/90 gegen diese Baseline</div>${protectionTable(rp)}
+      ${(rp.companions || []).map(c => `<h4>Companion ${esc(c.url)}: eigene Rankings schützen</h4><div class="s">„Abgeben“ = Queries, die bewusst zur Zielseite wandern sollen; alle anderen bleiben geschützt.</div>${protectionTable({ ...c, content_mapped: false })}`).join("")}` : ""}
+  </div></div>`;
+}
 /* ------------------------------------------------------------ Gate 1: vier Fragen + Kannibalisierung (eine Darstellung für Drawer und Detail) */
 const RISK = { high: ["High", "red"], medium: ["Medium", "amber"], low: ["Low", "green"], unknown: ["Nicht bewertbar", ""] };
 const riskChip = (r, pre = "Cannibalization: ") => { const [l, c] = RISK[r] || [r, ""]; return chip(pre + l, c, true); };
@@ -783,7 +818,7 @@ function pagePreview(o) {
     <div><h4>Bewusst nicht enthalten</h4>${(F.not_on_page || []).length ? `<ul class="list">${F.not_on_page.map(x => `<li>${esc(x.topic)}</li>`).join("")}</ul>` : "–"}
       ${F.audience?.length ? `<h4>Zielgruppen</h4><div>${esc(F.audience.join(" · "))}</div>` : ""}
       ${F.delimitation?.length ? `<h4>Geplante Abgrenzung</h4><div>${F.delimitation.map(d => esc(d.service.replace(/ \(.*\)$/, ""))).join(" ≠ ")}</div>` : ""}</div></div>
-    ${G ? `<h4>Rough Page Structure</h4><ol class="rs-outline compact"><li><span class="chip outline">H1</span> ${esc(G.h1)}</li>${(G.sections || []).map(s => `<li><span class="chip outline">H2</span> ${esc(s.h2)}</li>`).join("")}</ol>` : ""}`;
+    ${G ? `<h4>Rough Page Structure</h4><ol class="rs-outline compact"><li><span class="chip outline">H1</span> ${G.h1_action ? actChip(G.h1_action) : ""} ${esc(G.h1)}</li>${(G.sections || []).map(s => `<li><span class="chip outline">H2</span> ${s.action ? actChip(s.action) : ""} ${esc(s.h2)}${s.existing && s.existing !== "gleich" ? ` <span class="s">(bisher: ${esc(s.existing)})</span>` : ""}</li>`).join("")}</ol>` : ""}`;
 }
 function cannibalBlock(o, full = false) {
   const c = o.cannibalization; if (!c) return "";
@@ -813,7 +848,8 @@ function gate1Brief(o) {
     <section><h3><span class="g1-n">2</span>Was genau werden wir machen?</h3>
       <div class="row">${typeChip(plan.action)}<span class="path">${esc(plan.url || "–")}</span>${plan.companions.length ? chip(`+ ${plan.companions.length} Companion Optimization`, "amber") : ""}${plan.changed ? chip(`Abweichend von ${o.type}`, "amber", true) : ""}</div>
       <p>${esc(A?.summary || o.recommendation || "")}</p>
-      ${plan.companions.length ? `<div class="s">Change Set: Hauptmaßnahme + ${plan.companions.map(c => esc(c.url)).join(", ")} – werden gemeinsam produziert und reviewt (je ein Drive-Dokument).</div>` : ""}</section>
+      ${plan.companions.length ? `<div class="s">Change Set: Hauptmaßnahme + ${plan.companions.map(c => esc(c.url)).join(", ")} – werden gemeinsam produziert und reviewt (je ein Drive-Dokument).</div>` : ""}
+      ${["OPTIMIZE", "MERGE"].includes(plan.action) ? diagnosisBrief(o) : ""}</section>
     <section><h3><span class="g1-n">3</span>Was wird auf der Seite behandelt?</h3>${pagePreview(o)}</section>
     <section><h3><span class="g1-n">4</span>Was passiert mit unseren anderen Seiten?</h3>${cannibalBlock(o)}
       ${o.research?.H_ia?.recommended?.parent ? `<div class="s mt">Architecture: Parent ${esc(o.research.H_ia.recommended.parent.url)} · ${esc(o.research.H_ia.consolidation?.decision || "")}</div>` : ""}</section>
@@ -930,7 +966,7 @@ function researchView(o) {
     ${F.delimitation?.length ? `<h4>Abgrenzung</h4><div class="tbl-wrap"><table><thead><tr><th>Leistung</th><th>Beantwortet</th><th>Zeitpunkt</th><th>Ergebnis</th><th>Seite</th></tr></thead><tbody>${F.delimitation.map(x => `<tr><td><b>${esc(x.service)}</b></td><td>${esc(x.question)}</td><td class="s">${esc(x.timing)}</td><td class="s">${esc(x.output)}</td><td class="s path">${esc(x.page)}</td></tr>`).join("")}</tbody></table></div>` : ""}
     <h4>Bewusst NICHT auf dieser Seite</h4>${(F.not_on_page || []).length ? `<ul class="list">${F.not_on_page.map(x => `<li><b>${esc(x.topic)}</b><div class="s">${esc(x.reason)} → ${esc(x.goes_to)}</div></li>`).join("")}</ul>` : "–"}`));
   out.push(rsCard("G", "G · Proposed Structure", `<div class="kv"><div class="k">Title (Vorschlag)</div><div>${esc(G.title_proposal || "–")}</div><div class="k">Meta</div><div>${esc(G.meta_note || "–")}</div></div>
-    <ol class="rs-outline"><li class="h1"><span class="chip outline">H1</span> ${esc(G.h1)}</li>${(G.sections || []).map(x => `<li><span class="chip outline">H2</span> <b>${esc(x.h2)}</b><div class="s">${esc(x.purpose)}${x.covers?.length ? ` · beantwortet: ${esc(x.covers.join(", "))}` : ""}</div>${x.h3?.length ? `<ul>${x.h3.map(h => `<li><span class="chip outline">H3</span> ${esc(h)}</li>`).join("")}</ul>` : ""}</li>`).join("")}</ol>
+    <ol class="rs-outline"><li class="h1"><span class="chip outline">H1</span> ${G.h1_action ? actChip(G.h1_action) : ""} ${esc(G.h1)}</li>${(G.sections || []).map(x => `<li><span class="chip outline">H2</span> ${x.action ? actChip(x.action) : ""} <b>${esc(x.h2)}</b>${x.existing && x.existing !== "gleich" ? ` <span class="s">(bisher: ${esc(x.existing)})</span>` : ""}<div class="s">${esc(x.purpose)}${x.covers?.length ? ` · beantwortet: ${esc(x.covers.join(", "))}` : ""}</div>${x.h3?.length ? `<ul>${x.h3.map(h => `<li><span class="chip outline">H3</span> ${esc(h)}</li>`).join("")}</ul>` : ""}</li>`).join("")}</ol>
     ${G.scope_check ? `<div class="callout mt"><b>Abgleich mit Scope F:</b> ${esc(G.scope_check)}</div>` : ""}${G.derivation ? `<p class="s">Herleitung: ${esc(G.derivation)}</p>` : ""}`, "Grobgliederung vor Gate 1 – kein Text, keine Formulierungen"));
   const ko = H.keyword_ownership || {}, Hc = H.current || H, Hr = H.recommended || {};
   const iaBlock = (x, rec) => `<div class="kv"><div class="k">Parent</div><div><span class="path">${esc(x.parent?.url)}</span> <span class="s">${esc(x.parent?.label || "")}${x.parent?.note ? " · " + esc(x.parent.note) : ""}</span></div>

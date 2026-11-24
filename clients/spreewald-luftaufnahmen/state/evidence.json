@@ -773,7 +773,27 @@
       "source_ids": [
         "SRC-024"
       ]
+    },
+    {
+      "id": "FND-013",
+      "opp": "OPP-02",
+      "section": "P",
+      "text": "Ranking Protection: 3 kritische/wichtige Queries (baudokumentation drohne berlin, baubegleitung mit drohne, drohnen tour bau); Seite moderate → Behutsam: tragende Abschnitte erhalten (siehe Schutzliste), schwache Abschnitte überarbeiten, Lücken ergänzen.",
+      "source_ids": [
+        "SRC-011",
+        "SRC-008"
+      ]
+    },
+    {
+      "id": "FND-014",
+      "opp": "OPP-01",
+      "section": "P",
+      "text": "Ranking Protection: 2 kritische/wichtige Queries (dachinspektion per drohne berlin, dachkontrolle mit drohne); Seite weak → Gezielte Überarbeitung vertretbar: wenige gesicherte Rankings – trotzdem alle Schutz-Queries im Text behalten.",
+      "source_ids": [
+        "SRC-025",
+        "SRC-023"
+      ]
     }
   ],
-  "updated": "2026-11-24T11:57:20Z"
+  "updated": "2026-11-24T12:20:12Z"
 }

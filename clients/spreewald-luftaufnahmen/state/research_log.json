@@ -130,6 +130,30 @@
       ]
     },
     {
+      "id": "EVT-021",
+      "source_ids": [
+        "SRC-008",
+        "SRC-011"
+      ],
+      "finding_ids": [
+        "FND-013"
+      ],
+      "units": 0,
+      "at": "2026-11-23T16:13:08Z",
+      "at_precision": "exact",
+      "opp": "OPP-02",
+      "action": "own_page_analysis",
+      "title": "Current Page Diagnosis & Ranking Protection",
+      "summary": "https://www.spreewald-luftaufnahmen.de/drohnen-baudokumentation/ mit Abschnitten abgerufen; Queries der URL (GSC Query × Page) den tragenden Inhalten zugeordnet.",
+      "found": "17 Queries in der Schutzliste, Risk of Ranking Loss: medium",
+      "links": [
+        {
+          "label": "Seite öffnen",
+          "url": "https://www.spreewald-luftaufnahmen.de/drohnen-baudokumentation/"
+        }
+      ]
+    },
+    {
       "id": "EVT-006",
       "source_ids": [
         "SRC-001",
@@ -315,6 +339,30 @@
       ]
     },
     {
+      "id": "EVT-023",
+      "source_ids": [
+        "SRC-023",
+        "SRC-025"
+      ],
+      "finding_ids": [
+        "FND-014"
+      ],
+      "units": 0,
+      "at": "2026-11-24T11:55:07Z",
+      "at_precision": "exact",
+      "opp": "OPP-01",
+      "action": "own_page_analysis",
+      "title": "Current Page Diagnosis & Ranking Protection",
+      "summary": "https://www.spreewald-luftaufnahmen.de/dachinspektion-mit-drohne/ mit Abschnitten abgerufen; Queries der URL (GSC Query × Page) den tragenden Inhalten zugeordnet.",
+      "found": "4 Queries in der Schutzliste, Risk of Ranking Loss: medium",
+      "links": [
+        {
+          "label": "Seite öffnen",
+          "url": "https://www.spreewald-luftaufnahmen.de/dachinspektion-mit-drohne/"
+        }
+      ]
+    },
+    {
       "id": "EVT-018",
       "source_ids": [
         "SRC-025",
@@ -357,7 +405,33 @@
       "title": "Research Dossier v2 – Seitenvorschau ergänzt",
       "summary": "Page Purpose und Themenliste für die Gate-1-Darstellung ergänzt; Kannibalisierungs-Engine bestätigt Risiko gering.",
       "found": "Strategie unverändert (OPTIMIZE)"
+    },
+    {
+      "id": "EVT-022",
+      "source_ids": [],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-24T12:20:12Z",
+      "at_precision": "exact",
+      "opp": "OPP-02",
+      "action": "dossier",
+      "title": "Research Dossier – Diagnose ergänzt",
+      "summary": "KEEP/IMPROVE/ADD/REMOVE, Sensitive Changes, Change Summary; Struktur auf minimal notwendige Veränderung umgestellt.",
+      "found": "H1 bleibt"
+    },
+    {
+      "id": "EVT-024",
+      "source_ids": [],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-24T12:20:12Z",
+      "at_precision": "exact",
+      "opp": "OPP-01",
+      "action": "dossier",
+      "title": "Research Dossier – Diagnose ergänzt",
+      "summary": "KEEP/IMPROVE/ADD/REMOVE, Sensitive Changes, Change Summary; Struktur auf minimal notwendige Veränderung umgestellt.",
+      "found": "Title behält „Dachkontrolle“ (Pos. 12,9)"
     }
   ],
-  "updated": "2026-11-24T11:57:20Z"
+  "updated": "2026-11-24T12:20:12Z"
 }
