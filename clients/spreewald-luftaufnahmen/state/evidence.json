@@ -669,6 +669,32 @@
       "meta": {
         "note": "Workflow-Runner run_20261124T1228Z (Gate 1 Noel 12:27 UTC, Research v2)"
       }
+    },
+    {
+      "id": "SRC-027",
+      "type": "website",
+      "key": "wp-rest-public-2026-11-24",
+      "opp_ids": [],
+      "title": "WordPress REST API (öffentlich, ohne Anmeldung)",
+      "url": "https://www.spreewald-luftaufnahmen.de/wp-json/",
+      "fetched": "2026-11-24T13:13:30Z",
+      "fetched_precision": "exact",
+      "meta": {
+        "note": "Namespaces, Seitentypen, 17 Seiten (alle Elementor), Yoast-Head, Jetpack-Verbindung; Entwürfe/Menüs/Templates/Settings ohne Anmeldung gesperrt (400/401)"
+      }
+    },
+    {
+      "id": "SRC-028",
+      "type": "agent",
+      "key": "wpcom-connector-2026-11-24",
+      "opp_ids": [],
+      "title": "WordPress.com-Konnektor (Jetpack, Blog-ID 174454219)",
+      "url": null,
+      "fetched": "2026-11-24T13:13:30Z",
+      "fetched_precision": "exact",
+      "meta": {
+        "note": "Nur lesend: Seitenliste inkl. Entwürfe, Seite 5401 im Bearbeitungskontext (Struktur), Remote-Fähigkeiten, Rolle, Yoast-Daten 5401, Backup-Status, Umgebung. Keine Zugangsdaten gespeichert."
+      }
     }
   ],
   "findings": [
@@ -810,5 +836,5 @@
       ]
     }
   ],
-  "updated": "2026-11-24T12:39:52Z"
+  "updated": "2026-11-24T13:13:30Z"
 }

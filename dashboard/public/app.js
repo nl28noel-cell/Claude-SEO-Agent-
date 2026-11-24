@@ -643,6 +643,18 @@ function adsCard() {
     <div class="k">Fähigkeiten</div><div class="s">${Object.entries(src.capabilities || {}).map(([k, v]) => `${esc(k)}: ${esc(v)}`).join("<br>")}</div>
     <div class="k">Limitierungen</div><div class="s">${(src.limitations || []).map(esc).join(" · ")}</div></div></div></div>`;
 }
+function wpCard() {
+  const w = S.d.sources.wordpress; if (!w) return "";
+  const c = w.capabilities || {};
+  return `<div class="card" id="wp-card"><div class="card-h"><h2>WordPress</h2>${chip("Verbunden · nur lesend geprüft", "green", true)}</div><div class="card-b"><div class="kv">
+    <div class="k">Zugriff</div><div>${esc(w.access)}</div><div class="k">Rolle</div><div>${esc(w.role)}</div>
+    <div class="k">Editor</div><div>${esc(w.editor)}</div><div class="k">SEO</div><div>${esc(w.seo)}</div>
+    <div class="k">CREATE Draft</div><div>${esc(c.create_draft)}</div><div class="k">OPTIMIZE</div><div>${esc(c.optimize_existing)}</div>
+    <div class="k">Preview</div><div>${esc(c.preview)}</div><div class="k">Publish</div><div><b>${esc(c.publish)}</b></div>
+    <div class="k">Geprüft</div><div>${fmtDate(w.checked)} · Zugangsdaten: ${esc(w.credentials)}</div></div>
+    ${(w.risks || []).length ? `<div class="callout amber mt"><b>Vor dem ersten Schreibzugriff</b>${ul(w.risks)}</div>` : ""}
+    <div class="s mt">Workflow-Ziel: Gate 2 → WordPress-Draft → QA → finale Freigabe → Veröffentlichen. Nie automatisch: Veröffentlichen, URL/Slug, Redirects, Canonical, Indexierung, Plugin-/Server-Konfiguration.</div></div></div>`;
+}
 function kpCard() {
   const k = S.d.sources.keyword_planner || {};
   return `<div class="card"><div class="card-h"><h2>Google Keyword Planner</h2>${chip(k.label || "Not used", "", true)}</div><div class="card-b"><div class="kv">
@@ -1413,6 +1425,7 @@ pages.sources = () => {
       <h3 class="mt">Active monitors</h3>${s.website.monitors.map(m => `<div class="callout" style="margin-bottom:6px"><b>${esc(m.url)}</b><div class="s">${esc(m.type)}</div><div class="s">Last check ${fmtDate(m.last_check)} · ${esc(m.result)} · next ${fmtDate(m.next_check)}</div></div>`).join("")}</div></div>
   </div>
   <div class="grid g3 mt">${ga4Card()}${adsCard()}${kpCard()}</div>
+  ${S.d.sources.wordpress ? `<div class="grid g2 mt">${wpCard()}</div>` : ""}
   <div class="grid g2 mt">${storeCard()}<div class="card"><div class="card-h"><h2>Where this dashboard runs</h2>${chip(window.claude && typeof window.claude.use === "function" ? "Claude artifact" : "Local preview", window.claude && typeof window.claude.use === "function" ? "green" : "", true)}</div><div class="card-b"><div class="kv">
     <div class="k">Primary surface</div><div>Private Claude artifact (pin it in the Claude sidebar)</div>
     <div class="k">Data delivery</div><div>The agent rebuilds <code>dashboard.json</code> and republishes it beside the page after each work session</div>

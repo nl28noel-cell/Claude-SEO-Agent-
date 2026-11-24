@@ -452,7 +452,30 @@
           "url": "https://docs.google.com/document/d/1Te06thQSZe-4MOFMqYmK5zUCQkLf7HZJu4QAhn-dd7U/edit"
         }
       ]
+    },
+    {
+      "id": "EVT-026",
+      "source_ids": [
+        "SRC-027",
+        "SRC-028"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-24T13:13:30Z",
+      "at_precision": "exact",
+      "opp": null,
+      "action": "integration_preflight",
+      "title": "WordPress Integration Preflight",
+      "summary": "Zugriffswege geprüft (Konnektoren, Umgebungs-Secrets, Computer/Browser, Repository, öffentliche REST-API, WordPress.com-Konnektor) – ausschließlich lesend, nichts geändert.",
+      "found": "Access YES über WordPress.com-Konnektor (Jetpack), Rolle Administrator · Elementor-Seiten (_elementor_data) · Yoast lesen/schreiben über Site-Fähigkeiten · CREATE Draft: YES · OPTIMIZE: WITH LIMITATIONS (Live-Seite nie direkt; Draft-Kopie) · Preview: YES (Login) · Publish: technisch YES, gesperrt",
+      "insight": "Duplicator meldet keine Backups – vor dem ersten Schreibzugriff Backup klären. Konnektor muss für den Runner an der Routine hinterlegt werden.",
+      "links": [
+        {
+          "label": "Diagnose (docs/wordpress-integration.md)",
+          "url": "https://github.com/nl28noel-cell/Claude-SEO-Agent-/blob/claude/semsharks-seo-autopilot-6j1cxc/docs/wordpress-integration.md"
+        }
+      ]
     }
   ],
-  "updated": "2026-11-24T12:39:52Z"
+  "updated": "2026-11-24T13:13:30Z"
 }

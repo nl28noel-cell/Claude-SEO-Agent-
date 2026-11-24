@@ -137,5 +137,27 @@
     "decided": "2026-11-23",
     "access_level": "Explorer (unverändert, kein Basic-Antrag)",
     "planning_customer": "nicht aktiv (keine Abfragen)"
+  },
+  "wordpress": {
+    "status": "connected_readonly_tested",
+    "label": "WordPress (Jetpack via WordPress.com-Konnektor)",
+    "checked": "2026-11-24",
+    "access": "Claude-Konnektor WordPress.com (OAuth) → Jetpack, Blog-ID 174454219",
+    "role": "administrator",
+    "editor": "Elementor + Elementor Pro (Hello-Theme)",
+    "seo": "Yoast lesen/schreiben über Site-Fähigkeiten",
+    "capabilities": {
+      "create_draft": "YES",
+      "optimize_existing": "WITH LIMITATIONS (Draft-Kopie, Live-Seite nie direkt)",
+      "preview": "YES (Login)",
+      "publish": "technisch YES – gesperrt"
+    },
+    "risks": [
+      "Duplicator: keine Backups",
+      "Elementor-JSON statt Inhaltsfeld",
+      "Runner-Routine hat den Konnektor noch nicht"
+    ],
+    "doc": "docs/wordpress-integration.md",
+    "credentials": "keine im Repository/Artifact"
   }
 }

@@ -286,6 +286,9 @@ const MOCK = () => {
     check('drawer (not started): primary „Research starten“, override secondary + collapsed', (await p.locator('#wf-panel-body [data-rr="OPP-05"]').innerText()) === 'Research starten' && await p.locator('#wf-panel-body [data-rr="OPP-05"]').evaluate(b => b.classList.contains('primary')) && !(await p.locator('#wf-panel-body details.ovr').evaluate(d => d.open)) && !(await p.locator('#wf-panel-body [data-act="approve"]').evaluate(b => b.classList.contains('primary'))));
     if (SHOTS) await p.screenshot({ path: `${out}/mock-research-retry-drawer.png` });
     await p.click('#wf-panel-body [data-close]'); await p.waitForTimeout(100);
+    await p.goto(base2 + '#sources', { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
+    const wpc = await p.locator('#wp-card').innerText();
+    check('data sources: WordPress card (read-only tested, publish locked, no credentials)', /administrator/.test(wpc) && /gesperrt/.test(wpc) && /Elementor/.test(wpc) && !/password|passwort|token/i.test(wpc.replace(/Zugangsdaten: keine im Repository\/Artifact/, '')));
     // Local Opportunity Matrix
     await p.goto(base2 + '#local', { waitUntil: 'networkidle' }); await p.waitForTimeout(300);
     const lm = await p.locator('#local-matrix').innerText();
