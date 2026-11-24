@@ -135,6 +135,17 @@ const MOCK = () => {
       await p.check('#wf-ovr');
     }
     await p.click('[data-act="approve"]'); await p.waitForTimeout(300);
+    const secCz = dd.opportunities.find(o => o.id === second).cannibalization;
+    if (secCz?.warning) {
+      check('gate 1: cannibalization warning dialog with 3 choices', (await p.locator('.gate-dialog').count()) === 1 && /Cannibalization Risk detected/.test(await p.locator('.gate-dialog').innerText()) && (await p.locator('.gate-dialog [data-g]').count()) === 3);
+      await p.click('.gate-dialog [data-g="cancel"]'); await p.waitForTimeout(200);
+      check('gate 1: cancel saves nothing', await p.evaluate(id => !window.__all.workflow?.[id], second));
+      await p.click('[data-act="approve"]'); await p.waitForTimeout(200);
+      await p.click('.gate-dialog [data-g="recommendation"]'); await p.waitForTimeout(300);
+      const g1 = await p.evaluate(id => window.__all.workflow?.[id]?.gate1, second);
+      check('gate 1: recommendation stored as change set incl. companion', g1?.cannibalization?.choice === 'recommendation' && g1?.change_set?.action === secCz.action && (g1?.change_set?.companions || []).length >= (second === 'OPP-01' ? 1 : 0), JSON.stringify(g1?.change_set));
+      check('gate 1: no scroll lock left after dialog', !(await p.evaluate(() => document.documentElement.classList.contains('scroll-locked'))) || await p.locator('#wf-drawer').isVisible());
+    }
     check('drag & drop approval persisted', await p.evaluate(id => window.__all.workflow?.[id]?.gate1?.status === 'approved', second));
     if (!['complete', 'complete_with_limits'].includes(secRes)) check('override recorded in gate1 + decision log', await p.evaluate(id => window.__all.workflow[id].gate1.research_override === true && Object.values(window.__all.decisions).some(x => x.item_id === id && x.decision === 'approve_override'), second));
     await p.click('#wf-panel-body [data-close]');
@@ -231,6 +242,37 @@ const MOCK = () => {
     check('evidence → research log filtered by opportunity', (await p.evaluate(() => location.hash)) === '#research-log' && (await p.locator('[data-f="opp"]').inputValue()) === 'OPP-02');
     await p.goto(base2 + '#activity', { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
     check('agent activity: research groups from same log + link', /Research \(\d+ Aktionen\)/.test(await p.locator('body').innerText()) && (await p.locator('a[data-rl-opp]').count()) >= 1);
+    // Gate-1-Entscheidungsvorlage (4 Fragen) + Kannibalisierung
+    await p.goto(base2 + '#opp-OPP-02', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
+    let gb = await p.locator('#g1-brief').innerText();
+    check('gate-1 brief: four questions', ['Warum sollten wir das machen?', 'Was genau werden wir machen?', 'Was wird auf der Seite behandelt?', 'Was passiert mit unseren anderen Seiten?'].every(q => gb.toLowerCase().includes(q.toLowerCase())));
+    check('gate-1 brief OPP-02: page preview (purpose, topics, excluded, structure)', /Page Purpose/.test(gb) && /Themen auf der Seite/.test(gb) && /Bewusst nicht enthalten/.test(gb) && /Rough Page Structure/.test(gb) && /Cannibalization: Low/.test(gb));
+    await p.goto(base2 + '#opp-OPP-01', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
+    gb = await p.locator('#g1-brief').innerText();
+    check('gate-1 brief OPP-01: high risk + companion + affected URL', /Cannibalization: High/.test(gb) && /Companion Optimization required/.test(gb) && /drohne-dach-gebaeude-inspektion/.test(gb) && /OPP-03/.test(gb));
+    if (SHOTS) await p.screenshot({ path: `${out}/mock-gate1-OPP-01.png`, fullPage: true });
+    await p.goto(base2 + '#opp-OPP-09', { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
+    check('cannibalization shown for opportunity without dossier too', /Cannibalization/.test(await p.locator('#view, main').first().innerText()));
+    // Local Opportunity Matrix
+    await p.goto(base2 + '#local', { waitUntil: 'networkidle' }); await p.waitForTimeout(300);
+    const lm = await p.locator('#local-matrix').innerText();
+    check('local matrix: all cells with engine recommendation + transparent gaps', (await p.locator('#local-matrix tbody tr').count()) === dd.local.cells.length && /USE MAIN SERVICE PAGE/.test(lm) && /nicht erhoben/.test(lm) && /nicht gemessen/.test(lm), String(await p.locator('#local-matrix tbody tr').count()));
+    // Scroll-Regression: Drawer → Link → andere Seite, Escape, Navigation, zurück
+    const canScroll = async () => { await p.evaluate(() => window.scrollTo(0, 0)); await p.mouse.move(700, 400); await p.mouse.wheel(0, 900); await p.waitForTimeout(250); return (await p.evaluate(() => window.scrollY)) > 100 && !(await p.evaluate(() => document.documentElement.classList.contains('scroll-locked'))); };
+    await p.goto(base2 + '#approvals', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
+    await p.click('[data-card="OPP-05"]'); await p.waitForTimeout(150);
+    await p.click('#wf-panel-body a[href="#opp-OPP-05"]'); await p.waitForTimeout(300);
+    check('scroll: after leaving drawer via link to opportunity detail', await canScroll());
+    await p.goBack(); await p.waitForTimeout(300);
+    check('scroll: after going back to workflow', await canScroll());
+    await p.click('[data-card="OPP-02"]'); await p.waitForTimeout(150); await p.keyboard.press('Escape'); await p.waitForTimeout(150);
+    check('scroll: after closing drawer with Escape', await canScroll());
+    await p.click('[data-card="OPP-02"]'); await p.waitForTimeout(150); await p.evaluate(() => { location.hash = '#opportunities'; }); await p.waitForTimeout(300);
+    check('scroll: drawer open + hash navigation → opportunities scrollable', await canScroll());
+    await p.goto(base2 + '#opp-OPP-02', { waitUntil: 'networkidle' }); await p.waitForTimeout(250); await p.click('[data-gate1="OPP-02"]'); await p.waitForTimeout(350);
+    check('scroll: detail → Gate-1 button opens drawer in workflow', await p.locator('#wf-drawer').isVisible());
+    await p.click('#wf-panel-body [data-close]'); await p.waitForTimeout(150);
+    check('scroll: after closing drawer via ✕', await canScroll());
     const nOpp = dd.opportunities.find(o => ['CREATE', 'OPTIMIZE', 'MERGE'].includes(o.type) && !o.research);
     if (nOpp) { await p.goto(base2 + '#opp-' + nOpp.id, { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
       check('detail without dossier: "Research not started" visible', /Research not started/.test(await p.locator('body').innerText())); }

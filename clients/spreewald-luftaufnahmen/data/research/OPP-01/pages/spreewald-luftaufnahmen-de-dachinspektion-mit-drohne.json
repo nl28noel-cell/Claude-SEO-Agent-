@@ -1,0 +1,129 @@
+{
+  "url": "https://www.spreewald-luftaufnahmen.de/dachinspektion-mit-drohne/",
+  "domain": "spreewald-luftaufnahmen.de",
+  "fetched": "2026-11-24T11:55:07Z",
+  "status": 200,
+  "final_url": "https://www.spreewald-luftaufnahmen.de/dachinspektion-mit-drohne/",
+  "title": "Dachinspektion mit Drohne | Schnelle Dachkontrolle mit Drohne",
+  "meta_description": "Dachinspektion mit Drohne ► Schnelle Inspektion per Drohne ✔ Ohne Gerüst oder Hubsteiger ✔ Fotos & Videos ✔ Mit Vermessung ► Jetzt buchen!",
+  "headings": [
+    [
+      "h1",
+      "Dachinspektion mit Drohne"
+    ],
+    [
+      "h2",
+      "Dachinspektion mit Drohne: Schnell & ohne Gerüst"
+    ],
+    [
+      "h2",
+      "Darum ist eine Dachinspektion mit Drohne die unkomplizierte Wahl"
+    ],
+    [
+      "h2",
+      "Unkompliziert zur perfekten Lösung!"
+    ],
+    [
+      "h2",
+      "Unternehmen, die auf unsere Lösungen zählen"
+    ],
+    [
+      "h2",
+      "Wann lohnt sich eine Dachinspektion per Drohne?"
+    ],
+    [
+      "h2",
+      "Kundenstimmen"
+    ],
+    [
+      "h3",
+      "Ihre Gründe für unsere Zusammenarbeit"
+    ],
+    [
+      "h2",
+      "Vom Luftbild zur Entscheidungsgrundlage"
+    ],
+    [
+      "h2",
+      "Wir übernehmen den gesamten Prozess für Sie!"
+    ],
+    [
+      "h2",
+      "Was macht unsere Drohnenflüge so besonders?"
+    ],
+    [
+      "h3",
+      "Langjährige Erfahrung und bekannt aus dem rbb"
+    ],
+    [
+      "h3",
+      "Zuverlässigkeit, Qualität und Schnelligkeit garantiert"
+    ],
+    [
+      "h3",
+      "Individuell anpassbare Inspektionspakete"
+    ],
+    [
+      "h2",
+      "Ihr Partner für Dachinspektionen mit Drohne"
+    ],
+    [
+      "h2",
+      "Starten wir Ihr Projekt gemeinsam."
+    ],
+    [
+      "h3",
+      "Schnelle und unverbindliche Rückmeldung garantiert."
+    ]
+  ],
+  "h1": [
+    "Dachinspektion mit Drohne"
+  ],
+  "words": 936,
+  "signals": {
+    "faq": 0,
+    "preis": 2,
+    "intervall_abo": 2,
+    "zeitraffer": 0,
+    "video": 0,
+    "orthofoto": 0,
+    "3d_modell": 0,
+    "bim_cad": 0,
+    "portal_cloud": 0,
+    "vermessung_volumen": 2,
+    "beweissicherung": 0,
+    "marketing": 0,
+    "referenzen": 2,
+    "bewertungen": 3,
+    "zertifikat_genehmigung": 3,
+    "versicherung": 4,
+    "lieferzeit": 0,
+    "datenschutz": 0,
+    "zielgruppe_bautraeger": 0,
+    "zielgruppe_bauunternehmen": 1,
+    "zielgruppe_architekt": 0,
+    "zielgruppe_hausverwaltung": 3,
+    "zielgruppe_privat": 2,
+    "lokal_berlin": 2,
+    "lokal_brandenburg": 2,
+    "cta_anfrage": 2
+  },
+  "faq_questions": [
+    "Wann lohnt sich eine Dachinspektion per Drohne?",
+    "Was macht unsere Drohnenflüge so besonders?"
+  ],
+  "has_form": true,
+  "has_phone_link": false,
+  "schema_types": [
+    "BreadcrumbList",
+    "EntryPoint",
+    "ImageObject",
+    "ListItem",
+    "Organization",
+    "PropertyValueSpecification",
+    "ReadAction",
+    "SearchAction",
+    "WebPage",
+    "WebSite"
+  ]
+}

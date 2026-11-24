@@ -22,7 +22,7 @@ Befehle (Export vorher per ArtifactData list collection=workflow out_dir=<dir>):
   python3 tools/workflow.py render <draft.md> <out.html>   -> Entwurf (Markdown-Subset) → HTML für Google-Doc-Konvertierung
   python3 tools/workflow.py mirror <dir> [--client SLUG]   -> state/workflow.json aktualisieren
   python3 tools/workflow.py preflight <dir> [--drive-ok] [--folder-ok]  -> Preflight-Checks als JSON (Exit 0 = ok, 2 = blocked)
-  python3 tools/workflow.py doc-title <dir> <OPP-ID>        -> deterministischer Doc-Titel (Idempotenz: gleicher Titel = gleiches Dokument)
+  python3 tools/workflow.py doc-title <dir> <OPP-ID> [--companion <url>] -> deterministischer Doc-Titel (Idempotenz); --companion: 2. Dokument des Change Sets
 Keine Website-, WordPress- oder URL-Aktion.
 """
 import glob, html, json, os, re, sys
@@ -88,11 +88,15 @@ def actions(docs, client=DEFAULT_CLIENT):
     return out
 
 
-def doc_title(w, opp=None):
+def doc_title(w, opp=None, companion=None):
     """Deterministischer Titel → vor dem Anlegen im Zielordner suchen; existiert er, wird kein zweites Dokument erzeugt."""
     name = (opp or {}).get("name") or w.get("title") or w.get("opp_id")
     typ = (opp or {}).get("type") or (w.get("card") or {}).get("type") or "CREATE"
     v = ((w.get("production") or {}).get("version") or 0) + (1 if (w.get("review") or {}).get("status") == "revision_requested" else 0)
+    if companion:  # zweites Dokument desselben Change Sets: bestehende Seite abgrenzen
+        slug = companion.strip("/").split("/")[-1] or "startseite"
+        base = f"{w.get('opp_id')} – Companion – {slug} – Optimierung"
+        return base if v <= 1 else f"{base} v{v}"
     base = f"{w.get('opp_id')} – {name} – {'Optimierung' if typ == 'OPTIMIZE' else 'Entwurf'}"
     return base if v <= 1 else f"{base} v{v}"
 
@@ -161,7 +165,20 @@ def brief(d, opp_id, out, client=DEFAULT_CLIENT):
     L = [f"# Produktionsbriefing {opp_id} – {o['name']}", ""]
     if w.get("test"):
         L += ["**TEST-Opportunity – nur technischer Workflow-Test, kein echter Content.**", ""]
-    L += ["## Freigabe", f"- Gate 1: approved am {(w.get('gate1') or {}).get('at')}", f"- Kommentar von Noel: {(w.get('gate1') or {}).get('comment') or '–'}"]
+    g1 = w.get("gate1") or {}
+    L += ["## Freigabe", f"- Gate 1: approved am {g1.get('at')}",
+          f"- **Kommentar / Scope-Änderungen von Noel (verbindlich, Vorrang vor Dossier F/G):** {g1.get('comment') or '–'}"]
+    cs = g1.get("change_set") or {}
+    if cs:
+        L += [f"- Freigegebene Maßnahme: {cs.get('action')} {cs.get('url') or ''}"]
+        cz = g1.get("cannibalization") or {}
+        if cz:
+            L += [f"- Kannibalisierung bei Freigabe: {cz.get('risk')} · Engine: {cz.get('engine_decision')} · Entscheidung Noel: {cz.get('choice')}"]
+        if cs.get("companions"):
+            L += ["", "## Change Set: Companion Optimization (je Seite ein eigenes Drive-Dokument, gemeinsam reviewen)"]
+            for c in cs["companions"]:
+                L += [f"- Seite {c['url']}{' (verknüpft mit ' + c['linked_opp'] + ')' if c.get('linked_opp') else ''}: {c.get('reason')}",
+                      f"  - Titel: `python3 tools/workflow.py doc-title <dir> {opp_id} --companion {c['url']}`"] + [f"  - {x}" for x in c.get("required_changes", [])]
     rev = w.get("review") or {}
     if rev.get("status") == "revision_requested":
         L += [f"- **Änderungswunsch (Version {rev.get('for_version')}):** {rev.get('comment')}"]
@@ -306,7 +323,7 @@ if __name__ == "__main__":
             o = next((x for x in _dash(DEFAULT_CLIENT)["opportunities"] if x["id"] == a[2]), None)
         except Exception:
             o = None
-        print(doc_title(w, o))
+        print(doc_title(w, o, a[a.index("--companion") + 1] if "--companion" in a else None))
     elif a[0] == "mirror":
         mirror(a[1], a[a.index("--client") + 1] if "--client" in a else DEFAULT_CLIENT)
     else:

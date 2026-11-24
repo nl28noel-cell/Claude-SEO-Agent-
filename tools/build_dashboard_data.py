@@ -19,6 +19,7 @@ import build_ga4_ads  # noqa: E402
 import research  # noqa: E402
 import serp  # noqa: E402
 import research_log  # noqa: E402
+import cannibalization  # noqa: E402
 
 OUT_ROOT = os.path.join(ROOT, "dashboard", "public", "data")
 
@@ -299,6 +300,7 @@ def build_client(slug, today):
                 "competition": None,
                 "recommendation": recs.get((s["key"], loc["key"])),
             })
+            cells[-1]["engine"] = cannibalization.local_cell(cells[-1], s, loc, qp, inv)
     discovered = Counter(p for x in queries for p in x["places"])
     local_out = {**local, "cells": cells, "discovered_places": discovered.most_common()}
 
@@ -311,6 +313,12 @@ def build_client(slug, today):
         ch["impact"] = {"before_28d": before, "after": agg(after_rows) if after_rows else None,
                         "after_days": len({r["date"] for r in after_rows}),
                         "note": "Noch keine GSC-Daten nach dem Änderungsdatum." if not after_rows else "Korrelation ≠ Kausalität."}
+
+    # ---- Cannibalization Engine: fester Bestandteil jeder Opportunity (GSC Query × Page, Inventar, vorhandene Semrush-Rankings)
+    cluster_of = {x["query"]: x["cluster"] for x in queries}
+    sem_rank_n = [{"keyword": r["Keyword"], "position": num(r["Position"], int), "url": r["Url"].replace(host, "")} for r in sem_rank]
+    for o in opps:
+        o["cannibalization"] = cannibalization.analyze(o, qp, cluster_of, inv, opps, sem_rank_n)
 
     # ---- Research-/Strategy-Stufe (vor Gate 1): Dossier A–J + abgeleiteter Status je CREATE/OPTIMIZE/MERGE
     for rid, r in research.all_for(slug, opps).items():
@@ -343,6 +351,14 @@ def build_client(slug, today):
             "semrush_budget": {"balance": bud["units_balance"], "reserve": bud["reserve_units"], "checked_at": bud.get("balance_checked_at"),
                                "balance_source": bud.get("balance_source"), "automatic_read": bud.get("balance_tracking", {}).get("automatic_read"),
                                "cost_per_line": bud["serp"]["cost_per_line"], "display_limit": bud["serp"]["display_limit"]}}
+    # Geplante Kannibalisierungs-Checks nach Veröffentlichung (T+14/30/60) aus dem Change Log
+    for ch in changes:
+        for cp in ch.get("checkpoints", []):
+            if cp.get("type") == "cannibalization" and cp.get("status") == "planned":
+                w = ch.get("cannibalization_watch", {})
+                tasks.append({"id": f"CW-{ch['id']}-{cp['label'].split()[-1]}", "title": f"{cp['label']} · {ch['url']}", "state": "planned", "date": cp["due"],
+                              "detail": f"{w.get('question', 'Rankt die Zielseite für die Ziel-Queries?')} Basis: Ziel {round(w.get('baseline', {}).get('target_share', 0) * 100)} % · Konkurrenz {round(w.get('baseline', {}).get('competitor_share', 0) * 100)} %.",
+                              "next_check": cp["due"], "from_changes": ch["id"]})
     # Agent Activity „Completed“: Research-Aktionen kommen aus dem Research Log (gruppiert je Opportunity + Tag), nicht doppelt gepflegt
     groups = {}
     for e in rl_log["events"]:

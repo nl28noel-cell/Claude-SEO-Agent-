@@ -567,6 +567,93 @@
       "meta": {
         "note": "Testentwurf (run-20261123T1610Z-OPP-03); am 24.11.2026 in den Drive-Papierkorb verschoben"
       }
+    },
+    {
+      "id": "SRC-023",
+      "type": "website",
+      "key": "https://www.spreewald-luftaufnahmen.de/dachinspektion-mit-drohne/",
+      "opp_ids": [
+        "OPP-01"
+      ],
+      "title": "Dachinspektion mit Drohne | Schnelle Dachkontrolle mit Drohne",
+      "domain": "spreewald-luftaufnahmen.de",
+      "url": "https://www.spreewald-luftaufnahmen.de/dachinspektion-mit-drohne/",
+      "fetched": "2026-11-24T11:55:07Z",
+      "fetched_precision": "exact",
+      "status": 200,
+      "error": null,
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-01/pages/spreewald-luftaufnahmen-de-dachinspektion-mit-drohne.json",
+      "meta": {
+        "h1": "Dachinspektion mit Drohne",
+        "words": 936,
+        "faq_questions": 2,
+        "schema_types": [
+          "BreadcrumbList",
+          "EntryPoint",
+          "ImageObject",
+          "ListItem",
+          "Organization",
+          "PropertyValueSpecification",
+          "ReadAction",
+          "SearchAction",
+          "WebPage",
+          "WebSite"
+        ],
+        "has_form": true
+      }
+    },
+    {
+      "id": "SRC-024",
+      "type": "website",
+      "key": "https://www.spreewald-luftaufnahmen.de/drohne-dach-gebaeude-inspektion/",
+      "opp_ids": [
+        "OPP-01"
+      ],
+      "title": "Drohneninspektion Berlin & Brandenburg | Gebäudeinspektion",
+      "domain": "spreewald-luftaufnahmen.de",
+      "url": "https://www.spreewald-luftaufnahmen.de/drohne-dach-gebaeude-inspektion/",
+      "fetched": "2026-11-24T11:55:11Z",
+      "fetched_precision": "exact",
+      "status": 200,
+      "error": null,
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-01/pages/spreewald-luftaufnahmen-de-drohne-dach-gebaeude-inspektion.json",
+      "meta": {
+        "h1": "Drohneninspektion für Gebäude in Berlin & Brandenburg",
+        "words": 1086,
+        "faq_questions": 1,
+        "schema_types": [
+          "BreadcrumbList",
+          "EntryPoint",
+          "ImageObject",
+          "ListItem",
+          "Organization",
+          "PropertyValueSpecification",
+          "ReadAction",
+          "SearchAction",
+          "WebPage",
+          "WebSite"
+        ],
+        "has_form": true
+      }
+    },
+    {
+      "id": "SRC-025",
+      "type": "gsc",
+      "key": "gsc-query-page-dachinspektion",
+      "opp_ids": [
+        "OPP-01"
+      ],
+      "title": "GSC · Query × Page · Cluster Dachinspektion",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "property": "https://www.spreewald-luftaufnahmen.de/ (URL-Präfix)",
+        "period": "2025-07-21 – 2026-11-20",
+        "dimensions": "query + page",
+        "filter": "Cluster „dachinspektion“ (23 Queries)",
+        "raw_path": "clients/spreewald-luftaufnahmen/data/gsc-2026-11/gsc_query_page.csv"
+      }
     }
   ],
   "findings": [
@@ -659,7 +746,34 @@
       "source_ids": [
         "SRC-015"
       ]
+    },
+    {
+      "id": "FND-010",
+      "opp": "OPP-01",
+      "section": "H",
+      "text": "Kannibalisierung: Der Gebäudeinspektion-Hub erhält 64 % der Dach-Impressionen (771, Ø Pos. 46,3), die Dachseite 33 % (397, Ø Pos. 38,1).",
+      "source_ids": [
+        "SRC-025"
+      ]
+    },
+    {
+      "id": "FND-011",
+      "opp": "OPP-01",
+      "section": "E",
+      "text": "Dachseite spricht Privat und B2B gleich an, verspricht „Mit Vermessung“ in der Description, keine Gutachten-Abgrenzung, kein Ablauf, keine FAQ.",
+      "source_ids": [
+        "SRC-023"
+      ]
+    },
+    {
+      "id": "FND-012",
+      "opp": "OPP-01",
+      "section": "E",
+      "text": "Der Hub beantwortet Dach-Fragen ausführlicher (Ablauf in 4 Schritten, „Das erhalten Sie“) und nennt „Dachinspektion“ in der Description.",
+      "source_ids": [
+        "SRC-024"
+      ]
     }
   ],
-  "updated": "2026-11-24T07:43:37Z"
+  "updated": "2026-11-24T11:57:20Z"
 }

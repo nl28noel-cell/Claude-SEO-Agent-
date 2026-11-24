@@ -142,3 +142,31 @@ Regeln:
 - `python3 tools/research_log.py validate <c>` prüft Referenzen, Zeitgenauigkeit und Semrush-Nachweise.
 
 Im Artifact: Navigation „Research Log“ (Filter Opportunity, Source Type, Action Type, Datum, Suche; Semrush-Kosten und Kontostand oben), je Opportunity die Karte „Research Evidence“ (Quellen nach Typ) und an den Dossier-Abschnitten „N Quellen anzeigen“.
+
+## Cannibalization Engine (`tools/cannibalization.py`) – fester Bestandteil jeder Opportunity
+
+Bevor eine neue Seite empfohlen oder eine bestehende wesentlich neu ausgerichtet wird, prüft die Engine automatisch beim Build:
+GSC Query × Page (16 Monate), Query-Cluster, Website-Inventar (URL/Title/H1, semantische Überschneidung) und vorhandene Semrush-Rankings je URL. Keine neuen API-Abfragen.
+
+| Ergebnis | Bedeutung |
+|---|---|
+| **Risk** low · medium · high (· nicht bewertbar ohne GSC-Daten) | Anteil anderer eigener URLs an den Cluster-Impressionen, Positionsvergleich, Queries mit mehreren rankenden URLs, umgekehrte Kannibalisierung (Zielseite zieht fremden Cluster) |
+| **Affected URLs** | URL, Impressionen, Anteil, Ø Position, Top-Queries, thematische Überschneidung |
+| **Agent decision** | CREATE · OPTIMIZE · MERGE · **DO NOT CREATE** (→ OPTIMIZE der bestehenden Seite) · **+ COMPANION** · **+ RELEASE** |
+| **Companion Optimization** | Bestehende Seite, die angepasst werden muss, damit beide Seiten sauber nebeneinander bestehen (Grund, nötige Änderungen, verknüpfte Opportunity). Vom Agenten im Dossier (`H_ia.companion`) geprüft hat Vorrang vor der Engine-Erkennung |
+
+Regeln: siehe Modulkopf. Die Engine entscheidet selbst (z. B. CREATE → DO NOT CREATE/OPTIMIZE). Warnungen nur bei Grenzfällen (medium bei CREATE), hohem Risiko oder wenn die Empfehlung vom Opportunity-Typ abweicht. MONITOR/IGNORE zeigen ihr Risiko, ohne die Entscheidung umzustellen.
+
+**Gate 1** fragt dann ausdrücklich: *Cancel* · *Recommendation übernehmen* · *Trotzdem freigeben*. Gespeichert werden `gate1.change_set` (Maßnahme, URL, Companions) und `gate1.cannibalization` (Risiko, Engine-Entscheidung, Wahl). Eine Freigabe mit Companion genehmigt beide Maßnahmen als **ein Change Set**: Der Runner erzeugt ein Drive-Dokument je Seite (`workflow.py doc-title … --companion <url>`), beide werden gemeinsam reviewt.
+
+**Nach Veröffentlichung**: Jede neue oder stark veränderte Seite bekommt im Change Log `cannibalization_watch` + Checkpoints „Kannibalisierung T+14/T+30/T+60“ (erscheinen in Agent Activity als geplant). Prüfung mit `cannibalization.monitor(target, rows_vorher, rows_nachher, queries)`: Gewinnt die Zielseite? Wechseln URLs? Verliert eine bestehende Seite? Alternieren zwei URLs? Bei `status = cannibalization`: Finding → Opportunity → konkrete Maßnahme.
+
+## Gate 1 beantwortet vier Fragen
+
+1. **Warum?** Nachfrage, Rankings, Business Value, Leads · 2. **Was genau?** Maßnahme + URL + Ziel (Agent-Empfehlung, ggf. abweichend vom Typ) + Change Set · 3. **Was steht auf der Seite?** Page Purpose, Themen, Zielgruppen, bewusst nicht enthalten, Abgrenzung, grobe H1/H2-Struktur (aus Dossier F/G; `F_scope.page_purpose` + `F_scope.topics`) · 4. **Was passiert mit anderen Seiten?** Kannibalisierungsrisiko, betroffene URLs, Architecture, Companion Optimization.
+
+Gate 1 genehmigt damit SEO-Maßnahme **und** fachlichen Scope. Der Gate-1-Kommentar ist eine verbindliche Scope-Änderung und hat in der Produktion Vorrang vor dem Dossier.
+
+## Local Opportunities (Service × Region)
+
+Gleiche Engine je Kombination aus `state/local.json`: Demand (GSC-Impressionen, Semrush nur aus dem Cache), aktuelles Ranking (URL + Position), Competition (nicht erhoben, keine Units), Business Fit, Cannibalization, Recommendation: **CREATE CITY PAGE** (nur bei eigenständiger lokaler Nachfrage ohne rankende Seite und mit echtem lokalem Bezug) · **USE MAIN SERVICE PAGE** (Hauptseite rankt bereits ≤ 10 oder Region ist Teil der Seite) · **OPTIMIZE EXISTING PAGE** · **MONITOR** (hoher Fit, kaum gemessene Nachfrage – 0 Volumen ≠ IGNORE) · **IGNORE**. Keine Doorway Pages.

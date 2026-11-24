@@ -364,7 +364,8 @@ pages.opportunity = id => {
   view().innerHTML = `<a class="back" href="#opportunities">← Opportunities</a>
   <div class="page-head"><div><div class="detail-head"><h1>${esc(o.name)}</h1>${typeChip(o.type)}${prioChip(o.priority)}${confChip(o.confidence)}${statusChip(o.status)}${o.freeze ? chip("Change freeze", "amber", true) : ""}</div>
     <div class="sub">${esc(o.id)} · Business fit ${o.business_fit}/10 · Primary keyword „${esc(o.primary_keyword)}“</div></div></div>
-  ${resStatus(o) ? `${researchBanner(o)}<div class="grid mt">${evidenceCard(o)}${researchView(o)}${gate1Card(o)}</div><h2 class="sec-h">Evidenz &amp; Rohdaten</h2>` : ""}
+  ${resStatus(o) ? `${researchBanner(o)}<div class="card mt" id="g1-brief"><div class="card-h"><div><h2>Gate 1 – Entscheidungsvorlage</h2><div class="hint">Freigabe = SEO-Maßnahme UND fachlicher Scope der Seite. Änderungen am Scope bitte im Gate-1-Kommentar.</div></div>${gate1Card(o, true)}</div><div class="card-b">${gate1Brief(o)}</div></div>` : `<div class="card mt"><div class="card-h"><h2>Cannibalization Risk</h2></div><div class="card-b">${cannibalBlock(o, true)}</div></div>`}
+  ${resStatus(o) ? `<div class="grid mt"><div class="card" id="rs-cannibal"><div class="card-h"><h2>Cannibalization &amp; Architecture</h2></div><div class="card-b">${cannibalBlock(o, true)}</div></div>${evidenceCard(o)}${researchView(o)}${gate1Card(o)}</div><h2 class="sec-h">Evidenz &amp; Rohdaten</h2>` : ""}
   <div class="grid g-main">
     <div class="grid">
       <div class="card"><div class="card-h"><h2>Why this matters</h2></div><div class="card-b"><p style="margin:0 0 10px">${esc(o.why)}</p><div class="callout"><b>Recommendation:</b> ${esc(o.recommendation)}</div>
@@ -763,6 +764,97 @@ pages["research-log"] = () => {
   draw();
 };
 document.addEventListener("click", e => { const a = e.target.closest("[data-rl-opp]"); if (a) { Object.assign(RLF, { opp: a.dataset.rlOpp, type: "", action: "", date: a.dataset.rlDate || "", q: "" }); } });
+/* ------------------------------------------------------------ Gate 1: vier Fragen + Kannibalisierung (eine Darstellung für Drawer und Detail) */
+const RISK = { high: ["High", "red"], medium: ["Medium", "amber"], low: ["Low", "green"], unknown: ["Nicht bewertbar", ""] };
+const riskChip = (r, pre = "Cannibalization: ") => { const [l, c] = RISK[r] || [r, ""]; return chip(pre + l, c, true); };
+/** Companion-Maßnahmen: vom Agenten im Dossier geprüft (Vorrang) oder von der Engine erkannt */
+const companionsOf = o => (o.research?.H_ia?.companion?.length ? o.research.H_ia.companion.map(c => ({ ...c, reviewed: true })) : (o.cannibalization?.companions || []));
+/** Was genau wird gemacht: Agent-Empfehlung (kann vom Opportunity-Typ abweichen, z. B. DO NOT CREATE → OPTIMIZE) */
+function agentPlan(o) {
+  const c = o.cannibalization || {}, comp = companionsOf(o).filter(x => x.direction !== "release");
+  return { action: c.action || o.type, url: c.action_url || o.existing_page || o.planned_url, changed: !!c.changed, decision: c.decision || o.type, companions: comp };
+}
+function pagePreview(o) {
+  const F = o.research?.F_scope, G = o.research?.G_structure;
+  if (!F) return `<div class="notice">Seiten-Scope noch nicht recherchiert – Research ausstehend. Gate 1 wäre nur als Override möglich.</div>`;
+  const topics = F.topics || (G?.sections || []).map(s => s.h2);
+  return `${F.page_purpose || F.core_message ? `<div class="callout"><b>Page Purpose:</b> ${esc(F.page_purpose || F.core_message)}</div>` : ""}
+    <div class="grid g2 mt"><div><h4>Themen auf der Seite</h4>${ul(topics)}</div>
+    <div><h4>Bewusst nicht enthalten</h4>${(F.not_on_page || []).length ? `<ul class="list">${F.not_on_page.map(x => `<li>${esc(x.topic)}</li>`).join("")}</ul>` : "–"}
+      ${F.audience?.length ? `<h4>Zielgruppen</h4><div>${esc(F.audience.join(" · "))}</div>` : ""}
+      ${F.delimitation?.length ? `<h4>Geplante Abgrenzung</h4><div>${F.delimitation.map(d => esc(d.service.replace(/ \(.*\)$/, ""))).join(" ≠ ")}</div>` : ""}</div></div>
+    ${G ? `<h4>Rough Page Structure</h4><ol class="rs-outline compact"><li><span class="chip outline">H1</span> ${esc(G.h1)}</li>${(G.sections || []).map(s => `<li><span class="chip outline">H2</span> ${esc(s.h2)}</li>`).join("")}</ol>` : ""}`;
+}
+function cannibalBlock(o, full = false) {
+  const c = o.cannibalization; if (!c) return "";
+  const comp = companionsOf(o), plan = agentPlan(o);
+  const rows = (c.affected || []).filter(a => a.share >= 0.02 || full);
+  return `<div class="row">${riskChip(c.risk)}${plan.changed ? chip(`Agent: ${o.type} → ${plan.decision}`, "amber", true) : chip(`Agent: ${c.decision}`, "outline")}</div>
+    <div class="mt">${(c.why || []).map(w => `<div>${esc(w)}</div>`).join("")}</div>
+    ${rows.length ? `<h4>Affected URLs</h4><div class="tbl-wrap"><table><thead><tr><th>URL</th><th class="num">Impr.</th><th class="num">Anteil</th><th class="num">Ø Pos.</th><th>Top-Queries</th></tr></thead><tbody>
+      ${c.target_stats ? `<tr><td class="path"><b>${esc(c.target)}</b> <span class="s">Ziel</span></td><td class="num">${fmtN(c.target_stats.impressions)}</td><td class="num">${fmtPct(c.target_stats.share, 0)}</td><td class="num">${fmtD(c.target_stats.position)}</td><td class="s">${esc((c.target_stats.top_queries || []).join(" · "))}</td></tr>` : ""}
+      ${rows.map(a => `<tr><td class="path">${esc(a.url)}${a.semantic_overlap ? ` <span class="s">· thematisch überlappend</span>` : ""}</td><td class="num">${fmtN(a.impressions)}</td><td class="num">${fmtPct(a.share, 0)}</td><td class="num">${fmtD(a.position)}</td><td class="s">${esc((a.top_queries || []).join(" · "))}</td></tr>`).join("")}</tbody></table></div>` : ""}
+    ${(c.foreign_intents || []).length ? `<div class="s mt">Zielseite zieht auch: ${c.foreign_intents.map(f => `„${esc(f.cluster)}“ ${fmtN(f.impressions)} Impr. (${fmtPct(f.share, 0)})${f.other_url ? ` – gehört zu ${esc(f.other_url)}` : ""}`).join(" · ")}</div>` : ""}
+    ${full && (c.split_queries || []).length ? `<h4>Queries mit mehreren rankenden URLs</h4>${c.split_queries.slice(0, 5).map(q => `<div class="s">„${esc(q.query)}“ (${fmtN(q.impressions)}): ${q.pages.map(p => `${esc(p.url)} Pos. ${fmtD(p.position)}`).join(" · ")}</div>`).join("")}` : ""}
+    <div class="callout ${c.risk === "high" ? "red" : c.risk === "medium" ? "amber" : "green"} mt"><b>Agent Recommendation:</b> ${esc(c.recommendation)}</div>
+    ${comp.length ? comp.map(x => `<div class="callout amber mt"><b>${x.direction === "release" ? "Abgrenzung" : "Companion Optimization required"}</b>${x.linked_opp ? ` · verknüpft mit <a href="#opp-${esc(x.linked_opp)}">${esc(x.linked_opp)}</a>` : ""}${x.reviewed ? ` ${chip("vom Agenten geprüft", "outline")}` : ` ${chip("von der Engine erkannt", "outline")}`}
+      <div>Affected page: <span class="path">${esc(x.url)}</span></div><div class="s">Reason: ${esc(x.reason)}</div>${x.required_changes?.length ? `<div class="s">Required changes:</div>${ul(x.required_changes)}` : ""}</div>`).join("") : ""}
+    <div class="mini mt">Basis: ${esc(c.basis?.source || "")} · ${fmtN(c.basis?.queries)} Queries · ${fmtN(c.basis?.impressions)} Impr.</div>`;
+}
+/** Gate-1-Entscheidungsvorlage: 1 Warum · 2 Was · 3 Was steht auf der Seite · 4 Was passiert mit anderen Seiten */
+function gate1Brief(o) {
+  const A = o.research?.A_decision, B = o.research?.B_demand, plan = agentPlan(o), f = S.d.funnel?.clusters.find(c => c.cluster === o.gsc_cluster);
+  const pk = (o.semrush?.keywords || []).find(k => k.status === "ok"), ct = o.gsc?.cluster_total;
+  const why = [ `Nachfrage: ${pk ? `„${esc(pk.keyword)}“ ${fmtN(pk.volume)}/Monat (KD ${fmtD(pk.kd, 0)})` : "Semrush nicht gemessen"}${ct ? ` · GSC-Cluster ${fmtN(ct.impressions)} Impr., ${fmtN(ct.clicks)} Klicks, Ø Pos. ${fmtD(ct.position)}` : ""}`,
+    `Business Value: Fit ${esc(o.business_fit)}/10 · Priorität ${esc(o.priority)}${f ? ` · ${fmtN(leadsOf(f.engagement))} Leads im Cluster (GA4)` : ""}`,
+    A?.why?.[0] ? esc(A.why[0]) : esc(o.why || "") ];
+  return `<div class="g1-brief">
+    <section><h3><span class="g1-n">1</span>Warum sollten wir das machen?</h3><ul class="list">${why.map(x => `<li>${x}</li>`).join("")}</ul></section>
+    <section><h3><span class="g1-n">2</span>Was genau werden wir machen?</h3>
+      <div class="row">${typeChip(plan.action)}<span class="path">${esc(plan.url || "–")}</span>${plan.companions.length ? chip(`+ ${plan.companions.length} Companion Optimization`, "amber") : ""}${plan.changed ? chip(`Abweichend von ${o.type}`, "amber", true) : ""}</div>
+      <p>${esc(A?.summary || o.recommendation || "")}</p>
+      ${plan.companions.length ? `<div class="s">Change Set: Hauptmaßnahme + ${plan.companions.map(c => esc(c.url)).join(", ")} – werden gemeinsam produziert und reviewt (je ein Drive-Dokument).</div>` : ""}</section>
+    <section><h3><span class="g1-n">3</span>Was wird auf der Seite behandelt?</h3>${pagePreview(o)}</section>
+    <section><h3><span class="g1-n">4</span>Was passiert mit unseren anderen Seiten?</h3>${cannibalBlock(o)}
+      ${o.research?.H_ia?.recommended?.parent ? `<div class="s mt">Architecture: Parent ${esc(o.research.H_ia.recommended.parent.url)} · ${esc(o.research.H_ia.consolidation?.decision || "")}</div>` : ""}</section>
+  </div>`;
+}
+/** Warnung vor Gate 1 bei Kannibalisierungsrisiko oder Abweichung von der Agent-Empfehlung – nie stillschweigend */
+function gateDialog(o) {
+  return new Promise(resolve => {
+    const c = o.cannibalization, plan = agentPlan(o);
+    const el = document.createElement("div"); el.className = "gate-dialog"; el.setAttribute("role", "alertdialog"); el.setAttribute("aria-modal", "true");
+    el.innerHTML = `<div class="gd-box"><h2>Cannibalization Risk detected ${riskChip(c.risk, "")}</h2>
+      <p>Diese ${o.type === "CREATE" ? "neue" : "überarbeitete"} Seite überschneidet sich mit:</p>
+      <ul class="list">${[...(c.affected || []).filter(a => a.share >= 0.1), ...(c.foreign_intents || []).filter(f => f.other_url).map(f => ({ url: f.other_url, share: f.share, foreign: f.cluster }))].map(a => `<li>→ <span class="path">${esc(a.url)}</span> <span class="s">${a.foreign ? `Zielseite zieht ${fmtPct(a.share, 0)} des Clusters „${esc(a.foreign)}“` : `${fmtPct(a.share, 0)} der Impressionen`}</span></li>`).join("") || "<li>–</li>"}</ul>
+      <h4>Warum?</h4>${(c.why || []).map(w => `<div class="s">${esc(w)}</div>`).join("")}
+      <h4>Empfehlung des Agenten</h4><div>${typeChip(plan.action)} <span class="path">${esc(plan.url)}</span>${plan.companions.length ? ` + Companion: ${plan.companions.map(x => esc(x.url)).join(", ")}` : ""}</div><div class="s">${esc(c.recommendation)}</div>
+      <div class="row mt"><button class="btn" data-g="cancel">Cancel</button><button class="btn primary" data-g="recommendation">Recommendation übernehmen</button><button class="btn danger" data-g="override">Trotzdem freigeben (${esc(o.type)}${plan.companions.length ? ", ohne Companion" : ""})</button></div></div>`;
+    document.body.appendChild(el); lockScroll(true);
+    const done = v => { el.remove(); lockScroll(!$("#wf-drawer")?.hidden); resolve(v); };
+    el.addEventListener("click", e => { const b = e.target.closest("[data-g]"); if (b) done(b.dataset.g); else if (e.target === el) done("cancel"); });
+    el.addEventListener("keydown", e => { if (e.key === "Escape") { e.stopPropagation(); done("cancel"); } });
+    setTimeout(() => el.querySelector('[data-g="recommendation"]').focus(), 20);
+  });
+}
+/* ------------------------------------------------------------ Local Opportunity Matrix (Service × Region, gleiche Kannibalisierungslogik) */
+const LREC = { "CREATE CITY PAGE": "blue", "USE MAIN SERVICE PAGE": "green", "OPTIMIZE EXISTING PAGE": "amber", MONITOR: "", IGNORE: "" };
+function localMatrix() {
+  const l = S.d.local, svc = Object.fromEntries(l.services.map(s => [s.key, s])), loc = Object.fromEntries(l.locations.map(x => [x.key, x]));
+  const rows = l.cells.map(c => ({ ...c, s: svc[c.service], l: loc[c.location], e: c.engine }));
+  return table({ rows, pageSize: 50, search: ["service", "location"], sort: { key: "fit", dir: -1 },
+    filters: [{ key: "rec", label: "Recommendation", options: Object.keys(LREC), match: (r, v) => r.e.recommendation === v }, { key: "can", label: "Cannibalization", options: ["High", "Medium", "Low"], match: (r, v) => r.e.cannibalization === v.toLowerCase() }],
+    columns: [
+      { key: "service", label: "Service", render: r => `<b>${esc(r.s.label)}</b><div class="s path">${esc(r.s.page)}</div>` },
+      { key: "location", label: "Region", render: r => esc(r.l.label) },
+      { key: "demand", label: "Demand", num: true, value: r => r.e.demand.gsc_impressions, tip: "GSC-Impressionen von Queries mit Leistung + Ort (16 Monate); Semrush-Lokalvolumen nur, wenn im Cache", render: r => `${r.e.demand.gsc_impressions ? `${fmtN(r.e.demand.gsc_impressions)} Impr.` : `<span class="s">keine GSC-Impr.</span>`}<div class="s">Semrush: ${r.e.demand.semrush_volume != null ? fmtN(r.e.demand.semrush_volume) : "nicht gemessen"}</div>` },
+      { key: "rank", label: "Current Ranking", value: r => r.e.ranking?.position ?? 999, render: r => r.e.ranking ? `Pos. ${fmtD(r.e.ranking.position)}<div class="s path">${esc(r.e.ranking.url)}</div>` : `<span class="s">–</span>` },
+      { key: "comp", label: "Competition", render: () => `<span class="s">nicht erhoben</span>` },
+      { key: "fit", label: "Business Fit", num: true, value: r => r.e.business_fit, render: r => `${r.e.business_fit}/10` },
+      { key: "can", label: "Cannibalization", value: r => ({ high: 3, medium: 2, low: 1 }[r.e.cannibalization] || 0), render: r => riskChip(r.e.cannibalization, "") },
+      { key: "rec", label: "Recommendation", render: r => `${chip(r.e.recommendation, LREC[r.e.recommendation] || "", true)}<div class="s">${esc(r.e.why)}</div>${r.recommendation ? `<div class="s">Notiz: ${esc(r.recommendation)}</div>` : ""}` },
+    ] });
+}
 /* ------------------------------------------------------------ Research-/Strategy-Stufe (A–J, vor Gate 1) */
 const RES_READY = ["complete", "complete_with_limits"];
 const RES_COLOR = { complete: "green", complete_with_limits: "blue", incomplete: "amber", not_started: "" };
@@ -782,7 +874,7 @@ function researchBanner(o) {
   const cls = { complete: "green", complete_with_limits: "", incomplete: "amber", not_started: "amber" }[r.state];
   return `<div class="callout ${cls} rs-banner"><div class="row">${resChip(o)}${r.version ? `<span class="mini">Research v${esc(r.version)} · ${fmtDateTime(r.updated)} · Semrush-Units ${fmtN(r.units || 0)} · SERP ${esc({ validated: "validiert", indicative: "indikativ", missing: "fehlt" }[r.serp_quality] || "–")}</span>` : ""}</div>
     ${r.limits?.length ? `<div class="mt"><b>Grenzen</b>${ul(r.limits)}</div>` : ""}
-    ${r.state === "incomplete" || r.state === "not_started" ? `<div class="mt"><b>Fehlt</b>${ul([...(r.pending || []), ...(r.missing || [])].slice(0, 10))}<div class="s">Ohne vollständige Research startet keine Produktion. Gate 1 ist nur mit ausdrücklichem Override möglich.</div></div>` : ""}
+    ${r.state === "incomplete" || r.state === "not_started" ? `<div class="mt"><b>Fehlt</b>${ul([...(r.pending || []), ...(r.missing || [])].filter((x, i, arr) => arr.findIndex(y => y.slice(0, 26) === x.slice(0, 26)) === i).slice(0, 10))}<div class="s">Ohne vollständige Research startet keine Produktion. Gate 1 ist nur mit ausdrücklichem Override möglich.</div></div>` : ""}
     ${o.research?.status?.optional_validation ? `<div class="s mt">Optional: ${esc(o.research.status.optional_validation)}</div>` : ""}
     ${legacy ? `<div class="mt"><b>Gate 1 vom ${fmtDateTime(w.gate1.at)}</b> wurde vor der Research-Stufe erteilt und gilt nicht als Strategie-Freigabe. Bitte Strategie neu freigeben.</div>` : ""}</div>`;
 }
@@ -860,9 +952,10 @@ function researchView(o) {
   out.push(rsCard("J", "J · Risks / Unknowns", (R.J_risks || []).length ? `<ul class="list">${R.J_risks.map(x => `<li>${chip(...(JT[x.type] || JT.risk))} ${esc(x.item)}<div class="s">→ ${esc(x.mitigation)}</div></li>`).join("")}</ul>` : "–"));
   return `<nav class="rs-toc" aria-label="Research-Abschnitte">${RS_TITLES.map(([k, t]) => `<a class="chip" href="#opp-${esc(o.id)}" data-rs="${k}">${k} · ${esc(t)}</a>`).join("")}</nav>${out.join("")}`;
 }
-function gate1Card(o) {
+function gate1Card(o, compact = false) {
   const r = resStatus(o); if (!r) return "";
   const w = wfDoc(o.id), col = wfCol(w), [l, c] = wfLabel(w);
+  if (compact) return `<div class="row">${chip(l, c, true)}${col === "review" ? `<button class="btn primary" data-gate1="${esc(o.id)}">Zur Gate-1-Freigabe</button>` : ""}</div>`;
   return `<div class="card rs-gate"><div class="card-h"><div><h2>Gate 1 – Strategie freigeben</h2><div class="hint">Freigabe der Strategie A–J. Danach erstellt Claude den Entwurf als Google Doc. Keine Website-Änderung.</div></div>${chip(l, c, true)}</div>
     <div class="card-b"><div class="row">${resChip(o)}${col === "review" ? `<button class="btn primary" data-gate1="${esc(o.id)}">${RES_READY.includes(r.state) ? "Gate 1 – Strategie freigeben" : "Zur Freigabe (Override nötig)"}</button>` : `<a class="btn" href="#approvals" data-gate1="${esc(o.id)}">Im Workflow öffnen</a>`}</div></div></div>`;
 }
@@ -945,7 +1038,7 @@ function wfCard({ id, o }) {
     <div class="wf-url s">${o.existing_page ? `Bestehend: ${esc(o.existing_page)}` : o.planned_url ? `Geplant: ${esc(o.planned_url)}` : o.test ? "Testdatei" : "Neue Seite (URL offen)"}</div>
     <p class="wf-why">${esc(short)}</p>
     <div class="wf-sig">${wfSignals(o).join("")}</div>
-    ${o.test ? "" : `<div class="wf-res">${resChip(o)}</div><div class="wf-state s">${wfStateLine(w)}</div>`}
+    ${o.test ? "" : `<div class="wf-res">${resChip(o)}${o.cannibalization ? riskChip(o.cannibalization.risk) : ""}${agentPlan(o).companions.length ? chip("+ Companion", "amber") : ""}</div><div class="wf-state s">${wfStateLine(w)}</div>`}
     <div class="wf-foot">${chip(l, c, true)}${w?.production?.doc_url && col !== "review" ? `<a href="${esc(w.production.doc_url)}" target="_blank" rel="noopener" class="mini">Entwurf ↗</a>` : ""}</div>
   </article>`;
 }
@@ -968,8 +1061,8 @@ pages.approvals = () => {
   board.addEventListener("drop", e => { const col = e.target.closest('.wf-col[data-col="production"]'); if (!col) return; e.preventDefault(); col.classList.remove("over");
     const id = e.dataTransfer.getData("text/plain"); if (id && wfCol(wfDoc(id)) === "review") openCard(id, { approve: true }); });
   $("#wf-drawer").addEventListener("click", e => { if (e.target.closest("[data-close]")) closeCard(); });
-  document.addEventListener("keydown", wfEsc);
 };
+document.addEventListener("keydown", e => wfEsc(e));
 function wfEsc(e) { if (e.key === "Escape" && $("#wf-drawer") && !$("#wf-drawer").hidden) closeCard(); }
 function renderBoard() {
   const el = $("#wf-board"); if (!el) return;
@@ -992,9 +1085,10 @@ function openCard(id, opts = {}) {
         ${o.research?.A_decision?.summary ? `<p>${esc(o.research.A_decision.summary)}</p>` : ""}
         ${rs.limits?.length ? `<div class="s"><b>Grenzen:</b> ${esc(rs.limits.join(" "))}</div>` : ""}
         ${wfLegacy(w) ? `<div class="notice mt">Die Gate-1-Freigabe vom ${fmtDateTime(w.gate1.at)}${w.gate1.comment ? ` („${esc(w.gate1.comment)}“)` : ""} wurde vor der Research-Stufe erteilt. Sie bleibt im Verlauf, startet aber keine Produktion.</div>` : ""}` : ""}
-      <p class="s">Bedeutet: Du gibst die Strategie frei (Entscheidung, Scope, Struktur, Informationsarchitektur). Danach erstellt Claude einen vollständigen Content-Entwurf als Google Doc im Ordner „Claude Landingpages“. Bedeutet nicht: Website/WordPress ändern, bestehende Seite überschreiben, veröffentlichen oder URLs ändern.</p>
+      ${o.test ? "" : gate1Brief(o)}
+      <p class="s">Bedeutet: Du gibst die Strategie UND den fachlichen Scope der Seite frei (Entscheidung, Themen, Abgrenzung, Struktur, Auswirkungen auf andere Seiten). Danach erstellt Claude einen vollständigen Content-Entwurf als Google Doc im Ordner „Claude Landingpages“. Bedeutet nicht: Website/WordPress ändern, bestehende Seite überschreiben, veröffentlichen oder URLs ändern.</p>
       ${rsReady ? "" : `<div class="callout amber"><b>${esc(rs.label)}</b><div class="s">Die Strategie ist nicht vollständig recherchiert. Eine Freigabe ist nur als bewusster Override möglich und wird protokolliert.</div><label class="row mt"><input type="checkbox" id="wf-ovr"> Ohne vollständige Research freigeben (Override)</label></div>`}
-      <label class="mini" for="wf-c1">Kommentar für das Produktionsbriefing (optional)</label><textarea id="wf-c1" placeholder="z. B. Zeitraffer bieten wir nicht an; Quartals-Begleitung darf als Beispiel genannt werden."></textarea>
+      <label class="mini" for="wf-c1">Kommentar / Scope-Änderungen (werden verbindlich in die Produktionsvorgabe übernommen, Vorrang vor dem Dossier)</label><textarea id="wf-c1" placeholder="z. B. Bodenaufnahmen bitte nicht als Standardleistung darstellen. · Versicherungen als zusätzliche Zielgruppe berücksichtigen."></textarea>
       <div class="row"><button class="btn primary" data-act="approve" ${canWrite ? "" : "disabled"}>${rsReady ? "Strategie freigeben" : "Mit Override freigeben"}</button>${opts.approve ? `<span class="mini">Per Drag & Drop gewählt – zum Freigeben bestätigen.</span>` : ""}<span class="mini" data-msg></span></div></div>`;
   else if (col === "production") action = `<div class="wf-action"><h3>${esc(l)}</h3>
       <div class="kv"><div class="k">Gate 1</div><div>${fmtDateTime(w.gate1.at)}${w.gate1.comment ? ` · „${esc(w.gate1.comment)}“` : ""}</div>
@@ -1009,6 +1103,7 @@ function openCard(id, opts = {}) {
   else if (col === "draft" || col === "final") { const p = w.production || {};
     action = `<div class="wf-action"><h3>${esc(l)}</h3>
       <div class="row"><a class="btn primary" href="${esc(p.doc_url)}" target="_blank" rel="noopener">Entwurf öffnen ↗</a><span class="s">${esc(p.doc_title || "")}</span></div>
+      ${(p.documents || []).filter(d => d.role === "companion").map(d => `<div class="row mt"><a class="btn" href="${esc(d.doc_url)}" target="_blank" rel="noopener">Companion öffnen ↗</a><span class="s">${esc(d.doc_title || d.url)} · gehört zum selben Change Set</span></div>`).join("")}
       <div class="kv mt"><div class="k">Erstellt</div><div>${fmtDateTime(p.created_at)}</div><div class="k">Letzte Änderung</div><div>${fmtDateTime(p.updated_at)}</div>
       <div class="k">Version</div><div>v${esc(p.version || 1)}${(p.history || []).length > 1 ? ` · frühere: ${(p.history || []).filter(h => h.version !== p.version).map(h => `<a href="${esc(h.doc_url)}" target="_blank" rel="noopener">v${esc(h.version)}</a>`).join(", ")}` : ""}</div>
       <div class="k">QA</div><div>${chip(p.qa_status || "Unknown", /pass/i.test(p.qa_status || "") ? "green" : "amber", true)}${p.qa_notes ? `<div class="s">${esc(p.qa_notes)}</div>` : ""}</div>
@@ -1037,11 +1132,14 @@ function openCard(id, opts = {}) {
       ${w?.test_phase ? `<div class="callout mt"><b>Test phase · superseded</b>${(w.gate1?.superseded || []).map(g => `<div class="s">Gate 1 vom ${fmtDateTime(g.at)}${g.comment ? ` („${esc(g.comment)}“)` : ""} – ${esc(g.superseded_as)}, löst keine Produktion aus</div>`).join("")}
         ${w.test_phase.production?.status ? `<div class="s">Produktion in der Testphase: ${esc(PROD_LABEL[w.test_phase.production.status] || w.test_phase.production.status)}${w.test_phase.production.doc_title ? ` · „${esc(w.test_phase.production.doc_title)}“ (${esc(w.test_phase.production.doc_trashed_note || "")})` : ""}</div>` : ""}
         ${w.cleanup ? `<div class="s">${fmtDateTime(w.cleanup.at)} · Workflow Cleanup: ${esc(w.cleanup.note)}</div>` : ""}</div>` : ""}</div>` : ""}`;
-  $("#wf-drawer").hidden = false; document.body.style.overflow = "hidden";
+  $("#wf-drawer").hidden = false; lockScroll(true);
   $("#wf-panel-body").querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", () => wfAct(b.dataset.act, c)));
   setTimeout(() => ($("#wf-c1") || $("#wf-panel-body [data-close]"))?.focus(), 30);
 }
-function closeCard() { WF_OPEN = null; const d = $("#wf-drawer"); if (d) d.hidden = true; document.body.style.overflow = ""; }
+function closeCard() { WF_OPEN = null; const d = $("#wf-drawer"); if (d) d.hidden = true; lockScroll(false); }
+/** Scroll-Sperre nur solange ein Drawer/Dialog offen ist. Jede Navigation hebt sie auf (route → lockScroll(false)),
+    damit ein über einen Link verlassener Drawer die nächste Seite nicht blockiert. */
+function lockScroll(on) { document.documentElement.classList.toggle("scroll-locked", !!on); document.body.style.overflow = ""; }
 async function wfAct(act, c) {
   const msg = $("#wf-panel-body [data-msg]"), id = c.id, o = c.o, now = new Date().toISOString();
   const say = t => { if (msg) msg.textContent = t; };
@@ -1052,9 +1150,15 @@ async function wfAct(act, c) {
     const comment = ($("#wf-c1")?.value || "").trim(), rs = o.test ? null : resStatus(o), ready = !rs || RES_READY.includes(rs.state);
     const override = !ready && !!$("#wf-ovr")?.checked;
     if (!ready && !override) return say("Research unvollständig – bitte Override bestätigen oder Research abwarten.");
-    patch = { gate1: { status: "approved", at: now, comment, research_version: rs?.version ?? null, research_state: rs?.state ?? null, research_override: override },
+    const plan = o.test ? null : agentPlan(o), cz = o.cannibalization;
+    let choice = "recommendation";
+    if (cz && cz.warning && !o.test) { choice = await gateDialog(o); if (choice === "cancel") return say("Abgebrochen – nichts gespeichert."); }
+    const cs = plan ? (choice === "override" ? { action: o.type, url: o.existing_page || o.planned_url || null, companions: [] }
+      : { action: plan.action, url: plan.url || null, companions: plan.companions.map(c => ({ url: c.url, reason: c.reason, required_changes: c.required_changes || [], linked_opp: c.linked_opp || null })) }) : null;
+    patch = { gate1: { status: "approved", at: now, comment, research_version: rs?.version ?? null, research_state: rs?.state ?? null, research_override: override,
+        change_set: cs, cannibalization: cz ? { risk: cz.risk, engine_decision: cz.decision, choice: cz.warning ? choice : "no_warning" } : null },
       production: { ...(cur?.production || {}), status: "waiting", block_reason: null, block_detail: null }, review: { status: "none" } };
-    ev = { gate: 1, decision: override ? "approve_override" : "approve", comment: (override ? "[Override ohne vollständige Research] " : rs?.version ? `[Strategie Research v${rs.version}] ` : "") + comment };
+    ev = { gate: 1, decision: override || choice === "override" ? "approve_override" : "approve", comment: (override ? "[Override ohne vollständige Research] " : rs?.version ? `[Strategie Research v${rs.version}] ` : "") + (cz?.warning ? `[Kannibalisierung ${cz.risk}: ${choice === "override" ? "trotzdem freigegeben" : "Empfehlung übernommen"}] ` : "") + (cs?.companions?.length ? `[Change Set + ${cs.companions.map(c => c.url).join(", ")}] ` : "") + comment };
   } else if (act === "revise") {
     const comment = ($("#wf-c2")?.value || "").trim();
     if (!comment) return say("Bitte beschreibe kurz, was geändert werden soll.");
@@ -1163,9 +1267,11 @@ function renderMkDetail(x) {
 
 pages.local = () => {
   const l = S.d.local;
+  setTimeout(() => { const m = $("#local-matrix"); if (m) mount("local-matrix", localMatrix()); }, 0);
   const cell = (s, loc) => l.cells.find(c => c.service === s && c.location === loc);
   view().innerHTML = `<div class="page-head"><div><h1>Local SEO</h1><div class="sub">Service × location. Only measured data is shown – „Not measured“ is not „0 demand“, and 0 search volume never means IGNORE.</div></div></div>
-  <div class="card"><div class="card-h"><div><h2>Local opportunity matrix</h2><div class="hint">GSC: impressions of queries containing service + location (16 months) · Semrush: local combinations not yet measured · Competition: not measured (SERP check pending)</div></div></div>
+  <div class="card"><div class="card-h"><div><h2>Local Opportunity Matrix</h2><div class="hint">Service × Region × Demand × Ranking × Competition × Business Fit × Cannibalization → Recommendation. Nur vorhandene Daten (GSC, Semrush-Cache, Inventar) – fehlende Werte sind markiert, keine Units für Vollständigkeit verbraucht. 0 Volumen ≠ IGNORE; City Pages nur mit eigenständigem lokalem Nutzen (keine Doorway Pages).</div></div></div><div id="local-matrix"></div></div>
+  <div class="card mt"><div class="card-h"><div><h2>GSC-Signal je Service × Ort</h2><div class="hint">GSC: impressions of queries containing service + location (16 months) · Semrush: local combinations not yet measured · Competition: not measured (SERP check pending)</div></div></div>
     <div class="card-b" style="padding-bottom:10px"><div class="row mini"><span>◐ regional page (Berlin &amp; Brandenburg in page)</span><span>○ service page exists, location not addressed</span><span>– no page</span><span>Empty recommendation = not assessed yet</span></div></div><div class="card-b flush"><div class="tbl-wrap"><table class="matrix"><thead><tr><th>Service (prio)</th>${l.locations.map(x => `<th data-tip="${esc(`Einwohner ${x.population} · Entfernung ab Schönefeld ${x.distance_km} km (gerundet, zu verifizieren)`)}">${esc(x.label)}</th>`).join("")}</tr></thead><tbody>
     ${l.services.map(s => `<tr><td><b>${esc(s.label)}</b><div class="s">${s.priority}/10 · ${esc(s.page)}</div></td>${l.locations.map(loc => { const c = cell(s.key, loc.key); return `<td class="cell ${c.gsc.impressions ? "has" : ""}">
       ${c.gsc.impressions ? `<div class="v" data-tip="${esc(c.gsc.examples.join(" · "))}">${fmtN(c.gsc.impressions)} impr. · pos ${fmtD(c.gsc.best_position)}</div>` : `<div class="s">no GSC signal</div>`}
@@ -1246,6 +1352,7 @@ window.go = go;
 document.addEventListener("click", e => { const t = e.target.closest("[data-go]"); if (t && !e.target.closest("a,button")) go(t.dataset.go); });
 function route(keepScroll = false) {
   tip.hide();
+  WF_OPEN = null; lockScroll(false); $(".gate-dialog")?.remove();
   if (!S.d) return;
   const r = parseHash();
   if (location.hash.startsWith("#/")) { history.replaceState(null, "", "#" + (r.id ? "opp-" + r.id : r.key)); }

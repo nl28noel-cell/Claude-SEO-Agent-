@@ -1,0 +1,624 @@
+{
+  "schema": 1,
+  "opp_id": "OPP-01",
+  "client": "spreewald-luftaufnahmen",
+  "version": 1,
+  "updated": "2026-11-24T11:57:20Z",
+  "author": "agent",
+  "changelog": [
+    {
+      "version": 1,
+      "date": "2026-11-24",
+      "note": "Erstes Dossier aus vorhandenen Daten (GSC, Inventar, Semrush-Cache, Live-Abruf eigener Seiten, Business-Profil). Wettbewerbsrecherche ausstehend."
+    }
+  ],
+  "status": {
+    "state": "incomplete",
+    "limits": [
+      "Semrush SERP nicht abgefragt (Budget-Reserve).",
+      "Änderungsstopp CL-001 (Canonical-Fix vom 23.11.): Umsetzung auf der Website erst nach der Bewertung des Fixes; ein Entwurf im Drive ist davon nicht betroffen."
+    ],
+    "pending": [
+      "Independent Web Research / Wettbewerbsanalyse ausstehend"
+    ],
+    "optional_validation": "Independent Web Research für „dachinspektion drohne“ (0 Units), Wettbewerberseiten profilieren; Semrush SERP (100 Units) automatisch, sobald Budget über Reserve."
+  },
+  "method": {
+    "cost_order": [
+      {
+        "step": "Cache (Semrush-Keyword-Cache)",
+        "used": true,
+        "units": 0,
+        "note": "dachinspektion drohne 110 / dachinspektion 320 / dachcheck 140 / dach inspektion 40"
+      },
+      {
+        "step": "Google Search Console",
+        "used": true,
+        "units": 0,
+        "note": "23 Cluster-Queries, Query × Page (Kannibalisierung mit dem Gebäudeinspektion-Hub)"
+      },
+      {
+        "step": "Bestehende Website",
+        "used": true,
+        "units": 0,
+        "note": "Live-Abruf /dachinspektion-mit-drohne/ und /drohne-dach-gebaeude-inspektion/ am 24.11.2026"
+      },
+      {
+        "step": "Semrush Organic Results",
+        "used": false,
+        "units": 0,
+        "note": "budget_hold"
+      },
+      {
+        "step": "Web-/Marktrecherche",
+        "used": false,
+        "units": 0,
+        "note": "Ausstehend"
+      }
+    ],
+    "semrush_units_used": 0,
+    "serp_source": "Keine SERP, keine Web-Recherche bisher",
+    "serp_quality": "missing"
+  },
+  "A_decision": {
+    "decision": "OPTIMIZE",
+    "confidence": "medium",
+    "target_url": "/dachinspektion-mit-drohne/",
+    "summary": "Die Dachinspektion-Seite soll die Zielseite für Dach-Queries werden. Heute erhält der Gebäudeinspektion-Hub 64 % der Dach-Impressionen, die Dachseite nur 33 % – beide ranken schwach (Ø Pos. 46 bzw. 38). Lösung: Dachseite auf B2B-Dachinspektion schärfen UND den Hub so abgrenzen, dass er Dach-Queries an die Dachseite abgibt (Companion Optimization, verknüpft mit OPP-03). Keine neue Seite.",
+    "why": [
+      "Prio-9-Leistung mit messbarer Nachfrage: dachinspektion drohne 110, dachinspektion 320, dachcheck 140 Suchen/Monat (Semrush, DE).",
+      "Kannibalisierung belegt (GSC): Hub /drohne-dach-gebaeude-inspektion/ 771 Impr. (64 %) vs. Dachseite 397 Impr. (33 %) im Cluster.",
+      "Die Dachseite spricht heute Privatpersonen und B2B gleichzeitig an und verspricht „Mit Vermessung“ in der Description – Schärfung auf B2B (Hausverwaltungen, Bestandshalter, Gewerbe) und klare Abgrenzung nötig.",
+      "Canonical-Fix (CL-001) wirkt erst nach Re-Crawl; Umsetzung erst nach dessen Bewertung."
+    ],
+    "alternatives": [
+      {
+        "option": "MERGE Dachseite in den Hub",
+        "verdict": "verworfen",
+        "reason": "Dachinspektion ist eigenständige Prio-9-Leistung mit eigener Nachfrage; der Hub bündelt mehrere Inspektionsarten."
+      },
+      {
+        "option": "CREATE Stadtseite „Dachinspektion Berlin“",
+        "verdict": "verworfen",
+        "reason": "Berlin-Queries landen heute auf beiden Seiten (Pos. 17–27); zuerst Rollen klären, keine weitere URL."
+      },
+      {
+        "option": "OPTIMIZE nur die Dachseite",
+        "verdict": "verworfen",
+        "reason": "Ohne Abgrenzung des Hubs bleibt die Kannibalisierung bestehen."
+      }
+    ],
+    "gate1_question": "Strategie freigeben: /dachinspektion-mit-drohne/ zur B2B-Zielseite für Dachinspektion schärfen UND den Gebäudeinspektion-Hub als Companion abgrenzen (ein Change Set) – Entwurf als Google Doc, Umsetzung erst nach CL-001-Bewertung?"
+  },
+  "B_demand": {
+    "keywords": [
+      {
+        "keyword": "dachinspektion drohne",
+        "role": "primary",
+        "volume": 110,
+        "kd": 7,
+        "cpc": 2.87,
+        "gsc_impr": 150,
+        "gsc_pos": 61.8,
+        "gsc_pos_90d": 50.9,
+        "intent": "Dienstleister (kommerziell)"
+      },
+      {
+        "keyword": "dachinspektion mit drohne",
+        "role": "secondary",
+        "volume": null,
+        "kd": null,
+        "cpc": null,
+        "gsc_impr": 205,
+        "gsc_pos": 51.5,
+        "gsc_pos_90d": 43.5,
+        "intent": "Dienstleister"
+      },
+      {
+        "keyword": "dachinspektion per drohne",
+        "role": "secondary",
+        "volume": null,
+        "kd": null,
+        "cpc": null,
+        "gsc_impr": 171,
+        "gsc_pos": 36.6,
+        "gsc_pos_90d": 26.6,
+        "intent": "Dienstleister"
+      },
+      {
+        "keyword": "dachinspektion per drohne berlin",
+        "role": "secondary",
+        "volume": null,
+        "kd": null,
+        "cpc": null,
+        "gsc_impr": 110,
+        "gsc_pos": 17.3,
+        "gsc_pos_90d": 20.2,
+        "intent": "Lokaler Anbieter"
+      },
+      {
+        "keyword": "dachinspektion",
+        "role": "supporting",
+        "volume": 320,
+        "kd": 14,
+        "cpc": 1.64,
+        "gsc_impr": 16,
+        "gsc_pos": 41.1,
+        "gsc_pos_90d": 38.3,
+        "intent": "Gemischt (Dachdecker, Ratgeber, Drohne)"
+      },
+      {
+        "keyword": "dachcheck",
+        "role": "supporting",
+        "volume": 140,
+        "kd": 17,
+        "cpc": 0.79,
+        "gsc_impr": null,
+        "gsc_pos": null,
+        "gsc_pos_90d": null,
+        "intent": "Vermutlich Dachdecker-/Ratgeber-Intent (nicht SERP-geprüft)"
+      },
+      {
+        "keyword": "dachkontrolle mit drohne",
+        "role": "supporting",
+        "volume": null,
+        "kd": null,
+        "cpc": null,
+        "gsc_impr": 25,
+        "gsc_pos": 12.9,
+        "gsc_pos_90d": 37,
+        "intent": "Dienstleister"
+      }
+    ],
+    "cluster": {
+      "queries": 23,
+      "impressions": 1195,
+      "clicks": 2,
+      "avg_position": 44.4
+    },
+    "ga4": "Cluster 16 Monate: 11 Sitzungen, 2 Leads (1 Formular, 1 Kontakt), Funnel Intent 3 Sitzungen.",
+    "notes": [
+      "Semrush-Ranking der Dachseite: „dachinspektion mit drohne“ Pos. 45 (23.11.).",
+      "Kein Klickvolumen – Positionen 35–80 sind das Problem, nicht die Nachfrage."
+    ]
+  },
+  "C_serp": {
+    "source": "Semrush SERP: Pending – budget hold · Independent Web Research: Pending",
+    "quality": "missing",
+    "quality_note": "Für OPP-01 liegt noch keine SERP- und keine Wettbewerbsrecherche vor.",
+    "serp_status": "pending – budget_hold",
+    "intent_verdict": "Hypothese aus GSC und Keyword-Muster: „… drohne“-Varianten kommerziell (Dienstleister); „dachinspektion“/„dachcheck“ ohne Drohne vermutlich Dachdecker-/Ratgeber-Intent. Nicht SERP-geprüft.",
+    "serp_competitors": [],
+    "research_competitors": [],
+    "validation": {
+      "semrush": {
+        "status": "pending_budget_hold"
+      },
+      "independent_web": {
+        "status": "pending"
+      }
+    },
+    "own_position": "GSC: Cluster Ø Pos. 44,4; „dachinspektion per drohne berlin“ 17,3 (Dachseite)"
+  },
+  "D_competitors": [],
+  "E_gap": {
+    "competitors_cover": [],
+    "we_cover": [
+      "Dachinspektion ohne Gerüst/Hubsteiger, schwer zugängliche Bereiche, Fotos und Videos (Dachseite)",
+      "Anlässe: nach Sturm/Hagel, Sanierungsplanung, Versicherungsfall, vor Immobilienkauf",
+      "Übergabe: Übersichts- und Detailaufnahmen, digital, weitergebbar an Dachdecker/Versicherungen",
+      "Optional ergänzende Dachvermessung (Partner)",
+      "Hausverwaltungen, Wohnungsbaugesellschaften, Bauunternehmen erwähnt"
+    ],
+    "we_miss": [
+      "Klare B2B-Ausrichtung: Seite spricht Privatpersonen und Unternehmen gleich stark an",
+      "Abgrenzung „visuelle Inspektion ersetzt kein Gutachten“ fehlt (Profil §8)",
+      "Kein Ablauf in Schritten, keine FAQ",
+      "Description verspricht „Mit Vermessung“ (nur optional über Partner) und „Jetzt buchen!“",
+      "„Als zertifizierter Drohnenpilot“ (Einzahl) widerspricht Wir-Perspektive (Profil §10)",
+      "Hub beantwortet Dach-Fragen ausführlicher als die Dachseite → Google wählt den Hub"
+    ],
+    "outperform": [
+      "Erst nach Wettbewerbsrecherche bewertbar."
+    ]
+  },
+  "F_scope": {
+    "page_purpose": "Hausverwaltungen, Bestandshaltern und Gewerbe zeigen, wie wir Dachflächen per Drohne ohne Gerüst visuell prüfen und dokumentieren – als Grundlage für Wartung, Sanierungsplanung und Versicherungsfälle.",
+    "topics": [
+      "Was ist eine Dachinspektion per Drohne – und was nicht (visuelle Inspektion, kein Gutachten)",
+      "Anlässe: nach Sturm/Hagel, Wartungsplanung, Sanierungsvorbereitung, Versicherungsfall, vor Ankauf",
+      "Vorteile gegenüber Gerüst/Hubsteiger (Sicherheit, Zeit, schwer zugängliche Bereiche)",
+      "Was Sie erhalten: Übersichts- und Detailaufnahmen (Foto/Video), digitale Übergabe zur Weitergabe an Dachdecker/Versicherer",
+      "Für wen: Hausverwaltungen, Wohnungswirtschaft, Bestandshalter, Gewerbe, Dachdecker",
+      "Ablauf (Anfrage → Planung/Genehmigung → Flug → Übergabe)",
+      "Optional: Dachvermessung über Partner (Verweis auf Dachvermessungsseite)",
+      "Kosten/Anfrage",
+      "FAQ"
+    ],
+    "core_message": "Wir prüfen Ihre Dachflächen per Drohne schnell und ohne Gerüst und liefern eine nachvollziehbare Bilddokumentation als Grundlage für Wartung, Sanierung und Versicherungsfälle.",
+    "search_intent": "Kommerziell: Auftraggeber sucht einen Dienstleister für eine Dachinspektion per Drohne.",
+    "audience": [
+      "Hausverwaltungen / Wohnungswirtschaft",
+      "Bestandshalter / Gewerbeimmobilien",
+      "Dachdecker (Angebotsgrundlage)",
+      "Sachverständige / Versicherungsumfeld (als Empfänger)"
+    ],
+    "key_questions": [
+      {
+        "group": "Verständnis",
+        "questions": [
+          "Was kann eine Drohneninspektion am Dach leisten – und was nicht (kein Gutachten)?",
+          "Wann lohnt sie sich gegenüber Gerüst oder Hubsteiger?"
+        ]
+      },
+      {
+        "group": "Ergebnis",
+        "questions": [
+          "Was bekomme ich (Übersicht, Details, Foto/Video) und wie schnell?",
+          "Kann ich die Aufnahmen an Dachdecker oder Versicherung weitergeben?"
+        ]
+      },
+      {
+        "group": "Organisation & Kosten",
+        "questions": [
+          "Wer kümmert sich um Genehmigungen?",
+          "Was kostet eine Dachinspektion und wovon hängt es ab?",
+          "Geht das auch für mehrere Objekte eines Bestands?"
+        ]
+      },
+      {
+        "group": "Abgrenzung",
+        "questions": [
+          "Dachinspektion, Gebäudeinspektion oder Dachvermessung – was brauche ich?"
+        ]
+      }
+    ],
+    "service_info": [
+      {
+        "text": "Visuelle Dachinspektion per Drohne, Fotos und Videos (Übersicht + Details)",
+        "evidence": "Website, Business-Profil §3"
+      },
+      {
+        "text": "Digitale Bereitstellung, Lieferung i. d. R. 5–7 Werktage",
+        "evidence": "Business-Profil §8"
+      },
+      {
+        "text": "Komplette Organisation inkl. Genehmigungen, Flug-Briefing, Risikomanagement",
+        "evidence": "Website, Business-Profil §8"
+      },
+      {
+        "text": "Optional Dachvermessung über Partner Airteam (Vermessungsbericht/3D-Modell nur Dach)",
+        "evidence": "Business-Profil §3"
+      },
+      {
+        "text": "Visuelle Inspektion ersetzt kein Gutachten",
+        "evidence": "Business-Profil §8"
+      }
+    ],
+    "trust_proof": [
+      "Bekannt aus der rbb-Reportage (Drohneninspektion)",
+      "Berufshaftpflicht R+V",
+      "Kundenlogos und bestehende Kundenstimmen",
+      "Wetterbedingte Verschiebung ohne Zusatzkosten · Angebotspreis = Endpreis"
+    ],
+    "conversion_goal": "Projektanfrage (Formular) oder Anruf; CTA „Dachinspektion anfragen“ statt „Jetzt buchen“; Angaben: Objektart, Anzahl Gebäude, Anlass.",
+    "delimitation": [
+      {
+        "service": "Dachinspektion (diese Seite)",
+        "question": "In welchem sichtbaren Zustand ist das Dach?",
+        "timing": "anlassbezogen / regelmäßig",
+        "output": "Foto-/Videodokumentation des Dachs",
+        "page": "/dachinspektion-mit-drohne/"
+      },
+      {
+        "service": "Gebäudeinspektion (Hub)",
+        "question": "Welche Inspektionsart brauche ich für mein Gebäude?",
+        "timing": "Einstieg",
+        "output": "Überblick, Verweis auf Fachseiten",
+        "page": "/drohne-dach-gebaeude-inspektion/"
+      },
+      {
+        "service": "Dachvermessung (Partner)",
+        "question": "Welche Maße/Flächen hat das Dach?",
+        "timing": "anlassbezogen",
+        "output": "Vermessungsbericht/3D-Modell",
+        "page": "/drohne-dach-vermessung/"
+      },
+      {
+        "service": "Fassadeninspektion",
+        "question": "Zustand der Fassade?",
+        "timing": "anlassbezogen",
+        "output": "Foto-/Videodokumentation",
+        "page": "/fassadeninspektion-mit-drohne-berlin-brandenburg/"
+      }
+    ],
+    "not_on_page": [
+      {
+        "topic": "Wärmebild/Thermografie",
+        "reason": "Sensor nicht bestätigt (Profil §10)",
+        "goes_to": "nicht aufnehmen"
+      },
+      {
+        "topic": "Gutachten, Schadensbewertung mit Rechtswirkung",
+        "reason": "Visuelle Inspektion ersetzt kein Gutachten",
+        "goes_to": "nur als Abgrenzung"
+      },
+      {
+        "topic": "Vermessung als fester Bestandteil der Inspektion",
+        "reason": "Nur optional über Partner",
+        "goes_to": "/drohne-dach-vermessung/"
+      },
+      {
+        "topic": "Fassadeninspektion als Hauptthema",
+        "reason": "Eigene Seite",
+        "goes_to": "/fassadeninspektion-mit-drohne-berlin-brandenburg/"
+      },
+      {
+        "topic": "Konkrete Preise für jeden Auftrag",
+        "reason": "Nur Richtwerte nach Bestätigung (Profil §7)",
+        "goes_to": "Preisseite / individuelles Angebot"
+      }
+    ]
+  },
+  "G_structure": {
+    "title_proposal": "Dachinspektion mit Drohne | Berlin & Brandenburg – ohne Gerüst",
+    "meta_note": "Nutzen + Region + Anfrage; „Vermessung“ nur als Option, kein „Jetzt buchen“.",
+    "h1": "Dachinspektion mit Drohne in Berlin und Brandenburg",
+    "sections": [
+      {
+        "h2": "Dachinspektion per Drohne: Dachzustand sicher und ohne Gerüst prüfen",
+        "purpose": "Intent bestätigen, was die Inspektion leistet und was nicht (kein Gutachten)",
+        "covers": [
+          "Verständnis"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Wann sich eine Dachinspektion lohnt",
+        "purpose": "Anlässe für Hausverwaltungen/Bestandshalter",
+        "covers": [
+          "Verständnis"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Was Sie erhalten",
+        "purpose": "Übersichts-/Detailaufnahmen, Foto/Video, digitale Übergabe, Weitergabe an Dachdecker/Versicherer",
+        "covers": [
+          "Ergebnis"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Für Hausverwaltungen, Bestandshalter und Gewerbe",
+        "purpose": "Nutzen je Zielgruppe, auch mehrere Objekte",
+        "covers": [
+          "Organisation & Kosten"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "So läuft die Dachinspektion ab",
+        "purpose": "Schritte inkl. Genehmigungen, Wetter",
+        "covers": [
+          "Organisation & Kosten"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Dachinspektion, Gebäudeinspektion oder Dachvermessung?",
+        "purpose": "Abgrenzung mit Links",
+        "covers": [
+          "Abgrenzung"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Kosten einer Dachinspektion",
+        "purpose": "Faktoren, individuelles Angebot, Link Preisseite",
+        "covers": [
+          "Organisation & Kosten"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Häufige Fragen zur Dachinspektion mit Drohne",
+        "purpose": "FAQ",
+        "covers": [
+          "Ergebnis",
+          "Organisation & Kosten"
+        ],
+        "h3": []
+      }
+    ],
+    "scope_check": "Alle Fragengruppen aus F zugeordnet. Struktur vorläufig – nach der Wettbewerbsrecherche prüfen.",
+    "derivation": "GSC-Intent + bestehende Inhalte der Dachseite + Abgrenzung zum Hub (Kannibalisierung)."
+  },
+  "H_ia": {
+    "current": {
+      "parent": {
+        "url": "/",
+        "label": "Startseite"
+      },
+      "target": {
+        "url": "/dachinspektion-mit-drohne/",
+        "label": "Dachinspektion mit Drohne"
+      },
+      "children": [],
+      "siblings": [
+        {
+          "url": "/drohne-dach-gebaeude-inspektion/",
+          "label": "Gebäudeinspektion (Hub)",
+          "relation": "rankt heute für die meisten Dach-Queries"
+        },
+        {
+          "url": "/drohne-dach-vermessung/",
+          "label": "Dachvermessung (Partner)",
+          "relation": "Messdaten"
+        }
+      ]
+    },
+    "recommended": {
+      "parent": {
+        "url": "/drohne-dach-gebaeude-inspektion/",
+        "label": "Gebäudeinspektion (Hub)",
+        "note": "Hub als Einstieg, der auf die Dachseite verweist – URL-Struktur bleibt"
+      },
+      "target": {
+        "url": "/dachinspektion-mit-drohne/",
+        "label": "Zielseite für alle Dach-Inspektions-Queries"
+      },
+      "children": [],
+      "child_candidates": [
+        {
+          "topic": "Dachinspektion Berlin (Stadtseite)",
+          "intent": "gleich (lokal)",
+          "verdict": "nein – zuerst Kannibalisierung lösen; Berlin ist Teil der Seite"
+        }
+      ],
+      "siblings": [
+        {
+          "url": "/drohne-dach-vermessung/",
+          "label": "Dachvermessung",
+          "relation": "Optionale Ergänzung"
+        },
+        {
+          "url": "/fassadeninspektion-mit-drohne-berlin-brandenburg/",
+          "label": "Fassadeninspektion",
+          "relation": "Nachbarleistung"
+        }
+      ]
+    },
+    "consolidation": {
+      "decision": "Dachinspektion, Dachkontrolle, Dachbegutachtung per Drohne auf EINER URL (/dachinspektion-mit-drohne/)",
+      "reasoning": [
+        "Gleicher Auftrag und gleiche Zielgruppe.",
+        "Der Hub soll diese Queries abgeben statt mitzuranken."
+      ],
+      "revisit_if": "Nach CL-001 und Companion Optimization weiterhin beide Seiten für Dach-Queries rankend (Monitoring T+14/30/60)."
+    },
+    "companion": [
+      {
+        "url": "/drohne-dach-gebaeude-inspektion/",
+        "reason": "Der Hub erhält 64 % der Dach-Impressionen. Er muss Dach-Queries an die Dachseite abgeben, damit die Dachseite ranken kann.",
+        "required_changes": [
+          "„Dachinspektion“ aus Title und Description des Hubs als Hauptbegriff entfernen",
+          "Dach-Abschnitt kürzen und mit beschreibendem Link auf /dachinspektion-mit-drohne/ verweisen",
+          "Hub auf „Gebäudeinspektion/Drohneninspektion“ als Übersicht schärfen"
+        ],
+        "linked_opp": "OPP-03"
+      }
+    ],
+    "keyword_ownership": {
+      "owns": [
+        "dachinspektion drohne",
+        "dachinspektion mit drohne",
+        "dachinspektion per drohne",
+        "dachinspektion drohne berlin",
+        "dachkontrolle mit drohne",
+        "dachbegutachtung drohne"
+      ],
+      "do_not_target": [
+        {
+          "keyword": "gebäudeinspektion drohne / drohneninspektion",
+          "reason": "Hub-Intent",
+          "owner": "/drohne-dach-gebaeude-inspektion/"
+        },
+        {
+          "keyword": "dachvermessung drohne",
+          "reason": "Vermessung",
+          "owner": "/drohne-dach-vermessung/"
+        },
+        {
+          "keyword": "dachcheck / dachinspektion (ohne Drohne)",
+          "reason": "Vermutlich Dachdecker-/Ratgeber-Intent – nur nebenbei",
+          "owner": "keine Seite primär"
+        }
+      ]
+    },
+    "internal_links": [
+      {
+        "from": "/drohne-dach-gebaeude-inspektion/",
+        "to": "/dachinspektion-mit-drohne/",
+        "anchor": "Dachinspektion mit Drohne",
+        "type": "add"
+      },
+      {
+        "from": "/dachinspektion-mit-drohne/",
+        "to": "/drohne-dach-vermessung/",
+        "anchor": "Dachvermessung",
+        "type": "add"
+      },
+      {
+        "from": "/dachinspektion-mit-drohne/",
+        "to": "/drohne-dach-gebaeude-inspektion/",
+        "anchor": "weitere Inspektionsleistungen",
+        "type": "add"
+      }
+    ],
+    "cannibalization": {
+      "risk": "high",
+      "evidence": "GSC 16 Monate, Cluster Dachinspektion: Hub 771 Impr. (64 %, Ø Pos. 46,3), Dachseite 397 Impr. (33 %, Ø Pos. 38,1); Top-Queries wie „dachinspektion per drohne“ und „drohne dachinspektion“ ranken über den Hub.",
+      "watch": "Nach Umsetzung T+14/30/60: Welche URL rankt für Dach-Queries?"
+    },
+    "decision": "OPTIMIZE"
+  },
+  "I_win": [
+    "Rollen klären: eine Zielseite für Dach-Queries statt zwei schwacher Seiten.",
+    "B2B-Schärfung auf Hausverwaltungen/Bestandshalter mit Anlässen, Übergabe und Mehrobjekt-Fragen.",
+    "Saubere fachliche Abgrenzung (kein Gutachten) als Vertrauenssignal."
+  ],
+  "J_risks": [
+    {
+      "type": "unknown",
+      "item": "Wettbewerbsrecherche fehlt",
+      "mitigation": "Independent Web Research vor Gate 1 (0 Units) – sonst Override nötig"
+    },
+    {
+      "type": "risk",
+      "item": "Änderungsstopp CL-001 bis zur Bewertung des Canonical-Fixes",
+      "mitigation": "Entwurf möglich, Website-Umsetzung erst danach"
+    },
+    {
+      "type": "unknown",
+      "item": "Sollen Privatkunden weiterhin angesprochen werden?",
+      "mitigation": "Vorschlag: B2B-Fokus, Privat nur als Nebensatz – bei Gate 1 bestätigen"
+    },
+    {
+      "type": "unknown",
+      "item": "Gibt es einen schriftlichen Inspektionsbericht über Fotos/Videos hinaus?",
+      "mitigation": "Bis zur Bestätigung nur „Bilddokumentation“ formulieren"
+    },
+    {
+      "type": "risk",
+      "item": "Companion Optimization des Hubs überschneidet sich mit OPP-03",
+      "mitigation": "Als gemeinsames Change Set behandeln"
+    }
+  ],
+  "sources": [
+    {
+      "label": "GSC 16 Monate (Query, Query × Page)",
+      "type": "gsc",
+      "date": "2026-11-23",
+      "path": "clients/spreewald-luftaufnahmen/data/gsc-2026-11/"
+    },
+    {
+      "label": "Semrush-Keyword-Cache (DE)",
+      "type": "semrush_cache",
+      "date": "2026-11-23",
+      "path": "data/keyword-cache.csv"
+    },
+    {
+      "label": "Seitenprofile Dachseite + Hub",
+      "type": "web",
+      "date": "2026-11-24",
+      "path": "clients/spreewald-luftaufnahmen/data/research/OPP-01/pages/"
+    },
+    {
+      "label": "Business-Profil v1.1",
+      "type": "profile",
+      "date": "2026-11-23",
+      "path": "clients/spreewald-luftaufnahmen/business-profile.md"
+    }
+  ]
+}

@@ -67,7 +67,7 @@ for c in d["changes"]:
     s = sc[c["id"]]
     check(f"{c['id']} checkpoints", [(x["label"], x["due"], x["status"]) for x in s["checkpoints"]] == [(x["label"], x["due"], x["status"]) for x in c["checkpoints"]])
     check(f"{c['id']} date/url/freeze", (s["date"], s["url"], s.get("freeze")) == (c["date"], c["url"], c.get("freeze")))
-check("tasks", [t["id"] for t in st("agent_tasks")["tasks"]] == [t["id"] for t in d["tasks"] if not t.get("from_log")])
+check("tasks", [t["id"] for t in st("agent_tasks")["tasks"]] == [t["id"] for t in d["tasks"] if not t.get("from_log") and not t.get("from_changes")])
 # Research Log: Agent Activity „Completed“ aus denselben Events, keine Doppelpflege
 rl = d.get("research_log", {})
 check("research log: events + sources present", len(rl.get("events", [])) > 0 and len(rl.get("sources", [])) > 0)

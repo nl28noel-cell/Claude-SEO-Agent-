@@ -3,7 +3,7 @@
   "opp_id": "OPP-02",
   "client": "spreewald-luftaufnahmen",
   "version": 2,
-  "updated": "2026-11-23T21:30:00Z",
+  "updated": "2026-11-24T11:57:20Z",
   "author": "agent",
   "changelog": [
     {
@@ -20,6 +20,11 @@
       "version": 2,
       "date": "2026-11-23",
       "note": "Update: Übergabe- und Intervall-Formulierung nach Antwort Noel; SERP Validation (Semrush × Independent Web Research) ergänzt; SERP-Cache 30 Tage"
+    },
+    {
+      "version": 2,
+      "date": "2026-11-24",
+      "note": "Seitenvorschau (Page Purpose, Themen) für Gate 1 ergänzt; keine inhaltliche Änderung der Strategie"
     }
   ],
   "status": {
@@ -799,6 +804,21 @@
         "reason": "Keine Rechtsbehauptungen (Profil §10)",
         "goes_to": "nicht behaupten"
       }
+    ],
+    "page_purpose": "Bauträgern, Projektentwicklern und Bauunternehmen erklären, wie wir Bauprojekte einmalig oder über die gesamte Bauzeit per Drohne dokumentieren und welchen Nutzen eine strukturierte, vergleichbare Baufortschrittsdokumentation für alle Projektbeteiligten hat.",
+    "topics": [
+      "Was ist Drohnen-Baudokumentation (= Baustellen- und Baufortschrittsdokumentation)?",
+      "Einmalige Aufnahme vs. laufende Dokumentation über die Bauzeit",
+      "Turnus nach Bauphasen bzw. Meilensteinen oder in festen zeitlichen Abständen (projektspezifisch)",
+      "Vergleichbare Perspektiven bei Folgeterminen",
+      "Luftaufnahmen – Bodenaufnahmen ergänzend, projektabhängig",
+      "Foto- und Videodokumentation",
+      "Strukturierte digitale Übergabe der vereinbarten Dokumentation (i. d. R. 5–7 Werktage)",
+      "Nutzen für Bauträger/Projektentwickler, Bauunternehmen/GU, Architekten/Projektsteuerer",
+      "Ablauf inkl. Genehmigungen und Wetterregel",
+      "Abgrenzung zu Bestandsaufnahme, Inspektion, Vermessung",
+      "Kosten/Anfrage",
+      "FAQ"
     ]
   },
   "G_structure": {
@@ -1120,7 +1140,8 @@
       "evidence": "GSC 16 Monate: 27 Cluster-Queries, 3.289 Impressionen auf /drohnen-baudokumentation/, je 1 Impression auf /drohnenaufnahmen-preis-kosten/ und /.",
       "watch": "OPP-05 darf nicht auf „Dokumentation von Bauphasen“ zielen; diese Seite nicht auf „Bestandsaufnahme Gebäude“ – der Abgrenzungsabschnitt hält das sauber."
     },
-    "decision": "OPTIMIZE"
+    "decision": "OPTIMIZE",
+    "companion": []
   },
   "I_win": [
     "Methode statt Motive: Die Seite erklärt Baufortschrittsdokumentation als planbares Vorgehen – Perspektiven festlegen, Turnus projektspezifisch nach Bauphasen oder in festen zeitlichen Abständen festlegen, Luft (+ optional Boden), strukturierte digitale Übergabe – und beantwortet damit das „wie“, das Long-Tail-Queries wie „baufortschritt mit drohnen dokumentieren“ stellen und das die meisten recherchierten Anbieterseiten nur behaupten.",

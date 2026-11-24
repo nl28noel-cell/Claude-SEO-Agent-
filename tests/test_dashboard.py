@@ -432,6 +432,68 @@ class ArtifactQA(unittest.TestCase):
         self.assertTrue(all(e["superseded"] == "Test phase · superseded" for e in drafts))
         self.assertGreaterEqual(len([e for e in ev if e["opp"] == "OPP-02"]), 13)   # OPP-02-Research-Log unverändert
 
+    def test_cannibalization_engine(self):
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import cannibalization as CZ
+        O = {o["id"]: o for o in self.d["opportunities"]}
+        for o in O.values():                                                     # jede Opportunity hat eine Analyse
+            c = o["cannibalization"]
+            self.assertIn(c["risk"], ("low", "medium", "high", "unknown")); self.assertTrue(c["recommendation"]); self.assertIn("basis", c)
+        self.assertEqual((O["OPP-02"]["cannibalization"]["risk"], O["OPP-02"]["cannibalization"]["action"]), ("low", "OPTIMIZE"))
+        c1 = O["OPP-01"]["cannibalization"]
+        self.assertEqual((c1["risk"], c1["decision"]), ("high", "OPTIMIZE + COMPANION"))
+        self.assertEqual(c1["companions"][0]["url"], "/drohne-dach-gebaeude-inspektion/"); self.assertEqual(c1["companions"][0]["linked_opp"], "OPP-03")
+        self.assertEqual(O["OPP-04"]["cannibalization"]["decision"], "CREATE + COMPANION")   # generischer Intent auf spezifischer Seite
+        self.assertEqual(O["OPP-06"]["cannibalization"]["action"], "MONITOR")                # MONITOR wird nicht umgestellt
+        # Regeln mit synthetischen Daten
+        inv = {"/a/": {"title": "Dachinspektion mit Drohne", "h1": ["Dachinspektion"]}, "/b/": {"title": "Fassade", "h1": []}}
+        qp = [{"query": "dachinspektion drohne", "page": "/a/", "impressions": 800, "clicks": 3, "position": 8.0},
+              {"query": "dachinspektion drohne", "page": "/b/", "impressions": 50, "clicks": 0, "position": 40.0}]
+        new = {"id": "X", "type": "CREATE", "gsc_cluster": "dach", "gsc_queries": ["dachinspektion drohne"], "primary_keyword": "dachinspektion drohne", "planned_url": "/neu/"}
+        r = CZ.analyze(new, qp, {"dachinspektion drohne": "dach"}, inv)
+        self.assertEqual((r["risk"], r["decision"], r["action"], r["action_url"], r["changed"], r["warning"]), ("high", "DO NOT CREATE", "OPTIMIZE", "/a/", True, True))
+        r2 = CZ.analyze({**new, "gsc_queries": ["xyz"]}, [{"query": "xyz", "page": "/b/", "impressions": 10, "clicks": 0, "position": 50}], {"xyz": "dach"}, inv)
+        self.assertEqual((r2["risk"], r2["action"]), ("low", "CREATE"))
+        self.assertEqual(CZ.analyze({**new, "gsc_queries": []}, [], {}, inv)["risk"], "unknown")
+        # Local: Hauptseite rankt ≤ 10 → keine City Page
+        svc = {"key": "b", "page": "/a/", "gsc_pattern": "dachinspektion", "priority": 9}
+        loc = {"key": "p", "pattern": "potsdam", "coverage_regional": False}
+        L = CZ.local_cell({}, svc, loc, [{"query": "dachinspektion potsdam", "page": "/a/", "impressions": 120, "clicks": 1, "position": 6}], inv)
+        self.assertEqual((L["recommendation"], L["cannibalization"]), ("USE MAIN SERVICE PAGE", "high"))
+        L2 = CZ.local_cell({}, svc, loc, [], inv)
+        self.assertEqual(L2["recommendation"], "MONITOR")                       # 0 Volumen ≠ IGNORE
+        L3 = CZ.local_cell({}, svc, loc, [{"query": "dachinspektion potsdam", "page": "/z/", "impressions": 150, "clicks": 0, "position": 45}], inv)
+        self.assertEqual(L3["recommendation"], "CREATE CITY PAGE")
+        cells = self.d["local"]["cells"]
+        self.assertTrue(all(c["engine"]["recommendation"] in ("CREATE CITY PAGE", "USE MAIN SERVICE PAGE", "OPTIMIZE EXISTING PAGE", "MONITOR", "IGNORE") for c in cells))
+        bb = next(c for c in cells if c["service"] == "baudokumentation" and c["location"] == "berlin")["engine"]
+        self.assertEqual(bb["recommendation"], "USE MAIN SERVICE PAGE")        # keine /baudokumentation-berlin/
+        self.assertIsNone(bb["competition"])                                     # nicht erhoben, nichts erfunden
+        # Monitoring nach Veröffentlichung
+        before = [{"query": "q1", "page": "/hub/", "impressions": 100}, {"query": "q2", "page": "/hub/", "impressions": 80}]
+        after = [{"query": "q1", "page": "/a/", "impressions": 90}, {"query": "q2", "page": "/a/", "impressions": 50}, {"query": "q2", "page": "/hub/", "impressions": 45}]
+        m = CZ.monitor("/a/", before, after, {"q1", "q2"})
+        self.assertEqual((m["target_share"], len(m["switches"]), m["alternating"], m["status"]), (1.0, 2, ["q2"], "watch"))
+        cw = [t for t in self.d["tasks"] if t.get("from_changes")]
+        self.assertEqual(len(cw), 3); self.assertTrue(all(t["state"] == "planned" for t in cw))
+
+    def test_change_set_companion_production(self):
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import workflow, tempfile, shutil
+        w = {"opp_id": "OPP-01", "gate1": {"status": "approved", "at": "x", "comment": "Bodenaufnahmen nicht als Standard", "research_override": True,
+             "change_set": {"action": "OPTIMIZE", "url": "/dachinspektion-mit-drohne/", "companions": [{"url": "/drohne-dach-gebaeude-inspektion/", "reason": "r", "required_changes": ["c"], "linked_opp": "OPP-03"}]}},
+             "production": {"status": "waiting"}}
+        self.assertEqual(workflow.doc_title(w, {"name": "Dachinspektion", "type": "OPTIMIZE"}, "/drohne-dach-gebaeude-inspektion/"), "OPP-01 – Companion – drohne-dach-gebaeude-inspektion – Optimierung")
+        tmp = tempfile.mkdtemp()
+        try:
+            json.dump(w, open(os.path.join(tmp, "OPP-01.json"), "w"))
+            out = os.path.join(tmp, "b.md"); workflow.brief(tmp, "OPP-01", out)
+            b = open(out, encoding="utf-8").read()
+            self.assertIn("Scope-Änderungen von Noel (verbindlich", b); self.assertIn("Bodenaufnahmen nicht als Standard", b)
+            self.assertIn("## Change Set: Companion Optimization", b); self.assertIn("--companion /drohne-dach-gebaeude-inspektion/", b)
+        finally:
+            shutil.rmtree(tmp)
+
     def test_workflow_render_html(self):
         import tempfile
         sys.path.insert(0, os.path.join(ROOT, "tools"))

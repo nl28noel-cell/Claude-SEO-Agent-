@@ -15,17 +15,97 @@
       "status": "monitoring",
       "freeze": true,
       "related_opportunity": "OPP-01",
-      "related_findings": ["F-001", "F-005"],
-      "baseline": {"source": "Semrush DE 23.11.2026 / GSC bis 20.11.2026", "query": "dachinspektion mit drohne", "position_semrush": 45},
+      "related_findings": [
+        "F-001",
+        "F-005"
+      ],
+      "baseline": {
+        "source": "Semrush DE 23.11.2026 / GSC bis 20.11.2026",
+        "query": "dachinspektion mit drohne",
+        "position_semrush": 45
+      },
       "impact_assessment": "Too early to tell",
       "checkpoints": [
-        {"label": "T+0", "due": "2026-11-23", "status": "done", "result": "Sitemap ✓ · Canonical ✓ · HTTP 200 ✓ · index,follow ✓. GSC URL Inspection: PASS, „Submitted and indexed“, Google-Canonical = Slash-URL ✓. Gespeichertes User-Canonical noch alt und keine Sitemap-Zuordnung – Stand letzter Crawl 26.10.2026 (vor dem Fix).", "inspection": {"verdict": "PASS", "coverage": "Submitted and indexed", "google_canonical": "https://www.spreewald-luftaufnahmen.de/dachinspektion-mit-drohne/", "user_canonical": "https://www.spreewald-luftaufnahmen.de/dachinspektion-mit-drohne", "last_crawl": "2026-10-26T08:28:44Z", "sitemap": null, "checked": "2026-11-23"}},
-        {"label": "T+7", "due": "2026-11-30", "status": "pending", "result": "Neuer Crawl? User-Canonical mit Slash? Sitemap erkannt?"},
-        {"label": "T+14", "due": "2026-12-07", "status": "pending", "result": "+ Rankings Dachinspektion-Varianten"},
-        {"label": "T+30", "due": "2026-12-23", "status": "pending", "result": "+ GSC Impressions/Clicks/Position je Query"},
-        {"label": "T+60", "due": "2027-01-22", "status": "pending", "result": "Bewertung: Erfolgreich / Potenzial / Underperformer"},
-        {"label": "T+90", "due": "2027-02-21", "status": "pending", "result": "Entscheidung über weitere Optimierung"}
-      ]
+        {
+          "label": "T+0",
+          "due": "2026-11-23",
+          "status": "done",
+          "result": "Sitemap ✓ · Canonical ✓ · HTTP 200 ✓ · index,follow ✓. GSC URL Inspection: PASS, „Submitted and indexed“, Google-Canonical = Slash-URL ✓. Gespeichertes User-Canonical noch alt und keine Sitemap-Zuordnung – Stand letzter Crawl 26.10.2026 (vor dem Fix).",
+          "inspection": {
+            "verdict": "PASS",
+            "coverage": "Submitted and indexed",
+            "google_canonical": "https://www.spreewald-luftaufnahmen.de/dachinspektion-mit-drohne/",
+            "user_canonical": "https://www.spreewald-luftaufnahmen.de/dachinspektion-mit-drohne",
+            "last_crawl": "2026-10-26T08:28:44Z",
+            "sitemap": null,
+            "checked": "2026-11-23"
+          }
+        },
+        {
+          "label": "T+7",
+          "due": "2026-11-30",
+          "status": "pending",
+          "result": "Neuer Crawl? User-Canonical mit Slash? Sitemap erkannt?"
+        },
+        {
+          "label": "T+14",
+          "due": "2026-12-07",
+          "status": "pending",
+          "result": "+ Rankings Dachinspektion-Varianten"
+        },
+        {
+          "label": "T+30",
+          "due": "2026-12-23",
+          "status": "pending",
+          "result": "+ GSC Impressions/Clicks/Position je Query"
+        },
+        {
+          "label": "T+60",
+          "due": "2027-01-22",
+          "status": "pending",
+          "result": "Bewertung: Erfolgreich / Potenzial / Underperformer"
+        },
+        {
+          "label": "T+90",
+          "due": "2027-02-21",
+          "status": "pending",
+          "result": "Entscheidung über weitere Optimierung"
+        },
+        {
+          "label": "Kannibalisierung T+14",
+          "due": "2026-12-07",
+          "status": "planned",
+          "type": "cannibalization",
+          "method": "GSC Query × Page für den Cluster (Zeitraum seit Änderung vs. Baseline) → tools/cannibalization.py monitor"
+        },
+        {
+          "label": "Kannibalisierung T+30",
+          "due": "2026-12-23",
+          "status": "planned",
+          "type": "cannibalization",
+          "method": "GSC Query × Page für den Cluster (Zeitraum seit Änderung vs. Baseline) → tools/cannibalization.py monitor"
+        },
+        {
+          "label": "Kannibalisierung T+60",
+          "due": "2027-01-22",
+          "status": "planned",
+          "type": "cannibalization",
+          "method": "GSC Query × Page für den Cluster (Zeitraum seit Änderung vs. Baseline) → tools/cannibalization.py monitor"
+        }
+      ],
+      "cannibalization_watch": {
+        "target": "/dachinspektion-mit-drohne/",
+        "cluster": "dachinspektion",
+        "competitors": [
+          "/drohne-dach-gebaeude-inspektion/"
+        ],
+        "question": "Übernimmt die Dachseite die Dach-Queries vom Gebäudeinspektion-Hub? Wechseln URLs? Alternieren zwei URLs?",
+        "baseline": {
+          "source": "GSC Query × Page 2025-07-21 – 2026-11-20",
+          "target_share": 0.33,
+          "competitor_share": 0.64
+        }
+      }
     }
   ]
 }
