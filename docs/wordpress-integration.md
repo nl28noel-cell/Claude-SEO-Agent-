@@ -224,3 +224,35 @@ Text | Bild → Bild | Text → Text | Bild … – nie zwei aufeinanderfolgende
 ### S3 Sandbox Test – Landingpage-Vorlage 2026 (vorgeschlagen, nicht ausgeführt)
 
 Nur Draft 6955. Vorlage 6813 mit neuen IDs in 6955 schreiben – die zwei Trustindex-Widgets durch eine markierte Platzhalter-Zeile ersetzt (`script_free_copy`), alles andere 1:1. Zweiter Schreibvorgang: H1 + eine H2 + ein Text ersetzen (`set_content`), Abschnitt 11 duplizieren + spiegeln (`duplicate_section`). Prüfen: kein 403 (auch Heyflow-HTML) · Design-/Responsive-Werte identisch zur Vorlage, nur Content abweichend · gespiegelter Block korrekt · Vorschau wie Vorlage · 6813 und Live-Seiten unverändert. Aufwand: 2 Schreibvorgänge à ~80.000 Zeichen.
+
+## S3 Sandbox Test – Landingpage-Vorlage 2026 (25.11.2026) – Ergebnis
+
+Nur Draft 6955, ein Schreibvorgang (statt zwei – halber Aufwand): Vorlage 6813 mit neuen Element-IDs, die zwei Trustindex-Script-Widgets durch markierte Platzhalter ersetzt, H1 + eine H2 + ein Textblock geändert, Abschnitt 11 dupliziert und gespiegelt → 13 Abschnitte, 107 Elemente, 86.143 Zeichen.
+
+| Prüfung | Ebene | Ergebnis |
+|---|---|---|
+| Schreiben ohne 403 (inkl. Heyflow-HTML, Karussell, Call-to-Action) | technisch geschrieben | ok |
+| Rücklesen = Gesendet: 105/107 Elemente identisch, Reihenfolge identisch | strukturell geprüft | ok |
+| 2 Textblöcke: je ein geschütztes Leerzeichen (U+00A0) als normales Leerzeichen übertragen – Transportfehler des Agenten, nicht WordPress | strukturell geprüft | Hinweis → ab jetzt `transport_json` (\uXXXX) + `compare_readback` |
+| Alle Design-/Responsive-/Global-Einstellungen identisch zur Vorlage; nur geplante Content-Änderungen | strukturell geprüft | ok |
+| Gespiegelter Block: Text\|Bild → Bild\|Text, Design identisch, neue IDs | strukturell geprüft | ok |
+| Yoast: SEO-Titel, Meta-Beschreibung, Schema WebPage geschrieben + unabhängig zurückgelesen; Canonical/Robots unverändert | technisch + strukturell | ok |
+| Yoast Focus Keyphrase | technisch | nicht über die Schnittstelle schreibbar |
+| Vorlage 6813 und Live-Seite 5401 unverändert | strukturell geprüft | ok |
+| Darstellung Desktop/Tablet/Mobile | **visuell von Noel zu prüfen** | ausstehend – [Vorschau](https://www.spreewald-luftaufnahmen.de/?page_id=6955&preview=true) (eingeloggt) |
+
+## Vorschlag: Trustindex-Referenz in der Vorlage (nicht freigegeben)
+
+1. Sicherung: Vorlage 6813 als Elementor-Export + `_elementor_data`-Snapshot (SHA-256) in Drive.
+2. Zwei kleine Abschnitts-Templates im Elementor-Editor: „Trustindex – Bewertungen A“ und „Trustindex – Kundenstimmen B“, Inhalt exakt das bestehende HTML-Widget (Script wird vom eingeloggten Editor gespeichert, nicht über die API).
+3. In einer **Kopie** der Vorlage die zwei HTML-Widgets durch das Pro-Widget „Template“ ersetzen – Original 6813 bleibt unverändert.
+4. Original vs. Kopie nebeneinander rendern (Desktop/Tablet/Mobile), Bewertungen identisch.
+5. Nach Freigabe: Kopie wird `create_template`. Rücknahme = Umschalten auf 6813.
+
+## OPTIMIZE: Migration der 12 Bestandsseiten (Plan, nichts umgestellt)
+
+Die Referenz-Strategie passt auch für Bestandsseiten (überall dieselben zwei Trustindex-IDs). Der Agent bereitet je Seite eine Version vor, in der nur die zwei HTML-Widgets durch Template-Referenzen ersetzt sind (alles andere byte-gleich, `compare_readback`); sie enthält kein Script und ist über die Schnittstelle schreibbar.
+
+0. Trustindex-Templates A/B freigegeben · 1. Komplettsicherung (Duplicator/BackWPup, Freigabe) + Snapshot je Seite · 2. Pilot (z. B. /kontakt/) als Draft → Vorschau → Freigabe · 3. Pilot live, sofort zurücklesen, 7 Tage beobachten · 4. Wellen à 3–4 Seiten, rankingstarke Seiten zuletzt · 5. Live OPTIMIZE neu bewerten inkl. Rollback-Test.
+
+**Rollback-Hinweis:** Der Original-Snapshot enthält `<script>` und wäre über die API wieder blockiert – Rückweg über Elementor-Revision/Editor; vor Phase 3 separat testen.

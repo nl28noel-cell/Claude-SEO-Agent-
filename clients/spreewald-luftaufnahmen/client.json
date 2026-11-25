@@ -103,10 +103,14 @@
         "standard_widgets": "VERIFIED",
         "script_widgets": "BLOCKED_BY_FIREWALL",
         "live_optimize_automation": "BLOCKED",
-        "create_automation": "PENDING_FULL_SANDBOX_VALIDATION",
-        "rollback": "NOT_YET_VERIFIED"
+        "create_automation": "PENDING_TRUSTINDEX_REFERENCE",
+        "rollback": "NOT_YET_VERIFIED",
+        "template_create_scriptfree": "VERIFIED_IN_SANDBOX",
+        "content_edit_duplicate_mirror": "VERIFIED_IN_SANDBOX",
+        "yoast_write_read_draft": "VERIFIED"
       },
-      "firewall_source": "vermutlich NinjaFirewall (WP-Plugin, aktiv) – nicht Hosting; nicht abschließend bestimmt (Firewall-Log nicht eingesehen)"
+      "firewall_source": "vermutlich NinjaFirewall (WP-Plugin, aktiv) – nicht Hosting; nicht abschließend bestimmt (Firewall-Log nicht eingesehen)",
+      "transport": "Payload immer per transport_json (\\uXXXX-Escaping) senden und mit compare_readback prüfen (S3: 2 NBSP-Verluste bei lesbarer Übertragung)"
     },
     "create_template": {
       "id": 6813,

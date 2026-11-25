@@ -667,6 +667,14 @@ function wpCard() {
     <div class="k">Elementor-Einfügen</div><div class="s">${esc(lt.elementor_insert)}</div><div class="k">Über den Konnektor</div><div class="s">${esc(lt.connector)}</div></div>
     <table class="tbl mt" id="wp-template-answers"><tbody>${Object.entries(lt.answers).map(([k, v], i) => `<tr><td>${i + 1}</td><td class="s">${esc(v)}</td></tr>`).join("")}</tbody></table>
     <div class="callout amber mt"><b>Kleinste Änderung für den vollständigen Vorlagen-Weg (Freigabe nötig)</b><div class="s">${esc(lt.minimal_change)}</div></div></details>`;
+  const s3 = w.s3_test, tp = w.trustindex_proposal, mp = w.optimize_migration_plan;
+  const s3Tone = r => r.status === "ok" ? "green" : /ausstehend/.test(r.status) ? "amber" : /nicht verfügbar/.test(r.status) ? "" : "amber";
+  const s3Html = !s3 ? "" : `<div class="callout amber mt" id="wp-s3"><b>${esc(s3.label)}</b> <span class="mini">${esc(s3.title)} · ${fmtDate(s3.date)}</span>
+    <div class="s mt">${esc(s3.method)}</div>
+    <div class="row mt" style="flex-wrap:wrap;gap:8px"><a class="btn sm" href="${esc(s3.target.preview_url)}" target="_blank" rel="noopener">Vorschau öffnen</a><a class="btn sm" href="${esc(s3.target.edit_url)}" target="_blank" rel="noopener">In Elementor öffnen</a><span class="mini">${esc(s3.target.preview_note)} · Draft ${esc(s3.target.id)} bleibt bestehen</span></div>
+    <table class="tbl mt" id="wp-s3-results"><thead><tr><th>Prüfung</th><th>Ebene</th><th>Ergebnis</th></tr></thead><tbody>${s3.results.map(r => `<tr><td class="s">${esc(r.check)}</td><td class="mini">${esc(r.layer)}</td><td>${chip(r.status, s3Tone(r), true)}</td></tr>`).join("")}</tbody></table></div>`;
+  const tpHtml = !tp ? "" : `<details class="mt" id="wp-trustindex-proposal"><summary><b>Vorschlag Trustindex-Referenz</b> <span class="mini">(${esc(tp.status)})</span></summary>${ul(tp.steps)}<div class="mini">${esc(tp.why_copy)}</div></details>`;
+  const mpHtml = !mp ? "" : `<details class="mt" id="wp-migration"><summary><b>Migrationsplan Bestandsseiten (${esc(mp.pages)})</b> <span class="mini">(${esc(mp.status)})</span></summary><div class="s mt">${esc(mp.assessment)}</div><div class="s mt">${esc(mp.approach)}</div>${ul(mp.phases)}<div class="callout amber mt s">${esc(mp.rollback)}</div></details>`;
   const nxHtml = !nx ? "" : `<div class="callout amber mt" id="wp-next-test"><b>${esc(nx.title || "Vorgeschlagener nächster Test")} (${esc(nx.status)})</b><div class="s">${esc(nx.test)}</div><div class="s mt">Rahmen: ${esc(nx.scope)}</div>${ul(nx.checks)}<div class="mini">Nicht enthalten: ${esc(nx.not_included)}</div></div>`;
   const sbHtml = !sb ? "" : `<div class="callout ${sbOk ? "green" : "amber"} mt" id="wp-sandbox"><b>${esc(sb.label)}</b>${matrix}
     <div class="s">Test vom ${fmtDate(sb.date)} · Quelle: Seite ${esc(sb.source_page.id)} (${esc(sb.source_page.use)}) – ${sb.source_page.unchanged ? "<b>unverändert</b> (modified " + esc(sb.source_page.modified_after) + ")" : "<b>GEÄNDERT – prüfen!</b>"}</div>
@@ -675,7 +683,7 @@ function wpCard() {
     <div class="k">Schreibvorgänge</div><div class="s">${sb.write_ops.map(o => `${esc(o.op)} → ${esc(o.result)}<br><span class="mini">${esc(o.payload)}</span>`).join("<br>")}</div>
     <div class="k">Tests</div><div class="s">${Object.entries(sb.results).map(([k, v]) => `${esc(k)}: ${esc(v)}`).join("<br>")}</div>
     <div class="k">Vergleich</div><div class="s">${Object.entries(sb.comparison).map(([k, v]) => `<b>${esc(k.replace(/_/g, " "))}</b>: ${v.length ? v.map(esc).join(" · ") : "–"}`).join("<br>")}</div></div>
-    <div class="mt"><b>Erkenntnisse</b>${ul(sb.findings)}</div><div class="mt"><b>Optionen (Entscheidung offen)</b>${ul(sb.options)}</div>${tiHtml}${arHtml}</div>${ltHtml}${nxHtml}`;
+    <div class="mt"><b>Erkenntnisse</b>${ul(sb.findings)}</div><div class="mt"><b>Optionen (Entscheidung offen)</b>${ul(sb.options)}</div>${tiHtml}${arHtml}</div>${s3Html}${tpHtml}${mpHtml}${ltHtml}`;
   return `<div class="card" id="wp-card"><div class="card-h"><h2>WordPress</h2>${chip(sb ? (sbOk ? "Sandbox-Test bestanden" : "Elementor Write: PARTIAL") : "Verbunden · nur lesend geprüft", sb && !sbOk ? "amber" : "green", true)}</div><div class="card-b"><div class="kv">
     <div class="k">Zugriff</div><div>${esc(w.access)}</div><div class="k">Rolle</div><div>${esc(w.role)}</div>
     <div class="k">Editor</div><div>${esc(w.editor)}</div><div class="k">SEO</div><div>${esc(w.seo)}</div>

@@ -535,7 +535,23 @@
       "summary": "Elementor-Template 6813 vollständig gelesen und ausgewertet; Remote-Fähigkeiten geprüft. Nichts geändert, Draft 6955 bleibt.",
       "found": "Eindeutig ID 6813 (Typ page, 12 Abschnitte, 81.793 Zeichen) · enthält 2 Trustindex-Scripts · kein Elementor-Insert über den Konnektor (Kopie nur als ganzes _elementor_data) · Content-Änderung und Block-Duplizieren/Spiegeln offline verifiziert",
       "insight": "Vorlagen-Weg wird Standard für CREATE; API-tauglich erst, wenn Trustindex in der Vorlage als Template-Referenz statt Script eingebunden ist. S3-Sandbox-Test vorgeschlagen, nicht ausgeführt."
+    },
+    {
+      "id": "EVT-031",
+      "source_ids": [
+        "SRC-030"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-25T07:07:45Z",
+      "at_precision": "exact",
+      "opp": null,
+      "action": "integration_preflight",
+      "title": "S3 Sandbox Test – Landingpage-Vorlage 2026",
+      "summary": "Vorlage 6813 (Trustindex durch Platzhalter ersetzt) mit Content-Änderungen und gespiegeltem Block in Draft 6955 geschrieben, zurückgelesen, Yoast getestet. Keine veröffentlichte Seite, Vorlage unverändert.",
+      "found": "Kein 403 · 105/107 Elemente identisch, 2 Whitespace-Abweichungen (NBSP, Agent-Transport) · Design/Responsive identisch · Spiegeln ok · Yoast Titel/Beschreibung/Schema ok, Focus Keyphrase nicht schreibbar",
+      "insight": "Vorlagen-Weg funktioniert scriptfrei. Offen: Trustindex-Referenz (Vorschlag), visuelle Prüfung durch Noel. Transport künftig mit \\uXXXX-Escaping + compare_readback."
     }
   ],
-  "updated": "2026-11-25T06:54:27Z"
+  "updated": "2026-11-25T07:10:26Z"
 }

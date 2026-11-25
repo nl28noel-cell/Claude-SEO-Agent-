@@ -498,6 +498,37 @@ def script_free_copy(tree, placeholder="[Trustindex – Template-Layer, wird üb
     return t
 
 
+def transport_json(tree):
+    """Payload für den Konnektor: kompaktes JSON mit \\uXXXX-Escaping. S3 (25.11.2026): unsichtbare Zeichen (z. B. geschütztes
+    Leerzeichen U+00A0) gingen bei lesbarer Ausgabe verloren – mit ASCII-Escaping bleiben sie sichtbar und exakt."""
+    return json.dumps(tree, separators=(",", ":"), ensure_ascii=True)
+
+
+def compare_readback(sent, got):
+    """Nach jedem Schreibvorgang: gesendeten Baum mit dem zurückgelesenen vergleichen (pro Element, Settings + Typ + Reihenfolge)."""
+    sent = json.loads(sent) if isinstance(sent, str) else sent
+    got = json.loads(got) if isinstance(got, str) else got
+    def flat(ns, out, order):
+        for n in ns:
+            out[n.get("id")] = n; order.append(n.get("id")); flat(n.get("elements") or [], out, order)
+        return out, order
+    a, oa = flat(sent, {}, []); b, ob = flat(got, {}, [])
+    diffs = []
+    for i in oa:
+        if i not in b:
+            diffs.append({"id": i, "issue": "fehlt"}); continue
+        if a[i].get("widgetType") != b[i].get("widgetType") or a[i].get("elType") != b[i].get("elType"):
+            diffs.append({"id": i, "issue": "Typ"})
+        sa, sb = _S(a[i]), _S(b[i])
+        for k in sorted(set(sa) | set(sb)):
+            if sa.get(k) != sb.get(k):
+                kind = "whitespace" if isinstance(sa.get(k), str) and isinstance(sb.get(k), str) and \
+                    re.sub(r"\s", " ", sa[k]) == re.sub(r"\s", " ", sb[k]) else "value"
+                diffs.append({"id": i, "key": k, "issue": kind})
+    extra = [i for i in ob if i not in a]
+    return {"identical": not diffs and not extra and oa == ob, "elements": len(oa), "diffs": diffs, "extra": extra, "order_ok": oa == ob}
+
+
 if __name__ == "__main__":
     a = sys.argv[1:]
     if not a:

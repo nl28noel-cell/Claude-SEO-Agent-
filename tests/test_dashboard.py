@@ -717,7 +717,7 @@ class ArtifactQA(unittest.TestCase):
         cv = WP.cfg()["capabilities_verified"]
         em = cv["elementor"]
         self.assertEqual((em["write"], em["standard_widgets"], em["script_widgets"], em["live_optimize_automation"], em["create_automation"], em["rollback"]),
-                         ("PARTIAL", "VERIFIED", "BLOCKED_BY_FIREWALL", "BLOCKED", "PENDING_FULL_SANDBOX_VALIDATION", "NOT_YET_VERIFIED"))
+                         ("PARTIAL", "VERIFIED", "BLOCKED_BY_FIREWALL", "BLOCKED", "PENDING_TRUSTINDEX_REFERENCE", "NOT_YET_VERIFIED"))
         self.assertFalse(cv["elementor_meta_write_verified"])
         wc = {"gate2": {"status": "approved"}, "gate3": {"status": "approved", "for_draft_version": 1, "visual_review_confirmed": True},
               "wordpress": {"mode": "CREATE", "draft_version": 1, "qa": {"overall": "passed"}, "documents": [{"draft_post_id": 9002}]}}
@@ -774,6 +774,16 @@ class ArtifactQA(unittest.TestCase):
         with self.assertRaises(PermissionError): WP.set_content(t, "s1a", width={"size": 40})
         # Sandbox-Kopie ohne Script ist firewall-tauglich, Original nicht
         self.assertTrue(WP.firewall_risk(tree)["blocked"]); self.assertFalse(WP.firewall_risk(WP.script_free_copy(tree))["blocked"])
+        # Transport + Rücklese-Vergleich (S3: NBSP-Verlust bei lesbarer Übertragung)
+        sent = [{"id": "a1", "elType": "widget", "widgetType": "text-editor", "settings": {"editor": "<p>A\u00a0B</p>"}, "elements": []}]
+        self.assertIn("\\u00a0", WP.transport_json(sent)); self.assertTrue(WP.compare_readback(sent, WP.transport_json(sent))["identical"])
+        got = [{"id": "a1", "elType": "widget", "widgetType": "text-editor", "settings": {"editor": "<p>A B</p>"}, "elements": []}]
+        r = WP.compare_readback(sent, got); self.assertFalse(r["identical"]); self.assertEqual(r["diffs"][0]["issue"], "whitespace")
+        got2 = [{"id": "a1", "elType": "widget", "widgetType": "text-editor", "settings": {"editor": "<p>X</p>"}, "elements": []}]
+        self.assertEqual(WP.compare_readback(sent, got2)["diffs"][0]["issue"], "value")
+        s3 = json.load(open(os.path.join(ROOT, "clients/spreewald-luftaufnahmen/state/sources.json")))["wordpress"]["s3_test"]
+        self.assertEqual(s3["target"]["id"], 6955); self.assertTrue(s3["draft_kept"])
+        self.assertEqual({r["layer"] for r in s3["results"]} >= {"technisch geschrieben", "strukturell geprüft", "visuell von Noel zu prüfen"}, True)
         tpl = WP.cfg()["create_template"]
         self.assertEqual((tpl["id"], tpl["title"]), (6813, "Landingpage-Vorlage 2026"))
 

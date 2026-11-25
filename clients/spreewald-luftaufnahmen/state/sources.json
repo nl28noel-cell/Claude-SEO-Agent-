@@ -260,6 +260,18 @@
           "VERIFIED"
         ],
         [
+          "Template-based CREATE (ohne Scripts)",
+          "VERIFIED IN SANDBOX (S3)"
+        ],
+        [
+          "Content-Änderung per Widget-ID / Duplizieren + Spiegeln",
+          "VERIFIED IN SANDBOX (S3)"
+        ],
+        [
+          "Yoast write/read (Draft)",
+          "VERIFIED (S3)"
+        ],
+        [
           "Script-containing widgets",
           "BLOCKED BY FIREWALL (vermutlich NinjaFirewall-Plugin)"
         ],
@@ -269,7 +281,7 @@
         ],
         [
           "CREATE automation",
-          "PENDING FULL SANDBOX VALIDATION"
+          "PENDING – Trustindex-Referenz in Vorlage fehlt"
         ],
         [
           "Rollback",
@@ -376,19 +388,13 @@
     "next_test_proposal": {
       "id": "S3",
       "title": "S3 Sandbox Test – Landingpage-Vorlage 2026",
-      "status": "vorgeschlagen – nicht ausgeführt",
-      "scope": "ausschließlich Draft 6955; Vorlage 6813, Live-Seiten, Plugins und Firewall bleiben unverändert; kein neues Template",
-      "test": "Vorlage 6813 mit neuen Element-IDs in Draft 6955 schreiben – die 2 Trustindex-Widgets dabei durch eine markierte Platzhalter-Zeile „[Trustindex – Template-Layer]“ ersetzt (script_free_copy), alles andere 1:1 inkl. Heyflow-Platzhalter, Karussell, CTA. Danach in einem zweiten Schreibvorgang: H1 + 1 H2 + 1 Text ersetzen (set_content) und Abschnitt 11 duplizieren + spiegeln (duplicate_section).",
+      "status": "durchgeführt 25.11.2026 – visuelle Prüfung ausstehend",
+      "scope": "Draft 6955",
+      "test": "siehe Ergebnis S3",
       "checks": [
-        "Beide Schreibvorgänge ohne 403 (insb. Heyflow-HTML ohne Script)",
-        "Rücklesen: alle Design-/Responsive-Werte identisch zur Vorlage, nur die geänderten Content-Felder abweichend",
-        "Gespiegelter Block: Bild|Text, gleiche Abstände/Responsive, neue IDs",
-        "Vorschau (eingeloggt): Darstellung wie Vorlage, Trustindex-Platzhalter sichtbar",
-        "6813 und alle Live-Seiten unverändert (modified)"
+        "Vorschau öffnen (eingeloggt) und Desktop/Tablet/Mobile prüfen"
       ],
-      "proves": "dass CREATE über Vorlage 6813 inkl. gezielter Content-Änderungen und Block-Duplizierung über den Konnektor funktioniert – offen bleibt nur Trustindex (Referenz-Änderung, freigabepflichtig)",
-      "cost": "2 Schreibvorgänge à ~80.000 Zeichen (Vorlage ist so groß) – einmaliger Testaufwand",
-      "not_included": "Trustindex selbst (bleibt Template Layer), Änderungen an Vorlage 6813, Yoast-Test (kann als S3b folgen)"
+      "not_included": "Trustindex selbst"
     },
     "landing_template": {
       "checked": "2026-11-25",
@@ -432,6 +438,125 @@
       },
       "minimal_change": "Kleinste Änderung, damit der Vorlagen-Weg vollständig API-tauglich wird: in Vorlage 6813 (und später den Seiten) die zwei Trustindex-HTML-Widgets durch je ein Elementor-Pro-Widget „Template“ ersetzen, das auf ein kleines Trustindex-Template verweist (von Noel im Elementor-Editor angelegt). Design unverändert, Trustindex bleibt im Template Layer. Erst nach Freigabe – aktuell nicht umgesetzt.",
       "verdict": "Vorlagen-Weg ist der richtige Standard. Ohne die Trustindex-Referenz-Änderung funktioniert er über den Konnektor nur scriptfrei (Sandbox) bzw. gar nicht für Seiten mit Trustindex."
+    },
+    "s3_test": {
+      "id": "S3",
+      "title": "S3 Sandbox Test – Landingpage-Vorlage 2026",
+      "status": "technisch erfolgreich – visuelle Prüfung durch Noel ausstehend",
+      "label": "WordPress Sandbox Test – Awaiting visual review",
+      "date": "2026-11-25",
+      "written_at": "2026-11-25T08:07:45 (Website-Zeit)",
+      "approved_by": "Noel 25.11.2026",
+      "target": {
+        "id": 6955,
+        "status": "draft",
+        "title": "[TEST SEO-Autopilot] Elementor-Kopie",
+        "edit_url": "https://www.spreewald-luftaufnahmen.de/wp-admin/post.php?post=6955&action=elementor",
+        "preview_url": "https://www.spreewald-luftaufnahmen.de/?page_id=6955&preview=true",
+        "preview_note": "nur eingeloggt (Entwurf)"
+      },
+      "method": "Ein Schreibvorgang (statt zwei, Aufwand halbiert): Vorlage 6813 mit 97 neuen Element-IDs, 2 Trustindex-Script-Widgets → markierte Platzhalter, H1 + 1 H2 + 1 Textblock geändert (set_content), Abschnitt 11 dupliziert + gespiegelt (duplicate_section) → 13 Abschnitte, 107 Elemente, 86.143 Zeichen",
+      "results": [
+        {
+          "check": "Schreiben ohne 403 (inkl. Heyflow-HTML, Karussell, Call-to-Action)",
+          "layer": "technisch geschrieben",
+          "status": "ok"
+        },
+        {
+          "check": "Rücklesen vs. Gesendet: 105/107 Elemente identisch, Reihenfolge identisch",
+          "layer": "strukturell geprüft",
+          "status": "ok mit Hinweis"
+        },
+        {
+          "check": "2 Textblöcke (454a01e0, 5d615eb6): je 1 geschütztes Leerzeichen als normales Leerzeichen übertragen – Transportfehler des Agenten, nicht WordPress; ab jetzt \\uXXXX-Escaping + automatischer Rücklese-Vergleich",
+          "layer": "strukturell geprüft",
+          "status": "Hinweis (behoben für künftige Schreibvorgänge)"
+        },
+        {
+          "check": "Design/Responsive/Globals: alle Nicht-Content-Einstellungen identisch zur Vorlage",
+          "layer": "strukturell geprüft",
+          "status": "ok"
+        },
+        {
+          "check": "Nur geplante Content-Änderungen gegenüber Vorlage (H1, H2, Text) + 2 Platzhalter",
+          "layer": "strukturell geprüft",
+          "status": "ok"
+        },
+        {
+          "check": "Gespiegelter Block: Text|Bild → Bild|Text, Design identisch, 10 neue eindeutige IDs",
+          "layer": "strukturell geprüft",
+          "status": "ok"
+        },
+        {
+          "check": "Page Settings, edit_mode builder, template_type wp-page",
+          "layer": "strukturell geprüft",
+          "status": "ok"
+        },
+        {
+          "check": "Yoast: SEO-Titel, Meta-Beschreibung, Schema-Seitentyp WebPage geschrieben und unabhängig zurückgelesen – identisch; Canonical/Robots unverändert (Standard)",
+          "layer": "technisch geschrieben + strukturell geprüft",
+          "status": "ok"
+        },
+        {
+          "check": "Yoast Focus Keyphrase: nicht über die Schnittstelle schreibbar",
+          "layer": "technisch",
+          "status": "nicht verfügbar"
+        },
+        {
+          "check": "Vorlage 6813 (modified 05.06.2026) und Live-Seite 5401 (16.07.2026) unverändert",
+          "layer": "strukturell geprüft",
+          "status": "ok"
+        },
+        {
+          "check": "Darstellung Desktop/Tablet/Mobile, Platzhalter sichtbar, gespiegelter Block",
+          "layer": "visuell von Noel zu prüfen",
+          "status": "ausstehend"
+        }
+      ],
+      "yoast": {
+        "seo_title": "[TEST S3] Baudokumentation mit Drohne | Yoast-Schreibtest",
+        "meta_description": "[TEST S3] Yoast-Schreibtest am Sandbox-Entwurf 6955 – keine veröffentlichte Seite.",
+        "schema_page_type": "WebPage",
+        "canonical": "unverändert (Standard)",
+        "noindex": "unverändert (Standard)",
+        "focus_keyphrase": "nicht schreibbar"
+      },
+      "draft_kept": true
+    },
+    "trustindex_proposal": {
+      "status": "Vorschlag – nicht freigegeben, nicht umgesetzt",
+      "steps": [
+        "1 Sicherung: Vorlage 6813 vor jeder Änderung als Elementor-Export (JSON) + _elementor_data-Snapshot mit SHA-256 in Drive; zusätzlich WordPress-Revision durch Speichern im Editor",
+        "2 Zwei kleine Elementor-Templates (Typ Abschnitt) im Editor anlegen: „Trustindex – Bewertungen A (486a…)“ und „Trustindex – Kundenstimmen B (4b8a…)“ – Inhalt jeweils exakt das bestehende HTML-Widget (Script wird vom eingeloggten Editor gespeichert, nicht über die API)",
+        "3 In einer KOPIE der Vorlage („Landingpage-Vorlage 2026 – Trustindex-Referenz“) die zwei HTML-Widgets durch das Pro-Widget „Template“ mit der jeweiligen Template-ID ersetzen; Container, Abstände und Responsive bleiben unverändert",
+        "4 Vergleich Original vs. Kopie: gerenderte Seite beider Varianten nebeneinander (Desktop/Tablet/Mobile), Bewertungsanzahl und -darstellung identisch",
+        "5 Nach Noels Freigabe: Kopie wird Standardvorlage (client.json create_template) – Original bleibt unverändert als Rückfall",
+        "Rücknahme: create_template zurück auf 6813 – sofort, ohne Datenverlust"
+      ],
+      "criteria": [
+        "Bewertungsbereiche optisch unverändert",
+        "keine Bewertungen verschwinden (gleiche Trustindex-IDs)",
+        "keine anderen Elementor-Bereiche berührt",
+        "zentral: 1 Pflegestelle je Widget statt 12+ Kopien",
+        "Sicherung vorhanden",
+        "reversibel"
+      ],
+      "why_copy": "Arbeiten an einer Kopie statt am Original erfüllt „Original vorerst unverändert“ und macht die Änderung trivial reversibel."
+    },
+    "optimize_migration_plan": {
+      "status": "Plan – nichts umgestellt",
+      "assessment": "Die Referenz-Strategie eignet sich auch für bestehende Seiten: auf allen 12 Seiten sind es dieselben zwei Trustindex-IDs als HTML-Widget. Nach Umstellung sind die Seiten scriptfrei und damit für OPTIMIZE über den Konnektor schreibbar.",
+      "approach": "Keine manuelle Einzelarbeit an 12 Seiten: der Agent bereitet je Seite eine geänderte Version vor – nur die 2 Trustindex-HTML-Widgets werden durch Template-Referenzen ersetzt, alles andere bleibt byte-gleich (compare_readback). Die neue Version enthält kein <script> mehr und ist deshalb über die Schnittstelle schreibbar. Geschrieben wird zuerst als Draft-Kopie je Seite.",
+      "phases": [
+        "0 Voraussetzung: Trustindex-Templates A/B freigegeben und angelegt (siehe trustindex_proposal)",
+        "1 Backup: Duplicator-/BackWPup-Komplettsicherung (Freigabe nötig) + je Seite _elementor_data-Snapshot (SHA-256) in Drive",
+        "2 Pilot: 1 Seite mit geringem Risiko (z. B. /kontakt/) → Draft-Kopie mit Referenzen → Vorschau → Noel prüft → Freigabe",
+        "3 Pilot live: nur die 2 Widgets ersetzen, sofort zurücklesen + vergleichen; Rankings/Leads 7 Tage beobachten",
+        "4 Rollout in Wellen (je 3–4 Seiten), jeweils Vorschau + Freigabe; Baudoku- und rankingstarke Seiten zuletzt",
+        "5 Nach Abschluss: Live OPTIMIZE automation für umgestellte Seiten neu bewerten (Rollback-Test inklusive)"
+      ],
+      "rollback": "Je Seite Snapshot zurückschreiben – Achtung: der Original-Snapshot enthält <script> und wäre über die API wieder blockiert → Rollback der Pilotseite über Elementor-Revision/Editor oder Snapshot-Variante mit Template-Referenz. Deshalb vor Phase 3 Rollback-Weg separat testen.",
+      "pages": 12
     }
   }
 }
