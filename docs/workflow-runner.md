@@ -68,3 +68,9 @@ Ausgelöst im Artifact über den Button an einer Opportunity mit `Research incom
 7. **Ergebnis**: `research_retry.status = "complete"` + `finished_at` – oder `"blocked"` + `block_reason` (verständlich, z. B. „Wettbewerber-Hosts im Netzwerk nicht freigegeben“ oder „Nur Semrush SERP fehlt – Budget-Reserve“). Commit + genau ein Push-Versuch.
 
 Budgetregel: Eine kostenpflichtige Semrush-Abfrage läuft nur, wenn `tools/serp.py plan` → `verdict = run`. Fehlt ausschließlich kostenpflichtige Research, bietet das Artifact keinen Retry an und erklärt den Grund.
+
+## ON HOLD / REJECT (ab 25.11.2026)
+
+- queue-Action `stopped` = Opportunity zurückgestellt oder abgelehnt → nie bearbeiten.
+- Unmittelbar vor jeder schreibenden Aktion (Drive-Dokument, ArtifactData-Statusupdate, WordPress-Schreibaufruf, Research-Commit) Eintrag frisch exportieren und `python3 tools/workflow.py check-active /tmp/wf <OPP>` ausführen. Exit 3 → nichts schreiben, laufenden Status auf `stopped` setzen (`stopped_at`, Notiz), nächsten Eintrag bearbeiten.
+- `decision` nie verändern; Reaktivierung macht ausschließlich Noel im Artifact.

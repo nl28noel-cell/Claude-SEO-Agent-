@@ -20,6 +20,12 @@ Dokumentschema workflow/<OPP-ID>:
                change_counts, publish_summary[], qa{content,seo,technical,visual,overall}, snapshots[], rollback{status,why}, baseline, published{at, change_entry}}
   gate3:      {status: approved, at, comment, for_draft_version, visual_review_confirmed}   – einzige Freigabe für Live-Schreibvorgänge (tools/wordpress.py guard)
   confirmations: [{op, post, status: confirmed, at}] – gesonderte Bestätigung für delete/slug/redirect/canonical/robots (nie automatisch)
+  decision:   {status: active|on_hold|rejected, at, reason, reason_code, review_at, fingerprint, history:[{status, at, reason}]}
+              Noels Opportunity-Entscheidung (APPROVE = Gate-Aktion, ON HOLD, REJECT). on_hold/rejected stoppen JEDE automatische
+              Weiterverarbeitung (Produktion, WordPress, Publish; bei rejected auch Research). Vor jeder schreibenden Aktion erneut prüfen:
+              `workflow.py check-active <dir> <OPP>` (Exit 0 = aktiv, 3 = gestoppt). Kein Löschen – Rücknahme über status active.
+              Bricht der Runner einen Auftrag deswegen ab, setzt er production/wordpress/research_retry.status = "stopped";
+              die Reaktivierung im Artifact setzt diese Aufträge auf waiting/queued zurück (Freigaben bleiben gültig).
   research_retry: {status: queued|running|complete|blocked, requested_at, started_at, finished_at, components[], blocked[],
                    done[], attempt, block_reason, note}   – gezielter Research-Retry (kein neuer Datensatz, kein zweites Dossier)
 
@@ -30,6 +36,7 @@ Befehle (Export vorher per ArtifactData list collection=workflow out_dir=<dir>):
   python3 tools/workflow.py mirror <dir> [--client SLUG]   -> state/workflow.json aktualisieren
   python3 tools/workflow.py preflight <dir> [--drive-ok] [--folder-ok]  -> Preflight-Checks als JSON (Exit 0 = ok, 2 = blocked)
   python3 tools/workflow.py check-draft <draft.md> [--opp <OPP>] -> QA OPTIMIZE: Change Summary, [KEEP]/[NEW]/[EDIT]/[REMOVE] + Reason, Schutz-Queries
+  python3 tools/workflow.py check-active <dir> <OPP-ID>    -> Entscheidung erneut prüfen (Exit 0 aktiv · 3 on_hold/rejected) – VOR jedem Schreibvorgang
   python3 tools/workflow.py doc-title <dir> <OPP-ID> [--companion <url>] -> deterministischer Doc-Titel (Idempotenz); --companion: 2. Dokument des Change Sets
 Keine Website-, WordPress- oder URL-Aktion.
 """
@@ -67,12 +74,62 @@ def _age_min(iso):
         return 1e9
 
 
+DECISION_STATES = ("active", "on_hold", "rejected")
+
+
+def decision_status(w):
+    st = ((w or {}).get("decision") or {}).get("status") or "active"
+    return st if st in DECISION_STATES else "active"
+
+
+def check_active(w):
+    """Unmittelbar vor jeder schreibenden Aktion (Drive, WordPress, Research-Commit) erneut aufrufen – eine zwischenzeitlich
+    gesetzte ON-HOLD-/REJECT-Entscheidung stoppt den laufenden Auftrag."""
+    st = decision_status(w)
+    d = (w or {}).get("decision") or {}
+    return {"active": st == "active", "status": st, "reason": d.get("reason"), "at": d.get("at"),
+            "why": None if st == "active" else f"Opportunity {'zurückgestellt (ON HOLD)' if st == 'on_hold' else 'abgelehnt (REJECTED)'} – keine Weiterverarbeitung"}
+
+
+def fingerprint(opp):
+    """Wesentliche Umstände zum Zeitpunkt einer Ablehnung – Grundlage für „nicht erneut vorschlagen, solange unverändert“."""
+    ct = ((opp or {}).get("gsc") or {}).get("cluster_total") or {}
+    return {"type": (opp or {}).get("type"), "primary_keyword": (opp or {}).get("primary_keyword"), "existing_page": (opp or {}).get("existing_page"),
+            "impressions": ct.get("impressions"), "position": ct.get("position")}
+
+
+def circumstances_changed(fp_then, opp):
+    """True + Gründe, wenn sich die wesentlichen Umstände seit der Ablehnung geändert haben. Reaktiviert NIE automatisch –
+    nur Hinweis an Noel."""
+    if not fp_then:
+        return {"changed": False, "why": []}
+    now, why = fingerprint(opp), []
+    for k in ("type", "primary_keyword", "existing_page"):
+        if fp_then.get(k) != now.get(k):
+            why.append(f"{k}: {fp_then.get(k)} → {now.get(k)}")
+    a, b = fp_then.get("impressions"), now.get("impressions")
+    if a and b is not None and abs(b - a) / a >= 0.5:
+        why.append(f"Impressionen {a} → {b} (≥ 50 %)")
+    pa, pb = fp_then.get("position"), now.get("position")
+    if pa is not None and pb is not None and abs(pb - pa) >= 5:
+        why.append(f"Position {pa} → {pb} (≥ 5)")
+    return {"changed": bool(why), "why": why}
+
+
 def actions(docs, client=DEFAULT_CLIENT):
     """Was ist zu tun? Nur explizite Freigaben – nie aus dem bloßen Vorhandensein einer Opportunity.
-    Erstproduktion zusätzlich nur mit freigegebener Strategie (Research-Stufe); sonst Eintrag `hold` (nicht bearbeiten)."""
+    Erstproduktion zusätzlich nur mit freigegebener Strategie (Research-Stufe); sonst Eintrag `hold` (nicht bearbeiten).
+    ON HOLD / REJECTED: keine Weiterverarbeitung (Eintrag `stopped`); ON HOLD erlaubt nur noch ausdrücklich angeforderte Research."""
     out = []
     for did, w in sorted(docs.items()):
+        st = decision_status(w)
         rr = w.get("research_retry") or {}
+        if st != "active":
+            if st == "on_hold" and rr.get("status") == "queued":
+                out.append({"doc": did, "action": "research", "components": rr.get("components", []), "blocked": rr.get("blocked", []),
+                            "attempt": rr.get("attempt", 1), "test": bool(w.get("test")), "version": w.get("_version"), "note": "ON HOLD – nur Research, keine Produktion"})
+            out.append({"doc": did, "action": "stopped", "reason": st, "test": bool(w.get("test")), "version": w.get("_version")})
+            continue
         if rr.get("status") == "queued" or (rr.get("status") == "running" and _age_min(rr.get("started_at")) >= STALE_RUN_MIN):
             out.append({"doc": did, "action": "research", "components": rr.get("components", []), "blocked": rr.get("blocked", []),
                         "attempt": rr.get("attempt", 1), "test": bool(w.get("test")), "version": w.get("_version")})
@@ -423,6 +480,9 @@ if __name__ == "__main__":
         except Exception:
             o = None
         print(doc_title(w, o, a[a.index("--companion") + 1] if "--companion" in a else None))
+    elif a[0] == "check-active":
+        docs = load_export(a[1]); r = check_active(docs.get(a[2]) or {})
+        print(json.dumps(r, ensure_ascii=False)); sys.exit(0 if r["active"] else 3)
     elif a[0] == "check-draft":
         r = check_draft(a[1], a[a.index("--opp") + 1] if "--opp" in a else None)
         print(json.dumps(r, ensure_ascii=False, indent=2)); sys.exit(0 if r["ok"] else 1)

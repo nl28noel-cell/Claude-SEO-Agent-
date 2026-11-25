@@ -345,6 +345,90 @@ const MOCK = () => {
     check('mock: no page errors', errs.length === 0, errs.join(' | '));
     await ctx.close(); srv2.close();
   }
+  // Entscheidungen APPROVE / ON HOLD / REJECT, Tabs, Reaktivierung, Mini-Sitemap, Command Center, Navigation
+  {
+    const srv3 = await serve(); const base3 = `http://127.0.0.1:${srv3.address().port}/`;
+    const ctx = await b.newContext({ viewport: { width: 1440, height: 950 } }); await ctx.route(/fonts\./, r => r.abort());
+    await ctx.addInitScript(MOCK); const p = await ctx.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));
+    const dd = JSON.parse(fs.readFileSync(path.join(DIST, 'data', 'spreewald-luftaufnahmen', 'dashboard.json'), 'utf8'));
+    await p.goto(base3 + '#approvals', { waitUntil: 'networkidle' }); await p.waitForTimeout(300);
+    const today = new Date().toISOString().slice(0, 10);
+    // ON HOLD
+    await p.click('#wf-board [data-card="OPP-05"]'); await p.waitForTimeout(150);
+    check('drawer offers On Hold / Reject next to Approve', (await p.locator('#wf-decide').count()) === 1 && (await p.locator('[data-act="approve"]').count()) >= 1);
+    await p.click('#wf-decide summary'); await p.fill('#wf-hold-reason', 'Nach Saison erneut prüfen'); await p.fill('#wf-hold-date', today);
+    await p.click('[data-act="hold"]'); await p.waitForTimeout(900);
+    let w = await p.evaluate(() => window.__all.workflow?.['OPP-05']);
+    check('ON HOLD persisted (status, reason, review date, timestamp)', w?.decision?.status === 'on_hold' && w.decision.reason === 'Nach Saison erneut prüfen' && w.decision.review_at === today && !!Date.parse(w.decision.at), JSON.stringify(w?.decision));
+    check('ON HOLD audited (decisions, gate 0) and no agent trigger', await p.evaluate(() => Object.values(window.__all.decisions || {}).some(x => x.item_id === 'OPP-05' && x.gate === 0 && x.decision === 'hold')) && (await p.evaluate(() => (window.__fired || []).length)) === 0);
+    check('ON HOLD removed from active board', (await p.locator('#wf-board [data-card="OPP-05"]').count()) === 0);
+    await p.reload({ waitUntil: 'networkidle' }); await p.waitForTimeout(300);
+    check('ON HOLD survives reload', (await p.locator('#wf-board [data-card="OPP-05"]').count()) === 0 && /On Hold\s*1/.test(await p.locator('#wf-tabs').innerText()));
+    await p.click('#wf-tabs [data-tab="on_hold"]'); await p.waitForTimeout(100);
+    check('On Hold tab lists item with reason + due review', (await p.locator('#wf-alt [data-card="OPP-05"]').count()) === 1 && /fällig/.test(await p.locator('#wf-alt').innerText()) && /Nach Saison/.test(await p.locator('#wf-alt').innerText()));
+    // Reaktivieren
+    await p.click('#wf-alt [data-card="OPP-05"]'); await p.waitForTimeout(150);
+    check('held card shows decision block, no gate action', (await p.locator('#wf-decision').count()) === 1 && (await p.locator('#wf-panel-body [data-act="approve"]').count()) === 0);
+    await p.click('[data-act="reactivate"]'); await p.waitForTimeout(900);
+    w = await p.evaluate(() => window.__all.workflow?.['OPP-05']);
+    check('reactivation persisted with history', w?.decision?.status === 'active' && w.decision.reactivated_from === 'on_hold' && w.decision.history?.[0]?.status === 'on_hold', JSON.stringify(w?.decision));
+    await p.click('#wf-tabs [data-tab="active"]'); await p.waitForTimeout(100);
+    check('reactivated card back in active board', (await p.locator('#wf-board [data-card="OPP-05"]').count()) === 1);
+    // REJECT
+    await p.click('#wf-board [data-card="OPP-07"]'); await p.waitForTimeout(150); await p.click('#wf-decide summary');
+    await p.selectOption('#wf-rej-code', 'Bestehende Seite ausreichend'); await p.click('[data-act="reject"]'); await p.waitForTimeout(900);
+    w = await p.evaluate(() => window.__all.workflow?.['OPP-07']);
+    check('REJECT persisted with reason + fingerprint (no deletion)', w?.decision?.status === 'rejected' && w.decision.reason === 'Bestehende Seite ausreichend' && !!w.decision.fingerprint && !!w.opp_id, JSON.stringify(w?.decision));
+    await p.click('#wf-tabs [data-tab="rejected"]'); await p.waitForTimeout(100);
+    check('Rejected tab lists item', (await p.locator('#wf-alt [data-card="OPP-07"]').count()) === 1);
+    await p.goto(base3 + '#opportunities', { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
+    check('opportunity list: rejected hidden in Active tab', !/OPP-07/.test(await p.locator('#opp-table').innerText()));
+    await p.click('#odec [data-d="rejected"]'); await p.waitForTimeout(150);
+    check('opportunity list: Rejected tab shows it with status', /OPP-07/.test(await p.locator('#opp-table').innerText()) && /Rejected/.test(await p.locator('#opp-table').innerText()));
+    await p.goto(base3 + '#opp-OPP-07', { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
+    check('opportunity detail shows rejection banner', /Abgelehnt/.test(await p.locator('#opp-decision').innerText()));
+    // Mini-Sitemap
+    for (const id of ['OPP-02', 'OPP-04']) {
+      await p.goto(base3 + '#opp-' + id, { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
+      const o = dd.opportunities.find(x => x.id === id), n = o.architecture.nodes.length;
+      check(`mini sitemap ${id}: all nodes drawn, target highlighted, legend`, (await p.locator('#arch-card .an').count()) === n && (await p.locator('#arch-card .an-target').count()) === 1 && /SECTION ONLY/.test(await p.locator('#arch-card .arch-legend').innerText()), String(n));
+      const hrefs = await p.locator('#arch-card svg a').evaluateAll(a => a.map(x => x.getAttribute('href')));
+      check(`mini sitemap ${id}: links only to real pages or opportunities`, hrefs.every(h => h.startsWith('#opp-') || h.startsWith(dd.client.website.replace(/\/$/, '') + '/')), hrefs.join(','));
+      check(`mini sitemap ${id}: proposed architecture labelled`, /Proposed Architecture|Current Architecture/.test(await p.locator('#arch-card .arch-h').innerText()));
+    }
+    check('architecture data: only inventory or planned URLs', dd.opportunities.filter(o => o.architecture).every(o => o.architecture.nodes.every(n => !n.url || dd.site_urls.includes(n.url) || dd.opportunities.some(x => x.planned_url === n.url))));
+    check('architecture data: SECTION ONLY / FUTURE never have a URL', dd.opportunities.filter(o => o.architecture).every(o => o.architecture.nodes.every(n => !['section', 'future'].includes(n.status) || !n.url)));
+    // Command Center
+    await p.goto(base3 + '#overview', { waitUntil: 'networkidle' }); await p.waitForTimeout(300);
+    const kp = await p.locator('.kpi2').evaluateAll(a => a.map(x => ({ src: x.querySelector('.kpi2-src')?.textContent.trim(), per: x.querySelector('.kpi2-p')?.textContent.trim() })));
+    check('command center: 8 KPIs, each with source and period', kp.length === 8 && kp.every(k => k.src && k.per), JSON.stringify(kp));
+    const g28 = dd.gsc.daily.slice(-28).reduce((a, r) => a + r.clicks, 0);
+    check('KPI organic clicks = GSC last 28 days', (await p.locator('.kpi2').first().locator('.kpi2-v').innerText()).replace(/\./g, '') === String(g28), String(g28));
+    check('KPI organic leads = GA4 Organic Search', (await p.locator('.kpi2').nth(3).locator('.kpi2-v').innerText()) === String(dd.ga4.channels_window.find(c => c.channel === 'Organic Search').leads));
+    check('attention items link to a target', (await p.locator('.att2-i').count()) > 0 && (await p.locator('.att2-i').evaluateAll(a => a.every(x => x.getAttribute('href'))))); 
+    check('agent orb: no animation without running job', (await p.locator('.orb.active').count()) === 0);
+    await p.evaluate(async () => { const db = await window.claude.use('db'); await db.collection('workflow').doc('OPP-09').set({ opp_id: 'OPP-09', research_retry: { status: 'running', started_at: new Date().toISOString() } }); });
+    await p.waitForTimeout(400);
+    check('agent orb: animates only with real running job', (await p.locator('.cc-head .orb.active').count()) === 1 && /Researching/.test(await p.locator('.cc-head').innerText()));
+    const navTxt = await p.locator('#nav a').evaluateAll(a => a.slice(0, 6).map(x => { const c = x.cloneNode(true); c.querySelectorAll('.ic,.nav-badge').forEach(e => e.remove()); return c.textContent.trim(); }));
+    check('navigation: daily workflow first', JSON.stringify(navTxt) === JSON.stringify(['Overview', 'Workflow / Approvals', 'Opportunities', 'Performance', 'Changes & Impact', 'Agent Activity']), JSON.stringify(navTxt));
+    for (const r of ['overview', 'approvals', 'opportunities', 'performance', 'changes', 'activity', 'findings', 'local', 'market', 'funnel', 'analytics', 'ads', 'sources', 'research-log']) {
+      await p.click(`#nav a[data-route="${r}"]`); await p.waitForTimeout(120);
+      check(`nav → ${r}`, (await p.evaluate(() => location.hash)) === '#' + r && !/failed to render/.test(await p.locator('#view').innerText()));
+    }
+    // Scroll: langer Opportunity-Detail scrollt, Drawer sperrt nur solange offen
+    await p.goto(base3 + '#opp-OPP-02', { waitUntil: 'networkidle' }); await p.waitForTimeout(200);
+    await p.mouse.move(700, 500); await p.mouse.wheel(0, 2500); await p.waitForTimeout(250);
+    check('long opportunity detail scrolls', (await p.evaluate(() => window.scrollY)) > 500);
+    check('no page errors (decision/sitemap/command center)', errs.length === 0, errs.join(' | '));
+    await ctx.close(); srv3.close();
+    const rctx = await b.newContext({ viewport: { width: 1200, height: 800 }, reducedMotion: 'reduce' }); await rctx.route(/fonts\./, r => r.abort());
+    await rctx.addInitScript(MOCK); const rp = await rctx.newPage(); const srv4 = await serve();
+    await rp.goto(`http://127.0.0.1:${srv4.address().port}/#overview`, { waitUntil: 'networkidle' });
+    await rp.evaluate(async () => { const db = await window.claude.use('db'); await db.collection('workflow').doc('OPP-09').set({ opp_id: 'OPP-09', research_retry: { status: 'running', started_at: new Date().toISOString() } }); }); await rp.waitForTimeout(400);
+    check('reduced motion: orb does not animate', await rp.evaluate(() => { const i = document.querySelector('.cc-head .orb.active i'); return !!i && getComputedStyle(i).animationName === 'none'; }));
+    await rctx.close(); srv4.close();
+  }
   await b.close();
   console.log('PASS', ok.length); console.log('FAIL', bad.length); bad.forEach(x => console.log('  ✗', x));
   process.exit(bad.length ? 1 : 0);

@@ -57,3 +57,24 @@ Alle Produktions-/Testläufe der Aufbauphase wurden bereinigt: OPP-01 bis OPP-05
 ## WordPress (ab 24.11.2026)
 
 Gate 2 stößt den Runner an (`wordpress.status = queued`) – es entstehen nur Drafts. Gate 3 (`gate3.status = approved` für genau die geprüfte Draft-Version, Sichtprüfung bestätigt) ist die einzige Freigabe für Live-Schreibvorgänge; die Sperre steckt in `tools/wordpress.py guard` und `workflow.py queue`. Details: [`wordpress-integration.md`](wordpress-integration.md).
+
+## Entscheidungen: APPROVE · ON HOLD · REJECT (ab 25.11.2026)
+
+Jede CREATE/OPTIMIZE/MERGE-Opportunity hat im Workflow-Drawer drei Entscheidungen:
+
+| Aktion | Wirkung | Persistenz |
+|---|---|---|
+| **APPROVE** | die jeweilige Gate-Aktion (Gate 1 Strategie · Gate 2 Inhalt · Gate 3 Publish) – der nächste vorgesehene Schritt darf starten | `gate1/gate2/gate3` wie bisher |
+| **ON HOLD** | bewusst zurückgestellt: keine Produktion, kein WordPress, kein Publish, aus der aktiven Queue entfernt; Grund und Wiedervorlage-Datum optional; Research/Evidence bleiben und dürfen ergänzt werden | `decision = {status: on_hold, at, reason, review_at, history[]}` |
+| **REJECT** | abgelehnt: aus der Pipeline entfernt, kein Runner verarbeitet sie weiter (auch keine Research); Grund optional (Vorlagen oder Freitext); keine Löschung | `decision = {status: rejected, at, reason, reason_code, fingerprint, history[]}` |
+
+- **Audit:** jede Entscheidung zusätzlich in `decisions` (gate 0, `hold` / `reject` / `reactivate`).
+- **Reaktivieren** jederzeit im Tab „On Hold“ bzw. „Rejected / Archived“ → `decision.status = active`; vom Runner gestoppte Aufträge (`stopped`) werden auf waiting/queued zurückgesetzt, bestehende Freigaben bleiben gültig. Es startet nichts automatisch.
+- **Runner-Sperre im Code:** `tools/workflow.py actions` liefert für on_hold/rejected nur `stopped` (ON HOLD: angeforderte Research weiterhin erlaubt); `tools/wordpress.py guard` verweigert jeden Schreibvorgang (`decision_on_hold` / `decision_rejected`); vor jeder schreibenden Aktion `python3 tools/workflow.py check-active <dir> <OPP>` (Exit 3 = stoppen).
+- **Nicht erneut vorschlagen:** beim REJECT werden Typ, Primary Keyword, bestehende Seite, Cluster-Impressionen und -Position gespeichert (`fingerprint`). Erst bei wesentlicher Änderung (Typ/Keyword/Seite anders, Impressionen ±50 %, Position ±5) zeigt das Dashboard „Umstände geändert – erneut prüfen?“ – reaktiviert wird nie automatisch.
+
+Das Board zeigt standardmäßig nur aktive Vorgänge; On Hold und Rejected/Archived liegen in eigenen Tabs (Wiedervorlagen mit Fälligkeit). Auch die Opportunity-Liste filtert standardmäßig auf „Active“.
+
+## Mini-Sitemap je Opportunity
+
+`tools/architecture.py` baut beim Build für jede CREATE/OPTIMIZE/MERGE-Opportunity eine Architektur aus Website-Inventar, IA-Dossier (H_ia), Struktur (G_structure, Abschnitte NEW) und Kannibalisierung. Status: **EXISTING** (im Inventar) · **PROPOSED** (geplante URL einer Opportunity) · **FUTURE / OPTIONAL** (Hub-Option, spätere Unterseite) · **SECTION ONLY** (Abschnitt auf der Seite, keine eigene URL). `validate` bricht den Build ab, wenn ein Knoten weder im Inventar noch geplant ist. Parent-Beziehungen gelten nur als bestätigt, wenn ein bestehender interner Link sie belegt – sonst „Proposed Architecture“. Anzeige: Opportunity-Detail (direkt unter dem Kopf, vor dem Scope) und kompakt im Gate-1-Drawer.

@@ -787,6 +787,60 @@ class ArtifactQA(unittest.TestCase):
         tpl = WP.cfg()["create_template"]
         self.assertEqual((tpl["id"], tpl["title"]), (6813, "Landingpage-Vorlage 2026"))
 
+    def test_decision_hold_reject(self):
+        """APPROVE / ON HOLD / REJECT: on_hold/rejected stoppen jede automatische Weiterverarbeitung; Reaktivierung möglich."""
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import workflow as WFm, wordpress as WP, copy
+        base = {"opp_id": "TEST-D", "test": True, "gate1": {"status": "approved", "at": "2026-11-25T10:00:00Z"}, "production": {"status": "waiting"}}
+        self.assertEqual([a["action"] for a in WFm.actions({"TEST-D": base})], ["produce"])
+        held = copy.deepcopy(base); held["decision"] = {"status": "on_hold", "at": "2026-11-25T11:00:00Z", "reason": "später", "review_at": "2027-01-15"}
+        self.assertEqual([a["action"] for a in WFm.actions({"TEST-D": held})], ["stopped"])
+        held["research_retry"] = {"status": "queued", "components": ["web_research"]}
+        self.assertEqual([a["action"] for a in WFm.actions({"TEST-D": held})], ["research", "stopped"])   # Erkenntnisse ergänzen erlaubt
+        rej = copy.deepcopy(base); rej["decision"] = {"status": "rejected", "reason": "Strategisch nicht relevant"}; rej["research_retry"] = {"status": "queued"}
+        self.assertEqual([a["action"] for a in WFm.actions({"TEST-D": rej})], ["stopped"])                # kein Runner verarbeitet REJECT
+        # WordPress-Schritte ebenfalls gestoppt
+        wp = copy.deepcopy(base); wp.update({"test": False, "gate2": {"status": "approved"}, "wordpress": {"status": "queued", "mode": "CREATE"}})
+        self.assertEqual(WFm.actions({"X": wp})[0]["action"], "wp_draft")
+        wp["decision"] = {"status": "on_hold"}; self.assertEqual(WFm.actions({"X": wp})[0]["action"], "stopped")
+        self.assertEqual(WP.guard("create_draft", wp, status="draft")["code"], "decision_on_hold")
+        wp["decision"] = {"status": "rejected"}; self.assertEqual(WP.guard("update_draft", wp, post=1)["code"], "decision_rejected")
+        # Re-Check vor dem Schreiben + Reaktivierung
+        self.assertFalse(WFm.check_active(held)["active"]); self.assertTrue(WFm.check_active(base)["active"])
+        react = copy.deepcopy(held); react["decision"] = {"status": "active", "history": [{"status": "on_hold"}]}
+        self.assertEqual([a["action"] for a in WFm.actions({"TEST-D": react})][-1], "produce")
+        # nicht erneut vorschlagen, solange Umstände unverändert
+        o = {"type": "CREATE", "primary_keyword": "kw", "existing_page": None, "gsc": {"cluster_total": {"impressions": 1000, "position": 20.0}}}
+        fp = WFm.fingerprint(o)
+        self.assertFalse(WFm.circumstances_changed(fp, o)["changed"])
+        o2 = copy.deepcopy(o); o2["gsc"]["cluster_total"]["impressions"] = 1600
+        self.assertTrue(WFm.circumstances_changed(fp, o2)["changed"])
+        o3 = copy.deepcopy(o); o3["type"] = "OPTIMIZE"; self.assertIn("type", WFm.circumstances_changed(fp, o3)["why"][0])
+
+    def test_architecture_map(self):
+        """Mini-Sitemap: nur Inventar-URLs oder geplante URLs; SECTION ONLY/FUTURE ohne URL; Parent nur mit belegtem Link bestätigt."""
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import architecture as A
+        d = json.load(open(os.path.join(ROOT, "dashboard/public/data/spreewald-luftaufnahmen/dashboard.json"), encoding="utf-8"))
+        urls = d["site_urls"]
+        for o in d["opportunities"]:
+            if o["type"] not in ("CREATE", "OPTIMIZE", "MERGE"):
+                self.assertNotIn("architecture", o); continue
+            a = o["architecture"]
+            self.assertEqual(A.validate(a, urls, d["opportunities"]), [], o["id"])
+            self.assertEqual(sum(1 for n in a["nodes"] if "target" in n["roles"]), 1, o["id"])
+            for n in a["nodes"]:
+                if n["url"] in urls: self.assertEqual(n["status"], "existing", n)
+        a2 = next(o for o in d["opportunities"] if o["id"] == "OPP-02")["architecture"]
+        self.assertTrue(a2["parent_confirmed"])                                      # Startseite → Baudoku belegt
+        self.assertTrue(any(n["status"] == "section" for n in a2["nodes"]))
+        a4 = next(o for o in d["opportunities"] if o["id"] == "OPP-04")["architecture"]
+        self.assertEqual(next(n for n in a4["nodes"] if "target" in n["roles"])["status"], "proposed")
+        self.assertTrue(all(n["cannibal"] for n in a4["nodes"] if "cannibal" in n["roles"]))
+        # Erfundene URL wird nie gezeichnet
+        fake = {"id": "X", "type": "OPTIMIZE", "existing_page": "/drohnen-baudokumentation/", "research": {"H_ia": {"recommended": {"siblings": [{"url": "/gibt-es-nicht/", "label": "Fake"}]}}}}
+        self.assertFalse(any(n["url"] == "/gibt-es-nicht/" for n in A.build(fake, urls, d["opportunities"])["nodes"]))
+
     def test_workflow_render_html(self):
         import tempfile
         sys.path.insert(0, os.path.join(ROOT, "tools"))

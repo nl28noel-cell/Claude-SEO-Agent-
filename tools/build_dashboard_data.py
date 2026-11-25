@@ -21,6 +21,7 @@ import serp  # noqa: E402
 import research_log  # noqa: E402
 import cannibalization  # noqa: E402
 import page_diagnosis  # noqa: E402
+import architecture  # noqa: E402
 
 OUT_ROOT = os.path.join(ROOT, "dashboard", "public", "data")
 
@@ -98,6 +99,30 @@ def make_segmenter(cfg):
 
 
 # ---------------------------------------------------------------- build
+def _architecture(opps, urls, titles=None):
+    """Mini-Sitemap je CREATE/OPTIMIZE/MERGE-Opportunity (tools/architecture.py) – nur Inventar-URLs und geplante URLs."""
+    for o in opps:
+        if o.get("type") in ("CREATE", "OPTIMIZE", "MERGE"):
+            a = architecture.build(o, urls, opps, titles)
+            err = architecture.validate(a, urls, opps)
+            if err:
+                raise SystemExit(f"Architecture {o['id']}: {err}")
+            o["architecture"] = a
+    return opps
+
+
+def _decision_checks(opps, wf_items):
+    """REJECT-Regel: abgelehnte Opportunities werden nicht erneut vorgeschlagen, solange sich die wesentlichen Umstände
+    nicht geändert haben (tools/workflow.py circumstances_changed). Nur Hinweis – nie automatische Reaktivierung."""
+    import workflow as WFm
+    by = {w.get("id"): w for w in wf_items}
+    for o in opps:
+        d = (by.get(o["id"]) or {}).get("decision") or {}
+        if d.get("status") == "rejected":
+            o["decision_check"] = WFm.circumstances_changed(d.get("fingerprint"), o)
+    return opps
+
+
 def build_client(slug, today):
     cdir = os.path.join(ROOT, "clients", slug)
     cfg = jload(os.path.join(cdir, "client.json"))
@@ -490,7 +515,8 @@ def build_client(slug, today):
                 "segments_monthly": segments, "segment_totals": seg_totals,
                 "countries": sorted([{k: r[k] for k in ("country", "clicks", "impressions", "position")} for r in country], key=lambda r: -r["impressions"])[:10],
                 "devices": [{k: r[k] for k in ("device", "clicks", "impressions", "ctr", "position")} for r in device]},
-        "opportunities": opps,
+        "opportunities": _architecture(_decision_checks(opps, st("workflow").get("items", [])), list(inv.keys()), {k: v.get("title") for k, v in inv.items()}),
+        "site_urls": sorted(inv.keys()),
         "findings": findings,
         "changes": changes,
         "tasks": tasks,
