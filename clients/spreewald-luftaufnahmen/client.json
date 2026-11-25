@@ -107,10 +107,12 @@
         "rollback": "NOT_YET_VERIFIED",
         "template_create_scriptfree": "VERIFIED_IN_SANDBOX",
         "content_edit_duplicate_mirror": "VERIFIED_IN_SANDBOX",
-        "yoast_write_read_draft": "VERIFIED"
+        "yoast_write_read_draft": "VERIFIED",
+        "visual_qa_s3": "PASSED"
       },
       "firewall_source": "vermutlich NinjaFirewall (WP-Plugin, aktiv) – nicht Hosting; nicht abschließend bestimmt (Firewall-Log nicht eingesehen)",
-      "transport": "Payload immer per transport_json (\\uXXXX-Escaping) senden und mit compare_readback prüfen (S3: 2 NBSP-Verluste bei lesbarer Übertragung)"
+      "transport": "Payload immer per transport_json (\\uXXXX-Escaping) senden und mit compare_readback prüfen (S3: 2 NBSP-Verluste bei lesbarer Übertragung)",
+      "yoast_focus_keyphrase": "not_writable – manual_action_required (Test 25.11.2026: Ability ohne Feld, REST-Meta verworfen)"
     },
     "create_template": {
       "id": 6813,

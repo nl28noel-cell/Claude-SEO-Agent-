@@ -219,6 +219,7 @@ function attentionItems() {
   }
   const wp = S.d.sources.wordpress;
   (wp?.sandbox_test?.matrix || []).filter(([, v]) => /BLOCKED/.test(v)).slice(0, 2).forEach(([k, v]) => out.push({ kind: "wordpress", level: "danger", ref: "WordPress", title: `WordPress: ${k}`, detail: v, href: "#sources", rank: 4 }));
+  if (wp?.trustindex_proposal?.manual_step && /wartet auf manuellen Schritt/.test(wp.trustindex_proposal.status)) out.push({ kind: "review", level: "warning", ref: "Trustindex", title: "Trustindex-Templates im Elementor-Editor anlegen", detail: "2 Minuten · danach erstellt der Agent die Kopie der Landingpage-Vorlage", href: "#sources", rank: 1 });
   if (wp?.s3_test && /ausstehend|Awaiting/.test(wp.s3_test.status + wp.s3_test.label)) out.push({ kind: "review", level: "warning", ref: "S3", title: "Sichtprüfung WordPress-Sandbox (Draft 6955)", detail: "Vorschau öffnen und Desktop/Tablet/Mobile prüfen", href: "#sources", rank: 3 });
   S.d.findings.filter(f => f.status === "open" && ["high", "critical"].includes(f.severity)).forEach(f => out.push({ kind: "finding", level: "danger", ref: f.id, title: f.title, detail: `Finding ${f.id} · ${f.category}`, href: "#findings", rank: 2 }));
   S.d.tasks.filter(t => t.state === "blocked").forEach(t => out.push({ kind: "task", level: "danger", ref: t.id, title: t.title, detail: t.blocked_reason || "", href: "#activity", rank: 5 }));
@@ -815,11 +816,16 @@ function wpCard() {
     <div class="callout amber mt"><b>Kleinste Änderung für den vollständigen Vorlagen-Weg (Freigabe nötig)</b><div class="s">${esc(lt.minimal_change)}</div></div></details>`;
   const s3 = w.s3_test, tp = w.trustindex_proposal, mp = w.optimize_migration_plan;
   const s3Tone = r => r.status === "ok" ? "green" : /ausstehend/.test(r.status) ? "amber" : /nicht verfügbar/.test(r.status) ? "" : "amber";
-  const s3Html = !s3 ? "" : `<div class="callout amber mt" id="wp-s3"><b>${esc(s3.label)}</b> <span class="mini">${esc(s3.title)} · ${fmtDate(s3.date)}</span>
+  const s3Html = !s3 ? "" : `<div class="callout ${/Passed/.test(s3.status) ? "green" : "amber"} mt" id="wp-s3"><b>${esc(s3.label)}</b> <span class="mini">${esc(s3.title)} · ${fmtDate(s3.date)}</span>
     <div class="s mt">${esc(s3.method)}</div>
     <div class="row mt" style="flex-wrap:wrap;gap:8px"><a class="btn sm" href="${esc(s3.target.preview_url)}" target="_blank" rel="noopener">Vorschau öffnen</a><a class="btn sm" href="${esc(s3.target.edit_url)}" target="_blank" rel="noopener">In Elementor öffnen</a><span class="mini">${esc(s3.target.preview_note)} · Draft ${esc(s3.target.id)} bleibt bestehen</span></div>
     <table class="tbl mt" id="wp-s3-results"><thead><tr><th>Prüfung</th><th>Ebene</th><th>Ergebnis</th></tr></thead><tbody>${s3.results.map(r => `<tr><td class="s">${esc(r.check)}</td><td class="mini">${esc(r.layer)}</td><td>${chip(r.status, s3Tone(r), true)}</td></tr>`).join("")}</tbody></table></div>`;
-  const tpHtml = !tp ? "" : `<details class="mt" id="wp-trustindex-proposal"><summary><b>Vorschlag Trustindex-Referenz</b> <span class="mini">(${esc(tp.status)})</span></summary>${ul(tp.steps)}<div class="mini">${esc(tp.why_copy)}</div></details>`;
+  const tpHtml = !tp ? "" : `<details class="mt" id="wp-trustindex-proposal" ${tp.manual_step ? "open" : ""}><summary><b>Trustindex-Referenz-Kopie</b> <span class="mini">(${esc(tp.status)})</span></summary>
+    ${tp.blocker ? `<div class="callout amber mt s">${esc(tp.blocker)}</div>` : ""}
+    ${tp.manual_step ? `<div class="mt"><b>Dein Schritt im Elementor-Editor (ca. 2 Minuten)</b><ol class="list">${tp.manual_step.map(x => `<li>${esc(x)}</li>`).join("")}</ol></div>` : ""}
+    ${tp.prepared ? `<div class="s mt"><b>Vorbereitet:</b> ${esc(tp.prepared.offline_check)} · Kopie „${esc(tp.prepared.copy_title)}“ · ${esc(tp.prepared.original)} · ${esc(tp.prepared.then)}</div>` : ""}
+    <details class="mt"><summary class="mini">Ursprünglicher Plan</summary>${ul(tp.steps)}<div class="mini">${esc(tp.why_copy)}</div></details></details>`;
+  const fkHtml = s3?.focus_keyphrase ? `<div class="callout amber mt" id="wp-focuskw"><b>Yoast Focus Keyphrase: ${esc(s3.focus_keyphrase.result)}</b>${ul(s3.focus_keyphrase.paths)}<div class="s">${esc(s3.focus_keyphrase.fallback)}</div></div>` : "";
   const mpHtml = !mp ? "" : `<details class="mt" id="wp-migration"><summary><b>Migrationsplan Bestandsseiten (${esc(mp.pages)})</b> <span class="mini">(${esc(mp.status)})</span></summary><div class="s mt">${esc(mp.assessment)}</div><div class="s mt">${esc(mp.approach)}</div>${ul(mp.phases)}<div class="callout amber mt s">${esc(mp.rollback)}</div></details>`;
   const nxHtml = !nx ? "" : `<div class="callout amber mt" id="wp-next-test"><b>${esc(nx.title || "Vorgeschlagener nächster Test")} (${esc(nx.status)})</b><div class="s">${esc(nx.test)}</div><div class="s mt">Rahmen: ${esc(nx.scope)}</div>${ul(nx.checks)}<div class="mini">Nicht enthalten: ${esc(nx.not_included)}</div></div>`;
   const sbHtml = !sb ? "" : `<div class="callout ${sbOk ? "green" : "amber"} mt" id="wp-sandbox"><b>${esc(sb.label)}</b>${matrix}
@@ -829,7 +835,7 @@ function wpCard() {
     <div class="k">Schreibvorgänge</div><div class="s">${sb.write_ops.map(o => `${esc(o.op)} → ${esc(o.result)}<br><span class="mini">${esc(o.payload)}</span>`).join("<br>")}</div>
     <div class="k">Tests</div><div class="s">${Object.entries(sb.results).map(([k, v]) => `${esc(k)}: ${esc(v)}`).join("<br>")}</div>
     <div class="k">Vergleich</div><div class="s">${Object.entries(sb.comparison).map(([k, v]) => `<b>${esc(k.replace(/_/g, " "))}</b>: ${v.length ? v.map(esc).join(" · ") : "–"}`).join("<br>")}</div></div>
-    <div class="mt"><b>Erkenntnisse</b>${ul(sb.findings)}</div><div class="mt"><b>Optionen (Entscheidung offen)</b>${ul(sb.options)}</div>${tiHtml}${arHtml}</div>${s3Html}${tpHtml}${mpHtml}${ltHtml}`;
+    <div class="mt"><b>Erkenntnisse</b>${ul(sb.findings)}</div><div class="mt"><b>Optionen (Entscheidung offen)</b>${ul(sb.options)}</div>${tiHtml}${arHtml}</div>${s3Html}${fkHtml}${tpHtml}${mpHtml}${ltHtml}`;
   return `<div class="card" id="wp-card"><div class="card-h"><h2>WordPress</h2>${chip(sb ? (sbOk ? "Sandbox-Test bestanden" : "Elementor Write: PARTIAL") : "Verbunden · nur lesend geprüft", sb && !sbOk ? "amber" : "green", true)}</div><div class="card-b"><div class="kv">
     <div class="k">Zugriff</div><div>${esc(w.access)}</div><div class="k">Rolle</div><div>${esc(w.role)}</div>
     <div class="k">Editor</div><div>${esc(w.editor)}</div><div class="k">SEO</div><div>${esc(w.seo)}</div>
@@ -1104,8 +1110,10 @@ function wpLinks(wp, mode) {
 function wpQa(qa) {
   if (!qa) return `<span class="mini">QA noch nicht gelaufen.</span>`;
   const row = (k, l) => { const x = qa[k] || {}, [t, c] = QA_ST[x.status] || [x.status || "–", ""]; return `<div class="k">${l}</div><div>${chip(t, c, true)}${(x.issues || []).length ? ul(x.issues) : ""}${x.note ? `<div class="s">${esc(x.note)}</div>` : ""}</div>`; };
-  return `<div class="kv">${row("content", "Content QA")}${row("seo", "SEO QA")}${row("technical", "Technical/Layout QA")}${row("visual", "Visual QA")}</div>`;
+  const ma = (qa.manual_actions || []).map(m => `<div class="k">${esc(m.field)}</div><div>${chip(m.status === "done" ? "Done" : "Manual action required", m.status === "done" ? "green" : "amber", true)} <b>„${esc(m.value)}“</b><div class="s">${esc(m.note || "")}</div></div>`).join("");
+  return `<div class="kv">${row("content", "Content QA")}${row("seo", "SEO QA")}${row("technical", "Technical/Layout QA")}${row("visual", "Visual QA")}${ma}</div>`;
 }
+const openManual = qa => (qa?.manual_actions || []).filter(m => m.status === "manual_action_required");
 function wpCounts(c) { return c ? `${fmtN(c.NEW)} NEW · ${fmtN(c.EDIT)} EDIT · ${fmtN(c.KEEP)} KEEP · ${fmtN(c.REMOVE)} REMOVE` : "–"; }
 /** Drawer-Abschnitt für WordPress-Spalten; Gate 3 nur in „Ready for Publish“ */
 function wpAction(o, w, col, canWrite) {
@@ -1124,11 +1132,13 @@ function wpAction(o, w, col, canWrite) {
       <div class="k">Changes</div><div><b>${esc(wpCounts(wp.change_counts))}</b></div>
       <div class="k">Ranking Risk</div><div>${o.ranking_protection ? riskChip(o.ranking_protection.loss_risk.level, "") : wp.mode === "CREATE" ? "– (neue Seite)" : "–"}</div>
       <div class="k">Cannibalization</div><div>${o.cannibalization ? riskChip(o.cannibalization.risk, "") : "–"}</div>
+      ${openManual(wp.qa).length ? `<div class="k">Manuelle Aktion</div><div>${openManual(wp.qa).map(m => `${chip("Manual action required", "amber", true)} ${esc(m.field)}: <b>„${esc(m.value)}“</b>`).join("<br>")}</div>` : ""}
       <div class="k">WordPress QA</div><div>${chip(visualManual ? "Passed · Visual: manual review" : (wp.qa?.overall === "passed" ? "Passed" : wp.qa?.overall || "–"), wp.qa?.overall?.startsWith("passed") ? "green" : "red", true)}</div>
       <div class="k">Rollback</div><div>${needRb ? (rbOk ? chip("Pre-change snapshot gesichert", "green", true) + `<span class="s"> ${fmtDateTime((wp.snapshots || [])[0]?.taken_at)}${rb.secondary ? " · zusätzlich " + esc(rb.secondary) : ""}</span>` : chip("Rollback protection unavailable", "red", true) + ul(rb.why || [])) : `<span class="s">Neue Seite – Rollback = wieder auf Entwurf setzen</span>`}</div></div>
     <h4>Was wird beim Publish tatsächlich verändert?</h4>${ul(wp.publish_summary || [])}
     <details class="mt"><summary class="mini">WordPress QA im Detail</summary>${wpQa(wp.qa)}</details>
     ${visualManual ? `<label class="row mt"><input type="checkbox" id="wf-vis"> Ich habe die Vorschau auf Desktop, Tablet und Mobile geprüft (Visual QA ist automatisch nicht möglich)</label>` : ""}
+    ${openManual(wp.qa).map((m, i) => `<label class="row mt"><input type="checkbox" class="wf-manual" id="wf-man-${i}"> Erledigt: ${esc(m.field)} „${esc(m.value)}“ im WordPress-Editor eingetragen</label>`).join("")}
     <label class="mini mt" for="wf-c3" style="display:block">Kommentar (optional)</label><textarea id="wf-c3"></textarea>
     <div class="row"><button class="btn primary" data-act="gate3" ${canWrite && rbOk ? "" : "disabled"}>Änderungen veröffentlichen</button><span class="mini" data-msg></span></div>
     <p class="s">Gate 3: Erst jetzt darf der Agent ${wp.mode === "OPTIMIZE" ? "die freigegebene Draft-Version in die Live-Seite übernehmen (URL, Slug, Canonical, Indexierung bleiben unverändert)" : "den Draft veröffentlichen"}. ${rbOk ? "" : "<b>Gesperrt: Rollback protection unavailable.</b>"}</p></div>`;
@@ -1538,7 +1548,7 @@ function closeCard() { WF_OPEN = null; const d = $("#wf-drawer"); if (d) d.hidde
     damit ein über einen Link verlassener Drawer die nächste Seite nicht blockiert. */
 function lockScroll(on) { document.documentElement.classList.toggle("scroll-locked", !!on); document.body.style.overflow = ""; }
 async function wfAct(act, c) {
-  const msg = $("#wf-panel-body [data-msg]"), id = c.id, o = c.o, now = new Date().toISOString();
+  const msg = (["hold", "reject"].includes(act) ? $("#wf-decide [data-msg]") : act === "reactivate" ? $("#wf-decision [data-msg]") : null) || $("#wf-panel-body .wf-action:not(.dec-bar) [data-msg]") || $("#wf-panel-body [data-msg]"), id = c.id, o = c.o, now = new Date().toISOString();
   const say = t => { if (msg) msg.textContent = t; };
   if (!(DB.state === "ready" && DB.canWrite)) return say("Speichern ist in dieser Ansicht nicht möglich.");
   const ref = DB.ns.collection("workflow").doc(id), cur = WF.items[id];
@@ -1596,7 +1606,8 @@ async function wfAct(act, c) {
     if (wp.status !== "qa_passed") return say("Gate 3 ist nur für eine Version mit bestandener WordPress QA möglich.");
     if (wp.qa?.overall === "passed_manual_visual" && !vis) return say("Bitte zuerst die Sichtprüfung (Desktop/Tablet/Mobile) bestätigen.");
     if (wp.mode === "OPTIMIZE" && wp.rollback?.status !== "available") return say("Rollback protection unavailable – Gate 3 gesperrt.");
-    patch = { gate3: { status: "approved", at: now, comment, for_draft_version: wp.draft_version, visual_review_confirmed: vis }, wordpress: { ...wp, status: "publish_queued" } };
+    const man = openManual(wp.qa); if (man.length && [...document.querySelectorAll(".wf-manual")].some(x => !x.checked)) return say("Bitte zuerst die manuellen Aktionen bestätigen (z. B. Focus Keyphrase „" + man[0].value + "“).");
+    patch = { gate3: { status: "approved", at: now, comment, for_draft_version: wp.draft_version, visual_review_confirmed: vis, manual_actions_confirmed: man.map(m => ({ field: m.field, value: m.value })) }, wordpress: { ...wp, status: "publish_queued" } };
     ev = { gate: 3, decision: "approve", comment: `[Publish v${wp.draft_version}${vis ? " · Sichtprüfung bestätigt" : ""}] ${comment}` };
   } else if (act === "retry") {
     if (cur?.production?.status !== "blocked") return say("Nur blockierte Aufträge können erneut versucht werden.");

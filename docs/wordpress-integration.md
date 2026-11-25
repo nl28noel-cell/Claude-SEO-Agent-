@@ -256,3 +256,24 @@ Die Referenz-Strategie passt auch für Bestandsseiten (überall dieselben zwei T
 0. Trustindex-Templates A/B freigegeben · 1. Komplettsicherung (Duplicator/BackWPup, Freigabe) + Snapshot je Seite · 2. Pilot (z. B. /kontakt/) als Draft → Vorschau → Freigabe · 3. Pilot live, sofort zurücklesen, 7 Tage beobachten · 4. Wellen à 3–4 Seiten, rankingstarke Seiten zuletzt · 5. Live OPTIMIZE neu bewerten inkl. Rollback-Test.
 
 **Rollback-Hinweis:** Der Original-Snapshot enthält `<script>` und wäre über die API wieder blockiert – Rückweg über Elementor-Revision/Editor; vor Phase 3 separat testen.
+
+## S3 – Passed – Technical & Visual QA (25.11.2026)
+
+Noel hat Draft 6955 visuell geprüft: Layout, Inhalte und Darstellung entsprechen der Vorlage; die fehlenden Trustindex-Bewertungen waren im Test erwartet. S3 ist damit technisch, strukturell und visuell bestanden. Draft 6955 bleibt als Sandbox.
+
+## Yoast Focus Keyphrase – nicht schreibbar → Manual action required
+
+Geprüft am 25.11.2026 (nur Draft 6955): Die Yoast-Fähigkeit `update-post-seo-data` hat kein Feld für die Focus Keyphrase (lesbar über `get-post-seo-data`). Das WordPress-Meta `_yoast_wpseo_focuskw` wird über die REST-Schnittstelle verworfen (`meta_keys_dropped`, nichts gespeichert). Yoasts eigene REST-Routen sind über den Konnektor nicht erreichbar. Keine Umgehung, kein neues Plugin.
+
+Ab jetzt: Das Change Set trägt `primary_keyword` (bzw. `seo.focus_keyphrase`) aus dem freigegebenen Briefing. `tools/wordpress.py qa` liefert `manual_actions` mit „Yoast Focus Keyphrase – Manual action required“ und dem konkreten Keyword (fehlt es im Change Set, schlägt die SEO-QA fehl). Gate 3 im Artifact lässt sich erst freigeben, wenn die manuelle Aktion bestätigt ist; die Bestätigung wird in `gate3.manual_actions_confirmed` gespeichert. Ist die Keyphrase in Yoast bereits eingetragen, erscheint sie als „Done“.
+
+## Trustindex-Referenz-Kopie – vorbereitet (wartet auf manuellen Schritt)
+
+Die zwei kleinen Trustindex-Templates enthalten `<script>` und lassen sich deshalb **nicht über die Schnittstelle** anlegen (Firewall). Im eingeloggten Elementor-Editor funktioniert es:
+
+1. Vorlage „Landingpage-Vorlage 2026“ im Elementor-Editor öffnen (nur ansehen, **nicht speichern**).
+2. HTML-Widget mit Trustindex im Abschnitt unter Bild/Button → Rechtsklick → „Als Vorlage speichern“ → **„Trustindex – Bewertungen A“**.
+3. HTML-Widget mit Trustindex im Abschnitt „Kundenstimmen“ → „Als Vorlage speichern“ → **„Trustindex – Kundenstimmen B“**.
+4. Editor ohne Speichern schließen – 6813 bleibt unverändert.
+
+Danach (Agent): beide Templates lesend prüfen (exakt die bisherigen Trustindex-IDs), dann `trustindex_reference_copy` → neue Bibliotheksvorlage **„Landingpage-Vorlage 2026 – Trustindex-Referenz“** per API (scriptfrei; offline geprüft: nur die 2 Widgets ersetzt, 95 Elemente und Reihenfolge identisch), zurücklesen + `compare_readback`. Noel prüft die Kopie visuell; erst danach wird sie `create_template`.

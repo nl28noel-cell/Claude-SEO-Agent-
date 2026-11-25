@@ -551,7 +551,21 @@
       "summary": "Vorlage 6813 (Trustindex durch Platzhalter ersetzt) mit Content-Änderungen und gespiegeltem Block in Draft 6955 geschrieben, zurückgelesen, Yoast getestet. Keine veröffentlichte Seite, Vorlage unverändert.",
       "found": "Kein 403 · 105/107 Elemente identisch, 2 Whitespace-Abweichungen (NBSP, Agent-Transport) · Design/Responsive identisch · Spiegeln ok · Yoast Titel/Beschreibung/Schema ok, Focus Keyphrase nicht schreibbar",
       "insight": "Vorlagen-Weg funktioniert scriptfrei. Offen: Trustindex-Referenz (Vorschlag), visuelle Prüfung durch Noel. Transport künftig mit \\uXXXX-Escaping + compare_readback."
+    },
+    {
+      "id": "EVT-032",
+      "source_ids": [],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-25T07:49:45Z",
+      "at_precision": "exact",
+      "opp": null,
+      "action": "integration_preflight",
+      "title": "S3 Visual QA bestanden · Focus Keyphrase geprüft · Trustindex-Kopie vorbereitet",
+      "summary": "Noel hat Draft 6955 visuell geprüft: bestanden. Focus-Keyphrase-Schreibweg an Draft 6955 getestet (REST-Meta) – verworfen. Trustindex-Referenz-Kopie offline vorbereitet.",
+      "found": "S3: Passed – Technical & Visual QA · Focus Keyphrase nicht schreibbar (Ability ohne Feld, _yoast_wpseo_focuskw dropped) → Manual action required in QA/Gate 3 · Kopie scriptfrei, nur 2 Widgets ersetzt",
+      "insight": "Nächster Schritt: Noel legt 2 Trustindex-Templates im Elementor-Editor an (Script nicht per API möglich); danach Kopie „Landingpage-Vorlage 2026 – Trustindex-Referenz“ per API, Vorlage 6813 unverändert."
     }
   ],
-  "updated": "2026-11-25T07:10:26Z"
+  "updated": "2026-11-25T07:49:45Z"
 }

@@ -268,10 +268,6 @@
           "VERIFIED IN SANDBOX (S3)"
         ],
         [
-          "Yoast write/read (Draft)",
-          "VERIFIED (S3)"
-        ],
-        [
           "Script-containing widgets",
           "BLOCKED BY FIREWALL (vermutlich NinjaFirewall-Plugin)"
         ],
@@ -286,6 +282,18 @@
         [
           "Rollback",
           "NOT YET VERIFIED"
+        ],
+        [
+          "Yoast Titel/Beschreibung/Schema (Draft)",
+          "VERIFIED (S3)"
+        ],
+        [
+          "Yoast Focus Keyphrase",
+          "MANUAL ACTION REQUIRED (nicht schreibbar)"
+        ],
+        [
+          "Visual QA S3",
+          "PASSED (Noel)"
         ]
       ]
     },
@@ -442,8 +450,8 @@
     "s3_test": {
       "id": "S3",
       "title": "S3 Sandbox Test – Landingpage-Vorlage 2026",
-      "status": "technisch erfolgreich – visuelle Prüfung durch Noel ausstehend",
-      "label": "WordPress Sandbox Test – Awaiting visual review",
+      "status": "Passed – Technical & Visual QA",
+      "label": "WordPress Sandbox Test S3 – Passed – Technical & Visual QA",
       "date": "2026-11-25",
       "written_at": "2026-11-25T08:07:45 (Website-Zeit)",
       "approved_by": "Noel 25.11.2026",
@@ -508,9 +516,9 @@
           "status": "ok"
         },
         {
-          "check": "Darstellung Desktop/Tablet/Mobile, Platzhalter sichtbar, gespiegelter Block",
+          "check": "Darstellung Desktop/Tablet/Mobile – Layout, Inhalte, Darstellung wie Vorlage (Trustindex im Test bewusst Platzhalter)",
           "layer": "visuell von Noel zu prüfen",
-          "status": "ausstehend"
+          "status": "bestanden (Noel, 25.11.2026)"
         }
       ],
       "yoast": {
@@ -521,10 +529,25 @@
         "noindex": "unverändert (Standard)",
         "focus_keyphrase": "nicht schreibbar"
       },
-      "draft_kept": true
+      "draft_kept": true,
+      "visual_qa": {
+        "by": "Noel",
+        "at": "2026-11-25",
+        "result": "bestanden – Layout, Inhalte und Darstellung entsprechen der Vorlage; fehlende Trustindex-Bewertungen im Test erwartet"
+      },
+      "focus_keyphrase": {
+        "tested": "2026-11-25",
+        "result": "nicht schreibbar",
+        "paths": [
+          "Yoast-Ability update-post-seo-data: kein Feld focus_keyphrase (nur lesbar über get-post-seo-data)",
+          "WordPress REST-Meta _yoast_wpseo_focuskw an Draft 6955: von WordPress verworfen (meta_keys_dropped) – nichts gespeichert",
+          "Yoast-eigene REST-Schnittstelle: über den Konnektor nicht erreichbar"
+        ],
+        "fallback": "WordPress QA weist die Keyphrase als „Manual action required“ mit konkretem Keyword aus; Gate 3 erst nach Bestätigung im Artifact"
+      }
     },
     "trustindex_proposal": {
-      "status": "Vorschlag – nicht freigegeben, nicht umgesetzt",
+      "status": "freigegeben zur Vorbereitung (Noel 25.11.2026) – wartet auf manuellen Schritt: 2 Trustindex-Templates im Elementor-Editor",
       "steps": [
         "1 Sicherung: Vorlage 6813 vor jeder Änderung als Elementor-Export (JSON) + _elementor_data-Snapshot mit SHA-256 in Drive; zusätzlich WordPress-Revision durch Speichern im Editor",
         "2 Zwei kleine Elementor-Templates (Typ Abschnitt) im Editor anlegen: „Trustindex – Bewertungen A (486a…)“ und „Trustindex – Kundenstimmen B (4b8a…)“ – Inhalt jeweils exakt das bestehende HTML-Widget (Script wird vom eingeloggten Editor gespeichert, nicht über die API)",
@@ -541,7 +564,22 @@
         "Sicherung vorhanden",
         "reversibel"
       ],
-      "why_copy": "Arbeiten an einer Kopie statt am Original erfüllt „Original vorerst unverändert“ und macht die Änderung trivial reversibel."
+      "why_copy": "Arbeiten an einer Kopie statt am Original erfüllt „Original vorerst unverändert“ und macht die Änderung trivial reversibel.",
+      "blocker": "Die zwei kleinen Trustindex-Templates enthalten <script> und lassen sich deshalb nicht über die Schnittstelle anlegen (Firewall). Im Elementor-Editor (eingeloggt) funktioniert das Speichern.",
+      "manual_step": [
+        "Elementor-Editor: Vorlage „Landingpage-Vorlage 2026“ öffnen (nur ansehen, NICHT speichern)",
+        "Abschnitt 2 (unter dem Bild/Button rechts): HTML-Widget mit dem Trustindex-Code → Rechtsklick → „Als Vorlage speichern“ → Name „Trustindex – Bewertungen A“",
+        "Abschnitt „Kundenstimmen“: HTML-Widget mit dem Trustindex-Code → Rechtsklick → „Als Vorlage speichern“ → Name „Trustindex – Kundenstimmen B“",
+        "Editor ohne Speichern schließen – Vorlage 6813 bleibt unverändert",
+        "Mir Bescheid geben – ich prüfe beide Templates lesend (enthalten exakt die bisherigen Trustindex-IDs) und lege dann die Kopie an"
+      ],
+      "prepared": {
+        "function": "tools/wordpress.py trustindex_reference_copy",
+        "offline_check": "an Vorlage 6813: genau 2 Widgets ersetzt (77052669 → Template A, 1349b3ec → Template B), 95 weitere Elemente und Reihenfolge identisch, Ergebnis ohne <script>",
+        "copy_title": "Landingpage-Vorlage 2026 – Trustindex-Referenz",
+        "original": "6813 bleibt unverändert",
+        "then": "Noel prüft die Kopie visuell (Vorschau) → erst danach wird sie Standard (client.json create_template)"
+      }
     },
     "optimize_migration_plan": {
       "status": "Plan – nichts umgestellt",

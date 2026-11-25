@@ -666,7 +666,7 @@ class ArtifactQA(unittest.TestCase):
         c[5]["settings"]["editor"] = "<p>Neu: Turnus nach Bauphasen</p>"
         c.append({"id": "h2c", "widgetType": "heading", "settings": {"title": "Häufige Fragen zur Baustellendokumentation mit Drohne", "header_size": "h2"}})
         c.append({"id": "t3", "widgetType": "text-editor", "settings": {"editor": "<p>FAQ … baudokumentation drohne berlin</p>"}})
-        cs = {"mode": "OPTIMIZE", "sections": [{"heading": "Baufortschritt per Drohne jederzeit im Blick behalten", "action": "KEEP"}, {"heading": "Mehrjährige Begleitung", "action": "EDIT"},
+        cs = {"mode": "OPTIMIZE", "primary_keyword": "baudokumentation drohne", "sections": [{"heading": "Baufortschritt per Drohne jederzeit im Blick behalten", "action": "KEEP"}, {"heading": "Mehrjährige Begleitung", "action": "EDIT"},
               {"heading": "Häufige Fragen zur Baustellendokumentation mit Drohne", "action": "NEW"}],
               "seo": {"title": "T2", "meta_description": "D2", "h1": "Baudokumentation Drohne in Berlin und Brandenburg"}, "canonical": "c", "internal_links": [{"to": "/kontakt/"}]}
         dy = {"data": [{"seo_title": "T2", "meta_description": "D2", "canonical": "c"}]}
@@ -840,6 +840,20 @@ class ArtifactQA(unittest.TestCase):
         # Erfundene URL wird nie gezeichnet
         fake = {"id": "X", "type": "OPTIMIZE", "existing_page": "/drohnen-baudokumentation/", "research": {"H_ia": {"recommended": {"siblings": [{"url": "/gibt-es-nicht/", "label": "Fake"}]}}}}
         self.assertFalse(any(n["url"] == "/gibt-es-nicht/" for n in A.build(fake, urls, d["opportunities"])["nodes"]))
+
+    def test_qa_focus_keyphrase_manual(self):
+        """Focus Keyphrase ist über den Konnektor nicht schreibbar → QA weist sie als Manual action required mit Keyword aus."""
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import wordpress as WP
+        tree = [{"id": "h", "elType": "widget", "widgetType": "heading", "settings": {"title": "Baudokumentation mit Drohne", "header_size": "h1"}, "elements": []}]
+        cs = {"mode": "CREATE", "primary_keyword": "baudokumentation drohne", "sections": [], "seo": {"h1": "Baudokumentation mit Drohne"}}
+        dr = {"meta": {"_elementor_data": json.dumps(tree)}}
+        r = WP.qa(cs, None, dr, {"focus_keyphrase": None})
+        self.assertEqual(r["manual_actions"][0]["status"], "manual_action_required"); self.assertEqual(r["manual_actions"][0]["value"], "baudokumentation drohne")
+        self.assertTrue(r["overall"].startswith("passed"))
+        self.assertEqual(WP.qa(cs, None, dr, {"focus_keyphrase": "Baudokumentation Drohne"})["manual_actions"][0]["status"], "done")
+        cs2 = dict(cs); cs2.pop("primary_keyword")
+        self.assertEqual(WP.qa(cs2, None, dr, {})["overall"], "failed")                    # Keyphrase fehlt im Change Set
 
     def test_workflow_render_html(self):
         import tempfile

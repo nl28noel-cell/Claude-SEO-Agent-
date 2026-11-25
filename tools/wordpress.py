@@ -253,7 +253,7 @@ def _norm(t):
 
 
 def qa(change_set, original, draft, draft_yoast, plan=None):
-    """WordPress QA gegen das freigegebene Change Set. change_set = {mode, sections: [{heading, action, existing}], seo: {title, meta_description, h1},
+    """WordPress QA gegen das freigegebene Change Set. change_set = {mode, primary_keyword, sections: [{heading, action, existing}], seo: {title, meta_description, h1, focus_keyphrase},
     internal_links: [{to, anchor}], canonical, companions: [...] }. Visuelle Prüfung wird nie erfunden."""
     res = {"content": {"status": "passed", "issues": []}, "seo": {"status": "passed", "issues": []}, "technical": {"status": "passed", "issues": []},
            "visual": {"status": "manual_review_required", "note": "Keine visuelle Prüfung technisch möglich (Vorschau nur eingeloggt) – Desktop/Tablet/Mobile manuell prüfen"}}
@@ -318,6 +318,18 @@ def qa(change_set, original, draft, draft_yoast, plan=None):
     for q in (plan or {}).get("protected_queries", []):
         if not all(t in alltext.lower() for t in q.lower().split() if t not in ("mit", "per", "drohne", "drohnen")):
             fail("seo", f"Schutz-Query nicht mehr abgedeckt: „{q}“")
+    # Focus Keyphrase: über Konnektor nicht schreibbar (Yoast-Ability ohne Feld; REST-Meta _yoast_wpseo_focuskw wird verworfen,
+    # Test 25.11.2026 an Draft 6955) → nie stillschweigend weglassen, sondern als manuelle Aktion mit konkretem Keyword ausweisen.
+    res["manual_actions"] = []
+    kp = seo.get("focus_keyphrase") or change_set.get("primary_keyword")
+    if kp:
+        if (y.get("focus_keyphrase") or "").strip().lower() == kp.strip().lower():
+            res["manual_actions"].append({"field": "Yoast Focus Keyphrase", "value": kp, "status": "done", "note": "in Yoast eingetragen"})
+        else:
+            res["manual_actions"].append({"field": "Yoast Focus Keyphrase", "value": kp, "status": "manual_action_required",
+                                          "note": "Manual action required – im WordPress-Editor (Yoast-Box) eintragen; über die Schnittstelle nicht schreibbar"})
+    else:
+        fail("seo", "Primäre Keyphrase fehlt im Change Set (seo.focus_keyphrase bzw. primary_keyword)")
     overall = "passed_manual_visual" if all(res[p]["status"] == "passed" for p in ("content", "seo", "technical")) else "failed"
     res["overall"] = overall
     return res
@@ -530,6 +542,48 @@ def compare_readback(sent, got):
                 diffs.append({"id": i, "key": k, "issue": kind})
     extra = [i for i in ob if i not in a]
     return {"identical": not diffs and not extra and oa == ob, "elements": len(oa), "diffs": diffs, "extra": extra, "order_ok": oa == ob}
+
+
+TRUSTINDEX_RE = re.compile(r"cdn\.trustindex\.io/loader\.js\?([0-9a-f]+)")
+
+
+def trustindex_ids(tree):
+    """Trustindex-Widget-IDs (loader.js?<id>) aller HTML-Widgets → {Elementor-Widget-ID: Trustindex-ID}."""
+    out = {}
+    def walk(ns):
+        for n in ns:
+            if n.get("widgetType") == "html":
+                m = TRUSTINDEX_RE.search(str(_S(n).get("html", "")))
+                if m:
+                    out[n["id"]] = m.group(1)
+            walk(n.get("elements") or [])
+    walk(tree)
+    return out
+
+
+def trustindex_reference_copy(tree, template_ids):
+    """Kopie eines Elementor-Baums, in der jedes Trustindex-HTML-Widget durch das Elementor-Pro-Widget „Template“ ersetzt ist,
+    das auf das zentrale Trustindex-Template verweist. template_ids = {Trustindex-ID: Elementor-Template-ID}.
+    Element-ID und Position bleiben gleich, alle übrigen Elemente byte-gleich; Ergebnis enthält kein <script> mehr."""
+    import copy
+    t = copy.deepcopy(tree)
+    missing = []
+    def walk(ns):
+        for i, n in enumerate(ns):
+            if n.get("widgetType") == "html":
+                m = TRUSTINDEX_RE.search(str(_S(n).get("html", "")))
+                if m:
+                    tid = template_ids.get(m.group(1))
+                    if not tid:
+                        missing.append(m.group(1)); continue
+                    extra = {k: v for k, v in _S(n).items() if k != "html"}  # evtl. Abstände/Responsive des Widgets übernehmen
+                    ns[i] = {"id": n["id"], "elType": "widget", "widgetType": "template", "elements": [], "settings": {"template_id": str(tid), **extra}}
+                    continue
+            walk(n.get("elements") or [])
+    walk(t)
+    if missing:
+        raise KeyError(f"Kein zentrales Template für Trustindex-ID(s) {sorted(set(missing))}")
+    return t
 
 
 if __name__ == "__main__":
