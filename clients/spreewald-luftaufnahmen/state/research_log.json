@@ -521,7 +521,21 @@
       "summary": "Trustindex-Einbindung, Plugins, Elementor-Templates, Custom Code und alle Sitemap-URLs gelesen. Nichts geändert; Draft 6955 bleibt Sandbox.",
       "found": "Elementor Write: PARTIAL · Standard-Widgets VERIFIED · Script-Widgets BLOCKED (Firewall, vermutlich NinjaFirewall) · Trustindex ohne Plugin als HTML-Widget-Kopie auf 12 Seiten (2 IDs, überall gleich) · Heyflow bereits modular (Custom Code + Platzhalter)",
       "insight": "Empfehlung A + B: Trustindex per zentralem Elementor-Template referenzieren; CREATE über kontrolliertes Landingpage-Template. Firewall-Ausnahme nur Fallback. Nächster Test S2 nur in Draft 6955 vorgeschlagen."
+    },
+    {
+      "id": "EVT-030",
+      "source_ids": [],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-25T06:54:27Z",
+      "at_precision": "exact",
+      "opp": null,
+      "action": "integration_preflight",
+      "title": "„Landingpage-Vorlage 2026“ analysiert (nur lesend)",
+      "summary": "Elementor-Template 6813 vollständig gelesen und ausgewertet; Remote-Fähigkeiten geprüft. Nichts geändert, Draft 6955 bleibt.",
+      "found": "Eindeutig ID 6813 (Typ page, 12 Abschnitte, 81.793 Zeichen) · enthält 2 Trustindex-Scripts · kein Elementor-Insert über den Konnektor (Kopie nur als ganzes _elementor_data) · Content-Änderung und Block-Duplizieren/Spiegeln offline verifiziert",
+      "insight": "Vorlagen-Weg wird Standard für CREATE; API-tauglich erst, wenn Trustindex in der Vorlage als Template-Referenz statt Script eingebunden ist. S3-Sandbox-Test vorgeschlagen, nicht ausgeführt."
     }
   ],
-  "updated": "2026-11-24T17:28:19Z"
+  "updated": "2026-11-25T06:54:27Z"
 }

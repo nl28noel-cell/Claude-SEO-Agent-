@@ -735,6 +735,48 @@ class ArtifactQA(unittest.TestCase):
         self.assertFalse(st["test_draft"]["published"])
         self.assertNotRegex(json.dumps(st), r"(?i)password|token|secret|private[_]key")
 
+    def test_wordpress_template_layers(self):
+        """CREATE über Vorlage / OPTIMIZE über bestehende Seite: Content Layer bearbeiten, Design Layer erhalten, Blöcke duplizieren + spiegeln."""
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import wordpress as WP, copy
+        def col(w, kind, cid):
+            wid = {"text": [{"id": cid + "t", "elType": "widget", "widgetType": "text-editor", "settings": {"editor": "<p>Text</p>", "_margin": {"top": "5"}}, "elements": []}],
+                   "image": [{"id": cid + "i", "elType": "widget", "widgetType": "image", "settings": {"image": {"url": "https://x/a.jpg", "id": 1}}, "elements": []}]}[kind]
+            return {"id": cid, "elType": "container", "settings": {"width": {"unit": "%", "size": w}, "padding_mobile": {"top": "2"}}, "elements": wid}
+        def sec(sid, first):
+            head = {"id": sid + "h", "elType": "container", "settings": {"width": {"unit": "%", "size": "100"}},
+                    "elements": [{"id": sid + "hh", "elType": "widget", "widgetType": "heading", "settings": {"title": "H2"}, "elements": []}]}
+            a, b = ("text", "image") if first == "text" else ("image", "text")
+            return {"id": sid, "elType": "container", "settings": {"flex_direction": "row"}, "elements": [head, col("50", a, sid + "a"), col("50", b, sid + "b")]}
+        html = {"id": "trust1", "elType": "container", "settings": {}, "elements": [{"id": "ti1", "elType": "widget", "widgetType": "html", "settings": {"html": "<script src='https://cdn.example/loader.js'></script>"}, "elements": []}]}
+        tree = [sec("s1", "text"), sec("s2", "image"), html, sec("s3", "image")]
+        al = WP.alternation(tree)
+        self.assertEqual([x["orientation"] for x in al["text_image_sections"]], ["text_left", "image_left", "image_left"])
+        self.assertEqual(al["issues"][0]["sections"], [1, 3]); self.assertFalse(al["issues"][0]["adjacent"])
+        # duplizieren + spiegeln: Design identisch, IDs neu & eindeutig, Ausrichtung gewechselt
+        t = copy.deepcopy(tree); new = WP.duplicate_section(t, "s1", mirror=True)
+        self.assertEqual(WP.text_image_orientation(new), "image_left"); self.assertEqual(t[1]["id"], new["id"])
+        ids = []
+        def coll(ns):
+            for n in ns: ids.append(n["id"]); coll(n.get("elements") or [])
+        coll(t); self.assertEqual(len(ids), len(set(ids)))
+        strip = lambda n: sorted(json.dumps({k: v for k, v in x.items() if k not in ("id", "elements")}, sort_keys=True) for x in WP_flat(n))  # noqa: E731
+        def WP_flat(n):
+            out = [n]
+            for c in n.get("elements") or []: out += WP_flat(c)
+            return out
+        self.assertEqual(strip(tree[0]), strip(new))                                          # Design/Abstände/Responsive unverändert
+        with self.assertRaises(ValueError): WP.duplicate_section(t, "trust1", mirror=True)    # kein Text+Bild-Block
+        # Content Layer ja, Design Layer nein
+        WP.set_content(t, "s1hh", title="Neue H2"); self.assertEqual(WP.find(t, "s1hh")["settings"]["title"], "Neue H2")
+        with self.assertRaises(PermissionError): WP.set_content(t, "ti1", html="<p>x</p>")      # Trustindex = Template Layer
+        with self.assertRaises(PermissionError): WP.set_content(t, "s1at", _margin={"top": "0"})  # Abstand = Design
+        with self.assertRaises(PermissionError): WP.set_content(t, "s1a", width={"size": 40})
+        # Sandbox-Kopie ohne Script ist firewall-tauglich, Original nicht
+        self.assertTrue(WP.firewall_risk(tree)["blocked"]); self.assertFalse(WP.firewall_risk(WP.script_free_copy(tree))["blocked"])
+        tpl = WP.cfg()["create_template"]
+        self.assertEqual((tpl["id"], tpl["title"]), (6813, "Landingpage-Vorlage 2026"))
+
     def test_workflow_render_html(self):
         import tempfile
         sys.path.insert(0, os.path.join(ROOT, "tools"))

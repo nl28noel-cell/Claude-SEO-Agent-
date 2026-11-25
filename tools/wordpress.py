@@ -358,6 +358,146 @@ def change_log_entry(w, opp, published_at, baseline):
             "checkpoints": [{"label": f"T+{n}", "due": (d + dt.timedelta(days=n)).isoformat(), "status": "planned", "checks": ["ranking_protection", "cannibalization"]} for n in (7, 14, 30, 60, 90)]}
 
 
+# ---------------------------------------------------------------- Content Layer vs. Design/Template Layer (CREATE über Vorlage, OPTIMIZE über bestehende Seite)
+# Der Agent ändert nur CONTENT_KEYS (Texte, Überschriften-Text, Bild-Zuordnung, Link-Ziele). Alles andere (Container, Abstände,
+# Responsive-Werte, Farben, Typografie, Trustindex/HTML, Formulare/Heyflow, Karussells) gehört zum Design/Template Layer und bleibt.
+CONTENT_KEYS = {"heading": {"title", "header_size"}, "text-editor": {"editor"}, "button": {"text", "link"}, "image": {"image", "link"},
+                "icon-list": {"icon_list"}, "icon-box": {"title_text", "description_text"}, "testimonial": {"testimonial_content", "testimonial_name"}}
+DESIGN_WIDGETS = {"html", "form", "image-carousel", "call-to-action", "divider", "template", "shortcode", "star-rating", "video"}
+
+
+def _S(n):
+    s = n.get("settings")
+    return s if isinstance(s, dict) else {}
+
+
+def find(tree, eid):
+    for n in tree:
+        if n.get("id") == eid:
+            return n
+        r = find(n.get("elements") or [], eid)
+        if r:
+            return r
+    return None
+
+
+def layer_of(node):
+    wt = node.get("widgetType")
+    if not wt:
+        return "design"
+    return "content" if wt in CONTENT_KEYS else "design"
+
+
+def set_content(tree, eid, **values):
+    """Content-Layer-Änderung an genau einem Widget. Design-Schlüssel werden abgewiesen."""
+    n = find(tree, eid)
+    if not n:
+        raise KeyError(f"Widget {eid} nicht gefunden")
+    wt = n.get("widgetType")
+    allowed = CONTENT_KEYS.get(wt)
+    if not allowed:
+        raise PermissionError(f"{eid} ({wt or n.get('elType')}) gehört zum Design/Template Layer – nicht bearbeiten")
+    bad = set(values) - allowed
+    if bad:
+        raise PermissionError(f"Schlüssel {sorted(bad)} gehören zum Design Layer von {wt}")
+    if not isinstance(n.get("settings"), dict):
+        n["settings"] = {}
+    n["settings"].update(values)
+    return n
+
+
+def _ids(tree):
+    out = set()
+    for n in tree:
+        out.add(n.get("id")); out |= _ids(n.get("elements") or [])
+    return out
+
+
+def _new_ids(node, taken, seed):
+    import copy
+    node = copy.deepcopy(node)
+    def walk(n):
+        i = 0
+        while True:
+            cand = hashlib.sha1(f"{seed}:{n.get('id')}:{i}".encode()).hexdigest()[:8]
+            if cand not in taken:
+                break
+            i += 1
+        taken.add(cand); n["id"] = cand
+        for c in n.get("elements") or []:
+            walk(c)
+    walk(node)
+    return node
+
+
+def text_image_orientation(section):
+    """'text_left' | 'image_left' | None für einen Text+Bild-Abschnitt (row-Container mit Bild-Spalte und Text-Spalte)."""
+    cols = [c for c in section.get("elements") or [] if c.get("elType") == "container"]
+    def kinds(n):
+        k = set()
+        for c in n.get("elements") or []:
+            if c.get("widgetType"):
+                k.add(c["widgetType"])
+            k |= kinds(c)
+        return k
+    order = []
+    for c in cols:
+        k = kinds(c)
+        if "image" in k and "text-editor" not in k:
+            order.append("image")
+        elif "text-editor" in k and "image" not in k:
+            order.append("text")
+    if order[:1] and set(order) == {"image", "text"}:
+        return "text_left" if order.index("text") < order.index("image") else "image_left"
+    return None
+
+
+def alternation(tree):
+    """Layoutregel: aufeinanderfolgende Text+Bild-Abschnitte alternieren. Liefert Reihenfolge + Verstöße."""
+    seq = [(i, n.get("id"), text_image_orientation(n)) for i, n in enumerate(tree)]
+    ti = [x for x in seq if x[2]]
+    issues = []
+    for a, b in zip(ti, ti[1:]):
+        if a[2] == b[2]:
+            issues.append({"sections": [a[0], b[0]], "orientation": a[2], "adjacent": b[0] == a[0] + 1,
+                           "between": [i for i, _, o in seq if a[0] < i < b[0]]})
+    return {"text_image_sections": [{"index": i, "id": e, "orientation": o} for i, e, o in ti], "issues": issues, "ok": not issues}
+
+
+def duplicate_section(tree, section_id, mirror=False, after_id=None, seed="dup"):
+    """Text+Bild-Block duplizieren (Design, Abstände, Responsive, Styling bleiben), neue eindeutige Elementor-IDs,
+    optional gespiegelt (Text- und Bild-Spalte tauschen). Gibt die neue Sektion zurück; tree wird verändert."""
+    idx = next(i for i, n in enumerate(tree) if n.get("id") == section_id)
+    new = _new_ids(tree[idx], _ids(tree), seed)
+    if mirror:
+        if not text_image_orientation(new):
+            raise ValueError(f"{section_id} ist kein Text+Bild-Abschnitt – Spiegeln nicht möglich")
+        # die zwei Spalten (≠ 100 % Breite) tauschen; eine Überschrift-Zeile mit 100 % Breite bleibt oben
+        side = [i for i, c in enumerate(new.get("elements") or []) if c.get("elType") == "container"
+                and str((_S(c).get("width") or {}).get("size")) not in ("100", "100.0")]
+        if len(side) == 2:
+            a, b = side
+            new["elements"][a], new["elements"][b] = new["elements"][b], new["elements"][a]
+    pos = idx + 1 if after_id is None else next(i for i, n in enumerate(tree) if n.get("id") == after_id) + 1
+    tree.insert(pos, new)
+    return new
+
+
+def script_free_copy(tree, placeholder="[Trustindex – Template-Layer, wird über Vorlage gerendert]"):
+    """Für Sandbox-Tests: Script-HTML-Widgets durch eine markierte Überschrift ersetzen (Design/Template Layer, nicht Content)."""
+    import copy
+    t = copy.deepcopy(tree)
+    def walk(nodes):
+        for i, n in enumerate(nodes):
+            if n.get("widgetType") == "html" and "<script" in str(_S(n).get("html", "")).lower():
+                nodes[i] = {"id": n["id"], "elType": "widget", "widgetType": "heading", "elements": [],
+                            "settings": {"title": placeholder, "header_size": "p", "align": "center"}}
+            else:
+                walk(n.get("elements") or [])
+    walk(t)
+    return t
+
+
 if __name__ == "__main__":
     a = sys.argv[1:]
     if not a:

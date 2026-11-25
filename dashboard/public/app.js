@@ -658,7 +658,16 @@ function wpCard() {
     <div class="tbl-wrap mt"><table class="tbl"><thead><tr><th>Option</th><th>Darstellung</th><th>SEO</th><th>Neues Plugin</th><th>Ladezeit</th><th>API</th><th>Zentral</th><th>Sicherheit</th><th>Bewertung</th></tr></thead><tbody>
     ${ar.options.map(o => `<tr><td><b>${esc(o.id)}</b> ${esc(o.name)}</td><td>${esc(o.same_look)}</td><td>${esc(o.seo)}</td><td>${esc(o.new_plugin)}</td><td>${esc(o.load_time)}</td><td>${esc(o.api)}</td><td>${esc(o.central)}</td><td>${esc(o.security)}</td><td><b>${esc(o.verdict)}</b></td></tr>`).join("")}</tbody></table></div>
     <div class="kv mt"><div class="k">CREATE</div><div class="s">${esc(ar.create)}</div><div class="k">OPTIMIZE</div><div class="s">${esc(ar.optimize)}</div></div></details>`;
-  const nxHtml = !nx ? "" : `<div class="callout amber mt" id="wp-next-test"><b>Vorgeschlagener nächster Test (${esc(nx.status)})</b><div class="s">${esc(nx.test)}</div><div class="s mt">Rahmen: ${esc(nx.scope)}</div>${ul(nx.checks)}<div class="mini">Nicht enthalten: ${esc(nx.not_included)}</div></div>`;
+  const lt = w.landing_template, cfgW = (S.d.client && S.d.client.wordpress) || {};
+  const ltHtml = !lt ? "" : `<details class="mt" id="wp-landing-template" open><summary><b>Landingpage-Vorlage 2026 (ID ${esc(lt.id)})</b> <span class="mini">– Standard für CREATE · nur lesend geprüft ${fmtDate(lt.checked)}</span></summary><div class="kv mt">
+    <div class="k">Typ / Umfang</div><div class="s">${esc(lt.elementor_type)} · ${esc(lt.size)}</div>
+    <div class="k">Struktur</div><div class="s">${lt.structure.map(esc).join("<br>")}</div>
+    <div class="k">CTA / Formular</div><div class="s">${esc(lt.cta)} · ${esc(lt.forms)}</div>
+    <div class="k">Trustindex</div><div class="s">${esc(lt.trustindex)}</div><div class="k">Alternation</div><div class="s">${esc(lt.alternation)}</div>
+    <div class="k">Elementor-Einfügen</div><div class="s">${esc(lt.elementor_insert)}</div><div class="k">Über den Konnektor</div><div class="s">${esc(lt.connector)}</div></div>
+    <table class="tbl mt" id="wp-template-answers"><tbody>${Object.entries(lt.answers).map(([k, v], i) => `<tr><td>${i + 1}</td><td class="s">${esc(v)}</td></tr>`).join("")}</tbody></table>
+    <div class="callout amber mt"><b>Kleinste Änderung für den vollständigen Vorlagen-Weg (Freigabe nötig)</b><div class="s">${esc(lt.minimal_change)}</div></div></details>`;
+  const nxHtml = !nx ? "" : `<div class="callout amber mt" id="wp-next-test"><b>${esc(nx.title || "Vorgeschlagener nächster Test")} (${esc(nx.status)})</b><div class="s">${esc(nx.test)}</div><div class="s mt">Rahmen: ${esc(nx.scope)}</div>${ul(nx.checks)}<div class="mini">Nicht enthalten: ${esc(nx.not_included)}</div></div>`;
   const sbHtml = !sb ? "" : `<div class="callout ${sbOk ? "green" : "amber"} mt" id="wp-sandbox"><b>${esc(sb.label)}</b>${matrix}
     <div class="s">Test vom ${fmtDate(sb.date)} · Quelle: Seite ${esc(sb.source_page.id)} (${esc(sb.source_page.use)}) – ${sb.source_page.unchanged ? "<b>unverändert</b> (modified " + esc(sb.source_page.modified_after) + ")" : "<b>GEÄNDERT – prüfen!</b>"}</div>
     <div class="kv mt"><div class="k">Test-Draft</div><div>${esc(sb.test_draft.title)} · ID ${esc(sb.test_draft.id)} · ${esc(sb.test_draft.status)} · ${esc(sb.test_draft.content)}<br>
@@ -666,7 +675,7 @@ function wpCard() {
     <div class="k">Schreibvorgänge</div><div class="s">${sb.write_ops.map(o => `${esc(o.op)} → ${esc(o.result)}<br><span class="mini">${esc(o.payload)}</span>`).join("<br>")}</div>
     <div class="k">Tests</div><div class="s">${Object.entries(sb.results).map(([k, v]) => `${esc(k)}: ${esc(v)}`).join("<br>")}</div>
     <div class="k">Vergleich</div><div class="s">${Object.entries(sb.comparison).map(([k, v]) => `<b>${esc(k.replace(/_/g, " "))}</b>: ${v.length ? v.map(esc).join(" · ") : "–"}`).join("<br>")}</div></div>
-    <div class="mt"><b>Erkenntnisse</b>${ul(sb.findings)}</div><div class="mt"><b>Optionen (Entscheidung offen)</b>${ul(sb.options)}</div>${tiHtml}${arHtml}</div>${nxHtml}`;
+    <div class="mt"><b>Erkenntnisse</b>${ul(sb.findings)}</div><div class="mt"><b>Optionen (Entscheidung offen)</b>${ul(sb.options)}</div>${tiHtml}${arHtml}</div>${ltHtml}${nxHtml}`;
   return `<div class="card" id="wp-card"><div class="card-h"><h2>WordPress</h2>${chip(sb ? (sbOk ? "Sandbox-Test bestanden" : "Elementor Write: PARTIAL") : "Verbunden · nur lesend geprüft", sb && !sbOk ? "amber" : "green", true)}</div><div class="card-b"><div class="kv">
     <div class="k">Zugriff</div><div>${esc(w.access)}</div><div class="k">Rolle</div><div>${esc(w.role)}</div>
     <div class="k">Editor</div><div>${esc(w.editor)}</div><div class="k">SEO</div><div>${esc(w.seo)}</div>

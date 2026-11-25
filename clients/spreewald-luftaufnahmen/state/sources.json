@@ -245,10 +245,10 @@
         "Meta-Änderungen erzeugen keine WordPress-Revision – Revisionen sind für Elementor-Rollback kein verlässlicher zweiter Weg."
       ],
       "options": [
-        "A – Trustindex modularisieren (zentrales Elementor-Template, Seite referenziert nur die Template-ID) – empfohlen",
-        "B – kontrolliertes Elementor-Landingpage-Template für CREATE (Module per Template-Widget, SEO-Text als Standard-Widgets) – empfohlen",
-        "C – Firewall-Ausnahme (NinjaFirewall/Hosting) – nur Fallback, nicht bevorzugt, nicht umgehen",
-        "D – anderer WordPress-Zugriff – aktuell nicht nötig"
+        "Standard: CREATE über „Landingpage-Vorlage 2026“ (6813), OPTIMIZE über die bestehende Seite – Content Layer bearbeiten, Design Layer erhalten",
+        "Voraussetzung für Trustindex-Seiten: Trustindex-HTML-Widgets in Vorlage/Seiten durch Template-Referenz ersetzen (Elementor-Editor, freigabepflichtig)",
+        "Firewall-Ausnahme – nur Fallback",
+        "Anderer WordPress-Zugriff – aktuell nicht nötig"
       ],
       "matrix": [
         [
@@ -369,22 +369,69 @@
           "verdict": "nur Fallback"
         }
       ],
-      "create": "CREATE über kontrollierte Landingpage-Vorlage: Seite = wenige Template-Widgets (Hero-Stil, Trust/Bewertungen, Prozess, CTA/Heyflow) + SEO-Inhalte als Standard-Widgets (Heading/Text/Bild/FAQ). Erwartete Payload ca. 5–15 KB statt ~92 KB; nie eine Live-Seite klonen. Vorhandene Ansätze: „Landingpage-Vorlage 2026“ (6813), „Vorlage: Dachinspektion LP“ (6905), „Hero-Area“ (6758), Bausteine Trust/Preise/Ablauf.",
-      "optimize": "OPTIMIZE erhält die bestehende Struktur: nur freigegebene Widgets (per Elementor-ID) ändern, alle übrigen Knoten unverändert übernehmen; Script-Widgets vorher durch Template-Referenzen ersetzen (einmalig, freigabepflichtig), sonst bleibt Live OPTIMIZE blockiert. Payload bleibt seitengroß, sinkt aber mit jeder modularisierten Sektion.",
+      "create": "CREATE = „Landingpage-Vorlage 2026“ (6813) von Noel: neue Draft-Seite → Vorlage anwenden → Platzhalter-Inhalte durch freigegebenen Content ersetzen → bei Bedarf Text+Bild-Blöcke duplizieren/spiegeln (alternierend). Keine Live-Seite klonen, kein eigenes Layout bauen.",
+      "optimize": "OPTIMIZE = die bestehende Seite ist die Vorlage: Draft-Kopie, KEEP unverändert, EDIT gezielt per Widget-ID, NEW durch Duplizieren eines passenden Blocks derselben Seite (gespiegelt, falls nötig), REMOVE nur nach Freigabe. Vorlage 6813 wird nicht verwendet. Live OPTIMIZE bleibt gesperrt, solange die Seite Script-Widgets enthält.",
       "methods_differ": "CREATE und OPTIMIZE verwenden bewusst unterschiedliche Produktionsmethoden"
     },
     "next_test_proposal": {
-      "scope": "ausschließlich Draft 6955; keine Live-Seite, kein Plugin, keine Firewall, kein neues Template",
-      "test": "S2 – Template-Referenz: in 6955 einen Container mit einem Elementor-Pro-Widget „Template“ schreiben, das auf das bestehende statische Template „Trust: Bewertungen“ (5479) verweist; dazu ein Standard-Abschnitt (Abschnitt 2, Icon-Boxen).",
+      "id": "S3",
+      "title": "S3 Sandbox Test – Landingpage-Vorlage 2026",
+      "status": "vorgeschlagen – nicht ausgeführt",
+      "scope": "ausschließlich Draft 6955; Vorlage 6813, Live-Seiten, Plugins und Firewall bleiben unverändert; kein neues Template",
+      "test": "Vorlage 6813 mit neuen Element-IDs in Draft 6955 schreiben – die 2 Trustindex-Widgets dabei durch eine markierte Platzhalter-Zeile „[Trustindex – Template-Layer]“ ersetzt (script_free_copy), alles andere 1:1 inkl. Heyflow-Platzhalter, Karussell, CTA. Danach in einem zweiten Schreibvorgang: H1 + 1 H2 + 1 Text ersetzen (set_content) und Abschnitt 11 duplizieren + spiegeln (duplicate_section).",
       "checks": [
-        "Schreiben ohne 403",
-        "Rücklesen strukturell identisch",
-        "Vorschau (eingeloggt) zeigt den Template-Inhalt",
-        "Seite 5401 und Template 5479 unverändert (modified)"
+        "Beide Schreibvorgänge ohne 403 (insb. Heyflow-HTML ohne Script)",
+        "Rücklesen: alle Design-/Responsive-Werte identisch zur Vorlage, nur die geänderten Content-Felder abweichend",
+        "Gespiegelter Block: Bild|Text, gleiche Abstände/Responsive, neue IDs",
+        "Vorschau (eingeloggt): Darstellung wie Vorlage, Trustindex-Platzhalter sichtbar",
+        "6813 und alle Live-Seiten unverändert (modified)"
       ],
-      "proves": "dass eine scriptfreie Referenz statt eines HTML-Widgets über den Konnektor funktioniert – Grundlage für Option A und B",
-      "not_included": "Anlegen eines Trustindex-Templates (würde ein neues, seitenweit nutzbares Objekt anlegen → erst nach Freigabe)",
-      "status": "vorgeschlagen – nicht ausgeführt"
+      "proves": "dass CREATE über Vorlage 6813 inkl. gezielter Content-Änderungen und Block-Duplizierung über den Konnektor funktioniert – offen bleibt nur Trustindex (Referenz-Änderung, freigabepflichtig)",
+      "cost": "2 Schreibvorgänge à ~80.000 Zeichen (Vorlage ist so groß) – einmaliger Testaufwand",
+      "not_included": "Trustindex selbst (bleibt Template Layer), Änderungen an Vorlage 6813, Yoast-Test (kann als S3b folgen)"
+    },
+    "landing_template": {
+      "checked": "2026-11-25",
+      "method": "nur lesend: elementor_library 6813 (edit context, vollständig per Skript ausgewertet), Remote-Fähigkeiten der Website",
+      "found": "eindeutig – 1 Treffer „Landingpage-Vorlage 2026“",
+      "id": 6813,
+      "post_type": "elementor_library",
+      "elementor_type": "page (ganze Seite)",
+      "status": "publish (Bibliothek, nicht öffentlich als Seite)",
+      "modified": "2026-06-05",
+      "size": "81.793 Zeichen _elementor_data · 12 Abschnitte · 48 Container · 15 Überschriften · 6 Texte · 6 Bilder · 4 Buttons · 4 HTML · 1 Logo-Karussell · 1 Icon-Liste · 1 Call-to-Action · 3 Icon-Boxen",
+      "structure": [
+        "0 Hero (H1)",
+        "1 Text | Bild + CTA-Button + Trustindex A",
+        "2 Bild | Text + CTA",
+        "3 Anfrage-Formular (Heyflow-Platzhalter, kein Script)",
+        "4 Logos (Karussell)",
+        "5 Bild | Text + CTA",
+        "6 Kundenstimmen (Trustindex B)",
+        "7 Text | Bild (rbb)",
+        "8 Bild | Text + CTA",
+        "9 Prozess (Icon-Liste) + Call-to-Action-Bild",
+        "10 Benefits (3 Icon-Boxen)",
+        "11 Text | Bild"
+      ],
+      "cta": "4 Buttons → /kontakt/ · Heyflow-Formular (Abschnitt 3) · Call-to-Action-Bild (Abschnitt 9)",
+      "trustindex": "2 HTML-Widgets mit <script> (Abschnitt 1: 77052669, Abschnitt 6: 1349b3ec) – dieselben zwei Trustindex-IDs wie auf allen Seiten",
+      "forms": "kein Elementor-Formular; Heyflow über <heyflow-wrapper> (Script zentral im Custom Code)",
+      "globals": "33 globale Farb-/Typo-Referenzen, 4 dynamische Felder, 57 verschiedene Tablet/Mobile-Einstellungen",
+      "placeholder": "Beispielinhalt Dachinspektion/Regenrinne (H1 „Zuverlässige Dachinspektion mit Drohne“)",
+      "alternation": "Text+Bild-Folge: 1 Text|Bild · 2 Bild|Text · 5 Bild|Text · 7 Text|Bild · 8 Bild|Text · 11 Text|Bild – einzige Wiederholung 2→5 (dazwischen Formular + Logos, nicht direkt benachbart)",
+      "elementor_insert": "Elementor fügt ein Bibliotheks-Template im Editor per „Einfügen“ ein: der Editor lädt die Template-Daten (admin-ajax), vergibt neue Element-IDs und speichert danach die ganze Seite als eingeloggter Benutzer (admin-ajax). Es ist eine Kopie, keine Referenz. Die Referenz-Variante (Pro-Widget „Template“) würde das Template live einbetten – Inhalte wären dann nicht seitenindividuell.",
+      "connector": "Kein Elementor-Insert über den Konnektor: keine Elementor-Fähigkeit (Remote-Abilities: nur Core, Yoast, Duplicator, BackWPup), kein admin-ajax-Zugang. Über REST lässt sich die Vorlage nur als komplette _elementor_data-Kopie schreiben – inkl. der 2 Trustindex-Scripts → 403.",
+      "answers": {
+        "q1_found": "Ja, eindeutig (ID 6813).",
+        "q2_id": "6813 (elementor_library, Typ page).",
+        "q3_apply": "Im Elementor-Editor: Bibliothek → Einfügen (Kopie mit neuen IDs), Speichern per admin-ajax als eingeloggter Admin.",
+        "q4_without_script": "Nicht mit der Vorlage im heutigen Zustand. Jeder Schreibweg über den Konnektor überträgt das ganze _elementor_data – solange die Vorlage die 2 Trustindex-Scripts direkt enthält, sind sie in jeder Payload. Ein manueller Einfüge-Schritt durch Noel hilft nur beim Anlegen, nicht bei späteren Inhaltsänderungen (gleiche Payload-Regel).",
+        "q5_widget_edits": "Technisch ja (Seite lesen → nur Content-Widgets per ID ändern → ganzes _elementor_data zurückschreiben), aber nur wenn die Seite kein <script> enthält. Lokal mit set_content an der Vorlage verifiziert; über den Konnektor in S3 zu prüfen.",
+        "q6_duplicate_mirror": "Ja – offline an der Vorlage verifiziert: Block dupliziert, gespiegelt (Bild|Text ↔ Text|Bild), alle Design-/Responsive-Einstellungen identisch, neue eindeutige IDs. Über den Konnektor in S3 zu prüfen."
+      },
+      "minimal_change": "Kleinste Änderung, damit der Vorlagen-Weg vollständig API-tauglich wird: in Vorlage 6813 (und später den Seiten) die zwei Trustindex-HTML-Widgets durch je ein Elementor-Pro-Widget „Template“ ersetzen, das auf ein kleines Trustindex-Template verweist (von Noel im Elementor-Editor angelegt). Design unverändert, Trustindex bleibt im Template Layer. Erst nach Freigabe – aktuell nicht umgesetzt.",
+      "verdict": "Vorlagen-Weg ist der richtige Standard. Ohne die Trustindex-Referenz-Änderung funktioniert er über den Konnektor nur scriptfrei (Sandbox) bzw. gar nicht für Seiten mit Trustindex."
     }
   }
 }

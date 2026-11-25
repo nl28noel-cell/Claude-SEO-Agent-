@@ -94,8 +94,8 @@ Beobachtungen sammeln (`tools` geladen, `wpcom-user-sites` gefiltert auf die Dom
 
 1. Claim `wordpress.status = preparing`, `started_at`.
 2. **Change Set** aus dem freigegebenen Drive-Dokument + Dossier (`P_diagnosis.change_summary`, `G_structure.sections[].action`, Yoast-Vorschläge, `H_ia.internal_links`, Companions) als `change_set.json` aufbauen. Drive Change Set = verbindliche Produktionsanweisung.
-3. **CREATE**: Vorlage = bestehende Landingpage mit gleichem Aufbau (nur lesen) → `_elementor_data` kopieren, Texte gemäß Change Set ersetzen, `pages-create` mit `status: draft`, gewünschtem Slug, Titel; Yoast über `update-post-seo-data` am Draft.
-4. **OPTIMIZE**: Ranking Protection Snapshot (GSC-Queries, Klicks, Impressionen, Positionen, Title/H1/H2, Canonical, Robots, interne Links) als `wordpress.baseline` speichern → Live-Seite **nur lesen** (`context=edit`) → Review-Version als **eigene Draft-Seite** (Slug + `-entwurf-seo-autopilot`, Titel mit Präfix) mit kopiertem `_elementor_data`; darin nur [EDIT]/[NEW] ändern, [KEEP] byte-gleich, [REMOVE] nur mit Freigabe.
+3. **CREATE**: Vorlage = **„Landingpage-Vorlage 2026“ (6813, `client.json → wordpress.create_template`)** – nie eine Live-Seite klonen. Vorlage lesen → neue Element-IDs → Platzhalter-Inhalte nur über `set_content` (Content Layer) gemäß Change Set ersetzen → fehlende Text+Bild-Abschnitte per `duplicate_section(…, mirror=True)` → `alternation` muss ok sein → `firewall_risk` muss frei sein (sonst Stopp: Trustindex-Referenz fehlt) → `pages-create` mit `status: draft`, Slug, Titel; Yoast über `update-post-seo-data` am Draft.
+4. **OPTIMIZE**: Ranking Protection Snapshot (GSC-Queries, Klicks, Impressionen, Positionen, Title/H1/H2, Canonical, Robots, interne Links) als `wordpress.baseline` speichern → Live-Seite **nur lesen** (`context=edit`) → Review-Version als **eigene Draft-Seite** (Slug + `-entwurf-seo-autopilot`, Titel mit Präfix) mit kopiertem `_elementor_data`; darin nur [EDIT] per Widget-ID (`set_content`) und [NEW] durch Duplizieren eines passenden Blocks derselben Seite (`duplicate_section`, alternierend) ändern, [KEEP] byte-gleich, [REMOVE] nur mit Freigabe. Vorlage 6813 wird bei OPTIMIZE nicht verwendet.
 5. Pro Change-Set-Dokument (inkl. Companion) ein Draft; Registry `wordpress.documents[]` mit `url`, `wp_post_id` (Live), `draft_post_id`, `edit_link` (`/wp-admin/post.php?post=<ID>&action=elementor`), `preview_link` (`/?page_id=<ID>&preview=true`), `original_link`; `draft_version + 1`.
 6. **QA**: Draft + Yoast zurücklesen → `python3 tools/wordpress.py qa change_set.json original.json|- draft.json yoast.json` (Content · SEO · Technical; Visual immer „Manual review required“, nie erfunden). `wordpress.qa`, `change_counts`, `publish_summary` schreiben → `qa_passed` bzw. `qa_failed`.
 7. **OPTIMIZE**: Pre-change Snapshot der Live-Seite (`wordpress.py snapshot` → als JSON-Datei in Drive speichern, zurücklesen, `verify-snapshot` mit Hash) → `wordpress.snapshots[]` mit `stored_doc_id`, `verified`; `rollback = rollback_status(...)` (Schreibweg `_elementor_data` muss durch den Sandbox-Test bestätigt sein, sonst **Rollback protection unavailable** → Gate 3 gesperrt).
@@ -185,3 +185,42 @@ Die Runner-Routine kann nicht ins Repository pushen (403); Ergebnisse wie das OP
 ## Rollback
 
 Primär: eigener Pre-change Snapshot (Elementor-Daten, Content, Yoast, Seiteneinstellungen, Zeitstempel, SHA-256) in Drive. Sekundär: WordPress-Revisionen (lesbar, z. B. Baudoku-Seite mit Revisionen vom 16.07.2026). Duplicator ist nicht Voraussetzung (aktuell ohne Backups). Rollback gilt erst als verfügbar, wenn ein Sandbox-Test bestätigt, dass `_elementor_data` per Konnektor vollständig geschrieben und identisch zurückgelesen werden kann – Stand 24.11.2026: **unavailable** (Firewall blockiert `<script>`-Widgets, siehe oben).
+
+## Produktionsstandard ab 25.11.2026: Vorlage für CREATE, bestehende Seite für OPTIMIZE
+
+Entscheidung Noel: Neue SEO-Landingpages entstehen aus dem vorhandenen Elementor-Template **„Landingpage-Vorlage 2026“ (ID 6813)**. Keine Live-Seite klonen, keine eigene Landingpage-Struktur bauen. Bei OPTIMIZE ist die bestehende Seite selbst die Vorlage.
+
+**CREATE:** Gate 2 → neuer Draft → Vorlage 6813 anwenden → Platzhalter-Inhalte durch das Drive-Change-Set ersetzen → bei Bedarf passende Text+Bild-Blöcke duplizieren/spiegeln → Yoast → WordPress QA → visuelle Prüfung → Gate 3 → Publish.
+
+**OPTIMIZE:** Live-Seite → separate Draft-Kopie → KEEP unverändert · EDIT gezielt · NEW durch Duplizieren eines passenden Blocks derselben Seite · REMOVE nur nach Freigabe → Preview → QA → visuelle Prüfung → Gate 3 → kontrollierte Übernahme.
+
+### Layer-Trennung (Code: `tools/wordpress.py`)
+
+| CONTENT LAYER – Agent bearbeitet | DESIGN/TEMPLATE LAYER – bleibt erhalten |
+|---|---|
+| H1/H2/H3, Fließtext, FAQ, CTA-Texte/-Ziele, interne Links, Bildzuordnung, Yoast | Container, Abstände, Responsive, Farben, Typografie, Trustindex, Formulare/Heyflow, Karussells, wiederkehrende Komponenten |
+
+`set_content(tree, id, …)` erlaubt nur Content-Schlüssel je Widget-Typ (Überschrift `title`, Text `editor`, Button `text`/`link`, Bild `image`/`link` …) und lehnt Design-Schlüssel sowie HTML/Formular/Karussell-Widgets ab.
+
+### Layoutregel: Text+Bild alternieren
+
+Text | Bild → Bild | Text → Text | Bild … – nie zwei aufeinanderfolgende Text+Bild-Abschnitte mit gleicher Ausrichtung, sofern kein bewusster Designgrund dagegen spricht. `alternation(tree)` prüft das; zusätzliche Abschnitte entstehen mit `duplicate_section(tree, id, mirror=True)` (neue eindeutige Elementor-IDs, Design/Abstände/Responsive/Styling identisch, Text- und Bild-Spalte getauscht). Kein eigenes Design, wenn ein Baustein existiert.
+
+### Analyse „Landingpage-Vorlage 2026“ (25.11.2026, nur lesend)
+
+- **Gefunden:** eindeutig, ID **6813**, `elementor_library`, Elementor-Typ **page**, zuletzt geändert 05.06.2026.
+- **Umfang:** 81.793 Zeichen, 12 Abschnitte: 0 Hero (H1) · 1 Text\|Bild + CTA + **Trustindex A** · 2 Bild\|Text + CTA · 3 Heyflow-Formular · 4 Logo-Karussell · 5 Bild\|Text + CTA · 6 Kundenstimmen (**Trustindex B**) · 7 Text\|Bild · 8 Bild\|Text + CTA · 9 Prozess (Icon-Liste) + Call-to-Action · 10 Benefits (3 Icon-Boxen) · 11 Text\|Bild.
+- **CTAs:** 4 Buttons → /kontakt/, Heyflow-Formular, Call-to-Action-Bild. **Formulare:** kein Elementor-Formular, Heyflow-Platzhalter ohne Script.
+- **Scripts:** 2 Trustindex-HTML-Widgets (`77052669`, `1349b3ec`), dieselben IDs wie auf allen Seiten.
+- **Global/Responsive:** 33 globale Farb-/Typo-Referenzen, 57 verschiedene Tablet/Mobile-Einstellungen.
+- **Alternation:** 1 Text\|Bild · 2 Bild\|Text · 5 Bild\|Text · 7 Text\|Bild · 8 Bild\|Text · 11 Text\|Bild – einzige Wiederholung 2→5 (dazwischen Formular + Logos).
+- **Wie Elementor einfügt:** im Editor „Bibliothek → Einfügen“ = **Kopie** der Template-Daten mit neuen Element-IDs, gespeichert per admin-ajax als eingeloggter Admin. Die Pro-Referenz („Template“-Widget) bettet live ein – dann wären Inhalte nicht seitenindividuell.
+- **Über den Konnektor:** kein Elementor-Insert-Mechanismus (keine Elementor-Fähigkeit, kein admin-ajax). Die Vorlage lässt sich nur als ganzes `_elementor_data` schreiben – inkl. der zwei Trustindex-Scripts → 403. Dasselbe gilt für jede spätere Inhaltsänderung an einer Seite, die die Scripts enthält.
+
+**Antworten:** (1) ja, eindeutig · (2) 6813 · (3) Editor-Kopie per admin-ajax · (4) **nein, solange die Vorlage Trustindex als `<script>` enthält** · (5) ja technisch (lesen → Content-Widget per ID ändern → ganzes `_elementor_data` zurückschreiben), nur ohne Script · (6) ja – offline an der Vorlage verifiziert.
+
+**Kleinste Änderung, die den Vorlagen-Weg vollständig API-tauglich macht (freigabepflichtig, nicht umgesetzt):** in Vorlage 6813 die zwei Trustindex-HTML-Widgets durch je ein Pro-Widget „Template“ ersetzen, das auf ein kleines Trustindex-Template verweist (im Elementor-Editor angelegt). Trustindex bleibt Template Layer, das Design bleibt gleich.
+
+### S3 Sandbox Test – Landingpage-Vorlage 2026 (vorgeschlagen, nicht ausgeführt)
+
+Nur Draft 6955. Vorlage 6813 mit neuen IDs in 6955 schreiben – die zwei Trustindex-Widgets durch eine markierte Platzhalter-Zeile ersetzt (`script_free_copy`), alles andere 1:1. Zweiter Schreibvorgang: H1 + eine H2 + ein Text ersetzen (`set_content`), Abschnitt 11 duplizieren + spiegeln (`duplicate_section`). Prüfen: kein 403 (auch Heyflow-HTML) · Design-/Responsive-Werte identisch zur Vorlage, nur Content abweichend · gespiegelter Block korrekt · Vorschau wie Vorlage · 6813 und Live-Seiten unverändert. Aufwand: 2 Schreibvorgänge à ~80.000 Zeichen.

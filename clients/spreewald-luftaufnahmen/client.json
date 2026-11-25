@@ -107,6 +107,24 @@
         "rollback": "NOT_YET_VERIFIED"
       },
       "firewall_source": "vermutlich NinjaFirewall (WP-Plugin, aktiv) – nicht Hosting; nicht abschließend bestimmt (Firewall-Log nicht eingesehen)"
-    }
+    },
+    "create_template": {
+      "id": 6813,
+      "title": "Landingpage-Vorlage 2026",
+      "post_type": "elementor_library",
+      "elementor_type": "page",
+      "owner_decision": "Noel 25.11.2026: Standardvorlage für neue SEO-Landingpages",
+      "placeholder_content": "Beispieltexte einer Dachinspektions-Landingpage – vollständig durch freigegebenen SEO-Content ersetzen"
+    },
+    "production_methods": {
+      "CREATE": "Gate 2 → neuer Draft → Vorlage 6813 anwenden → Platzhalter-Inhalte durch Drive-Change-Set ersetzen → bei Bedarf passende Text+Bild-Blöcke duplizieren/spiegeln → Yoast → QA → visuelle Prüfung → Gate 3 → Publish. Nie eine Live-Seite klonen, kein eigenes Layout erfinden.",
+      "OPTIMIZE": "Bestehende Live-Seite ist die Vorlage → separate Draft-Kopie → KEEP unverändert, EDIT gezielt, NEW durch Duplizieren eines passenden Blocks derselben Seite, REMOVE nur wenn freigegeben → Preview → QA → visuelle Prüfung → Gate 3 → kontrollierte Übernahme. Vorlage 6813 wird bei OPTIMIZE nicht verwendet."
+    },
+    "production_rules": [
+      "Layer-Trennung: der Agent bearbeitet den CONTENT LAYER (H1–H3, Fließtext, FAQ, CTA-Texte/-Ziele, interne Links, Bildzuordnung, Yoast). DESIGN/TEMPLATE LAYER (Container, Abstände, Responsive, Farben, Typografie, Trustindex, Formulare/Heyflow, wiederkehrende Komponenten) wird aus bestehenden Elementor-Bausteinen übernommen (tools/wordpress.py set_content).",
+      "Text+Bild-Abschnitte alternieren: Text|Bild → Bild|Text → Text|Bild … – nie zwei aufeinanderfolgende mit gleicher Ausrichtung, außer bewusster Designgrund (tools/wordpress.py alternation).",
+      "Zusätzliche Text+Bild-Abschnitte: passenden vorhandenen Block duplizieren und bei Bedarf spiegeln (Design, Abstände, Responsive, Styling bleiben; neue Elementor-IDs) – keine neuen Designs erfinden (duplicate_section).",
+      "Trustindex/Bewertungen und Formulare gehören zum Template Layer: nie neu erzeugen oder verändern."
+    ]
   }
 }
