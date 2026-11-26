@@ -85,6 +85,17 @@ def profile(url, timeout=30):
             cur["text"] += " " + re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", part)))
     secs.append(cur)
     p["sections"] = [{"tag": x["tag"], "heading": x["heading"][:160], "words": len(x["text"].split()), "text": x["text"].strip()[:1500]} for x in secs if x["heading"] or x["text"].strip()]
+    # Interne Links im Inhaltsbereich (ohne Navigation/Header/Footer) – Grundlage der Umsetzungs-Verifikation
+    host = urlparse(p.get("final_url") or url).netloc
+    links = []
+    for href, inner in re.findall(r'<a[^>]+href=["\']([^"\'#]+)["\'][^>]*>(.*?)</a>', body, re.S | re.I):
+        u = urlparse(html.unescape(href))
+        if (not u.netloc or u.netloc == host) and not href.startswith(("mailto:", "tel:", "javascript:")):
+            path = u.path or "/"
+            anchor = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", inner))).strip()[:120]
+            if {"href": path, "anchor": anchor} not in links:
+                links.append({"href": path, "anchor": anchor})
+    p["links"] = links[:200]
     p["has_form"] = bool(re.search(r"<form", t, re.I))
     p["has_phone_link"] = bool(re.search(r'href=["\']tel:', t, re.I))
     p["schema_types"] = sorted(set(re.findall(r'"@type"\s*:\s*"([A-Za-z]+)"', t)))[:15]

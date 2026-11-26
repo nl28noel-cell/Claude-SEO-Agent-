@@ -147,8 +147,8 @@
     "editor": "Elementor + Elementor Pro (Hello-Theme)",
     "seo": "Yoast lesen/schreiben über Site-Fähigkeiten",
     "capabilities": {
-      "create_draft": "YES (Draft) – CREATE automation: PENDING FULL SANDBOX VALIDATION",
-      "optimize_existing": "Live OPTIMIZE automation: BLOCKED (Script-Widgets) – Draft-Bearbeitung möglich",
+      "create_draft": "YES (Draft aus „Landingpage-Vorlage 2026“) – Publish nur nach Gate 3",
+      "optimize_existing": "DEAKTIVIERT – OPTIMIZE wird manuell in Elementor umgesetzt (Entscheidung Noel 26.11.2026)",
       "preview": "YES (Login)",
       "publish": "technisch YES – gesperrt",
       "rollback": "NOT YET VERIFIED"
@@ -273,7 +273,7 @@
         ],
         [
           "Live OPTIMIZE automation",
-          "BLOCKED"
+          "DISABLED – manuelle Umsetzung"
         ],
         [
           "CREATE automation",

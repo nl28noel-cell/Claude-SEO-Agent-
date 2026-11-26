@@ -211,6 +211,10 @@ function attentionItems() {
     if (st !== "active") continue;
     const col = wfCol(w), rs = resStatus(c.o), ready = !rs || RES_READY.includes(rs.state);
     if (col === "review" && ready && c.o.research) out.push({ kind: "gate", level: "warning", ref: c.id, title: `Gate 1 · ${c.o.name}`, detail: "Strategie freigeben, zurückstellen oder ablehnen", open: c.id, rank: 1 });
+    if (col === "implement") out.push({ kind: "impl", level: "warning", ref: c.id, title: `Manuelle Umsetzung · ${c.o.name}`, detail: implOf(w)?.status === "not_implemented" ? "noch nicht umgesetzt – Drive-Dokument in Elementor übernehmen" : "Drive-Dokument in Elementor übernehmen und als umgesetzt markieren", open: c.id, rank: 1 });
+    if (implOf(w)?.verification?.mismatch) out.push({ kind: "verify", level: "warning", ref: c.id, title: `Rückfrage zur Umsetzung · ${c.o.name}`, detail: implOf(w).verification.mismatch, open: c.id, rank: 1 });
+    dueReviews(w).forEach(cp => out.push({ kind: "review", level: "warning", ref: c.id, title: `SEO-Review ${cp.label} fällig · ${c.o.name}`, detail: `auswertbar seit ${fmtDate(cp.data_ready)}`, open: c.id, rank: 3 }));
+    (implOf(w)?.monitoring?.checkpoints || []).filter(cp => cp.result?.outcome === "negative").forEach(cp => out.push({ kind: "monitoring", level: "danger", ref: c.id, title: `Mögliche negative Entwicklung · ${c.o.name}`, detail: cp.result.message || cp.result.label, open: c.id, rank: 0 }));
     if (col === "draft") out.push({ kind: "gate", level: "warning", ref: c.id, title: `Gate 2 · Review ${c.o.name}`, detail: `Entwurf v${w.production?.version || 1} prüfen`, open: c.id, rank: 1 });
     if (w?.wordpress?.status === "qa_passed") out.push({ kind: "gate", level: "warning", ref: c.id, title: `Gate 3 · Publish ${c.o.name}`, detail: "WordPress-Draft visuell prüfen und freigeben", open: c.id, rank: 0 });
     if (w?.research_retry?.status === "blocked") out.push({ kind: "research", level: "danger", ref: c.id, title: `Research blockiert · ${c.o.name}`, detail: w.research_retry.block_reason || (w.research_retry.blocked || []).map(b => b.component || b).join(", "), href: "#opp-" + c.id, rank: 2 });
@@ -240,7 +244,12 @@ pages.overview = () => {
   const gates = att.filter(x => x.kind === "gate").length, crit = att.filter(x => x.level === "danger").length;
   const active = wfCards().filter(c => !c.o.test && decOf(wfDoc(c.id)) === "active");
   const openOpps = d.opportunities.filter(o => !["IGNORE", "MONITOR"].includes(o.type) && decOf(wfDoc(o.id)) === "active" && wfCol(wfDoc(o.id)) !== "live");
-  const monitoring = d.changes.filter(c => c.status === "monitoring");
+  const wsAll = wfCards().filter(c => !c.o.test).map(c => ({ c, w: wfDoc(c.id) }));
+  const awaitingImpl = wsAll.filter(x => decOf(x.w) === "active" && wfCol(x.w) === "implement");
+  const implemented = wsAll.filter(x => ["implemented", "partial"].includes(implOf(x.w)?.status));
+  const monitoring = [...d.changes.filter(c => c.status === "monitoring"), ...implemented];
+  const reviewsDue = implemented.reduce((n, x) => n + dueReviews(x.w).length, 0);
+  const negatives = implemented.filter(x => (implOf(x.w).monitoring?.checkpoints || []).some(c => c.result?.outcome === "negative")).length + d.changes.filter(c => /negative/i.test(c.impact_assessment || "")).length;
   const resBlocked = d.opportunities.filter(o => (resStatus(o) && !RES_READY.includes(resStatus(o).state) && decOf(wfDoc(o.id)) === "active") || rrOf(o.id)?.status === "blocked");
   const orgLeads = d.ga4?.channels_window?.find(c => c.channel === "Organic Search"), fw = d.funnel?.window || [];
   const dser = k => w.cur.map(r => r[k]);
@@ -264,12 +273,15 @@ pages.overview = () => {
     ${kpi2({ label: "Leads aus Organic Search", value: orgLeads ? fmtN(orgLeads.leads) : "–", delta: orgLeads ? `<span class="flat">${fmtN(orgLeads.lead_form)} Formular · ${fmtN(orgLeads.lead_contact)} Kontakt</span>` : "", period: fw.length ? `${fmtDate(fw[0])} – ${fmtDate(fw[1])} · kein Vorperiodenvergleich` : "GA4", source: "GA4", tip: "Key Events kontakt_form_send (Formular) und tel_klick u. a. (Kontakt) in Sitzungen aus Organic Search. Keine Tageswerte je Kanal → keine Sparkline.", href: "#funnel" })}
     ${kpi2({ label: "Opportunities offen", value: fmtN(openOpps.length), delta: `<span class="flat">${d.opportunities.filter(o => decOf(wfDoc(o.id)) === "on_hold").length} On Hold · ${d.opportunities.filter(o => decOf(wfDoc(o.id)) === "rejected").length} Rejected</span>`, period: "aktive Pipeline (ohne Monitor/Ignore)", source: "State", href: "#opportunities" })}
     ${kpi2({ label: "Freigaben offen", value: fmtN(gates), delta: gates ? `<span class="down">wartet auf dich</span>` : `<span class="up">nichts offen</span>`, period: "Gate 1 · Gate 2 · Gate 3", source: "Workflow", href: "#approvals" })}
-    ${kpi2({ label: "Changes im Monitoring", value: fmtN(monitoring.length), delta: monitoring.length ? `<span class="flat">${monitoring.filter(c => c.freeze).length} mit Change Freeze</span>` : "", period: "T+7 … T+90 Checkpoints", source: "Change Log", href: "#changes" })}
+    ${kpi2({ label: "Awaiting Manual Implementation", value: fmtN(awaitingImpl.length), delta: awaitingImpl.length ? `<span class="down">${awaitingImpl.map(x => esc(x.c.id)).join(", ")}</span>` : `<span class="flat">nichts offen</span>`, period: "OPTIMIZE · Drive-Dokument fertig, Umsetzung in Elementor", source: "Workflow", href: "#approvals" })}
+    ${kpi2({ label: "Umgesetzte Optimierungen", value: fmtN(implemented.length), delta: implemented.length ? `<span class="flat">${implemented.filter(x => implOf(x.w).status === "partial").length} teilweise</span>` : "", period: "manuell umgesetzt (deine Bestätigung)", source: "Workflow", href: "#approvals" })}
+    ${kpi2({ label: "Changes im Monitoring", value: fmtN(monitoring.length), delta: `<span class="flat">${d.changes.filter(c => c.status === "monitoring").length} Change Log · ${implemented.length} Optimierungen</span>`, period: "T+14 … T+90 (180 optional) ab tatsächlichem Datum", source: "Change Log", href: "#changes" })}
+    ${kpi2({ label: "Fällige SEO-Reviews · Warnungen", value: `${fmtN(reviewsDue)} · ${fmtN(negatives)}`, delta: negatives ? `<span class="down">mögliche negative Entwicklung</span>` : reviewsDue ? `<span class="down">Review fällig</span>` : `<span class="up">keine</span>`, period: "Checkpoint auswertbar (inkl. GSC-Verzögerung) · negative Signale", source: "Monitoring", href: "#ov-attention" })}
     ${kpi2({ label: "Research blockiert / offen", value: fmtN(resBlocked.length), delta: resBlocked.length ? `<span class="down">${resBlocked.map(o => esc(o.id)).join(", ")}</span>` : `<span class="up">alles vollständig</span>`, period: "aktive Opportunities ohne vollständige Research", source: "Research", href: "#opportunities" })}
   </div>
   <div class="grid ov-main mt">
     <div class="card" id="ov-attention"><div class="card-h"><div><h2>Requires your attention</h2><div class="hint">priorisiert · direkt zur Entscheidung</div></div><span class="mini">${att.length}</span></div>
-      <div class="att2">${att.length ? att.slice(0, 9).map(x => `<a class="att2-i lv-${x.level}" ${x.open ? `href="#approvals" data-open-card="${esc(x.open)}"` : `href="${esc(x.href)}"`}><span class="att2-k">${esc({ gate: "Freigabe", research: "Research", wordpress: "WordPress", production: "Produktion", finding: "Finding", task: "Aufgabe", hold: "Wiedervorlage", review: "Sichtprüfung" }[x.kind] || x.kind)}</span><span class="att2-t">${esc(x.title)}</span><span class="att2-d">${esc(x.detail || "")}</span><span class="att2-go" aria-hidden="true">→</span></a>`).join("") : `<div class="empty">Nichts wartet auf dich.</div>`}</div></div>
+      <div class="att2">${att.length ? att.slice(0, 9).map(x => `<a class="att2-i lv-${x.level}" ${x.open ? `href="#approvals" data-open-card="${esc(x.open)}"` : `href="${esc(x.href)}"`}><span class="att2-k">${esc({ gate: "Freigabe", impl: "Umsetzung", verify: "Rückfrage", monitoring: "Monitoring", research: "Research", wordpress: "WordPress", production: "Produktion", finding: "Finding", task: "Aufgabe", hold: "Wiedervorlage", review: "Sichtprüfung" }[x.kind] || x.kind)}</span><span class="att2-t">${esc(x.title)}</span><span class="att2-d">${esc(x.detail || "")}</span><span class="att2-go" aria-hidden="true">→</span></a>`).join("") : `<div class="empty">Nichts wartet auf dich.</div>`}</div></div>
     <div class="card" id="ov-agent"><div class="card-h"><div class="row">${orb(st)}<div><h2>Agent Activity</h2><div class="hint">${esc(st.label)}${st.active ? "" : " · kein laufender Auftrag"}</div></div></div><a href="#activity" class="mini">Alle →</a></div>
       <div class="card-b">${agentLanes()}</div></div>
   </div>
@@ -455,6 +467,7 @@ pages.opportunity = id => {
     <div class="sub">${esc(o.id)} · Business fit ${o.business_fit}/10 · Primary keyword „${esc(o.primary_keyword)}“</div></div>
     ${["CREATE", "OPTIMIZE", "MERGE"].includes(o.type) ? `<button class="btn" data-gate1="${esc(o.id)}">Entscheiden: Approve · On Hold · Reject</button>` : ""}</div>
   ${decOf(wfDoc(o.id)) !== "active" ? `<div class="callout ${decOf(wfDoc(o.id)) === "rejected" ? "red" : "amber"} mt" id="opp-decision">${chip(...DECISION[decOf(wfDoc(o.id))], true)} <b>${decOf(wfDoc(o.id)) === "on_hold" ? "Zurückgestellt" : "Abgelehnt"}</b> am ${fmtDateTime(wfDoc(o.id).decision.at)}${wfDoc(o.id).decision.reason ? ` · „${esc(wfDoc(o.id).decision.reason)}“` : ""} – keine automatische Weiterverarbeitung. <a href="#approvals" data-gate1="${esc(o.id)}">Im Workflow reaktivieren →</a></div>` : ""}
+  ${implCard(o)}
   ${o.architecture ? `<div class="card mt" id="arch-card"><div class="card-b">${archMap(o)}</div></div>` : ""}
   ${resStatus(o) ? `${researchBanner(o)}<div class="card mt" id="g1-brief"><div class="card-h"><div><h2>Gate 1 – Entscheidungsvorlage</h2><div class="hint">Freigabe = SEO-Maßnahme UND fachlicher Scope der Seite. Änderungen am Scope bitte im Gate-1-Kommentar.</div></div>${gate1Card(o, true)}</div><div class="card-b">${gate1Brief(o)}</div></div>` : `<div class="card mt"><div class="card-h"><h2>Cannibalization Risk</h2></div><div class="card-b">${cannibalBlock(o, true)}</div></div><div class="mt">${diagnosisCard(o)}</div>`}
   ${resStatus(o) ? `<div class="grid mt"><div class="card" id="rs-cannibal"><div class="card-h"><h2>Cannibalization &amp; Architecture</h2></div><div class="card-b">${cannibalBlock(o, true)}</div></div>${diagnosisCard(o)}${evidenceCard(o)}${researchView(o)}${gate1Card(o)}</div><h2 class="sec-h">Evidenz &amp; Rohdaten</h2>` : ""}
@@ -494,6 +507,8 @@ pages.opportunity = id => {
   view().querySelectorAll("[data-rs]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); $("#rs-" + a.dataset.rs)?.scrollIntoView({ behavior: "smooth", block: "start" }); }));
   view().querySelectorAll("[data-gate1]").forEach(b => b.addEventListener("click", e => { e.preventDefault(); WF_PENDING_OPEN = b.dataset.gate1; go("approvals"); }));
   const cm = o.gsc.cluster_monthly_impressions.map(x => ({ x: x.month + "-01", impressions: x.impressions }));
+  if ($("#impl-ch")) { chartInto("impl-ch", { points: cm.slice(-12), series: [{ key: "impressions", label: "Cluster-Impressionen / Monat", color: "var(--c1)", type: "bar" }], height: 110, xMode: "month" });
+    const im = implOf(wfDoc(o.id)); if (im?.implemented_at) $("#impl-ch").insertAdjacentHTML("beforeend", `<div class="mini">Umsetzung: ${fmtDate(im.implemented_at)} · letzte GSC-Daten: ${fmtDate(S.d.gsc.last)} – Wirkung erst nach ≥ 28 Tagen Daten bewertbar</div>`); }
   chartInto("opp-cl", { points: cm, series: [{ key: "impressions", label: "Cluster impressions / month", color: "var(--c1)", type: "bar" }], height: 120, xMode: "month" });
 };
 
@@ -716,7 +731,7 @@ function renderAdTab() {
    Der Agent liest sie in seiner nächsten Session (ArtifactData), verarbeitet sie und setzt agent_status = "processed".
    Keine Entscheidung löst hier eine Website-Aktion aus. Lokal (ohne Claude-Viewer) ist der Speicher nicht verfügbar. */
 const DB = { state: "loading", reason: "", ns: null, canWrite: false, decisions: [], fromCache: false, error: "" };
-const DEC = { hold: ["On Hold", "amber"], reactivate: ["Reaktiviert", "blue"], wp_retry: ["WordPress-Draft erneut", "blue"], research_retry: ["Research nachholen", "blue"], approve: ["Approve", "green"], approve_override: ["Approve (Override)", "amber"], request_changes: ["Request changes", "amber"], reject: ["Reject", "red"], retry: ["Erneut versucht", "blue"] };
+const DEC = { implemented: ["Vollständig umgesetzt", "green"], partial: ["Teilweise umgesetzt", "green"], not_implemented: ["Noch nicht umgesetzt", "amber"], hold: ["On Hold", "amber"], reactivate: ["Reaktiviert", "blue"], wp_retry: ["WordPress-Draft erneut", "blue"], research_retry: ["Research nachholen", "blue"], approve: ["Approve", "green"], approve_override: ["Approve (Override)", "amber"], request_changes: ["Request changes", "amber"], reject: ["Reject", "red"], retry: ["Erneut versucht", "blue"] };
 const AGENT = { pending: ["Waiting for agent", "amber"], processed: ["Processed by agent", "green"], superseded: ["Test phase · superseded", ""] };
 async function initDb() {
   const fail = (reason, error = "") => { DB.state = "unavailable"; DB.reason = reason; DB.error = error; dbChanged(); };
@@ -860,7 +875,7 @@ function decisionSummary() {
 }
 function updateBadges() {
   if (!S.d) return;
-  const drafts = wfCards().filter(c => decOf(wfDoc(c.id)) === "active" && wfCol(wfDoc(c.id)) === "draft").length; // Entwürfe, die auf dein Review warten
+  const drafts = wfCards().filter(c => decOf(wfDoc(c.id)) === "active" && ["draft", "implement"].includes(wfCol(wfDoc(c.id)))).length; // Entwürfe/Umsetzungen, die auf dich warten
   $("#nav-approvals").textContent = drafts || "";
 }
 /** Search → Business für eine Opportunity: Cluster-Funnel + eigene Landingpage (GA4/Ads), gleiche Zahlen wie auf der Funnel-Seite */
@@ -1115,6 +1130,77 @@ function wpQa(qa) {
 }
 const openManual = qa => (qa?.manual_actions || []).filter(m => m.status === "manual_action_required");
 function wpCounts(c) { return c ? `${fmtN(c.NEW)} NEW · ${fmtN(c.EDIT)} EDIT · ${fmtN(c.KEEP)} KEEP · ${fmtN(c.REMOVE)} REMOVE` : "–"; }
+/* ------------------------------------------------------------ OPTIMIZE: manuelle Umsetzung → Verifikation (read-only) → Monitoring */
+function plannedChanges(o) {
+  return (o.research?.P_diagnosis?.change_summary || []).filter(x => !/^KEEP$/.test(x.action)).slice(0, 8);
+}
+function protectedQueries(o) { return (o.ranking_protection?.queries || []).filter(q => ["critical", "high"].includes(q.tier)); }
+function implButtons(canWrite, cur) {
+  return `<label class="mini mt" for="wf-impl-date" style="display:block">Umgesetzt am (tatsächliches Datum – Monitoring startet hier)</label>
+    <input id="wf-impl-date" class="inp" type="date" max="${todayIso()}" value="${esc(cur?.implemented_at || todayIso())}" style="max-width:220px">
+    <label class="mini" for="wf-impl-c" style="display:block">Kommentar (optional) – z. B. was du übernommen hast und was nicht</label>
+    <textarea id="wf-impl-c" placeholder="z. B. FAQ und Vergleichbarkeit übernommen; Kostenabschnitt und interne Links noch offen.">${esc(cur?.comment || "")}</textarea>
+    <div class="row"><button class="btn primary" data-act="impl_done" ${canWrite ? "" : "disabled"}>Vollständig umgesetzt</button>
+      <button class="btn" data-act="impl_partial" ${canWrite ? "" : "disabled"}>Teilweise umgesetzt</button>
+      <button class="btn" data-act="impl_not" ${canWrite ? "" : "disabled"}>Noch nicht umgesetzt</button><span class="mini" data-msg></span></div>
+    <p class="s">Bestätigung startet <b>keine</b> WordPress-Produktion und veröffentlicht nichts. Der Agent prüft danach die Live-Seite nur lesend und protokolliert, welche Empfehlungen nachweisbar umgesetzt sind – deine Angabe wird nie überschrieben.</p>`;
+}
+function implAction(o, w, canWrite) {
+  const p = w.production || {}, im = implOf(w), [l, c] = IMPL[im?.status || "awaiting"];
+  const site = S.d.client.website.replace(/\/$/, "");
+  return `<div class="wf-action" id="wf-impl"><h3>${chip(l, c, true)} Manuelle Umsetzung in Elementor</h3>
+    <div class="kv"><div class="k">Seite</div><div><b>${esc(o.page_info?.title?.split("|")[0]?.trim() || o.name)}</b><div class="s"><a href="${esc(site + (o.existing_page || ""))}" target="_blank" rel="noopener">${esc(o.existing_page || "–")} ↗</a></div></div>
+    <div class="k">Drive-Dokument</div><div>${p.doc_url ? `<a class="btn primary" href="${esc(p.doc_url)}" target="_blank" rel="noopener">Drive-Dokument öffnen ↗</a> <span class="s">${esc(p.doc_title || "")} · v${esc(p.version || 1)}</span>` : "–"}</div>
+    ${im?.status === "not_implemented" ? `<div class="k">Status</div><div>Noch nicht umgesetzt · ${fmtDateTime(im.confirmed_at)}${im.comment ? ` · „${esc(im.comment)}“` : ""}</div>` : ""}</div>
+    <h4>Wichtigste geplante Änderungen</h4>${plannedChanges(o).length ? `<ul class="list">${plannedChanges(o).map(x => `<li>${chip(x.action, { NEW: "blue", EDIT: "amber", REMOVE: "red" }[x.action.split("/")[0]] || "")} <b>${esc(x.area)}</b> – ${esc(x.reason)}${x.seo_risk && x.seo_risk !== "—" ? ` <span class="mini">Risiko ${esc(x.seo_risk)}</span>` : ""}</li>`).join("")}</ul>` : `<span class="mini">Siehe Drive-Dokument.</span>`}
+    ${protectedQueries(o).length ? `<h4>Ranking Protection – nicht verlieren</h4><div class="row" style="flex-wrap:wrap">${protectedQueries(o).map(q => chip(`${q.query} · Pos. ${fmtD(q.position)}`, q.tier === "critical" ? "red" : "amber")).join("")}</div>` : ""}
+    ${implButtons(canWrite, im)}
+    <details class="mt"><summary class="mini">Änderungen am Drive-Dokument anfordern (neue Version)</summary><label class="mini" for="wf-c2">Was soll geändert werden?</label><textarea id="wf-c2"></textarea>
+      <div class="row"><button class="btn" data-act="revise" ${canWrite ? "" : "disabled"}>Änderungen anfordern</button></div></details></div>`;
+}
+function verificationBlock(v) {
+  if (!v) return `<span class="mini">Noch keine Verifikation.</span>`;
+  if (v.status === "queued" || v.status === "running") return `${chip(v.status === "queued" ? "Verifikation eingeplant" : "Agent prüft die Live-Seite …", "blue", true)} <span class="mini">angefordert ${fmtDateTime(v.requested_at)} · nur lesend</span>`;
+  if (v.status === "failed") return `${chip("Verifikation fehlgeschlagen", "red", true)}${ul(v.limitations || [])}`;
+  const sm = v.summary || {};
+  return `<div class="row" style="flex-wrap:wrap">${Object.entries(VER).map(([k, [l, c]]) => sm[k] ? chip(`${sm[k]} ${l}`, c) : "").join("")}<span class="mini">geprüft ${fmtDateTime(v.checked_at)} · Live-Stand ${fmtDateTime(v.live_fetched)} · Baseline ${v.baseline_fetched ? fmtDateTime(v.baseline_fetched) : "keine"}</span></div>
+    ${v.mismatch ? `<div class="callout amber mt" id="impl-mismatch"><b>Rückfrage:</b> ${esc(v.mismatch)}</div>` : ""}
+    ${(v.limitations || []).length ? `<div class="callout mt s"><b>Einschränkungen</b>${ul(v.limitations)}</div>` : ""}
+    <div class="tbl-wrap mt"><table class="tbl" id="impl-ver"><thead><tr><th>Empfehlung</th><th>Aktion</th><th>Nachweis</th><th>Befund</th></tr></thead><tbody>
+    ${(v.results || []).map(r => `<tr><td>${esc(r.area)}</td><td>${esc(r.action)}</td><td>${chip(...(VER[r.status] || [r.status, ""]))}</td><td class="s">${esc(r.evidence || "")}</td></tr>`).join("")}</tbody></table></div>`;
+}
+function checkpointsBlock(im) {
+  const cps = im?.monitoring?.checkpoints || [];
+  if (!cps.length) return `<span class="mini">Kein Monitoring geplant.</span>`;
+  return `<div class="tbl-wrap"><table class="tbl" id="impl-cps"><thead><tr><th>Checkpoint</th><th>fällig</th><th>auswertbar ab</th><th>Ergebnis</th></tr></thead><tbody>
+    ${cps.map(c => `<tr><td>${esc(c.label)}${c.optional ? ` <span class="mini">optional</span>` : ""}</td><td>${fmtDate(c.due)}</td><td>${fmtDate(c.data_ready)}</td><td>${c.result ? chip(c.result.label, { improved: "green", negative: "red", underperforming: "amber", no_clear_change: "", too_early: "" }[c.result.outcome] || "", true) + (c.result.message ? `<div class="s">${esc(c.result.message)}</div>` : "") : c.data_ready <= todayIso() ? chip("Review fällig", "amber") : `<span class="mini">geplant</span>`}</td></tr>`).join("")}</tbody></table></div>
+    <p class="mini">GSC liefert mit ~3 Tagen Verzögerung. Vor 28 Tagen Daten nach der Umsetzung trifft der Agent keine Aussage über Erfolg oder Misserfolg; Bewertungen beschreiben Entwicklungen, keine Kausalität.</p>`;
+}
+function monitorAction(o, w, canWrite) {
+  const im = implOf(w), [l, c] = IMPL[im.status], p = w.production || {};
+  const site = S.d.client.website.replace(/\/$/, "");
+  return `<div class="wf-action" id="wf-monitor"><h3>${chip(l, c, true)} umgesetzt am ${fmtDate(im.implemented_at)}</h3>
+    <div class="kv"><div class="k">Seite</div><div><a href="${esc(site + (o.existing_page || ""))}" target="_blank" rel="noopener">${esc(o.existing_page || "–")} ↗</a></div>
+    <div class="k">Drive-Dokument</div><div>${p.doc_url ? `<a href="${esc(p.doc_url)}" target="_blank" rel="noopener">${esc(p.doc_title || "öffnen")} ↗</a>` : "–"}</div>
+    <div class="k">Deine Angabe</div><div>${esc(DEC[im.status]?.[0] || im.status)} · bestätigt ${fmtDateTime(im.confirmed_at)}${im.comment ? `<div class="s">„${esc(im.comment)}“</div>` : ""}</div></div>
+    <h4>Nachweis auf der Live-Seite (read-only)</h4>${verificationBlock(im.verification)}
+    <h4>Monitoring</h4>${checkpointsBlock(im)}
+    ${im.reoptimization ? `<div class="callout amber mt"><b>Wiedervorlage</b><div>${esc(im.reoptimization.message || "")}</div><div class="s">Neue Optimierung braucht wieder Gate 1 – nichts wird automatisch geändert.</div></div>` : ""}
+    <details class="mt"><summary class="mini">Umsetzungsstatus korrigieren</summary>${implButtons(canWrite, im)}</details></div>`;
+}
+/** Opportunity-Detail: Umsetzungshistorie + SEO-Entwicklung */
+function implCard(o) {
+  const w = wfDoc(o.id), im = implOf(w);
+  if (!im && !(o.type !== "CREATE" && w?.production?.status === "draft_ready")) return "";
+  const hist = [...(im?.history || []), ...(im ? [{ status: im.status, implemented_at: im.implemented_at, confirmed_at: im.confirmed_at, comment: im.comment }] : [])];
+  return `<div class="card mt" id="impl-card"><div class="card-h"><div><h2>Umsetzung &amp; SEO-Entwicklung</h2><div class="hint">OPTIMIZE wird manuell in Elementor umgesetzt · Nachweis read-only · Monitoring ab tatsächlichem Datum</div></div>${chip(...(im ? IMPL[im.status] : IMPL.awaiting), true)}</div><div class="card-b">
+    <h4>Umsetzungshistorie</h4>${hist.length ? `<ul class="list">${hist.map(h => `<li><b>${esc(DEC[h.status]?.[0] || h.status)}</b>${h.implemented_at ? ` · umgesetzt am ${fmtDate(h.implemented_at)}` : ""} · bestätigt ${fmtDateTime(h.confirmed_at)}${h.comment ? ` · „${esc(h.comment)}“` : ""}</li>`).join("")}</ul>` : `<span class="mini">Drive-Dokument fertig – noch nicht als umgesetzt markiert. <a href="#approvals" data-gate1="${esc(o.id)}">Jetzt im Workflow markieren →</a></span>`}
+    ${im?.verification ? `<h4>Nachweis</h4>${verificationBlock(im.verification)}` : ""}
+    ${im?.monitoring ? `<h4>Monitoring</h4>${checkpointsBlock(im)}` : ""}
+    ${im?.baseline ? `<h4>Baseline bei Bestätigung</h4><div class="s">${esc(im.baseline.source)}${im.baseline.page ? ` · Seite: ${fmtN(im.baseline.page.clicks)} Klicks, ${fmtN(im.baseline.page.impressions)} Impr., Pos. ${fmtD(im.baseline.page.position)} (16 Monate)` : ""}</div>` : ""}
+    <div class="mt"><b>Entwicklung Cluster-Impressionen</b> <span class="mini">monatlich · Linie = Umsetzung</span><div id="impl-ch"></div></div></div></div>`;
+}
+
 /** Drawer-Abschnitt für WordPress-Spalten; Gate 3 nur in „Ready for Publish“ */
 function wpAction(o, w, col, canWrite) {
   const wp = w.wordpress || {}, [l, c] = WP_LABEL[wp.status] || ["WordPress: nicht gestartet", ""];
@@ -1300,10 +1386,11 @@ function gate1Card(o, compact = false) {
 const WF_COLS = [
   ["review", "Zur Prüfung", "Gate 1 steht aus"],
   ["production", "Freigegeben / Produktion", "Gate 1 erteilt · Claude produziert"],
-  ["draft", "Entwurf fertig / Review", "Dein Review"],
-  ["wordpress", "WordPress-Draft & QA", "Gate 2 erteilt · Draft in WordPress"],
-  ["publish", "Ready for Publish", "Gate 3 · deine Sichtprüfung"],
-  ["live", "Live / Monitoring", "veröffentlicht · T+7…T+90"],
+  ["draft", "Entwurf fertig / Review", "CREATE · dein Review (Gate 2)"],
+  ["implement", "Manuelle Umsetzung", "OPTIMIZE · du setzt in Elementor um"],
+  ["wordpress", "WordPress-Draft & QA", "CREATE · Gate 2 erteilt · Draft in WordPress"],
+  ["publish", "Ready for Publish", "CREATE · Gate 3 · deine Sichtprüfung"],
+  ["live", "Implemented / Live · Monitoring", "umgesetzt bzw. veröffentlicht · T+14…T+90"],
 ];
 const WF = { items: {}, live: false, trigger: { state: "unknown", note: "" } };
 /* Opportunity-Entscheidung: APPROVE = jeweilige Gate-Aktion · ON HOLD · REJECT. Persistiert in workflow/<id>.decision,
@@ -1364,8 +1451,30 @@ function wfStrategy(w) {
 }
 const wfLegacy = w => w?.gate1?.status === "approved" && !wfStrategy(w).ok && w.production?.status !== "draft_ready" && w.gate2?.status !== "approved" && w.review?.status !== "revision_requested";
 let WF_PENDING_OPEN = null;
+/** CREATE vs. OPTIMIZE (Spiegel von tools/workflow.py mode_of): OPTIMIZE wird manuell in Elementor umgesetzt – nie WordPress-Automatik */
+function wfMode(w, id) {
+  const a = w?.gate1?.change_set?.action;
+  if (a) return String(a).startsWith("CREATE") ? "CREATE" : "OPTIMIZE";
+  if (w?.wordpress?.mode) return w.wordpress.mode;
+  if (w?.test) return w.card?.type || "CREATE";
+  const t = S.d.opportunities.find(o => o.id === (id || w?.opp_id || w?._id || w?.id))?.type;
+  return t === "CREATE" || !t ? "CREATE" : "OPTIMIZE";
+}
+const implOf = w => w?.implementation || null;
+const IMPL = { awaiting: ["Awaiting Manual Implementation", "amber"], not_implemented: ["Noch nicht umgesetzt", "amber"], implemented: ["Implemented · Monitoring", "green"], partial: ["Partially implemented · Monitoring", "green"] };
+const VER = { implemented_as_proposed: ["Implemented as proposed", "green"], partially_implemented: ["Partially implemented", "amber"], different_implementation: ["Different implementation", "blue"], not_detected: ["Not detected", ""], unable_to_verify: ["Unable to verify", ""] };
+/** Spiegel von tools/implementation.py plan(): Checkpoints ab tatsächlichem Datum, auswertbar nach GSC-Verzögerung (3 Tage) */
+function implPlan(date) {
+  const add = (d, n) => { const x = new Date(d + "T00:00:00Z"); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
+  return [14, 30, 60, 90, 180].map(n => ({ label: `T+${n}`, days: n, due: add(date, n), data_ready: add(date, n + 3), status: "planned", optional: n === 180 }));
+}
+const dueReviews = w => (implOf(w)?.monitoring?.checkpoints || []).filter(c => c.status === "planned" && c.data_ready <= todayIso());
 function wfCol(w) {
   if (!w || w.gate1?.status !== "approved") return "review";
+  if (!w.test && wfMode(w) !== "CREATE") {
+    if (["implemented", "partial"].includes(implOf(w)?.status)) return "live";
+    if (w.production?.status === "draft_ready" && w.review?.status !== "revision_requested") return "implement";
+  }
   if (w.gate2?.status === "approved") { const s = w.wordpress?.status; return s === "published" || s === "rolled_back" ? "live" : ["qa_passed", "publish_queued", "publishing", "publish_failed"].includes(s) ? "publish" : "wordpress"; }
   if (wfLegacy(w)) return "review";
   if (w.review?.status === "revision_requested") return "production";
@@ -1374,6 +1483,8 @@ function wfCol(w) {
 }
 function wfLabel(w) {
   const c = wfCol(w);
+  if (c === "implement") return IMPL[implOf(w)?.status || "awaiting"] || IMPL.awaiting;
+  if (c === "live" && wfMode(w) !== "CREATE") return IMPL[implOf(w).status];
   if (c === "review") return wfLegacy(w) || w?.gate1?.superseded?.length ? ["Strategie-Freigabe ausstehend", "amber"] : ["Zur Prüfung", ""];
   if (["wordpress", "publish", "live"].includes(c)) return WP_LABEL[w.wordpress?.status] || ["Gate 2 erteilt · WordPress Draft ausstehend", "amber"];
   if (c === "draft") return [`Entwurf v${w.production.version || 1} · Review`, "blue"];
@@ -1421,7 +1532,7 @@ function wfCard({ id, o }) {
   </article>`;
 }
 pages.approvals = () => {
-  view().innerHTML = `<div class="page-head"><div><h1>Workflow</h1><div class="sub">Gate 1 (Strategie) → Entwurf in Google Drive → Gate 2 (Inhalt) → WordPress-Draft + QA → Gate 3 (Publish) → Live + Monitoring. Gate 1 und 2 ändern nie die Website; veröffentlicht wird nur nach Gate 3.</div></div>
+  view().innerHTML = `<div class="page-head"><div><h1>Workflow</h1><div class="sub"><b>CREATE:</b> Gate 1 (Strategie) → Drive-Entwurf → Gate 2 (Inhalt) → WordPress-Draft aus „Landingpage-Vorlage 2026“ + QA → Gate 3 (deine finale Prüfung) → Veröffentlichung → Monitoring.<br><b>OPTIMIZE:</b> Gate 1 (Strategie) → Drive-Optimierungsdokument → du setzt in Elementor um → „umgesetzt“ markieren → Nachweis (read-only) + Monitoring. Kein WordPress-Schreibzugriff, kein Publish-Job.</div></div>
     <a class="btn" href="${esc(S.d.workflow?.drive_folder_url || "#")}" target="_blank" rel="noopener">Drive-Ordner „Claude Landingpages“ ↗</a></div>
     <div id="store-notice"></div>
     <div class="tabs mt" role="tablist" id="wf-tabs"></div>
@@ -1505,6 +1616,8 @@ function openCard(id, opts = {}) {
         ${w.production.preflight ? `<div class="k">Preflight</div><div class="s">${Object.entries(w.production.preflight).map(([k, v]) => `${v ? "✓" : "✗"} ${esc(k)}`).join(" · ")}</div>` : ""}` : ""}</div>
       ${w.production?.status === "blocked" ? `<div class="row mt"><button class="btn primary" data-act="retry" ${canWrite ? "" : "disabled"}>Erneut versuchen</button><span class="mini" data-msg></span></div><p class="s">Stößt den Agenten erneut an. Deine Gate-1-Freigabe und dein Kommentar bleiben unverändert.</p>`
         : w.production?.status === "running" ? "" : `<div class="row mt"><button class="btn" data-act="retrigger" ${canWrite ? "" : "disabled"}>Agentenlauf erneut anstoßen</button><span class="mini" data-msg></span></div>`}</div>`;
+  else if (col === "implement") action = implAction(o, w, canWrite);
+  else if (col === "live" && !o.test && wfMode(w, id) !== "CREATE") action = monitorAction(o, w, canWrite);
   else if (["wordpress", "publish", "live"].includes(col)) action = wpAction(o, w, col, canWrite);
   else if (col === "draft") { const p = w.production || {};
     action = `<div class="wf-action"><h3>${esc(l)}</h3>
@@ -1517,7 +1630,7 @@ function openCard(id, opts = {}) {
       ${w.gate2?.status === "approved" ? `<div class="k">Gate 2</div><div>${fmtDateTime(w.gate2.at)}${w.gate2.comment ? ` · „${esc(w.gate2.comment)}“` : ""}</div>` : ""}</div>
       ${col === "draft" ? `<label class="mini mt" for="wf-c2" style="display:block">Kommentar (Pflicht bei „Änderungen anfordern“)</label><textarea id="wf-c2" placeholder="z. B. Einstieg kürzer, FAQ zu Kosten ergänzen"></textarea>
       <div class="row"><button class="btn" data-act="revise" ${canWrite ? "" : "disabled"}>Änderungen anfordern</button><button class="btn primary" data-act="final" ${canWrite ? "" : "disabled"}>Inhalt freigeben (Gate 2)</button><span class="mini" data-msg></span></div>
-      <p class="s">Gate 2: Der Inhalt ist freigegeben. Claude bereitet danach einen <b>WordPress-Draft</b> vor (CREATE: neue Seite als Entwurf · OPTIMIZE: separate Review-Version, die Live-Seite bleibt unverändert). Es wird nichts veröffentlicht – dafür gibt es Gate 3.</p>` : ""}</div>`; }
+      <p class="s">Gate 2: Der Inhalt ist freigegeben. Claude bereitet danach eine <b>neue WordPress-Seite als Entwurf</b> aus der „Landingpage-Vorlage 2026“ vor (Status draft). Es wird nichts veröffentlicht – dafür gibt es Gate 3. OPTIMIZE hat keinen WordPress-Schritt: dort setzt du die Änderungen selbst in Elementor um.</p>` : ""}</div>`; }
   const dst = decOf(w);
   $("#wf-panel-body").innerHTML = `<div class="wf-ph"><div><div class="row"><span class="wf-id">${esc(id)}</span>${typeChip(o.type)}${o.test ? chip("TEST", "amber") : prioChip(o.priority)}${dst === "active" ? chip(l, lc, true) : chip(...DECISION[dst], true)}</div><h2 id="wf-title">${esc(o.name)}</h2></div><button class="btn" data-close aria-label="Schließen">✕</button></div>
     ${canWrite ? "" : `<div class="notice">${esc(storeStatus()[2])}</div>`}
@@ -1573,6 +1686,21 @@ async function wfAct(act, c) {
       if (cur?.research_retry?.status === "stopped") patch.research_retry = { ...cur.research_retry, status: "queued", stopped_at: null, note: null };
       ev = { gate: 0, decision: "reactivate", comment: `aus ${DECISION[prev.status]?.[0] || prev.status}` };
     }
+  } else if (["impl_done", "impl_partial", "impl_not"].includes(act)) {
+    const st = { impl_done: "implemented", impl_partial: "partial", impl_not: "not_implemented" }[act], prev = cur?.implementation || {};
+    const date = $("#wf-impl-date")?.value || todayIso(), comment = ($("#wf-impl-c")?.value || "").trim();
+    if (st !== "not_implemented" && date > todayIso()) return say("Das Umsetzungsdatum darf nicht in der Zukunft liegen.");
+    const rp = o.ranking_protection || {};
+    patch = { implementation: { status: st, confirmed_at: now, by: "Noel", comment: comment || null, url: o.existing_page || null, iteration: prev.iteration || 1,
+      implemented_at: st === "not_implemented" ? null : date,
+      history: [...(prev.history || []), ...(prev.status ? [{ status: prev.status, implemented_at: prev.implemented_at || null, confirmed_at: prev.confirmed_at || null, comment: prev.comment || null }] : [])],
+      baseline: prev.baseline || { captured_at: now, source: `Dashboard-Build ${S.d.meta.built_at} · GSC bis ${S.d.gsc.last} (16 Monate + 90-Tage-Fenster)`,
+        page: o.page_info ? { url: o.page_info.page, clicks: o.page_info.clicks, impressions: o.page_info.impressions, position: o.page_info.position, imp_90d: o.page_info.imp_90d, imp_prev90d: o.page_info.imp_prev90d } : null,
+        cluster: o.gsc?.cluster_total || null, queries: (rp.queries || []).map(q => ({ query: q.query, tier: q.tier, clicks: q.clicks, impressions: q.impressions, position: q.position, pos_90d: q.pos_90d, imp_90d: q.imp_90d })) },
+      monitoring: st === "not_implemented" ? (prev.monitoring || null) : { start: date, checkpoints: (prev.implemented_at === date && prev.monitoring?.checkpoints) || implPlan(date) },
+      verification: st === "not_implemented" ? (prev.verification || null) : { status: "queued", requested_at: now, claimed: st },
+      assessments: prev.assessments || [] } };
+    ev = { gate: 0, decision: st, comment: `${st === "not_implemented" ? "" : `[umgesetzt am ${date}] `}${comment}`.trim() };
   } else if (decOf(cur) !== "active") {
     return say("Diese Opportunity ist " + DECISION[decOf(cur)][0] + " – zuerst reaktivieren.");
   } else if (act === "approve") {
@@ -1620,6 +1748,9 @@ async function wfAct(act, c) {
     const eid = `${S.client}--${id}--g${ev.gate}--${Date.now()}`.replace(/[^A-Za-z0-9_.~:@+-]/g, "-");
     await DB.ns.collection("decisions").doc(eid).set({ schema: 1, client: S.client, item_id: id, item_title: o.name, gate: ev.gate, decision: ev.decision, comment: ev.comment, decided_at: now, agent_status: "pending", agent_processed_at: null, agent_note: act === "final" ? "Gate 2 – WordPress-Draft wird vorbereitet (kein Publishing)" : null });
     say("Gespeichert.");
+    if (["impl_done", "impl_partial", "impl_not"].includes(act)) { WF.items[id] = { ...(WF.items[id] || { opp_id: id }), ...patch };
+      if (act !== "impl_not") { await wfTrigger(id, "verify"); say("Gespeichert – Agent prüft die Live-Seite nur lesend. " + WF.trigger.note); } else say("Gespeichert.");
+      renderBoard(); renderDecisionLog(); return; }
     if (["hold", "reject", "reactivate"].includes(act)) { WF.items[id] = { ...(WF.items[id] || { opp_id: id }), ...patch }; renderBoard(); renderDecisionLog(); renderTabs(); setTimeout(() => { closeCard(); }, 500); return; }
     if (["approve", "revise", "retry", "final", "wp_retry", "gate3"].includes(act) && !(o.test && act === "final")) { await wfTrigger(id, act); say("Gespeichert. " + WF.trigger.note); }
   } catch (e) { say(`Nicht gespeichert (${e.code || "error"}): ${e.message || ""}`); $("#wf-panel-body").querySelectorAll("[data-act]").forEach(b => b.disabled = false); }

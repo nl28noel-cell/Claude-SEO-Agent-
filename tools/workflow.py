@@ -26,6 +26,11 @@ Dokumentschema workflow/<OPP-ID>:
               `workflow.py check-active <dir> <OPP>` (Exit 0 = aktiv, 3 = gestoppt). Kein Löschen – Rücknahme über status active.
               Bricht der Runner einen Auftrag deswegen ab, setzt er production/wordpress/research_retry.status = "stopped";
               die Reaktivierung im Artifact setzt diese Aufträge auf waiting/queued zurück (Freigaben bleiben gültig).
+  implementation: {status: awaiting|implemented|partial|not_implemented, implemented_at (tatsächliches Datum), confirmed_at, comment, url,
+                   history:[...], baseline:{captured_at, queries[], cluster}, monitoring:{start, checkpoints[T+14…T+180]},
+                   verification:{status: queued|running|complete|failed, results[], summary, limitations[], mismatch}, assessments[], reoptimization}
+              NUR OPTIMIZE/MERGE: Noel setzt die Empfehlungen des Drive-Dokuments selbst in Elementor um. Kein WordPress-Draft, kein Publish
+              (client.json wordpress.optimize_automation = disabled; tools/wordpress.py guard → optimize_manual_only).
   research_retry: {status: queued|running|complete|blocked, requested_at, started_at, finished_at, components[], blocked[],
                    done[], attempt, block_reason, note}   – gezielter Research-Retry (kein neuer Datensatz, kein zweites Dossier)
 
@@ -75,6 +80,31 @@ def _age_min(iso):
 
 
 DECISION_STATES = ("active", "on_hold", "rejected")
+IMPLEMENTATION_STATES = ("awaiting", "implemented", "partial", "not_implemented")
+_DASH_CACHE = {}
+
+
+def _optimize_disabled(client=DEFAULT_CLIENT):
+    import wordpress
+    return wordpress.cfg(client).get("optimize_automation", "disabled") != "enabled"
+
+
+def mode_of(w, did=None, client=DEFAULT_CLIENT):
+    """CREATE oder OPTIMIZE/MERGE: freigegebenes Change Set > WordPress-Modus > Opportunity-Typ > Test-Karte."""
+    cs = ((w or {}).get("gate1") or {}).get("change_set") or {}
+    if cs.get("action"):
+        return "CREATE" if str(cs["action"]).startswith("CREATE") else "OPTIMIZE"
+    if (w.get("wordpress") or {}).get("mode"):
+        return w["wordpress"]["mode"]
+    if w.get("test"):
+        return (w.get("card") or {}).get("type") or "CREATE"
+    try:
+        if client not in _DASH_CACHE:
+            _DASH_CACHE[client] = {o["id"]: o.get("type") for o in _dash(client)["opportunities"]}
+        t = _DASH_CACHE[client].get(w.get("opp_id") or did)
+    except Exception:
+        t = None
+    return "CREATE" if t == "CREATE" else "OPTIMIZE" if t else "CREATE"
 
 
 def decision_status(w):
@@ -130,12 +160,26 @@ def actions(docs, client=DEFAULT_CLIENT):
                             "attempt": rr.get("attempt", 1), "test": bool(w.get("test")), "version": w.get("_version"), "note": "ON HOLD – nur Research, keine Produktion"})
             out.append({"doc": did, "action": "stopped", "reason": st, "test": bool(w.get("test")), "version": w.get("_version")})
             continue
+        mode = mode_of(w, did, client)
+        impl = w.get("implementation") or {}
+        if mode != "CREATE" and not w.get("test"):
+            # OPTIMIZE/MERGE: manuelle Umsetzung durch Noel. Nie WordPress (auch nicht aus alten States), nur Verifikation + Monitoring.
+            wp = w.get("wordpress") or {}
+            if wp.get("status") in ("queued", "preparing", "publish_queued", "publishing") and _optimize_disabled(client):
+                out.append({"doc": did, "action": "wp_disabled", "reason": "optimize_manual_only", "test": False, "version": w.get("_version")})
+            if (impl.get("verification") or {}).get("status") == "queued" and impl.get("status") in ("implemented", "partial", "not_implemented"):
+                out.append({"doc": did, "action": "verify_implementation", "claimed": impl.get("status"), "url": impl.get("url"), "test": False, "version": w.get("_version")})
+            import implementation as IMPL
+            for c in IMPL.due((impl.get("monitoring") or {}).get("checkpoints")):
+                out.append({"doc": did, "action": "monitor", "checkpoint": c["label"], "implemented_at": impl.get("implemented_at"), "test": False, "version": w.get("_version")})
+            if (w.get("production") or {}).get("status") == "draft_ready" and (w.get("review") or {}).get("status") != "revision_requested" and _optimize_disabled(client):
+                continue  # Drive-Dokument fertig = finales Produktionsartefakt; keine erneute Produktion durch alte States
         if rr.get("status") == "queued" or (rr.get("status") == "running" and _age_min(rr.get("started_at")) >= STALE_RUN_MIN):
             out.append({"doc": did, "action": "research", "components": rr.get("components", []), "blocked": rr.get("blocked", []),
                         "attempt": rr.get("attempt", 1), "test": bool(w.get("test")), "version": w.get("_version")})
         # WordPress (nach Gate 2): Draft vorbereiten bzw. – nur mit Gate 3 – veröffentlichen
         wp = w.get("wordpress") or {}
-        if (w.get("gate2") or {}).get("status") == "approved" and not w.get("test"):
+        if (w.get("gate2") or {}).get("status") == "approved" and not w.get("test") and (mode == "CREATE" or not _optimize_disabled(client)):
             if wp.get("status") == "queued" or (wp.get("status") == "preparing" and _age_min(wp.get("started_at")) >= STALE_RUN_MIN):
                 out.append({"doc": did, "action": "wp_draft", "mode": wp.get("mode"), "test": False, "version": w.get("_version")})
                 continue
@@ -323,6 +367,17 @@ def _research_brief(R, g1):
 
 
 MARK_STYLE = {"KEEP": "#e6f4ea;color:#137333", "NEW": "#e8f0fe;color:#1a56c4", "EDIT": "#fef7e0;color:#9a6700", "REMOVE": "#fce8e6;color:#b3261e", "REDUCE": "#fce8e6;color:#b3261e"}
+MARK_COLOR = {"KEEP": "#137333", "NEW": "#1a56c4", "EDIT": "#9a6700", "REMOVE": "#b3261e", "REDUCE": "#b3261e"}
+# Darstellung der Blöcke im Google Doc: Label (klein, fett, Versalien) + Inhalt. Keine großen Hintergrundflächen.
+BLOCK_STYLE = {
+    "why": ("Warum diese Änderung?", "color:#5f6368;font-size:9pt;font-weight:bold", "color:#5f6368;font-style:italic"),
+    "old": ("BISHERIGER WEBSITE-TEXT", "color:#80868b;font-size:8pt;font-weight:bold;letter-spacing:1px", "color:#80868b"),
+    "new": ("NEUER WEBSITE-TEXT – ZUM ÜBERNEHMEN", "color:#1a56c4;font-size:8pt;font-weight:bold;letter-spacing:1px", "color:#202124"),
+    "diff": ("ÄNDERUNG IM DETAIL (ALT → NEU)", "color:#5f6368;font-size:8pt;font-weight:bold;letter-spacing:1px", "color:#202124"),
+    "position": ("POSITION AUF DER SEITE", "color:#5f6368;font-size:8pt;font-weight:bold;letter-spacing:1px", "color:#5f6368;font-style:italic"),
+    "layout": ("BILD / LAYOUT", "color:#5f6368;font-size:8pt;font-weight:bold;letter-spacing:1px", "color:#5f6368;font-style:italic"),
+    "risk": ("SEO-/RANKING-RISIKO", "color:#b3261e;font-size:8pt;font-weight:bold;letter-spacing:1px", "color:#5f6368;font-style:italic"),
+}
 
 
 def _optimize_brief(R, o):
@@ -342,17 +397,45 @@ def _optimize_brief(R, o):
     if prot:
         L += ["", "### Ranking Protection List (diese Queries müssen im Text abgedeckt bleiben)"] + \
              [f"- [{x['tier']}] {x['query']} – Pos. {x['position']}, {x.get('impressions')} Impr.; getragen von: {', '.join(h['element'] + ' „' + (h.get('text') or '')[:50] + '“' for h in x.get('supported_by', [])) or '–'}" for x in prot]
-    L += ["", "### Change-Modus im Dokument (Pflicht)",
+    L += ["", "### Change-Modus im Dokument (Pflicht) – Agent-Notizen und Website-Text NIE vermischen",
           "- Dokument beginnt mit `## Change Summary` als Tabelle: Bereich | Aktion | Grund | SEO-Risiko (Vorlage: Dossier P_diagnosis.change_summary).",
-          "- Jeder Abschnitt beginnt mit einer Markierung: [KEEP] bestehender Inhalt bleibt · [EDIT] bestehender Inhalt verändert · [NEW] neu · [REMOVE] soll entfernt werden.",
-          "- Nach jeder [EDIT]/[NEW]/[REMOVE]-Markierung eine Zeile `Reason: …` (z. B. Content Gap, Schutz-Query, Nutzerfrage).",
-          "- Bei [EDIT]: kurz den bisherigen Stand nennen („Bisher: …“). Bei [KEEP]: Text unverändert übernehmen.",
-          "- Vor dem Anlegen prüfen: `python3 tools/workflow.py check-draft <draft.md> --opp <OPP>` (Exit 0 nötig)."]
+          "- Jeder Abschnitt: Überschrift `## [EDIT] H2: <Überschrift>` (bzw. [NEW]/[KEEP]/[REMOVE], H3 analog). Danach NUR Blöcke:",
+          "  - `:::why` … `:::` – Warum diese Änderung? (Agent-Notiz, 1–3 Sätze; wird kursiv/grau dargestellt)",
+          "  - `:::old` … `:::` – BISHERIGER WEBSITE-TEXT (wörtlich von der Live-Seite)",
+          "  - `:::new` … `:::` – NEUER WEBSITE-TEXT – ZUM ÜBERNEHMEN (vollständig ausformuliert, direkt verwendbar, keine Hinweise darin)",
+          "  - `:::diff` … `:::` – bei kleinen Formulierungsänderungen: Zeilen `Alt: …` und `Neu: …` (wird als Wort-Diff gerendert)",
+          "  - `:::position` … `:::` – nur [NEW]: genaue Position auf der bestehenden Seite (nach/vor welchem Abschnitt)",
+          "  - `:::layout` … `:::` – optional: Bild-/Layout-Empfehlung (z. B. „Text links, Bild rechts – bestehenden Block duplizieren“)",
+          "  - `:::risk` … `:::` – nur [REMOVE]: SEO-/Ranking-Risiko",
+          "- Pflicht je Aktion: [EDIT] why + old + new (diff zusätzlich bei kleinen Änderungen) · [NEW] why + position + new · [KEEP] nur why (kein Volltext abdrucken) · [REMOVE] old + why + risk (nur Vorschlag).",
+          "- Kein Text außerhalb der Blöcke innerhalb eines markierten Abschnitts. Interne Anweisungen gehören nur in why/position/layout/risk.",
+          "- Vor dem Anlegen prüfen: `python3 tools/workflow.py check-draft <draft.md> --opp <OPP>` (Exit 0 nötig); dann `render` → HTML für Google Docs."]
     return L
 
 
+BLOCKS = ("why", "old", "new", "diff", "position", "layout", "risk")
+REQUIRED = {"EDIT": ("why", "old", "new"), "NEW": ("why", "position", "new"), "KEEP": ("why",), "REMOVE": ("old", "why", "risk"), "REDUCE": ("old", "why", "new")}
+
+
+def _blocks(txt):
+    """:::name … ::: → {name: [Inhalt, …]} und Rest außerhalb von Blöcken."""
+    found, rest, cur, buf = {}, [], None, []
+    for ln in txt.splitlines():
+        m = re.match(r"^:::\s*(\w+)\s*$", ln.strip())
+        if cur is None and m and m.group(1) in BLOCKS:
+            cur, buf = m.group(1), []
+        elif cur is not None and ln.strip() == ":::":
+            found.setdefault(cur, []).append("\n".join(buf).strip()); cur = None
+        elif cur is not None:
+            buf.append(ln)
+        else:
+            rest.append(ln)
+    return found, "\n".join(rest).strip(), cur
+
+
 def check_draft(path, opp=None, client=DEFAULT_CLIENT):
-    """QA für OPTIMIZE-Entwürfe: Change Summary, Markierungen je Abschnitt, Begründungen, Schutz-Queries noch abgedeckt."""
+    """QA für OPTIMIZE-Entwürfe: Change Summary, Markierung je Abschnitt, Pflichtblöcke je Aktion (why/old/new/position/risk),
+    strikte Trennung Agent-Notiz ↔ Website-Text, Schutz-Queries noch abgedeckt. Altes Format (Reason:) → Fehler mit Hinweis."""
     t = open(path, encoding="utf-8").read()
     errs, warns = [], []
     if not re.search(r"^##\s+Change Summary", t, re.M):
@@ -365,11 +448,30 @@ def check_draft(path, opp=None, client=DEFAULT_CLIENT):
         head, txt = secs[i], secs[i + 1] if i + 1 < len(secs) else ""
         if re.match(r"^##\s+(Interner Block|SEO|Meta|Schema|Bildhinweise|Interne Links|Redirect)", head, re.I):
             continue
-        m = re.search(r"\[(KEEP|NEW|EDIT|REMOVE|REDUCE)\]", head + txt[:300])
+        m = re.search(r"\[(KEEP|NEW|EDIT|REMOVE|REDUCE)\]", head)
         if not m:
-            errs.append(f"Abschnitt ohne Change-Markierung: {head.strip()[:60]}")
-        elif m.group(1) != "KEEP" and not re.search(r"^(Reason|Grund):", txt, re.M):
-            errs.append(f"[{m.group(1)}] ohne Reason: {head.strip()[:60]}")
+            if re.search(r"\[(KEEP|NEW|EDIT|REMOVE|REDUCE)\]", txt[:300]) or txt.strip():
+                errs.append(f"Abschnitt ohne Change-Markierung in der Überschrift: {head.strip()[:60]}")
+            continue
+        act, name = m.group(1), head.strip()[:60]
+        bl, rest, open_ = _blocks(txt)
+        if open_:
+            errs.append(f"Block :::{open_} nicht geschlossen: {name}")
+        if re.search(r"^(Reason|Grund):", txt, re.M) and not bl:
+            errs.append(f"Altes Format (Reason:) – bitte in :::why/:::old/:::new-Blöcke überführen: {name}"); continue
+        for need in REQUIRED[act]:
+            if not any(x.strip() for x in bl.get(need, [])):
+                errs.append(f"[{act}] ohne :::{need}: {name}")
+        if act == "KEEP" and bl.get("new"):
+            warns.append(f"[KEEP] mit :::new – unveränderte Abschnitte nicht neu abdrucken: {name}")
+        if rest:
+            errs.append(f"Text außerhalb der Blöcke (Website-Text und Agent-Notiz trennen): {name}")
+        for n in bl.get("new", []):
+            if re.search(r"(?im)^(reason|grund|hinweis|agent|todo|anmerkung)\s*:", n) or ":::" in n:
+                errs.append(f"Interne Notiz im neuen Website-Text: {name}")
+        for d in bl.get("diff", []):
+            if not (re.search(r"(?m)^Alt:", d) and re.search(r"(?m)^Neu:", d)):
+                errs.append(f":::diff braucht Zeilen „Alt:“ und „Neu:“: {name}")
     if opp:
         d = _dash(client)
         o = next((x for x in d["opportunities"] if x["id"] == opp), {})
@@ -382,7 +484,7 @@ def check_draft(path, opp=None, client=DEFAULT_CLIENT):
 
 def _inline(t):
     t = html.escape(t, quote=False)
-    t = re.sub(r"\[(KEEP|NEW|EDIT|REMOVE|REDUCE)\]", lambda m: f'<span style="background:{MARK_STYLE[m.group(1)].split(";")[0]};{MARK_STYLE[m.group(1)].split(";")[1]};font-weight:bold;padding:1px 4px">[{m.group(1)}]</span>', t)
+    t = re.sub(r"\[(KEEP|NEW|EDIT|REMOVE|REDUCE)\]", lambda m: f'<span style="color:{MARK_COLOR[m.group(1)]};font-weight:bold">[{m.group(1)}]</span>', t)
     t = re.sub(r"^(Reason|Grund):", r'<i style="color:#5f6368">\1:</i>', t)
     t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
     t = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"<i>\1</i>", t)
@@ -390,10 +492,26 @@ def _inline(t):
     return t
 
 
-def render(src, out):
-    """Markdown-Subset → HTML (Überschriften, Absätze, Listen, Tabellen, Fett/Kursiv, Links, Trennlinie, Zitat)."""
-    lines = open(src, encoding="utf-8").read().splitlines()
-    H, i = ['<html><head><meta charset="utf-8"></head><body>'], 0
+def word_diff(old, new):
+    """Wort-Diff für kleine Formulierungsänderungen: entfernt = rot durchgestrichen, neu = grün fett (ohne Hintergrund)."""
+    import difflib
+    a, b = old.split(), new.split()
+    o_out, n_out = [], []
+    for op, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b).get_opcodes():
+        A, B = html.escape(" ".join(a[i1:i2])), html.escape(" ".join(b[j1:j2]))
+        if op == "equal":
+            o_out.append(A); n_out.append(B)
+        else:
+            if A:
+                o_out.append(f'<span style="color:#b3261e;text-decoration:line-through">{A}</span>')
+            if B:
+                n_out.append(f'<span style="color:#137333;font-weight:bold">{B}</span>')
+    return " ".join(o_out), " ".join(n_out)
+
+
+def _md(lines, style=""):
+    """Markdown-Subset → HTML (Überschriften, Absätze, Listen, Tabellen, Fett/Kursiv, Links, Trennlinie, Zitat); style = Absatzstil."""
+    H, i, st = [], 0, f' style="{style}"' if style else ""
     while i < len(lines):
         ln = lines[i].rstrip()
         if not ln.strip():
@@ -423,14 +541,59 @@ def render(src, out):
             ordered = bool(re.match(r"^\s*\d+\.", ln)); tag = "ol" if ordered else "ul"
             H.append(f"<{tag}>")
             while i < len(lines) and re.match(r"^\s*([-*]|\d+\.)\s+", lines[i]):
-                H.append("<li>" + _inline(re.sub(r"^\s*([-*]|\d+\.)\s+", "", lines[i])) + "</li>"); i += 1
+                H.append(f"<li{st}>" + _inline(re.sub(r"^\s*([-*]|\d+\.)\s+", "", lines[i])) + "</li>"); i += 1
             H.append(f"</{tag}>"); continue
         if ln.startswith(">"):
             H.append("<blockquote>" + _inline(ln.lstrip("> ")) + "</blockquote>"); i += 1; continue
         para = [ln]; i += 1
         while i < len(lines) and lines[i].strip() and not re.match(r"^(#{1,6}\s|\||\s*([-*]|\d+\.)\s|>|---)", lines[i]):
             para.append(lines[i].rstrip()); i += 1
-        H.append("<p>" + _inline(" ".join(para)) + "</p>")
+        H.append(f"<p{st}>" + _inline(" ".join(para)) + "</p>")
+    return H
+
+
+def render(src, out):
+    """Entwurf → HTML für die Google-Doc-Konvertierung. Change-Blöcke (:::why/old/new/diff/position/layout/risk) werden als echte
+    Formatierung erzeugt: Agent-Notizen kursiv/grau, bisheriger Text grau, neuer Text hervorgehoben mit eindeutigem Label,
+    Wort-Diff bei kleinen Änderungen, Leerraum zwischen markierten Abschnitten. Keine Markdown-Symbole im Dokument."""
+    lines = open(src, encoding="utf-8").read().splitlines()
+    H, buf, i, first_mark, act = ['<html><head><meta charset="utf-8"></head><body>'], [], 0, True, None
+    def flush():
+        H.extend(_md(buf)); buf.clear()
+    while i < len(lines):
+        ln = lines[i]
+        m = re.match(r"^:::\s*(\w+)\s*$", ln.strip())
+        if m and m.group(1) in BLOCK_STYLE:
+            flush()
+            name, body = m.group(1), []
+            i += 1
+            while i < len(lines) and lines[i].strip() != ":::":
+                body.append(lines[i]); i += 1
+            i += 1
+            label, lst, cst = BLOCK_STYLE[name]
+            if name == "why":
+                label = {"KEEP": "Warum bleibt der Abschnitt?", "REMOVE": "Warum entfernen?"}.get(act, label)
+            H.append(f'<p style="margin-top:10pt;margin-bottom:2pt"><span style="{lst}">{label}</span></p>')
+            if name == "diff":
+                txt = "\n".join(body)
+                o = re.search(r"(?m)^Alt:\s*(.*)$", txt); n = re.search(r"(?m)^Neu:\s*(.*)$", txt)
+                if o and n:
+                    a, b = word_diff(o.group(1), n.group(1))
+                    H.append(f'<p><span style="color:#5f6368;font-weight:bold">Alt: </span><span style="color:#5f6368">{a}</span></p>')
+                    H.append(f'<p><span style="color:#5f6368;font-weight:bold">Neu: </span>{b}</p>')
+                else:
+                    H.extend(_md(body, cst))
+            else:
+                H.extend(_md(body, cst))
+            continue
+        mk = re.match(r"^#{2,3}\s+.*\[(KEEP|NEW|EDIT|REMOVE|REDUCE)\]", ln)
+        if mk:
+            flush(); act = mk.group(1)
+            if not first_mark:
+                H.append("<p>&nbsp;</p><hr>")  # deutlicher Abstand zwischen Abschnitten
+            first_mark = False
+        buf.append(ln); i += 1
+    flush()
     H.append("</body></html>")
     open(out, "w", encoding="utf-8").write("\n".join(H))
     print(f"✓ HTML → {out} ({os.path.getsize(out)} Bytes)")

@@ -78,3 +78,22 @@ Das Board zeigt standardmäßig nur aktive Vorgänge; On Hold und Rejected/Archi
 ## Mini-Sitemap je Opportunity
 
 `tools/architecture.py` baut beim Build für jede CREATE/OPTIMIZE/MERGE-Opportunity eine Architektur aus Website-Inventar, IA-Dossier (H_ia), Struktur (G_structure, Abschnitte NEW) und Kannibalisierung. Status: **EXISTING** (im Inventar) · **PROPOSED** (geplante URL einer Opportunity) · **FUTURE / OPTIONAL** (Hub-Option, spätere Unterseite) · **SECTION ONLY** (Abschnitt auf der Seite, keine eigene URL). `validate` bricht den Build ab, wenn ein Knoten weder im Inventar noch geplant ist. Parent-Beziehungen gelten nur als bestätigt, wenn ein bestehender interner Link sie belegt – sonst „Proposed Architecture“. Anzeige: Opportunity-Detail (direkt unter dem Kopf, vor dem Scope) und kompakt im Gate-1-Drawer.
+
+## CREATE vs. OPTIMIZE (ab 26.11.2026)
+
+| | CREATE (neue Landingpage) | OPTIMIZE (bestehende Seite) |
+|---|---|---|
+| Ablauf | Research → Gate 1 → Drive-Entwurf → Gate 2 → WordPress-Draft aus „Landingpage-Vorlage 2026“ → WordPress QA → Gate 3 (deine finale Prüfung) → Veröffentlichung → Monitoring | Research → Gate 1 → Drive-Optimierungsdokument → deine Prüfung → **du setzt in Elementor um** → im Dashboard „umgesetzt“ markieren → Nachweis (read-only) + Monitoring |
+| WordPress | Draft (nur `draft`), Publish nur nach Gate 3 | **kein** Schreibzugriff, kein Draft, kein Publish-Job (`optimize_automation = disabled`, Guard `optimize_manual_only`) |
+| Finales Artefakt | veröffentlichte Seite | Drive-Dokument |
+| Status | draft → wordpress → publish → live | **Awaiting Manual Implementation** → Implemented / Partially implemented · Monitoring |
+
+**Manuelle Umsetzung:** Spalte „Manuelle Umsetzung“ zeigt ID, Seitentitel, URL, Drive-Dokument, wichtigste geplante Änderungen, Ranking Protection und drei Aktionen: **Vollständig umgesetzt · Teilweise umgesetzt · Noch nicht umgesetzt** (persistent in `workflow/<OPP>.implementation`, Kommentar optional, tatsächliches Umsetzungsdatum, Audit in `decisions`). Eine Bestätigung startet keine WordPress-Produktion und veröffentlicht nichts – sie stößt nur die read-only-Verifikation an.
+
+**Nachweis:** Der Agent liest die Live-Seite und vergleicht mit den Empfehlungen des freigegebenen Dossiers und dem letzten Scan vor der Umsetzung: *Implemented as proposed · Partially implemented · Different implementation · Not detected · Unable to verify*. Deine Angabe wird nie überschrieben; Abweichungen erscheinen als Rückfrage. Fehlt ein vollständiger Pre-Change-Snapshot, steht das als Einschränkung dabei (OPP-02: Scan vom 23.11.2026 enthält Title, Meta und Überschriften, aber keinen Fließtext und keine internen Links).
+
+**Monitoring:** T+14/30/60/90 (T+180 optional) ab dem tatsächlichen Datum, auswertbar nach 3 Tagen GSC-Verzögerung. Grundlage: GSC Query × Page, Klicks, Impressionen, Positionen der Schutz-/Ziel-Queries, Longtail-Veränderungen, URL-Wechsel; GA4 soweit vorhanden. Keine Erfolgs-/Misserfolgsaussage vor 28 Tagen Daten. Ergebnisse: *Improved – Continue Monitoring · No Clear Change – Reassess Later · Underperforming – New Optimization Recommended · Potential Negative Impact – Review Required*.
+
+**Wiedervorlage:** Ab T+90 bei „Underperforming“ ein Hinweis („Diese Seite wurde am … überarbeitet …“) und ggf. ein Vorschlag für eine neue Iteration (`OPP-xx#2`) – mit Bezug auf das vorherige Change Set und den Nachweis, ohne identische Empfehlungen zu wiederholen, nie doppelt, immer mit neuer Gate-1-Freigabe.
+
+**Drive-Dokumente (OPTIMIZE):** je Abschnitt `## [EDIT] H2: …` und getrennte Blöcke `:::why` (Agent-Notiz, kursiv/grau) · `:::old` (bisheriger Website-Text, grau) · `:::new` (NEUER WEBSITE-TEXT – ZUM ÜBERNEHMEN) · `:::diff` (Alt/Neu als Wort-Diff) · `:::position` (nur NEW) · `:::layout` · `:::risk` (nur REMOVE). `check-draft` erzwingt die Pflichtblöcke je Aktion und verbietet Text außerhalb der Blöcke bzw. Notizen im neuen Website-Text. Muster im Drive-Ordner „Vorlagen“: „Formatvorlage – OPTIMIZE-Dokument (Muster, Stand 26.11.2026)“.

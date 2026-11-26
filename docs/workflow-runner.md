@@ -74,3 +74,18 @@ Budgetregel: Eine kostenpflichtige Semrush-Abfrage läuft nur, wenn `tools/serp.
 - queue-Action `stopped` = Opportunity zurückgestellt oder abgelehnt → nie bearbeiten.
 - Unmittelbar vor jeder schreibenden Aktion (Drive-Dokument, ArtifactData-Statusupdate, WordPress-Schreibaufruf, Research-Commit) Eintrag frisch exportieren und `python3 tools/workflow.py check-active /tmp/wf <OPP>` ausführen. Exit 3 → nichts schreiben, laufenden Status auf `stopped` setzen (`stopped_at`, Notiz), nächsten Eintrag bearbeiten.
 - `decision` nie verändern; Reaktivierung macht ausschließlich Noel im Artifact.
+
+## CREATE vs. OPTIMIZE (ab 26.11.2026)
+
+`client.json → wordpress.optimize_automation = "disabled"`: OPTIMIZE/MERGE werden **nie** in WordPress umgesetzt (kein Draft, kein Duplizieren, kein Schreiben auf bestehende Seiten, kein Publish-Job). `tools/wordpress.py guard` verweigert jede WordPress-Operation mit `optimize_manual_only`; `workflow.py actions` liefert für alte OPTIMIZE-WordPress-States nur `wp_disabled` (nichts tun) und produziert ein fertiges Drive-Dokument nie erneut. CREATE unverändert: Gate 2 → `wp_draft` (Vorlage „Landingpage-Vorlage 2026“ bzw. freigegebene scriptfreie Variante, nur `draft`) → QA → Gate 3 → `wp_publish`.
+
+### `verify_implementation` (read-only, nach Noels Bestätigung „vollständig“/„teilweise“)
+1. `check-active`; Claim `implementation.verification.status = "running"`, `started_at` (if_version). `implementation.status`, `implemented_at`, `comment` NIE ändern.
+2. Live-Seite lesen: `python3 tools/page_profile.py https://www.spreewald-luftaufnahmen.de<implementation.url> --out /tmp/verify` (nur lesend, kein Login).
+3. Baseline = jüngster Seiten-Scan **vor** `implemented_at` aus dem Research (`clients/<client>/data/research/<OPP>/pages/…json`, Quelle im Research Log). Fehlt er oder ist er unvollständig, wird das als Einschränkung ausgewiesen – nie raten.
+4. `python3 tools/implementation.py verify <OPP> /tmp/verify/<datei>.json --before <baseline.json> --claimed <status>` → Ergebnis (results, summary, limitations, mismatch, checked_at, live_fetched, baseline_fetched) als `implementation.verification` mit `status: "complete"` zurückschreiben (Fehler: `"failed"` + Grund). Research-Log-Eintrag „Umsetzung geprüft (read-only)“ mit den nachweisbaren Änderungen.
+
+### `monitor` (Checkpoint T+14/30/60/90, optional T+180)
+1. Fällig = `data_ready` (Checkpoint + 3 Tage GSC-Verzögerung) erreicht. Zwei gleich lange GSC-Fenster (query,page): vor `implemented_at` und ab `implemented_at` bis zum letzten GSC-Tag (`tools/gsc_client.py query …`).
+2. `python3 tools/implementation.py checkpoint <OPP> <implemented_at> <gsc_last> before.csv after.csv [--existing <bekannte Re-Opt-Keys>]` → `checkpoint.result` (outcome, label, message, Fakten, assessed_at) und `status: "done"` zurückschreiben. Unter 28 Tagen Daten oder < 50 Impressionen: „Too early – insufficient data“, keine Erfolgs-/Misserfolgsaussage.
+3. Nur bei `underperforming` ab T+90 und noch nicht vorhanden: `implementation.reoptimization` setzen (Vorschlag mit Bezug auf vorheriges Change Set und Nachweis; braucht wieder Gate 1, nichts wird automatisch geändert). GA4 Organic Sessions/Leads der Seite ergänzend notieren, soweit vorhanden.

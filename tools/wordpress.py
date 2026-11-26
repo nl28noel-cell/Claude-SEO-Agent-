@@ -89,6 +89,9 @@ def guard(op, w, post=None, fields=None, status=None, slug=None, live_slugs=(), 
     c, wp = cfg(client), (w or {}).get("wordpress") or {}
     fields = set(fields or [])
     deny = lambda code, why: {"allowed": False, "op": op, "code": code, "why": why}  # noqa: E731
+    mode = wp.get("mode") or (((w or {}).get("gate1") or {}).get("change_set") or {}).get("action")
+    if mode and mode != "CREATE" and op in DRAFT_OPS | LIVE_OPS and c.get("optimize_automation", "disabled") != "enabled":
+        return deny("optimize_manual_only", "OPTIMIZE wird manuell in Elementor umgesetzt – kein WordPress-Draft, kein Schreiben auf bestehende Seiten, kein Publish")
     dst = ((w or {}).get("decision") or {}).get("status") or "active"
     if dst in ("on_hold", "rejected"):
         return deny(f"decision_{dst}", "Opportunity " + ("zurückgestellt (ON HOLD)" if dst == "on_hold" else "abgelehnt (REJECTED)") + " – kein WordPress-Schreibvorgang")

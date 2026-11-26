@@ -538,14 +538,26 @@ class ArtifactQA(unittest.TestCase):
         # Produktion: Change-Modus geprüft
         tmp = tempfile.mkdtemp()
         try:
-            good = os.path.join(tmp, "g.md"); open(good, "w").write("## Change Summary\n| Bereich | Aktion | Grund | SEO-Risiko |\n|---|---|---|---|\n| Title | EDIT | x | Low |\n\n## [KEEP] A\nbaudokumentation drohne berlin baubegleitung drohnen tour bau\n\n## [NEW] B\nReason: Content Gap\ntext\n")
-            self.assertTrue(workflow.check_draft(good, "OPP-02")["ok"])
-            bad = os.path.join(tmp, "b.md"); open(bad, "w").write("## Change Summary\n| Bereich | Aktion | Grund | SEO-Risiko |\n\n## [EDIT] A\nohne Begründung\n\n## C\nx\n")
+            S = "## Change Summary\n| Bereich | Aktion | Grund | SEO-Risiko |\n|---|---|---|---|\n| Title | EDIT | x | Low |\n\n"
+            good = os.path.join(tmp, "g.md"); open(good, "w").write(S +
+                "## [KEEP] H2: A\n:::why\nTrägt baudokumentation drohne berlin, baubegleitung drohnen tour bau.\n:::\n\n"
+                "## [EDIT] H2: So funktioniert die Baudokumentation\n:::why\nWiederkehrende Aufnahmen zu oberflächlich.\n:::\n:::old\nWir erstellen Luftaufnahmen Ihrer Baustelle.\n:::\n"
+                ":::new\nWir dokumentieren den Baufortschritt Ihrer Baustelle mit regelmäßig wiederholbaren Drohnenaufnahmen.\n:::\n"
+                ":::diff\nAlt: Wir erstellen Luftaufnahmen Ihrer Baustelle.\nNeu: Wir dokumentieren den Baufortschritt Ihrer Baustelle mit regelmäßig wiederholbaren Drohnenaufnahmen.\n:::\n\n"
+                "## [NEW] H2: Was Sie erhalten\n:::why\nContent Gap.\n:::\n:::position\nNach „Ablauf“, vor „FAQ“.\n:::\n:::layout\nBild links, Text rechts – bestehenden Block duplizieren.\n:::\n:::new\nSie erhalten eine strukturierte Foto- und Videodokumentation.\n\n- Fotos je Termin\n- Videos je Bauphase\n:::\n\n"
+                "## [REMOVE] H2: Alt\n:::old\nVeralteter Text.\n:::\n:::why\nUnbelegte Aussage.\n:::\n:::risk\nGering – keine Schutz-Query betroffen.\n:::\n")
+            r = workflow.check_draft(good, "OPP-02"); self.assertTrue(r["ok"], r)
+            bad = os.path.join(tmp, "b.md"); open(bad, "w").write("## Change Summary\n| Bereich | Aktion | Grund | SEO-Risiko |\n\n## [EDIT] A\n:::why\nGrund\n:::\n:::new\nText\nHinweis: intern\n:::\nfreier Text\n\n## C\nx\n\n## [NEW] D\nReason: Content Gap\ntext\n")
             r = workflow.check_draft(bad, "OPP-02")
-            self.assertFalse(r["ok"]); self.assertTrue(any("ohne Reason" in e for e in r["errors"])); self.assertTrue(any("ohne Change-Markierung" in e for e in r["errors"]))
+            self.assertFalse(r["ok"])
+            self.assertTrue(any("[EDIT] ohne :::old" in e for e in r["errors"])); self.assertTrue(any("ohne Change-Markierung" in e for e in r["errors"]))
+            self.assertTrue(any("Text außerhalb der Blöcke" in e for e in r["errors"])); self.assertTrue(any("Interne Notiz im neuen Website-Text" in e for e in r["errors"]))
+            self.assertTrue(any("Altes Format" in e for e in r["errors"]))
             self.assertTrue(any("baudokumentation drohne berlin" in w for w in r["warnings"]))
-            html_out = os.path.join(tmp, "g.html"); workflow.render(good, html_out)
-            self.assertIn("[NEW]</span>", open(html_out).read())
+            html_out = os.path.join(tmp, "g.html"); workflow.render(good, html_out); h = open(html_out).read()
+            self.assertIn("[NEW]</span>", h); self.assertNotIn(":::", h); self.assertNotIn("background", h)       # echte Formatierung, keine Flächen
+            self.assertIn("NEUER WEBSITE-TEXT – ZUM ÜBERNEHMEN", h); self.assertIn("BISHERIGER WEBSITE-TEXT", h); self.assertIn("font-style:italic", h)
+            self.assertIn("text-decoration:line-through", h); self.assertIn("POSITION AUF DER SEITE", h); self.assertIn("SEO-/RANKING-RISIKO", h)
         finally:
             shutil.rmtree(tmp)
 
@@ -600,6 +612,8 @@ class ArtifactQA(unittest.TestCase):
     def test_wordpress_architecture(self):
         sys.path.insert(0, os.path.join(ROOT, "tools"))
         import wordpress as WP, workflow, copy
+        _real = WP.cfg; WP.cfg = lambda client=WP.DEFAULT_CLIENT: {**_real(client), "optimize_automation": "enabled"}  # erhaltener OPTIMIZE-Automatikpfad (aktuell deaktiviert)
+        self.addCleanup(lambda: setattr(WP, "cfg", _real))
         # --- Preflight: richtige Website / falsche Website / kein Konnektor
         tools = [f"mcp__WordPress_com__{t}" for t in WP.cfg()["required_tools"]]
         ab = WP.cfg()["required_abilities"]
@@ -702,6 +716,8 @@ class ArtifactQA(unittest.TestCase):
         """Sandbox-Test 24.11.2026: Payload mit <script> → Firewall 403. Guard muss das VOR dem Schreibaufruf erkennen."""
         sys.path.insert(0, os.path.join(ROOT, "tools"))
         import wordpress as WP
+        _real = WP.cfg; WP.cfg = lambda client=WP.DEFAULT_CLIENT: {**_real(client), "optimize_automation": "enabled"}  # erhaltener OPTIMIZE-Automatikpfad (aktuell deaktiviert)
+        self.addCleanup(lambda: setattr(WP, "cfg", _real))
         tree = [{"id": "c1", "elType": "container", "elements": [
                     {"id": "h1", "elType": "widget", "widgetType": "heading", "settings": {"title": "Baudokumentation", "header_size": "h1"}, "elements": []},
                     {"id": "x1", "elType": "widget", "widgetType": "html", "settings": {"html": "<SCRIPT src='https://cdn.example/l.js'></SCRIPT>"}, "elements": []}]}]
@@ -854,6 +870,73 @@ class ArtifactQA(unittest.TestCase):
         self.assertEqual(WP.qa(cs, None, dr, {"focus_keyphrase": "Baudokumentation Drohne"})["manual_actions"][0]["status"], "done")
         cs2 = dict(cs); cs2.pop("primary_keyword")
         self.assertEqual(WP.qa(cs2, None, dr, {})["overall"], "failed")                    # Keyphrase fehlt im Change Set
+
+    def test_create_vs_optimize(self):
+        """OPTIMIZE: kein WordPress-Draft, kein Schreiben, kein Publish (auch nicht aus alten States); CREATE unverändert mit Gate 3."""
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import wordpress as WP, workflow as WFm, copy
+        self.assertEqual(WP.cfg()["optimize_automation"], "disabled")
+        opt = {"opp_id": "X", "gate1": {"status": "approved", "change_set": {"action": "OPTIMIZE"}}, "gate2": {"status": "approved"},
+               "production": {"status": "draft_ready"}, "wordpress": {"status": "queued", "mode": "OPTIMIZE"}}
+        for op in ("create_draft", "update_draft", "live_update", "publish_draft", "yoast_update_draft", "yoast_update_live"):
+            self.assertEqual(WP.guard(op, opt, post=1, status="draft")["code"], "optimize_manual_only", op)
+        acts = [a["action"] for a in WFm.actions({"X": opt})]
+        self.assertIn("wp_disabled", acts); self.assertNotIn("wp_draft", acts); self.assertNotIn("produce", acts)
+        old = copy.deepcopy(opt); old["wordpress"]["status"] = "publish_queued"; old["gate3"] = {"status": "approved", "for_draft_version": 0}
+        self.assertNotIn("wp_publish", [a["action"] for a in WFm.actions({"X": old})])       # alter State startet keinen Publish
+        # Drive-Dokument fertig → keine erneute Produktion; Typ aus dem Change Set
+        d = {"opp_id": "X", "gate1": {"status": "approved", "change_set": {"action": "OPTIMIZE"}}, "production": {"status": "draft_ready"}, "review": {"status": "pending"}}
+        self.assertEqual(WFm.actions({"X": d}), [])
+        # Manuelle Umsetzung → Verifikation (read-only) + Monitoring ab tatsächlichem Datum
+        import implementation as I
+        d["implementation"] = {"status": "partial", "implemented_at": "2026-11-20", "verification": {"status": "queued"}, "monitoring": {"checkpoints": I.plan("2026-11-20")}}
+        self.assertEqual([a["action"] for a in WFm.actions({"X": d})], ["verify_implementation"])
+        d["implementation"]["implemented_at"] = "2026-09-01"; d["implementation"]["monitoring"]["checkpoints"] = I.plan("2026-09-01")
+        self.assertEqual(sorted(a["checkpoint"] for a in WFm.actions({"X": d}) if a["action"] == "monitor"), ["T+14", "T+30", "T+60"])
+        # CREATE: Draft nach Gate 2 weiterhin, Publish nur mit Gate 3
+        cr = {"opp_id": "Y", "gate1": {"status": "approved", "change_set": {"action": "CREATE"}}, "gate2": {"status": "approved"}, "wordpress": {"status": "queued", "mode": "CREATE"}}
+        self.assertEqual(WFm.actions({"Y": cr})[0]["action"], "wp_draft")
+        self.assertEqual(WP.guard("create_draft", cr, status="draft", slug="neu")["code"], "ok")
+        cr["wordpress"]["status"] = "publish_queued"
+        self.assertEqual(WFm.actions({"Y": cr})[0]["action"], "wp_publish_blocked")                # ohne Gate 3 kein Publish
+
+    def test_implementation_logic(self):
+        """Monitoring ab Implementierungsdatum mit GSC-Verzögerung; Verifikation überschreibt nie; keine verfrühte Erfolgsaussage; keine doppelte Re-Optimierung."""
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import implementation as I
+        cps = I.plan("2026-11-20")
+        self.assertEqual([c["label"] for c in cps], ["T+14", "T+30", "T+60", "T+90", "T+180"])
+        self.assertEqual(cps[0]["due"], "2026-12-04"); self.assertEqual(cps[0]["data_ready"], "2026-12-07"); self.assertTrue(cps[-1]["optional"])
+        self.assertEqual(I.due(cps, "2026-12-06"), []); self.assertEqual([c["label"] for c in I.due(cps, "2026-12-07")], ["T+14"])
+        recs = [{"id": "t", "area": "Title", "action": "EDIT", "kind": "title", "proposed": "A | B & C", "current": "A | B"},
+                {"id": "n", "area": "Kosten", "action": "NEW", "kind": "heading", "heading": "Kosten einer Baudokumentation"},
+                {"id": "k", "area": "Ablauf", "action": "KEEP", "kind": "heading", "heading": "So läuft es ab"},
+                {"id": "l", "area": "Link", "action": "NEW", "kind": "link", "to": "/preise/"}]
+        before = {"fetched": "2026-11-01", "title": "A | B", "headings": [["h2", "So läuft es ab"]], "links": []}
+        after = {"fetched": "2026-11-26", "title": "A | B & C", "headings": [["h2", "So läuft es ab"], ["h2", "Kosten einer Baudokumentation"]], "links": [{"href": "/preise/", "anchor": "Preise"}], "sections": []}
+        r = I.verify(recs, after, before, "implemented")
+        self.assertEqual({x["id"]: x["status"] for x in r["results"]}, {"t": "implemented_as_proposed", "n": "implemented_as_proposed", "k": "implemented_as_proposed", "l": "implemented_as_proposed"})
+        self.assertIsNone(r["mismatch"])
+        r2 = I.verify(recs, {**after, "headings": [["h2", "Ganz anderes Thema"]], "title": "A | B", "links": []}, before, "implemented")
+        self.assertIn("vollständig umgesetzt", r2["mismatch"]); self.assertEqual(r2["claimed"], "implemented")   # Angabe bleibt, nur Hinweis
+        self.assertTrue(any("KEEP" in x for x in r2["limitations"]))
+        r3 = I.verify(recs, after, None, "partial")
+        self.assertTrue(any("Pre-Change-Snapshot" in x for x in r3["limitations"]))
+        self.assertEqual(I.verify(recs, {"error": "timeout"})["status"], "failed")
+        base = {"implemented_at": "2026-11-20", "before": {"clicks": 10, "impressions": 1000, "position": 20}, "after": {"clicks": 20, "impressions": 1500, "position": 15}}
+        self.assertEqual(I.assess({**base, "gsc_last_date": "2026-12-10"})["outcome"], "too_early")       # < 28 Tage
+        self.assertEqual(I.assess({**base, "gsc_last_date": "2027-01-10"})["outcome"], "improved")
+        flat = {**base, "after": {"clicks": 10, "impressions": 1000, "position": 20}, "queries": [{"query": "kw", "after_position": 18}], "primary_keyword": "kw"}
+        self.assertEqual(I.assess({**flat, "gsc_last_date": "2027-01-10"})["outcome"], "no_clear_change")
+        a90 = I.assess({**flat, "gsc_last_date": "2027-03-01"}); self.assertEqual(a90["outcome"], "underperforming")
+        self.assertIn("keine Kausalaussage", a90["notes"][0])
+        neg = I.assess({**base, "gsc_last_date": "2027-01-10", "after": {"clicks": 5, "impressions": 600, "position": 24},
+                        "queries": [{"query": "kw", "tier": "critical", "before_position": 3, "after_position": 9}]})
+        self.assertEqual(neg["outcome"], "negative")
+        o = {"id": "OPP-X", "name": "Test"}; impl = {"implemented_at": "2026-11-20", "status": "partial"}
+        s = I.reoptimization(o, impl, a90); self.assertTrue(s["needs_gate1"]); self.assertEqual(s["key"], "OPP-X#2")
+        self.assertIn("überarbeitet", s["message"]); self.assertIsNone(I.reoptimization(o, impl, a90, existing=["OPP-X#2"]))
+        self.assertIsNone(I.reoptimization(o, impl, I.assess({**base, "gsc_last_date": "2027-01-10"})))
 
     def test_workflow_render_html(self):
         import tempfile

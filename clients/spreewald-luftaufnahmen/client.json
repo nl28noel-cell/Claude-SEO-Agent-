@@ -131,6 +131,8 @@
       "Text+Bild-Abschnitte alternieren: Text|Bild → Bild|Text → Text|Bild … – nie zwei aufeinanderfolgende mit gleicher Ausrichtung, außer bewusster Designgrund (tools/wordpress.py alternation).",
       "Zusätzliche Text+Bild-Abschnitte: passenden vorhandenen Block duplizieren und bei Bedarf spiegeln (Design, Abstände, Responsive, Styling bleiben; neue Elementor-IDs) – keine neuen Designs erfinden (duplicate_section).",
       "Trustindex/Bewertungen und Formulare gehören zum Template Layer: nie neu erzeugen oder verändern."
-    ]
+    ],
+    "optimize_automation": "disabled",
+    "optimize_automation_note": "Entscheidung Noel 26.11.2026: OPTIMIZE wird manuell in Elementor umgesetzt – kein WordPress-Draft, kein Schreiben auf bestehende Seiten, kein Publish-Job. Drive-Dokument = finales Produktionsartefakt. CREATE: Draft nach Gate 2, Publish nur nach Gate 3."
   }
 }
