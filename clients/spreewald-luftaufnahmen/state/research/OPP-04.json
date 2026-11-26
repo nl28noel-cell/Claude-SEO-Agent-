@@ -1,0 +1,1186 @@
+{
+  "schema": 1,
+  "opp_id": "OPP-04",
+  "client": "spreewald-luftaufnahmen",
+  "version": 2,
+  "updated": "2026-11-26T09:03:00Z",
+  "author": "agent",
+  "status": {
+    "state": "complete_with_limits",
+    "limits": [
+      "Semrush SERP: Pending – budget hold. Keine echten Google.de-Positionen; Aussagen zu Rankingpositionen oder SERP-Dominanz sind nicht möglich.",
+      "GSC: Die generischen Berlin/Brandenburg-Vermessungs-Queries hatten ihre Impressionen fast ausschließlich Feb–Jun 2026; seit Juli 2026 nahezu 0 (letzte 90 Tage: 1 Impression). Ursache (Sichtbarkeitsverlust vs. Nachfrage vs. Datenschwelle anonymisierter Queries) ist offen.",
+      "Competitor Analysis mit Einschränkung: 8 Anbieter nur als Suchergebnis-Snippet erfasst (Fallback Stufe 2/4). Ein Suchsnippet ist keine vollständig analysierte Wettbewerber-Seite. Live-Abruf der Anbieterseiten ist in der Runner-Umgebung nicht freigegeben (Proxy 403) – kein Umgehen, kein erneuter Abruf derselben URLs."
+    ],
+    "pending": [],
+    "failed": {
+      "competitors": "Wettbewerber-Hosts im Netzwerk der Runner-Umgebung nicht freigegeben (Proxy 403 für alle 8 Anbieterseiten, 26.11.2026)"
+    },
+    "optional_validation": "Semrush SERP für „drohnenvermessung berlin“ bzw. „drohnenvermessung“ (Top 10, DE, 100 Units je Keyword) – sobald das Budget über der Reserve liegt. Entscheidend ist vor allem, ob die SERP für die generischen Begriffe Dienstleister mit Gebäude-Fokus oder Gelände-/Ingenieurvermessung zeigt.",
+    "evidence_quality": {
+      "competitors": "snippet_only",
+      "serp": "missing (budget hold)"
+    }
+  },
+  "method": {
+    "cost_order": [
+      {
+        "step": "Cache (Semrush-Keyword-Cache)",
+        "used": true,
+        "units": 0,
+        "note": "Volumen/KD/CPC für 22 Vermessungs-Keywords (Stand 23.11.2026)"
+      },
+      {
+        "step": "Google Search Console",
+        "used": true,
+        "units": 0,
+        "note": "65 Vermessungs-Queries, Query×Seite, Monatsverlauf, 90-Tage-Werte (2025-07-21 – 2026-11-20)"
+      },
+      {
+        "step": "Bestehende Website",
+        "used": true,
+        "units": 0,
+        "note": "Live-Profile /drohne-dach-vermessung/ und /fassadenaufmass-drohnen-vermessung-fassade/ (26.11.), Inventar/Links (22.11.)"
+      },
+      {
+        "step": "GA4",
+        "used": true,
+        "units": 0,
+        "note": "Organic-Landingpages der beiden Vermessungsseiten (Sessions, Key Events)"
+      },
+      {
+        "step": "Semrush Organic Results (echte SERP)",
+        "used": false,
+        "units": 0,
+        "note": "blocked_budget – Keywords bisher ohne Budget-Plan; keine kostenpflichtige Abfrage"
+      },
+      {
+        "step": "Web-/Marktrecherche",
+        "used": true,
+        "units": 0,
+        "note": "4 Websuchen (Standard + Extended); 8 Anbieterseiten zur Analyse ausgewählt – Live-Abruf fehlgeschlagen (Hosts nicht freigegeben)"
+      }
+    ],
+    "semrush_units_used": 0,
+    "serp_source": "Keine echte SERP. Research competitors aus Independent Web Research (nur Suchergebnis-Ebene).",
+    "serp_quality": "indicative"
+  },
+  "A_decision": {
+    "decision": "CREATE",
+    "confidence": "low",
+    "target_url": "/drohnenvermessung-berlin-brandenburg/",
+    "summary": "Eine schlanke Übersichtsseite „Drohnenvermessung für Gebäude in Berlin & Brandenburg“ als Parent der beiden bestehenden Vermessungsseiten (Dach, Fassade) – ehrlich begrenzt auf das, was wir mit Partner Airteam anbieten: Dach- und Fassadenvermessung inkl. Vermessungsbericht und 3D-Modell des Gebäudes. Sie soll die generischen Anfragen („drohnenvermessung berlin“, „anbieter vermessung drohne“, „3d-modell drohne berlin“) auffangen, Auftraggeber zur passenden Leistung führen und Gelände-, Volumen- und Orthofoto-Vermessung ausdrücklich nicht versprechen. Konfidenz niedrig: Wettbewerberseiten konnten nicht analysiert werden, die echte SERP fehlt und die generischen Queries sind seit Juli 2026 aus der GSC verschwunden.",
+    "why": [
+      "Nachfrage: „drohnenvermessung“ 390/Monat, „vermessung drohne“ 210, „drohnenvermessung berlin“ 110, „anbieter vermessung drohne berlin“ 110, „photogrammetrie drohne“ 90 (Semrush-Cache) – die größte messbare Nachfrage im Vermessungsumfeld.",
+      "GSC: Die generischen Queries landen heute auf der Dachvermessungsseite (z. B. „drohnenvermessung berlin“ 1.013 von 1.150 Impressionen, Ø Pos. 12,6) – einer Seite, deren Title/H1 nur Dach adressiert. „3D-Modell“-Queries (~1.150 Impressionen) landen überwiegend auf /drohnen-baudokumentation/, die kein 3D-Modell anbietet (F-015).",
+      "Web Research: Für „drohnenvermessung Berlin Dach Fassade 3D-Modell“ waren fast nur Dienstleister auffindbar (Drohnendienstleister und Vermessungsbüros) – kommerzieller Intent für die lokale Variante wahrscheinlich. Für das nackte „drohnenvermessung“ überwogen Ratgeber, Hersteller- und Software-Inhalte.",
+      "Business Fit 8/10 (Profil §3), Ø-Auftragswert im Zielkorridor; Vermessungsseiten erzeugen organisch bereits Anfragen (GA4: 26 Key Events aus Organic auf beiden Seiten).",
+      "Leistungsgrenze (Profil §3): nur Dach und Fassade. Die neue Seite darf keine Gelände-, Volumen-, Orthofoto- oder amtliche Vermessung behaupten."
+    ],
+    "alternatives": [
+      {
+        "option": "OPTIMIZE /drohne-dach-vermessung/ als Ziel für generische Vermessungs-Queries",
+        "verdict": "verworfen (zweitbeste Option)",
+        "reason": "Die Seite trägt heute die generischen Queries, ist aber klar auf Dach ausgerichtet (Title, H1, PV-Abschnitt). Eine Verbreiterung würde den Dach-Fokus verwässern und Fassade/Gebäudehülle trotzdem nicht abdecken."
+      },
+      {
+        "option": "OPTIMIZE beider Vermessungsseiten ohne neue Seite (nur interne Links/Querverweise)",
+        "verdict": "möglich, falls die SERP Gelände-/Ingenieurvermessung zeigt",
+        "reason": "Wenn die echte SERP für „drohnenvermessung berlin“ von Vermessungsbüros mit Gelände-/Katasterleistungen dominiert wird, hätte eine Gebäude-Übersicht wenig Chance → dann nur Kinderseiten stärken."
+      },
+      {
+        "option": "Breite Seite „Drohnenvermessung“ inkl. Gelände, Volumen, Orthofoto",
+        "verdict": "verworfen",
+        "reason": "Leistungen nicht im Angebot (Profil §3) – bleiben NEW BUSINESS OPPORTUNITY."
+      },
+      {
+        "option": "Eigene Seite „3D-Modell Drohne Berlin“",
+        "verdict": "verworfen",
+        "reason": "Das 3D-Modell ist bei uns Ergebnis der Dach-/Fassadenvermessung, kein eigenständiges Produkt; als Thema auf der Übersichtsseite abdecken."
+      },
+      {
+        "option": "MONITOR",
+        "verdict": "vertretbar",
+        "reason": "Generische Queries seit Juli 2026 ohne GSC-Impressionen – wer zuerst die Ursache klären will, wartet SERP-Check und Wettbewerberanalyse ab."
+      }
+    ],
+    "gate1_question": "Strategie freigeben: neue Übersichtsseite „Drohnenvermessung für Gebäude – Dach & Fassade in Berlin und Brandenburg“ (/drohnenvermessung-berlin-brandenburg/, Vorschlag) als Parent der Dach- und Fassadenvermessung, ohne Gelände-/Volumen-/Orthofoto-Leistungen – oder zuerst Wettbewerberanalyse und SERP-Check nachholen (Research complete with limitations: Wettbewerber nur als Suchergebnis-Snippets, keine echte SERP)?"
+  },
+  "B_demand": {
+    "keywords": [
+      {
+        "keyword": "drohnenvermessung",
+        "role": "primary",
+        "volume": 390,
+        "kd": 7,
+        "cpc": 3.65,
+        "gsc_impr": null,
+        "gsc_pos": null,
+        "gsc_pos_90d": null,
+        "intent": "Gemischt: Ratgeber/Hersteller/Software und Dienstleister (Web Research, nicht SERP-geprüft)"
+      },
+      {
+        "keyword": "drohnenvermessung berlin",
+        "role": "secondary",
+        "volume": 110,
+        "kd": 5,
+        "cpc": null,
+        "gsc_impr": 1150,
+        "gsc_pos": 12.6,
+        "gsc_pos_90d": 9.0,
+        "intent": "Lokaler Dienstleister",
+        "serp_check": true,
+        "serp_check_reason": "Lokale Variante mit eigenem Intent-Risiko (Gebäude- vs. Ingenieur-/Geländevermessung)"
+      },
+      {
+        "keyword": "vermessung drohne",
+        "role": "secondary",
+        "volume": 210,
+        "kd": 9,
+        "cpc": 1.98,
+        "gsc_impr": null,
+        "gsc_pos": null,
+        "gsc_pos_90d": null,
+        "intent": "Gemischt"
+      },
+      {
+        "keyword": "anbieter vermessung drohne berlin",
+        "role": "secondary",
+        "volume": 110,
+        "kd": 4,
+        "cpc": null,
+        "gsc_impr": 494,
+        "gsc_pos": 12.4,
+        "gsc_pos_90d": null,
+        "intent": "Dienstleister (kommerziell-lokal)"
+      },
+      {
+        "keyword": "drohnenvermessung brandenburg",
+        "role": "secondary",
+        "volume": null,
+        "kd": null,
+        "cpc": null,
+        "gsc_impr": 126,
+        "gsc_pos": 6.1,
+        "gsc_pos_90d": null,
+        "intent": "Lokaler Dienstleister"
+      },
+      {
+        "keyword": "vermessung drohne brandenburg",
+        "role": "secondary",
+        "volume": null,
+        "kd": null,
+        "cpc": null,
+        "gsc_impr": 95,
+        "gsc_pos": 4.8,
+        "gsc_pos_90d": null,
+        "intent": "Lokaler Dienstleister"
+      },
+      {
+        "keyword": "3d-modell drohne berlin (+ Varianten: drohnendienstleister/anbieter 3d-modell, 3d-modell immobilien drohne)",
+        "role": "secondary",
+        "volume": 70,
+        "kd": null,
+        "cpc": null,
+        "gsc_impr": 1153,
+        "gsc_pos": 15.6,
+        "gsc_pos_90d": null,
+        "intent": "Dienstleister; Volumen nur für „3d-modell immobilien drohne berlin“ (70)"
+      },
+      {
+        "keyword": "photogrammetrie drohne",
+        "role": "supporting",
+        "volume": 90,
+        "kd": 8,
+        "cpc": 2.21,
+        "gsc_impr": 1,
+        "gsc_pos": 81.0,
+        "gsc_pos_90d": null,
+        "intent": "Überwiegend Technik/Methode"
+      },
+      {
+        "keyword": "immobilie vermessen drohne",
+        "role": "supporting",
+        "volume": null,
+        "kd": null,
+        "cpc": null,
+        "gsc_impr": 159,
+        "gsc_pos": 41.1,
+        "gsc_pos_90d": null,
+        "intent": "Dienstleister"
+      },
+      {
+        "keyword": "gebäudehülle vermessung",
+        "role": "supporting",
+        "volume": null,
+        "kd": null,
+        "cpc": null,
+        "gsc_impr": 19,
+        "gsc_pos": 27.3,
+        "gsc_pos_90d": null,
+        "intent": "Dienstleister"
+      },
+      {
+        "keyword": "drohnenvermessung kosten",
+        "role": "supporting",
+        "volume": null,
+        "kd": null,
+        "cpc": null,
+        "gsc_impr": 75,
+        "gsc_pos": 38.9,
+        "gsc_pos_90d": 39.0,
+        "intent": "Preisorientiert"
+      },
+      {
+        "keyword": "aufmaß drohne / drohnen aufmaß / aufmaß mit drohne",
+        "role": "supporting",
+        "volume": 20,
+        "kd": 0,
+        "cpc": 2.03,
+        "gsc_impr": 339,
+        "gsc_pos": 28.9,
+        "gsc_pos_90d": 23.1,
+        "intent": "Dienstleister – Dach oder Fassade offen"
+      },
+      {
+        "keyword": "dachvermessung / dachaufmaß (alle Varianten)",
+        "role": "do_not_target",
+        "volume": 20,
+        "kd": 0,
+        "cpc": 2.66,
+        "gsc_impr": null,
+        "gsc_pos": null,
+        "gsc_pos_90d": null,
+        "intent": "gehört /drohne-dach-vermessung/"
+      },
+      {
+        "keyword": "fassadenaufmaß / fassadenvermessung (alle Varianten)",
+        "role": "do_not_target",
+        "volume": 20,
+        "kd": 0,
+        "cpc": 2.43,
+        "gsc_impr": null,
+        "gsc_pos": null,
+        "gsc_pos_90d": null,
+        "intent": "gehört /fassadenaufmass-drohnen-vermessung-fassade/"
+      },
+      {
+        "keyword": "geländevermessung, orthofoto, haldenvermessung, schüttgut vermessung",
+        "role": "do_not_target",
+        "volume": 590,
+        "kd": 32,
+        "cpc": null,
+        "gsc_impr": null,
+        "gsc_pos": null,
+        "gsc_pos_90d": null,
+        "intent": "Leistung nicht im Angebot (NBO); Volumen 590 = „orthofoto“"
+      },
+      {
+        "keyword": "grundstück vermessen lassen / vermessungsbüro",
+        "role": "do_not_target",
+        "volume": null,
+        "kd": null,
+        "cpc": null,
+        "gsc_impr": 2,
+        "gsc_pos": 91.0,
+        "gsc_pos_90d": null,
+        "intent": "Amtliche/Katastervermessung (ÖbVI) – nicht unsere Leistung"
+      }
+    ],
+    "cluster": {
+      "queries": 65,
+      "impressions": 6158,
+      "clicks": 4,
+      "avg_position": "generische Queries ~12–16; Dach/Fassade-Queries 5–80",
+      "note": "GSC 2025-07-21 – 2026-11-20, alle Queries mit vermess/aufmaß/3d/photogramm. Generische Teilmenge (10 Queries, ~3.200 Impr.) mit Peak Mär–Mai 2026 (673/891/618 Impr.), seit Juli 2026 ≈ 0."
+    },
+    "ga4": "Organic: /drohne-dach-vermessung 80 Sitzungen / 19 Key Events, /fassadenaufmass-… 57 Sitzungen / 7 Key Events (u. a. Heyflow-Interaktionen, 1 Formular, 1 Kontaktformular, 1 Tel-Klick). Kleine Zahlen, zeigen Richtung.",
+    "notes": "Die Vermessungsseiten sind zusätzlich Google-Ads-Ziel (P-Max/Search Dachvermessung) – organische Zahlen getrennt betrachten."
+  },
+  "C_serp": {
+    "source": "Semrush SERP: Pending – budget hold · Independent Web Research: Completed (26.11.2026), Wettbewerberseiten nicht abrufbar",
+    "quality": "indicative",
+    "quality_note": "Source A (Semrush SERP) noch nicht abgefragt. Source B (Independent Web Research, US-Index, keine Positionen) liefert sichtbare Anbieter und Seitentypen. Live-Analyse der gefundenen Seiten scheiterte an der Netzwerkfreigabe – Angaben zu Anbietern stammen aus den Suchergebnis-Beschreibungen.",
+    "serp_status": "pending – keine Budget-Freigabe (Keywords bisher ohne Plan)",
+    "intent_verdict": "Hypothese, nicht SERP-bestätigt: „drohnenvermessung“ allein zeigt in der Web Research überwiegend Ratgeber, Hersteller (DJI), Software (Autodesk) und Fachartikel → gemischter/informativer Intent. Mit Dienstleister- oder Ortsbezug („… dienstleister“, „… berlin“) erscheinen Anbieter: bundesweite Vermessungsdienstleister mit breitem Portfolio (Punktwolken, Orthofotos, Gelände, Volumen, BIM) und in Berlin Drohnendienstleister sowie Vermessungsbüros, die Dach/Fassade/Gebäude als 3D-Modell anbieten. Für die Berlin-Variante ist kommerzieller Intent wahrscheinlich; der Leistungsmix der Anbieter ist breiter als unserer.",
+    "serp_competitors": [],
+    "research_competitors": [
+      {
+        "domain": "adlerwind.de",
+        "url": "https://adlerwind.de/leistungen/drohnenvermessung",
+        "page_type": "Dienstleister-Landingpage",
+        "intent": "kommerziell-lokal",
+        "relevance": "business_competitor",
+        "region": "Berlin",
+        "found_via": "Independent Web Research (extended)",
+        "note": "Laut Suchergebnis: Orthofotos, Punktwolken, digitale Zwillinge für Dach/Fassade, Ausgabeformate (u. a. OBJ, DXF, IFC), Lieferzeit 2–5 Werktage. Live-Abruf fehlgeschlagen."
+      },
+      {
+        "domain": "ocgt.de",
+        "url": "https://www.ocgt.de/3d-vermessung/",
+        "page_type": "Dienstleister-Landingpage",
+        "intent": "kommerziell-lokal",
+        "relevance": "business_competitor",
+        "region": "Berlin & Brandenburg",
+        "found_via": "Independent Web Research (extended)",
+        "note": "Laut Suchergebnis: 3D-Modelle, Geländemodelle, Orthofotos; Preisangabe Einzelbefliegung ab 1.700 €. Live-Abruf fehlgeschlagen."
+      },
+      {
+        "domain": "aedvice.de",
+        "url": "https://www.aedvice.de/leistungen/drohnenvermessung/",
+        "page_type": "Vermessungsbüro (ÖbVI)",
+        "intent": "kommerziell-lokal",
+        "relevance": "business_competitor",
+        "region": "Berlin",
+        "found_via": "Independent Web Research (extended)",
+        "note": "Laut Suchergebnis: Drohnendaten kombiniert mit klassischer Vermessung, 3D-Modelle von Bauwerken. Live-Abruf fehlgeschlagen."
+      },
+      {
+        "domain": "flycad.de",
+        "url": "https://flycad.de/",
+        "page_type": "Dienstleister-Startseite",
+        "intent": "kommerziell-lokal",
+        "relevance": "business_competitor",
+        "region": "Berlin",
+        "found_via": "Independent Web Research (extended)",
+        "note": "Laut Suchergebnis: Vermessung von Dächern, Gebäuden und Gelände, Photogrammetrie, 3D-Modelle. Live-Abruf fehlgeschlagen."
+      },
+      {
+        "domain": "parallelum.de",
+        "url": "https://parallelum.de/vermessungsbuero-berlin/",
+        "page_type": "Vermessungsbüro",
+        "intent": "kommerziell-lokal",
+        "relevance": "business_competitor",
+        "region": "Berlin",
+        "found_via": "Independent Web Research (extended)",
+        "note": "Laut Suchergebnis: Drohnenvermessung für Dachaufmaße und Fassaden, 2D-Pläne oder 3D-Modelle. Live-Abruf fehlgeschlagen."
+      },
+      {
+        "domain": "hangar-11.de",
+        "url": "https://www.hangar-11.de/drohnenvermessung",
+        "page_type": "Dienstleister-Landingpage",
+        "intent": "kommerziell",
+        "relevance": "business_competitor",
+        "region": "bundesweit",
+        "found_via": "Independent Web Research (extended)",
+        "note": "Laut Suchergebnis: Punktwolken, Orthofotos, CAD-Pläne, BIM-Modelle. Live-Abruf fehlgeschlagen."
+      },
+      {
+        "domain": "airmess.de",
+        "url": "https://airmess.de/",
+        "page_type": "Dienstleister-Startseite",
+        "intent": "kommerziell",
+        "relevance": "business_competitor",
+        "region": "bundesweit",
+        "found_via": "Independent Web Research (extended)",
+        "note": "Laut Suchergebnis: Photogrammetrie, Thermografie, Orthofotos für Bau, FM, Tagebau. Live-Abruf fehlgeschlagen."
+      },
+      {
+        "domain": "3dcopter.de",
+        "url": "https://3dcopter.de/vermessung/",
+        "page_type": "Dienstleister-Landingpage",
+        "intent": "kommerziell",
+        "relevance": "business_competitor",
+        "region": "Norddeutschland",
+        "found_via": "Independent Web Research (extended)",
+        "note": "Laut Suchergebnis: 3D-Aufmaß, BIM/CAD-Export, Volumenmessung. Live-Abruf fehlgeschlagen."
+      },
+      {
+        "domain": "enterprise-insights.dji.com / autodesk.com / futurezone.at / tu-dresden.de",
+        "url": null,
+        "page_type": "Ratgeber/Hersteller/Software/Fachquelle",
+        "intent": "informativ",
+        "relevance": "guide",
+        "region": "–",
+        "found_via": "Independent Web Research (Standard)",
+        "note": "Für „drohnenvermessung“ ohne Zusatz gefunden; kein Wettbewerb um Anfragen, prägt aber den Intent des Primary Keywords"
+      }
+    ],
+    "own_position": "GSC (eigene Daten, real): „drohnenvermessung berlin“ Ø 12,6 (16 Mon.) · „anbieter vermessung drohne berlin“ Ø 12,4 · „drohnenvermessung brandenburg“ Ø 6,1 · „vermessung drohne brandenburg“ Ø 4,8 – jeweils mit /drohne-dach-vermessung/; seit Juli 2026 keine Impressionen mehr für diese Queries.",
+    "validation": {
+      "semrush": {
+        "status": "pending_budget_hold",
+        "keyword": "drohnenvermessung berlin",
+        "note": "Kein Budget-Plan; keine kostenpflichtige Abfrage in diesem Lauf"
+      },
+      "independent_web": {
+        "status": "completed",
+        "date": "2026-11-26",
+        "tool": "Claude WebSearch (Standard + Extended, US-Index); Live-Abruf der Anbieterseiten mit tools/page_profile.py und WebFetch fehlgeschlagen (Hosts nicht freigegeben)",
+        "keywords": [
+          "drohnenvermessung",
+          "drohnenvermessung berlin"
+        ],
+        "queries": [
+          "drohnenvermessung (Standard)",
+          "drohnenvermessung Dienstleister (Extended)",
+          "drohnenvermessung berlin brandenburg anbieter (Standard)",
+          "Drohnenvermessung Berlin Dach Fassade 3D-Modell Dienstleister (Extended)"
+        ],
+        "found": 28,
+        "profiled": 0,
+        "note": "Standard-Suche: überwiegend Ratgeber/Hersteller/Software/Jobportale; Extended-Suche: Anbieterseiten. Keine Positionen. 8 Anbieterseiten zur Analyse ausgewählt, keine abrufbar (Proxy 403 / DNS).",
+        "source_ids": [
+          "SRC-031",
+          "SRC-032",
+          "SRC-033",
+          "SRC-034",
+          "SRC-035",
+          "SRC-036",
+          "SRC-037",
+          "SRC-038",
+          "SRC-044",
+          "SRC-045",
+          "SRC-046",
+          "SRC-047",
+          "SRC-048",
+          "SRC-049"
+        ]
+      },
+      "secondary_rule": "„drohnenvermessung berlin“ hat einen eigenen (lokalen) Intent → serp_check true; weitere Varianten über denselben Normalisierungsschlüssel nicht wiederholt."
+    }
+  },
+  "D_competitors": [
+    {
+      "domain": "adlerwind.de",
+      "url": "https://adlerwind.de/leistungen/drohnenvermessung",
+      "page_type": "Dienstleister-Landingpage",
+      "region": "Berlin",
+      "evidence": "snippet_only",
+      "evidence_note": "nur Suchergebnis-Snippet (keine analysierte Seite) · Live-Abruf: Proxy 403 – Host in der Runner-Umgebung nicht freigegeben (26.11.2026); WebFetch: ENOTFOUND",
+      "topics": [
+        "Orthofoto/Punktwolke/3D-Modell",
+        "Ausgabeformate (GeoTIFF, LAS, OBJ, DXF, IFC)",
+        "Lieferzeit 2–5 Werktage",
+        "RTK/cm-Genauigkeit"
+      ],
+      "observations": "Laut Suchergebnis: Orthofotos, Punktwolken, digitale Zwillinge für Dach/Fassade, Ausgabeformate (u. a. OBJ, DXF, IFC), Lieferzeit 2–5 Werktage. Live-Abruf fehlgeschlagen.",
+      "takeaway": "Formate, Lieferzeit und Genauigkeit konkret benannt – bei uns nur „bis zu 99,4 %“ auf der Dachseite",
+      "found_via": "Independent Web Research (extended)",
+      "source_ids": [
+        "SRC-031",
+        "SRC-032",
+        "SRC-033",
+        "SRC-034",
+        "SRC-035",
+        "SRC-036",
+        "SRC-037",
+        "SRC-038",
+        "SRC-048"
+      ]
+    },
+    {
+      "domain": "ocgt.de",
+      "url": "https://www.ocgt.de/3d-vermessung/",
+      "page_type": "Dienstleister-Landingpage",
+      "region": "Berlin & Brandenburg",
+      "evidence": "snippet_only",
+      "evidence_note": "nur Suchergebnis-Snippet (keine analysierte Seite) · Live-Abruf: Proxy 403 – Host in der Runner-Umgebung nicht freigegeben (26.11.2026); WebFetch: ENOTFOUND",
+      "topics": [
+        "3D-Modelle, Geländemodelle, Orthofotos",
+        "Preisanker ab 1.700 €"
+      ],
+      "observations": "Laut Suchergebnis: 3D-Modelle, Geländemodelle, Orthofotos; Preisangabe Einzelbefliegung ab 1.700 €. Live-Abruf fehlgeschlagen.",
+      "takeaway": "Preisorientierung/Paketpreise sichtbar machen",
+      "found_via": "Independent Web Research (extended)",
+      "source_ids": [
+        "SRC-031",
+        "SRC-032",
+        "SRC-033",
+        "SRC-034",
+        "SRC-035",
+        "SRC-036",
+        "SRC-037",
+        "SRC-038",
+        "SRC-048"
+      ]
+    },
+    {
+      "domain": "aedvice.de",
+      "url": "https://www.aedvice.de/leistungen/drohnenvermessung/",
+      "page_type": "Vermessungsbüro (ÖbVI)",
+      "region": "Berlin",
+      "evidence": "snippet_only",
+      "evidence_note": "nur Suchergebnis-Snippet (keine analysierte Seite) · Live-Abruf: Proxy 403 – Host in der Runner-Umgebung nicht freigegeben (26.11.2026); WebFetch: ENOTFOUND",
+      "topics": [],
+      "observations": "Laut Suchergebnis: Drohnendaten kombiniert mit klassischer Vermessung, 3D-Modelle von Bauwerken. Live-Abruf fehlgeschlagen.",
+      "takeaway": null,
+      "found_via": "Independent Web Research (extended)",
+      "source_ids": [
+        "SRC-031",
+        "SRC-032",
+        "SRC-033",
+        "SRC-034",
+        "SRC-035",
+        "SRC-036",
+        "SRC-037",
+        "SRC-038"
+      ]
+    },
+    {
+      "domain": "flycad.de",
+      "url": "https://flycad.de/",
+      "page_type": "Dienstleister-Startseite",
+      "region": "Berlin",
+      "evidence": "snippet_only",
+      "evidence_note": "nur Suchergebnis-Snippet (keine analysierte Seite) · Live-Abruf: Proxy 403 – Host in der Runner-Umgebung nicht freigegeben (26.11.2026); WebFetch: ENOTFOUND",
+      "topics": [],
+      "observations": "Laut Suchergebnis: Vermessung von Dächern, Gebäuden und Gelände, Photogrammetrie, 3D-Modelle. Live-Abruf fehlgeschlagen.",
+      "takeaway": null,
+      "found_via": "Independent Web Research (extended)",
+      "source_ids": [
+        "SRC-031",
+        "SRC-032",
+        "SRC-033",
+        "SRC-034",
+        "SRC-035",
+        "SRC-036",
+        "SRC-037",
+        "SRC-038"
+      ]
+    },
+    {
+      "domain": "parallelum.de",
+      "url": "https://parallelum.de/vermessungsbuero-berlin/",
+      "page_type": "Vermessungsbüro",
+      "region": "Berlin",
+      "evidence": "snippet_only",
+      "evidence_note": "nur Suchergebnis-Snippet (keine analysierte Seite) · Live-Abruf: Proxy 403 – Host in der Runner-Umgebung nicht freigegeben (26.11.2026); WebFetch: ENOTFOUND",
+      "topics": [
+        "Drohnenvermessung/Aufmaß",
+        "Kombination mit klassischer Vermessung"
+      ],
+      "observations": "Laut Suchergebnis: Drohnenvermessung für Dachaufmaße und Fassaden, 2D-Pläne oder 3D-Modelle. Live-Abruf fehlgeschlagen.",
+      "takeaway": "Abgrenzung zu ÖbVI/amtlicher Vermessung klar machen",
+      "found_via": "Independent Web Research (extended)",
+      "source_ids": [
+        "SRC-031",
+        "SRC-032",
+        "SRC-033",
+        "SRC-034",
+        "SRC-035",
+        "SRC-036",
+        "SRC-037",
+        "SRC-038",
+        "SRC-048"
+      ]
+    },
+    {
+      "domain": "hangar-11.de",
+      "url": "https://www.hangar-11.de/drohnenvermessung",
+      "page_type": "Dienstleister-Landingpage",
+      "region": "bundesweit",
+      "evidence": "snippet_only",
+      "evidence_note": "nur Suchergebnis-Snippet (keine analysierte Seite) · Live-Abruf: Proxy 403 – Host in der Runner-Umgebung nicht freigegeben (26.11.2026); WebFetch: ENOTFOUND",
+      "topics": [
+        "Drohnenvermessung breites Portfolio",
+        "Lieferzeit 1–2 Wochen"
+      ],
+      "observations": "Laut Suchergebnis: Punktwolken, Orthofotos, CAD-Pläne, BIM-Modelle. Live-Abruf fehlgeschlagen.",
+      "takeaway": "Lieferzeit als Vertrauensfaktor nennen",
+      "found_via": "Independent Web Research (extended)",
+      "source_ids": [
+        "SRC-031",
+        "SRC-032",
+        "SRC-033",
+        "SRC-034",
+        "SRC-035",
+        "SRC-036",
+        "SRC-037",
+        "SRC-038",
+        "SRC-048"
+      ]
+    },
+    {
+      "domain": "airmess.de",
+      "url": "https://airmess.de/",
+      "page_type": "Dienstleister-Startseite",
+      "region": "bundesweit",
+      "evidence": "snippet_only",
+      "evidence_note": "nur Suchergebnis-Snippet (keine analysierte Seite) · Live-Abruf: Proxy 403 – Host in der Runner-Umgebung nicht freigegeben (26.11.2026); WebFetch: ENOTFOUND",
+      "topics": [],
+      "observations": "Laut Suchergebnis: Photogrammetrie, Thermografie, Orthofotos für Bau, FM, Tagebau. Live-Abruf fehlgeschlagen.",
+      "takeaway": null,
+      "found_via": "Independent Web Research (extended)",
+      "source_ids": [
+        "SRC-031",
+        "SRC-032",
+        "SRC-033",
+        "SRC-034",
+        "SRC-035",
+        "SRC-036",
+        "SRC-037",
+        "SRC-038"
+      ]
+    },
+    {
+      "domain": "3dcopter.de",
+      "url": "https://3dcopter.de/vermessung/",
+      "page_type": "Dienstleister-Landingpage",
+      "region": "Norddeutschland",
+      "evidence": "snippet_only",
+      "evidence_note": "nur Suchergebnis-Snippet (keine analysierte Seite) · Live-Abruf: Proxy 403 – Host in der Runner-Umgebung nicht freigegeben (26.11.2026); WebFetch: ENOTFOUND",
+      "topics": [],
+      "observations": "Laut Suchergebnis: 3D-Aufmaß, BIM/CAD-Export, Volumenmessung. Live-Abruf fehlgeschlagen.",
+      "takeaway": null,
+      "found_via": "Independent Web Research (extended)",
+      "source_ids": [
+        "SRC-031",
+        "SRC-032",
+        "SRC-033",
+        "SRC-034",
+        "SRC-035",
+        "SRC-036",
+        "SRC-037",
+        "SRC-038"
+      ]
+    }
+  ],
+  "E_gap": {
+    "competitors_cover": [
+      "Konkrete Ergebnisformate und Dateitypen (OBJ, DXF, IFC, Punktwolke, Orthofoto, CAD/BIM) – laut Suchergebnis adlerwind, hangar-11, 3dcopter",
+      "Genauigkeitsangaben und Normbezug – laut Suchergebnis adlerwind",
+      "Lieferzeit und Preisanker (ab 1.700 € Einzelbefliegung) – laut Suchergebnis adlerwind, ocgt",
+      "Kombination mit klassischer Vermessung durch Vermessungsbüros (ÖbVI) – aedvice, parallelum",
+      "Breites Portfolio: Gelände, Volumen, Orthofoto, Thermografie – airmess, hangar-11, 3dcopter (bei uns nicht im Angebot)"
+    ],
+    "we_cover": [
+      "Dachvermessung mit Drohne inkl. PDF-Vermessungsbericht, 3D-Modell, Genauigkeitsangabe („bis zu 99,4 %“), Ablauf in 4 Schritten, Paketpreise, PV-Planung (/drohne-dach-vermessung/)",
+      "Fassadenaufmaß mit Drohne in Berlin und Brandenburg inkl. Vermessungsbericht und Kostenschätzung (/fassadenaufmass-…/)",
+      "Komplette Abwicklung, rbb, Kundenstimmen, Logos, Berufshaftpflicht (Profil §8)"
+    ],
+    "we_miss": [
+      "Eine Seite, die die generische Frage „Drohnenvermessung in Berlin/Brandenburg – was geht, was bekomme ich?“ beantwortet und zwischen Dach, Fassade und kompletter Gebäudehülle führt",
+      "Gebäude-3D-Modell als Ergebnis erklärt (heute landen 3D-Modell-Queries auf der Baudoku-Seite ohne passendes Angebot)",
+      "Klare Abgrenzung: was Drohnenvermessung bei uns ist (Gebäude: Dach/Fassade) und was nicht (Gelände, Volumen, Orthofoto, amtliche Vermessung)",
+      "Interne Verknüpfung: Dach- und Fassadenseite verlinken einander kaum thematisch; kein Parent",
+      "Konkrete Lieferformate (PDF-Bericht, 3D-Modell, ggf. DXF/OBJ) auf einer Übersichtsseite zusammengefasst",
+      "Lieferzeit und Genauigkeitsaussage mit Methode (z. B. RTK) – nur wenn Partner Airteam das belegt",
+      "Hinweis Genehmigung/Aufstiegserlaubnis Berlin (Flughafen-Kontrollzone) als FAQ"
+    ],
+    "outperform": [
+      "Ehrlicher Leistungszuschnitt für Gebäude statt Bauchladen – passt zu Hausverwaltungen, Dachdeckern/Fassadenbauern, Architekten",
+      "Ein Ansprechpartner für Dach und Fassade bzw. die ganze Gebäudehülle, Abwicklung inkl. Genehmigungen, Wetterregel, Endpreis",
+      "Brücke zu angrenzenden Leistungen (Inspektion, Baudokumentation) – kein reiner Vermesser bietet das"
+    ],
+    "note": "Competitors cover stützt sich nur auf Suchergebnis-Beschreibungen (keine Seitenanalyse) – nach Freigabe der Hosts neu ableiten.",
+    "evidence_note": "Vorläufig: Wettbewerberseite nur aus Suchergebnis-Snippets (Snippet ≠ analysierte Seite); keine echte SERP."
+  },
+  "F_scope": {
+    "core_message": "Wir vermessen Gebäude per Drohne – Dach, Fassade oder die gesamte Gebäudehülle – gemeinsam mit unserem Vermessungspartner und liefern einen Vermessungsbericht und ein 3D-Modell als Grundlage für Planung, Angebot und Sanierung in Berlin und Brandenburg.",
+    "search_intent": "Kommerziell-lokal: Auftraggeber suchen einen Anbieter für Drohnenvermessung und wollen wissen, ob ihr Vorhaben (Dach, Fassade, Gebäude) passt, was sie erhalten und was es kostet. Rein informative Anfragen („wie funktioniert Drohnenvermessung“) nur kurz bedienen.",
+    "audience": [
+      "Dachdecker / Fassadenbauer",
+      "Hausverwaltungen / Bestandshalter",
+      "Architekten / Planer",
+      "Bauträger / Bauunternehmen (Sanierung, Bestand)",
+      "PV-Planer (Dachflächen)"
+    ],
+    "key_questions": [
+      {
+        "group": "Passt das zu meinem Vorhaben?",
+        "questions": [
+          "Was kann per Drohne vermessen werden – Dach, Fassade, ganzes Gebäude?",
+          "Was bieten Sie nicht an (Gelände, Volumen, amtliche Vermessung)?"
+        ]
+      },
+      {
+        "group": "Ergebnis",
+        "questions": [
+          "Was enthält der Vermessungsbericht?",
+          "Was ist das 3D-Modell und wofür nutze ich es?",
+          "Wie genau ist die Vermessung?"
+        ]
+      },
+      {
+        "group": "Ablauf & Organisation",
+        "questions": [
+          "Wie läuft die Vermessung ab und wer kümmert sich um Genehmigungen?",
+          "Wie schnell erhalte ich die Ergebnisse?"
+        ]
+      },
+      {
+        "group": "Kosten",
+        "questions": [
+          "Was kostet eine Drohnenvermessung von Dach oder Fassade?"
+        ]
+      },
+      {
+        "group": "Weiterführend",
+        "questions": [
+          "Dachvermessung oder Fassadenaufmaß – welche Seite/Leistung brauche ich?",
+          "Kann ich Vermessung mit Inspektion oder Dokumentation kombinieren?"
+        ]
+      }
+    ],
+    "service_info": [
+      {
+        "text": "Dachvermessung per Drohne mit Vermessungsbericht/3D-Modell (Partner Airteam)",
+        "evidence": "Profil §3/§8, /drohne-dach-vermessung/"
+      },
+      {
+        "text": "Fassadenvermessung/Fassadenaufmaß per Drohne mit Vermessungsbericht (Partner Airteam)",
+        "evidence": "Profil §3/§8, /fassadenaufmass-…/"
+      },
+      {
+        "text": "Photogrammetrie als Verfahren",
+        "evidence": "Profil §8"
+      },
+      {
+        "text": "Genauigkeits- und Preisangaben nur so, wie auf den bestehenden Kinderseiten belegt; vor Produktion mit Noel prüfen",
+        "evidence": "Live-Profile 26.11. (99,4 %, Paketpreise)"
+      }
+    ],
+    "trust_proof": [
+      "Vermessungspartner Airteam (Profil §8; Nennung nur nach Freigabe)",
+      "Bekannt aus dem rbb",
+      "Kundenstimmen und Logos (nur als Logos)",
+      "Berufshaftpflicht R+V, weltweit",
+      "Komplette Abwicklung inkl. Genehmigungen; wetterbedingte Verschiebung ohne Zusatzkosten; Angebotspreis = Endpreis"
+    ],
+    "conversion_goal": "Unverbindliche Anfrage (Formular/Anruf) mit Angaben: Objekt/Adresse, Dach/Fassade/beides, Zweck (Angebot, Planung, Sanierung, PV). Sekundär: Weiterleitung zur passenden Kinderseite.",
+    "delimitation": [
+      {
+        "service": "Drohnenvermessung Gebäude (diese Seite)",
+        "question": "Welche Vermessung brauche ich für mein Gebäude?",
+        "output": "Orientierung + Anfrage",
+        "page": "/drohnenvermessung-berlin-brandenburg/ (neu)"
+      },
+      {
+        "service": "Dachvermessung",
+        "question": "Welche Maße hat mein Dach?",
+        "output": "Vermessungsbericht/3D-Modell Dach",
+        "page": "/drohne-dach-vermessung/"
+      },
+      {
+        "service": "Fassadenaufmaß",
+        "question": "Welche Maße hat meine Fassade?",
+        "output": "Vermessungsbericht Fassade",
+        "page": "/fassadenaufmass-drohnen-vermessung-fassade/"
+      },
+      {
+        "service": "Inspektion",
+        "question": "Gibt es sichtbare Schäden?",
+        "output": "Visuelle Inspektion (kein Gutachten)",
+        "page": "/drohne-dach-gebaeude-inspektion/"
+      },
+      {
+        "service": "Baudokumentation",
+        "question": "Wie entwickelt sich das Bauprojekt?",
+        "output": "Foto-/Videoserie",
+        "page": "/drohnen-baudokumentation/"
+      }
+    ],
+    "not_on_page": [
+      {
+        "topic": "Gelände-, Volumen-/Haldenvermessung, Orthofotos, LiDAR, Punktwolken als Produkt",
+        "reason": "Nicht im Angebot (Profil §3, NBO)",
+        "goes_to": "nicht aufnehmen"
+      },
+      {
+        "topic": "Amtliche Vermessung, Grundstücks-/Katastervermessung",
+        "reason": "Nur ÖbVI",
+        "goes_to": "nicht aufnehmen; ggf. ein Satz Abgrenzung"
+      },
+      {
+        "topic": "Dateiformate (OBJ, DXF, IFC …), Normen, Genauigkeitsklassen",
+        "reason": "Nicht belegt (Profil §10)",
+        "goes_to": "nur nach Bestätigung durch Noel/Airteam"
+      },
+      {
+        "topic": "Detaillierte Dach-/Fassaden-Inhalte (Pakete, PV-Planung, Ablauf im Detail)",
+        "reason": "Gehören den Kinderseiten",
+        "goes_to": "/drohne-dach-vermessung/, /fassadenaufmass-…/"
+      },
+      {
+        "topic": "Drohnenmodelle, Sensoren",
+        "reason": "Profil §10",
+        "goes_to": "nicht aufnehmen"
+      }
+    ],
+    "page_purpose": "Auftraggebern in Berlin und Brandenburg zeigen, welche Gebäude-Vermessung per Drohne wir anbieten (Dach, Fassade, Gebäudehülle), was sie als Ergebnis erhalten und welche Leistung zu ihrem Vorhaben passt – mit klarer Abgrenzung zu Gelände- und amtlicher Vermessung.",
+    "topics": [
+      "Was Drohnenvermessung bei Gebäuden leistet",
+      "Dach, Fassade oder ganze Gebäudehülle – Auswahlhilfe",
+      "Vermessungsbericht und 3D-Modell als Ergebnis",
+      "Einsatzzwecke: Angebot, Planung, Sanierung, PV",
+      "Ablauf inkl. Genehmigungen",
+      "Kosten-Orientierung (Verweis auf Kinderseiten)",
+      "Was wir nicht anbieten",
+      "FAQ"
+    ]
+  },
+  "G_structure": {
+    "title_proposal": "Drohnenvermessung Berlin & Brandenburg | Dach, Fassade, 3D-Modell",
+    "meta_note": "Gebäude (Dach/Fassade) + Vermessungsbericht/3D-Modell + Region + Anfrage; keine Gelände-/Orthofoto-Begriffe, kein „Jetzt buchen“.",
+    "h1": "Drohnenvermessung für Gebäude in Berlin und Brandenburg",
+    "sections": [
+      {
+        "h2": "Drohnenvermessung für Dach und Fassade",
+        "purpose": "Einstieg: was wir vermessen, für wen, mit welchem Ergebnis",
+        "covers": [
+          "Passt das zu meinem Vorhaben?"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Welche Vermessung passt zu Ihrem Vorhaben?",
+        "purpose": "Auswahlhilfe Dach / Fassade / Gebäudehülle mit Links zu den Kinderseiten",
+        "covers": [
+          "Passt das zu meinem Vorhaben?",
+          "Weiterführend"
+        ],
+        "h3": [
+          "Dachvermessung per Drohne",
+          "Fassadenaufmaß per Drohne",
+          "Dach und Fassade kombiniert"
+        ]
+      },
+      {
+        "h2": "Vermessungsbericht und 3D-Modell: Das erhalten Sie",
+        "purpose": "Ergebnis erklären, Genauigkeit nur belegt",
+        "covers": [
+          "Ergebnis"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Wofür Auftraggeber die Messdaten nutzen",
+        "purpose": "Angebot/Kalkulation, Sanierungsplanung, PV-Planung, Bestand – je Zielgruppe",
+        "covers": [
+          "Ergebnis"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "So läuft eine Drohnenvermessung ab",
+        "purpose": "Kurzablauf inkl. Genehmigungen, Wetterregel, Lieferzeit",
+        "covers": [
+          "Ablauf & Organisation"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Kosten der Drohnenvermessung",
+        "purpose": "Orientierung, Verweis auf Paketpreise der Kinderseiten",
+        "covers": [
+          "Kosten"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Was wir nicht vermessen",
+        "purpose": "Abgrenzung Gelände/Volumen/Orthofoto/amtliche Vermessung; Verweis Inspektion/Baudoku",
+        "covers": [
+          "Passt das zu meinem Vorhaben?",
+          "Weiterführend"
+        ],
+        "h3": []
+      },
+      {
+        "h2": "Häufige Fragen zur Drohnenvermessung",
+        "purpose": "FAQ aus F.key_questions",
+        "covers": [
+          "Ergebnis",
+          "Kosten",
+          "Ablauf & Organisation"
+        ],
+        "h3": []
+      }
+    ],
+    "scope_check": "Jede Fragengruppe aus F ist einer H2 zugeordnet. Detailinhalte bleiben auf den Kinderseiten; die Übersichtsseite führt und grenzt ab.",
+    "derivation": "GSC (generische und 3D-Modell-Queries ohne passende Zielseite) + Web Research (Anbieter verkaufen Ergebnis/Format, Intent lokal kommerziell) + Profil §3 (nur Dach/Fassade) + Content Gap (Auswahlhilfe, Abgrenzung)."
+  },
+  "H_ia": {
+    "current": {
+      "parent": {
+        "url": "/",
+        "label": "Startseite",
+        "note": "Dach- und Fassadenvermessung hängen direkt an der Startseite; kein Vermessungs-Parent"
+      },
+      "target": {
+        "url": null,
+        "label": "keine Seite für generische Vermessungs-Queries"
+      },
+      "children": [],
+      "siblings": [
+        {
+          "url": "/drohne-dach-vermessung/",
+          "label": "Dachvermessung",
+          "relation": "erhält heute die generischen Queries"
+        },
+        {
+          "url": "/fassadenaufmass-drohnen-vermessung-fassade/",
+          "label": "Fassadenaufmaß",
+          "relation": "Vermessung"
+        },
+        {
+          "url": "/dach-vermessung-drohne-ads/",
+          "label": "Ads-Landingpage Dachvermessung",
+          "relation": "Paid"
+        },
+        {
+          "url": "/drohnen-baudokumentation/",
+          "label": "Baudokumentation",
+          "relation": "erhält 3D-Modell-Queries ohne Angebot"
+        }
+      ],
+      "inbound_links": [
+        {
+          "from": "/",
+          "anchor": "Dachvermessung"
+        },
+        {
+          "from": "/",
+          "anchor": "Fassadenvermessung"
+        }
+      ]
+    },
+    "recommended": {
+      "parent": {
+        "url": "/",
+        "label": "Startseite"
+      },
+      "target": {
+        "url": "/drohnenvermessung-berlin-brandenburg/",
+        "label": "Drohnenvermessung für Gebäude (neu, Vorschlag)"
+      },
+      "hub_assessment": {
+        "option": "Vermessungs-Übersicht als Parent von Dach und Fassade",
+        "verdict": "sinnvoll, aber schlank halten",
+        "reasoning": [
+          "Nur zwei Kinderleistungen → Seite muss über Auswahlhilfe, Ergebnis und Abgrenzung eigenständigen Wert haben, sonst dünn.",
+          "URLs der Kinderseiten bleiben unverändert (keine Redirects, kein Umzug unter einen Hub-Pfad)."
+        ]
+      },
+      "children": [
+        {
+          "url": "/drohne-dach-vermessung/",
+          "label": "Dachvermessung"
+        },
+        {
+          "url": "/fassadenaufmass-drohnen-vermessung-fassade/",
+          "label": "Fassadenaufmaß"
+        }
+      ],
+      "child_candidates": [
+        {
+          "topic": "3D-Modell Gebäude Drohne",
+          "intent": "Ergebnis der Vermessung",
+          "verdict": "kein Child – auf der Übersicht abdecken"
+        },
+        {
+          "topic": "Drohnenvermessung Brandenburg/Potsdam (Stadtseite)",
+          "intent": "gleich",
+          "verdict": "nein – Doorway-Risiko"
+        },
+        {
+          "topic": "Geländevermessung / Volumen / Orthofoto",
+          "intent": "eigenständig",
+          "verdict": "nur nach Business-Entscheidung (NBO)"
+        }
+      ],
+      "children_note": "Keine weiteren Children ohne neue Leistung.",
+      "siblings": [
+        {
+          "url": "/drohne-dach-gebaeude-inspektion/",
+          "label": "Gebäudeinspektion (Hub)",
+          "relation": "Zustand/Schäden"
+        },
+        {
+          "url": "/drohnen-baudokumentation/",
+          "label": "Baudokumentation",
+          "relation": "Bauprojekt"
+        },
+        {
+          "url": "/drohnenaufnahmen-preis-kosten/",
+          "label": "Preise",
+          "relation": "Conversion"
+        }
+      ]
+    },
+    "consolidation": {
+      "decision": "Generische Begriffe (drohnenvermessung, vermessung drohne, anbieter vermessung drohne, + Berlin/Brandenburg, 3d-modell drohne berlin, gebäudehülle vermessung) auf der neuen URL; Dach- und Fassaden-Begriffe bleiben auf den Kinderseiten",
+      "reasoning": [
+        "Generische Queries haben einen anderen Auftrag (Orientierung + Anbieterwahl) als „dachvermessung drohne“ (konkrete Leistung).",
+        "Die Dachseite bedient die generischen Queries nur zufällig (Title/H1 nur Dach)."
+      ],
+      "revisit_if": "Die echte SERP zeigt für „drohnenvermessung berlin“ überwiegend Gelände-/Ingenieurvermessung oder Leistungsseiten für Dach – dann statt CREATE die Kinderseiten stärken."
+    },
+    "keyword_ownership": {
+      "owns": [
+        "drohnenvermessung",
+        "drohnenvermessung berlin",
+        "drohnenvermessung brandenburg",
+        "vermessung drohne",
+        "vermessung drohne brandenburg",
+        "anbieter vermessung drohne berlin",
+        "3d-modell drohne berlin (Varianten)",
+        "immobilie vermessen drohne",
+        "gebäudehülle vermessung",
+        "drohnenvermessung kosten (Orientierung)"
+      ],
+      "do_not_target": [
+        {
+          "keyword": "dachvermessung / dachaufmaß (+ drohne)",
+          "reason": "Kinderseite",
+          "owner": "/drohne-dach-vermessung/"
+        },
+        {
+          "keyword": "fassadenaufmaß / fassadenvermessung (+ drohne)",
+          "reason": "Kinderseite",
+          "owner": "/fassadenaufmass-drohnen-vermessung-fassade/"
+        },
+        {
+          "keyword": "geländevermessung, orthofoto, volumen/halden",
+          "reason": "Nicht im Angebot",
+          "owner": "keine Seite (NBO)"
+        },
+        {
+          "keyword": "grundstück vermessen lassen, vermessungsbüro",
+          "reason": "Amtliche Vermessung",
+          "owner": "keine Seite"
+        },
+        {
+          "keyword": "3d-modell immobilien (Marketing/Visualisierung)",
+          "reason": "Nur wenn als Vermessungsergebnis gemeint",
+          "owner": "neue Seite; Baudoku zielt nicht darauf"
+        }
+      ]
+    },
+    "internal_links": [
+      {
+        "from": "/",
+        "to": "/drohnenvermessung-berlin-brandenburg/",
+        "anchor": "Drohnenvermessung",
+        "type": "add"
+      },
+      {
+        "from": "/drohnenvermessung-berlin-brandenburg/",
+        "to": "/drohne-dach-vermessung/",
+        "anchor": "Dachvermessung per Drohne",
+        "type": "add"
+      },
+      {
+        "from": "/drohnenvermessung-berlin-brandenburg/",
+        "to": "/fassadenaufmass-drohnen-vermessung-fassade/",
+        "anchor": "Fassadenaufmaß per Drohne",
+        "type": "add"
+      },
+      {
+        "from": "/drohne-dach-vermessung/",
+        "to": "/drohnenvermessung-berlin-brandenburg/",
+        "anchor": "Drohnenvermessung für Gebäude",
+        "type": "add"
+      },
+      {
+        "from": "/fassadenaufmass-drohnen-vermessung-fassade/",
+        "to": "/drohnenvermessung-berlin-brandenburg/",
+        "anchor": "Drohnenvermessung für Gebäude",
+        "type": "add"
+      },
+      {
+        "from": "/drohnenvermessung-berlin-brandenburg/",
+        "to": "/drohne-dach-gebaeude-inspektion/",
+        "anchor": "Gebäudeinspektion mit Drohne",
+        "type": "add"
+      }
+    ],
+    "cannibalization": {
+      "risk": "medium",
+      "evidence": "GSC 16 Monate: generische Queries zu ~88 % auf /drohne-dach-vermessung/ („drohnenvermessung berlin“ 1.013/1.150, „anbieter vermessung drohne berlin“ 471/494), Rest verteilt auf Gebäudeinspektion, Fassade, Baudoku. 3D-Modell-Queries: ~66 % /drohnen-baudokumentation/, ~34 % Dachvermessung. Eine neue Seite übernimmt diese Queries bewusst (Release durch Dachseite).",
+      "watch": "Dachseite darf ihre Dach-Queries nicht verlieren: Dach-Title/H1 bleiben unverändert; neue Seite nutzt „Dachvermessung“ nur als Verweis. Monitoring T+14/30/60."
+    },
+    "decision": "CREATE",
+    "companion": []
+  },
+  "I_win": [
+    "Gebäude-Fokus statt Bauchladen: eine ehrliche Auswahlhilfe Dach/Fassade/Gebäudehülle für Gebäude-Auftraggeber – laut Web Research bieten die gefundenen Anbieter meist breite Portfolios ohne diese Führung (nicht seitenanalytisch belegt).",
+    "Bestehende Signale nutzen: Die Domain wird für generische Vermessungs-Queries bereits gezeigt (Ø Pos. ~12 im Peak); eine passende Zielseite + interne Links aus den Kinderseiten kann diese Relevanz bündeln.",
+    "Belegte Trust-Elemente (rbb, Abwicklung inkl. Genehmigungen, Endpreis, Wetterregel, Kundenstimmen) und Partner-Know-how (Photogrammetrie, Vermessungsbericht, 3D-Modell) aus Profil §8.",
+    "Brücke zu Inspektion und Baudokumentation – Auftraggeber mit Bestandsgebäuden bekommen mehrere Leistungen aus einer Hand."
+  ],
+  "J_risks": [
+    {
+      "type": "risk",
+      "item": "Echte SERP unbekannt – generischer Intent könnte von Gelände-/Ingenieurvermessung oder Ratgebern geprägt sein",
+      "mitigation": "SERP-Check „drohnenvermessung berlin“ vor oder kurz nach Gate 1; bei abweichendem Intent auf OPTIMIZE der Kinderseiten umschwenken"
+    },
+    {
+      "type": "risk",
+      "item": "Wettbewerberseiten nicht analysiert (Hosts nicht freigegeben)",
+      "mitigation": "Hosts in der Runner-Umgebung freigeben und Competitor Analysis per „Fehlende Research nachholen“ wiederholen"
+    },
+    {
+      "type": "risk",
+      "item": "Generische Queries seit Juli 2026 ohne GSC-Impressionen",
+      "mitigation": "Ursache vor Produktion prüfen (Sichtbarkeit der Dachseite, Datenschwelle); Seite nur bauen, wenn Nachfrage weiter besteht (Semrush-Volumen spricht dafür)"
+    },
+    {
+      "type": "risk",
+      "item": "Dünne Hub-Seite mit nur zwei Kinderleistungen",
+      "mitigation": "Eigenständiger Mehrwert über Auswahlhilfe, Ergebnis-Erklärung und Abgrenzung; keine Textdopplung der Kinderseiten"
+    },
+    {
+      "type": "risk",
+      "item": "Kannibalisierung mit /drohne-dach-vermessung/",
+      "mitigation": "Keyword Ownership (H), Dach-Begriffe nur als Verweis, Monitoring T+14/30/60"
+    },
+    {
+      "type": "open",
+      "item": "Darf Airteam namentlich genannt werden? Sind Genauigkeit (99,4 %), Dateiformate und Lieferzeit für Vermessung bestätigt?",
+      "mitigation": "Vor Produktion mit Noel klären; bis dahin nur Aussagen der bestehenden Kinderseiten"
+    }
+  ],
+  "sources": [
+    {
+      "label": "GSC 16 Monate (Query, Query×Seite, Query×Datum)",
+      "type": "gsc",
+      "date": "2026-11-23",
+      "path": "clients/spreewald-luftaufnahmen/data/gsc-2026-11/"
+    },
+    {
+      "label": "Semrush-Keyword-Cache (DE)",
+      "type": "semrush_cache",
+      "date": "2026-11-23",
+      "path": "data/keyword-cache.csv"
+    },
+    {
+      "label": "GA4 Landingpages Organic",
+      "type": "ga4",
+      "date": "2026-11",
+      "path": "clients/spreewald-luftaufnahmen/data/ga4-2026-11/"
+    },
+    {
+      "label": "Live-Profile eigener Vermessungsseiten + fehlgeschlagene Abrufe Research competitors",
+      "type": "web",
+      "date": "2026-11-26",
+      "path": "clients/spreewald-luftaufnahmen/data/research/OPP-04/pages/"
+    },
+    {
+      "label": "Website-Inventar + interne Links",
+      "type": "website",
+      "date": "2026-11-22",
+      "path": "clients/spreewald-luftaufnahmen/data/baseline-2026-11/"
+    },
+    {
+      "label": "Business-Profil v1.1",
+      "type": "profile",
+      "date": "2026-11-23",
+      "path": "clients/spreewald-luftaufnahmen/business-profile.md"
+    }
+  ],
+  "changelog": [
+    {
+      "version": 1,
+      "date": "2026-11-26",
+      "note": "Erstes Dossier A–J (Research-Retry, Runner-Lauf 26.11.): GSC, Keyword-Cache, Independent Web Research, Content Gap, Scope/Struktur/Architektur. Wettbewerberseiten nicht live abrufbar (Hosts im Netzwerk nicht freigegeben); Semrush SERP budget hold."
+    },
+    {
+      "version": 2,
+      "date": "2026-11-26",
+      "note": "Research-Retry mit Fallback: Competitor Analysis aus Suchergebnis-Snippets (8 Anbieter, als snippet_only gekennzeichnet), 2 zusätzliche Web-Recherchen; Content Gap/Strategie als vorläufig markiert. Status: Complete with Limitations (SERP budget hold, Wettbewerber nur Snippets, GSC-Trend offen)."
+    }
+  ],
+  "D_pattern": "Muster nur aus Suchergebnis-Snippets (keine analysierten Seiten): Anbieter nennen konkrete Ausgabeformate, Genauigkeit (RTK/cm), Lieferzeit und teils Preisanker; viele decken Gelände/Volumen/Orthofoto ab, was wir nicht anbieten. Evidenzqualität: nur Suchergebnis-Snippets – keine analysierte Wettbewerberseite."
+}

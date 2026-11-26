@@ -315,8 +315,8 @@ const MOCK = () => {
     // Research-Retry (simulierte Zustände; kein echter Agentenlauf)
     await p.goto(base2 + '#opp-OPP-01', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
     let rb = await p.locator('.rr.banner').innerText();
-    check('retry: missing components listed + primary button', /Fehlend:/.test(rb) && /Independent Web Research: ?Missing/i.test(rb.replace(/\n/g, ' ')) && /GSC-Auswertung: ?Complete/i.test(rb.replace(/\n/g, ' ')) && (await p.locator('.rr.banner [data-rr="OPP-01"]').innerText()) === 'Fehlende Research nachholen');
-    check('retry: paid SERP stays blocked (budget) and is explained', /Budget-Reserve/.test(rb));
+    check('retry: missing components listed + primary button', /Offen:/.test(rb) && /Independent Web Research: ?Not started/i.test(rb.replace(/\n/g, ' ')) && /Research partially completed – \d+\/\d+ steps/.test(rb) && /GSC-Auswertung: ?Complete/i.test(rb.replace(/\n/g, ' ')) && (await p.locator('.rr.banner [data-rr="OPP-01"]').innerText()) === 'Fehlende Research nachholen');
+    check('retry: paid SERP stays blocked (budget) and is explained', /Budget Hold/.test(rb));
     const firedBefore = await p.evaluate(() => (window.__fired || []).length);
     await p.click('.rr.banner [data-rr="OPP-01"]'); await p.waitForTimeout(400);
     let rr = await p.evaluate(() => window.__all.workflow['OPP-01']?.research_retry);
@@ -332,7 +332,28 @@ const MOCK = () => {
     rb = await p.locator('.rr.banner').innerText();
     check('retry: blocked with understandable cause, retry possible again', /Research blocked/.test(rb) && /Wettbewerber-Hosts im Netzwerk nicht freigegeben/.test(rb) && !(await p.locator('.rr.banner [data-rr="OPP-01"]').isDisabled()));
     await p.goto(base2 + '#opp-OPP-02', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
-    check('retry: only paid research missing → no retry button, explanation', (await p.locator('[data-rr="OPP-02"]').count()) === 0 && /Nur kostenpflichtige Research fehlt/.test(await p.locator('.rr.banner').innerText()));
+    check('retry: only paid research missing → no retry button, explanation', (await p.locator('[data-rr="OPP-02"]').count()) === 0 && /offen ist nur die kostenpflichtige SERP/.test(await p.locator('.rr.banner').innerText()));
+    // OPP-04 (Bugfix Research-Retry): Complete with Limitations, Snippet-Grenze sichtbar, konkreter Blocker, kein Endlos-Retry, Gate 1 regulär
+    await p.goto(base2 + '#opp-OPP-04', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
+    rb = (await p.locator('.rr.banner').innerText()).replace(/\n/g, ' ');
+    check('OPP-04: progress „Research complete with limitations – 6/6 steps“, no contradictory not-started/blocked', /Research complete with limitations – 6\/6 steps/.test(rb) && !/Not started|Research blocked|Blocked/.test(rb), rb.slice(0, 300));
+    check('OPP-04: competitor step Complete with Limitations + SERP Budget Hold', /Competitor Analysis: ?Complete with Limitations/.test(rb) && /Semrush SERP: ?Budget Hold/.test(rb));
+    check('OPP-04: concrete blocker action, no retry over the same URLs', /Settings → Network/.test(rb) && (await p.locator('[data-rr="OPP-04"]').count()) === 0);
+    check('OPP-04: snippet evidence labelled in dossier', /nur Suchergebnis-Snippet|Suchsnippet ist keine vollständig analysierte/.test(await p.locator('#view, main').first().innerText()));
+    check('OPP-04: Gate 1 regular (no override needed; simulated approval binds research v2 without override)', /Gate 1 – Strategie freigeben/.test(await p.locator('#view, main').first().innerText()) && !/Override nötig/.test(await p.locator('#view, main').first().innerText()) && await p.evaluate(() => { const g = window.__all.workflow?.['OPP-04']?.gate1 || {}; return g.status !== 'approved' || (g.research_override === false && g.research_version === 2 && g.research_state === 'complete_with_limits'); }), 'gate1');
+    // Live-Research aus der db (Runner-Ergebnis ohne Git-Push) gewinnt bei höherer Version
+    await p.evaluate(async () => { const db = await window.claude.use('db'); const o = (await (await fetch('data/spreewald-luftaufnahmen/dashboard.json')).json()).opportunities.find(x => x.id === 'OPP-04');
+      const dos = { ...o.research, version: (o.research.version || 0) + 1, updated: '2099-01-01T00:00:00Z' };
+      await db.collection('research').doc('OPP-04').set({ opp_id: 'OPP-04', client: 'spreewald-luftaufnahmen', version: dos.version, updated: dos.updated, synced_at: '2099-01-01T00:00:01Z', dossier: dos,
+        status: { state: 'complete_with_limits', label: 'Research complete with limitations', limits: ['Test-Grenze'] }, summary: { decision: 'CREATE', serp_quality: 'missing', units: 0 },
+        components: o.research_status.components, retry_plan: o.research_status.retry, progress: { overall: 'complete_with_limits', label: 'Research complete with limitations – 6/6 steps' } }); });
+    await p.waitForTimeout(400);
+    rb = (await p.locator('.rr.banner').innerText()).replace(/\n/g, ' ');
+    check('live research from db overrides git mirror (newer version, saved marker)', /live gespeichert/.test(rb) && /Research v3/.test(await p.locator('.rs-banner').innerText()), rb.slice(0, 200));
+    await p.evaluate(async () => { const db = await window.claude.use('db'); await db.collection('research').doc('OPP-04').set({ opp_id: 'OPP-04', client: 'spreewald-luftaufnahmen', version: 1, updated: '2020-01-01T00:00:00Z', dossier: { version: 1 }, progress: { label: 'ALT' } }); });
+    await p.waitForTimeout(300);
+    check('older db research never overrides newer state', !/ALT/.test(await p.locator('.rr.banner').innerText()));
+    await p.evaluate(async () => { const db = await window.claude.use('db'); await db.collection('research').doc('OPP-04').set({}); });
     await p.goto(base2 + '#approvals', { waitUntil: 'networkidle' }); await p.waitForTimeout(250);
     await p.click('[data-card="OPP-05"]'); await p.waitForTimeout(200);
     check('drawer (not started): primary „Research starten“, override secondary + collapsed', (await p.locator('#wf-panel-body [data-rr="OPP-05"]').innerText()) === 'Research starten' && await p.locator('#wf-panel-body [data-rr="OPP-05"]').evaluate(b => b.classList.contains('primary')) && !(await p.locator('#wf-panel-body details.ovr').evaluate(d => d.open)) && !(await p.locator('#wf-panel-body [data-act="approve"]').evaluate(b => b.classList.contains('primary'))));

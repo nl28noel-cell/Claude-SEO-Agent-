@@ -1,0 +1,6 @@
+{
+  "url": "https://3dcopter.de/vermessung/",
+  "domain": "3dcopter.de",
+  "fetched": "2026-11-26T09:03:44Z",
+  "error": "HTTPSConnectionPool(host='3dcopter.de', port=443): Max retries exceeded with url: /vermessung/ (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (age"
+}

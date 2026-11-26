@@ -567,6 +567,127 @@
       "insight": "Nächster Schritt: Noel legt 2 Trustindex-Templates im Elementor-Editor an (Script nicht per API möglich); danach Kopie „Landingpage-Vorlage 2026 – Trustindex-Referenz“ per API, Vorlage 6813 unverändert."
     },
     {
+      "id": "EVT-034",
+      "source_ids": [
+        "SRC-041",
+        "SRC-042"
+      ],
+      "finding_ids": [
+        "FND-015",
+        "FND-016"
+      ],
+      "units": 0,
+      "at": "2026-11-26",
+      "at_precision": "date",
+      "opp": "OPP-04",
+      "action": "gsc_analysis",
+      "title": "GSC-Auswertung",
+      "summary": "Vermessungs-Cluster ausgewertet (65 Queries, Query×Seite, Monatsverlauf, 90 Tage).",
+      "found": "6.158 Impressionen, 4 Klicks; generische Queries auf der Dachseite, 3D-Modell-Queries auf Baudoku."
+    },
+    {
+      "id": "EVT-035",
+      "source_ids": [
+        "SRC-043"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-26",
+      "at_precision": "date",
+      "opp": "OPP-04",
+      "action": "semrush_keyword",
+      "title": "Semrush Keyword Research (Cache)",
+      "summary": "Volumen/KD/CPC aus dem Keyword-Cache übernommen, keine Abfrage.",
+      "found": "22 Keywords, u. a. drohnenvermessung 390, vermessung drohne 210 · 0 Units"
+    },
+    {
+      "id": "EVT-036",
+      "source_ids": [
+        "SRC-044",
+        "SRC-045",
+        "SRC-046",
+        "SRC-047"
+      ],
+      "finding_ids": [
+        "FND-017"
+      ],
+      "units": 0,
+      "at": "2026-11-26",
+      "at_precision": "date",
+      "opp": "OPP-04",
+      "action": "web_research",
+      "title": "Independent Web Research",
+      "summary": "4 Websuchen (Standard/Extended) für „drohnenvermessung“ und die Berlin-Variante. Keine Google.de-SERP, keine Positionen.",
+      "found": "28 Ergebnisse, 8 Anbieterseiten zur Analyse ausgewählt."
+    },
+    {
+      "id": "EVT-037",
+      "source_ids": [
+        "SRC-031",
+        "SRC-032",
+        "SRC-033",
+        "SRC-034",
+        "SRC-035",
+        "SRC-036",
+        "SRC-037",
+        "SRC-038",
+        "SRC-039",
+        "SRC-040"
+      ],
+      "finding_ids": [
+        "FND-018"
+      ],
+      "units": 0,
+      "at": "2026-11-26",
+      "at_precision": "date",
+      "opp": "OPP-04",
+      "action": "competitor_analysis",
+      "title": "Wettbewerberseiten analysiert – fehlgeschlagen",
+      "summary": "Live-Abruf mit tools/page_profile.py und WebFetch: alle 8 Anbieter-Hosts im Netzwerk der Runner-Umgebung nicht freigegeben.",
+      "found": "0 von 8 Seiten analysiert; eigene Vermessungsseiten profiliert."
+    },
+    {
+      "id": "EVT-038",
+      "source_ids": [
+        "SRC-044",
+        "SRC-045",
+        "SRC-046",
+        "SRC-047",
+        "SRC-039",
+        "SRC-040",
+        "SRC-041"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-26",
+      "at_precision": "date",
+      "opp": "OPP-04",
+      "action": "content_gap",
+      "title": "Content Gap erstellt",
+      "summary": "E_gap aus Web Research (Suchergebnis-Ebene), eigenen Vermessungsseiten und Business-Profil abgeleitet.",
+      "found": "Lücken: generische Auswahlhilfe, Gebäude-3D-Modell, Abgrenzung, Parent-Verlinkung."
+    },
+    {
+      "id": "EVT-039",
+      "source_ids": [
+        "SRC-041",
+        "SRC-043",
+        "SRC-044",
+        "SRC-045",
+        "SRC-046",
+        "SRC-047"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-26",
+      "at_precision": "date",
+      "opp": "OPP-04",
+      "action": "dossier",
+      "title": "Research Dossier v1",
+      "summary": "Dossier A–J erstellt: CREATE (Konfidenz niedrig) – Übersicht „Drohnenvermessung für Gebäude“ als Parent von Dach/Fassade; Research incomplete (Competitor Analysis fehlgeschlagen, SERP budget hold).",
+      "found": "Research-Status: incomplete"
+    },
+    {
       "id": "EVT-033",
       "source_ids": [],
       "finding_ids": [],
@@ -579,7 +700,47 @@
       "summary": "OPTIMIZE ohne WordPress-Automatik (Guard optimize_manual_only, Runner wp_disabled); neuer Status Awaiting Manual Implementation; Nachweis read-only; Monitoring ab tatsächlichem Datum; neues Drive-Format für OPTIMIZE. Keine Website-Änderung, keine Semrush-Units, keine Freigabe ausgelöst.",
       "found": "OPP-02 steht in „Manuelle Umsetzung“ (Drive-Dokument v1); Research, Freigabe und Dokument unverändert. Noch nicht als umgesetzt markiert.",
       "insight": "Nach Noels Markierung „Teilweise umgesetzt“ prüft der Agent die Live-Seite read-only; Baseline-Scan 23.11.2026 enthält nur Title/Meta/Überschriften (Einschränkung wird ausgewiesen)."
+    },
+    {
+      "id": "EVT-040",
+      "source_ids": [
+        "SRC-031",
+        "SRC-032",
+        "SRC-033",
+        "SRC-034",
+        "SRC-035",
+        "SRC-036",
+        "SRC-037",
+        "SRC-038",
+        "SRC-048",
+        "SRC-049"
+      ],
+      "finding_ids": [
+        "FND-019"
+      ],
+      "units": 0,
+      "at": "2026-11-26T09:03:00Z",
+      "opp": "OPP-04",
+      "title": "Wettbewerber (Fallback: nur Suchergebnis-Snippets)",
+      "action": "competitor_analysis",
+      "summary": "Stufe 1 Cache: 8 Fehlerprofile (Proxy 403) · Stufe 3 Web-Abruf: nicht verfügbar (Host nicht freigegeben, ENOTFOUND) · Stufe 2/4: WebSearch-Snippets für 8 Anbieter. Keine Seite als analysiert gezählt.",
+      "at_precision": "exact"
+    },
+    {
+      "id": "EVT-041",
+      "source_ids": [
+        "SRC-048",
+        "SRC-049"
+      ],
+      "finding_ids": [],
+      "units": 0,
+      "at": "2026-11-26T09:05:54Z",
+      "opp": "OPP-04",
+      "title": "Research Dossier v2 – Complete with Limitations",
+      "action": "dossier",
+      "summary": "v1 → v2; keine Semrush-Units",
+      "at_precision": "exact"
     }
   ],
-  "updated": "2026-11-26T08:43:47Z"
+  "updated": "2026-11-26T09:05:54Z"
 }

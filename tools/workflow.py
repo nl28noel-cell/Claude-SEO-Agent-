@@ -31,8 +31,11 @@ Dokumentschema workflow/<OPP-ID>:
                    verification:{status: queued|running|complete|failed, results[], summary, limitations[], mismatch}, assessments[], reoptimization}
               NUR OPTIMIZE/MERGE: Noel setzt die Empfehlungen des Drive-Dokuments selbst in Elementor um. Kein WordPress-Draft, kein Publish
               (client.json wordpress.optimize_automation = disabled; tools/wordpress.py guard → optimize_manual_only).
-  research_retry: {status: queued|running|complete|blocked, requested_at, started_at, finished_at, components[], blocked[],
-                   done[], attempt, block_reason, note}   – gezielter Research-Retry (kein neuer Datensatz, kein zweites Dossier)
+  research_retry: {status: queued|running|complete|complete_with_limits|partial|failed|stopped, requested_at, started_at, finished_at,
+                   components[], steps{key:{status,why}}, progress{overall,label,done,total}, done[], failed[], budget_hold[], fallback{},
+                   blockers[{step,action}], saved{collection,doc,version}, attempt, history[], note}
+                   – gezielter Research-Retry (kein neuer Datensatz, kein zweites Dossier). Ergebnisse je Schritt sofort in db research/<OPP>
+                   (tools/research.py export-db) – unabhängig vom Git-Push. Alt: "blocked" (Alles-oder-nichts) wird nicht mehr gesetzt.
 
 Befehle (Export vorher per ArtifactData list collection=workflow out_dir=<dir>):
   python3 tools/workflow.py queue  <dir>                   -> offene Arbeit (produce / revise) als JSON

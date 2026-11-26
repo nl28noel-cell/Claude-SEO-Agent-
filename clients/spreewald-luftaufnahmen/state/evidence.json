@@ -725,6 +725,433 @@
         "status": "draft",
         "source_page": 5401
       }
+    },
+    {
+      "id": "SRC-031",
+      "type": "competitor",
+      "key": "https://3dcopter.de/vermessung/",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "3dcopter.de",
+      "domain": "3dcopter.de",
+      "url": "https://3dcopter.de/vermessung/",
+      "fetched": "2026-11-26T09:03:44Z",
+      "fetched_precision": "exact",
+      "status": null,
+      "error": "HTTPSConnectionPool(host='3dcopter.de', port=443): Max retries exceeded with url: /vermessung/ (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (age",
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-04/pages/3dcopter-de-vermessung.json",
+      "meta": {
+        "h1": null,
+        "words": null,
+        "faq_questions": 0,
+        "schema_types": null,
+        "has_form": null
+      }
+    },
+    {
+      "id": "SRC-032",
+      "type": "competitor",
+      "key": "https://adlerwind.de/leistungen/drohnenvermessung",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "adlerwind.de",
+      "domain": "adlerwind.de",
+      "url": "https://adlerwind.de/leistungen/drohnenvermessung",
+      "fetched": "2026-11-26T09:03:42Z",
+      "fetched_precision": "exact",
+      "status": null,
+      "error": "HTTPSConnectionPool(host='adlerwind.de', port=443): Max retries exceeded with url: /leistungen/drohnenvermessung (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: ",
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-04/pages/adlerwind-de-leistungen-drohnenvermessung.json",
+      "meta": {
+        "h1": null,
+        "words": null,
+        "faq_questions": 0,
+        "schema_types": null,
+        "has_form": null
+      }
+    },
+    {
+      "id": "SRC-033",
+      "type": "competitor",
+      "key": "https://www.aedvice.de/leistungen/drohnenvermessung/",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "aedvice.de",
+      "domain": "aedvice.de",
+      "url": "https://www.aedvice.de/leistungen/drohnenvermessung/",
+      "fetched": "2026-11-26T09:03:42Z",
+      "fetched_precision": "exact",
+      "status": null,
+      "error": "HTTPSConnectionPool(host='www.aedvice.de', port=443): Max retries exceeded with url: /leistungen/drohnenvermessung/ (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection faile",
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-04/pages/aedvice-de-leistungen-drohnenvermessung.json",
+      "meta": {
+        "h1": null,
+        "words": null,
+        "faq_questions": 0,
+        "schema_types": null,
+        "has_form": null
+      }
+    },
+    {
+      "id": "SRC-034",
+      "type": "competitor",
+      "key": "https://airmess.de/",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "airmess.de",
+      "domain": "airmess.de",
+      "url": "https://airmess.de/",
+      "fetched": "2026-11-26T09:03:43Z",
+      "fetched_precision": "exact",
+      "status": null,
+      "error": "HTTPSConnectionPool(host='airmess.de', port=443): Max retries exceeded with url: / (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (agent proxy: no",
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-04/pages/airmess-de.json",
+      "meta": {
+        "h1": null,
+        "words": null,
+        "faq_questions": 0,
+        "schema_types": null,
+        "has_form": null
+      }
+    },
+    {
+      "id": "SRC-035",
+      "type": "competitor",
+      "key": "https://flycad.de/",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "flycad.de",
+      "domain": "flycad.de",
+      "url": "https://flycad.de/",
+      "fetched": "2026-11-26T09:03:42Z",
+      "fetched_precision": "exact",
+      "status": null,
+      "error": "HTTPSConnectionPool(host='flycad.de', port=443): Max retries exceeded with url: / (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (agent proxy: no ",
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-04/pages/flycad-de.json",
+      "meta": {
+        "h1": null,
+        "words": null,
+        "faq_questions": 0,
+        "schema_types": null,
+        "has_form": null
+      }
+    },
+    {
+      "id": "SRC-036",
+      "type": "competitor",
+      "key": "https://www.hangar-11.de/drohnenvermessung",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "hangar-11.de",
+      "domain": "hangar-11.de",
+      "url": "https://www.hangar-11.de/drohnenvermessung",
+      "fetched": "2026-11-26T09:03:43Z",
+      "fetched_precision": "exact",
+      "status": null,
+      "error": "HTTPSConnectionPool(host='www.hangar-11.de', port=443): Max retries exceeded with url: /drohnenvermessung (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 For",
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-04/pages/hangar-11-de-drohnenvermessung.json",
+      "meta": {
+        "h1": null,
+        "words": null,
+        "faq_questions": 0,
+        "schema_types": null,
+        "has_form": null
+      }
+    },
+    {
+      "id": "SRC-037",
+      "type": "competitor",
+      "key": "https://www.ocgt.de/3d-vermessung/",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "ocgt.de",
+      "domain": "ocgt.de",
+      "url": "https://www.ocgt.de/3d-vermessung/",
+      "fetched": "2026-11-26T09:03:42Z",
+      "fetched_precision": "exact",
+      "status": null,
+      "error": "HTTPSConnectionPool(host='www.ocgt.de', port=443): Max retries exceeded with url: /3d-vermessung/ (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (",
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-04/pages/ocgt-de-3d-vermessung.json",
+      "meta": {
+        "h1": null,
+        "words": null,
+        "faq_questions": 0,
+        "schema_types": null,
+        "has_form": null
+      }
+    },
+    {
+      "id": "SRC-038",
+      "type": "competitor",
+      "key": "https://parallelum.de/vermessungsbuero-berlin/",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "parallelum.de",
+      "domain": "parallelum.de",
+      "url": "https://parallelum.de/vermessungsbuero-berlin/",
+      "fetched": "2026-11-26T09:03:43Z",
+      "fetched_precision": "exact",
+      "status": null,
+      "error": "HTTPSConnectionPool(host='parallelum.de', port=443): Max retries exceeded with url: /vermessungsbuero-berlin/ (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403",
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-04/pages/parallelum-de-vermessungsbuero-berlin.json",
+      "meta": {
+        "h1": null,
+        "words": null,
+        "faq_questions": 0,
+        "schema_types": null,
+        "has_form": null
+      }
+    },
+    {
+      "id": "SRC-039",
+      "type": "website",
+      "key": "https://www.spreewald-luftaufnahmen.de/drohne-dach-vermessung/",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "Dachvermessung mit Drohne | Drohne Dachvermessung Berlin",
+      "domain": "spreewald-luftaufnahmen.de",
+      "url": "https://www.spreewald-luftaufnahmen.de/drohne-dach-vermessung/",
+      "fetched": "2026-11-26T09:03:44Z",
+      "fetched_precision": "exact",
+      "status": 200,
+      "error": null,
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-04/pages/spreewald-luftaufnahmen-de-drohne-dach-vermessung.json",
+      "meta": {
+        "h1": "Zuverlässige Dachvermessung mit Drohne",
+        "words": 1232,
+        "faq_questions": 1,
+        "schema_types": [
+          "BreadcrumbList",
+          "EntryPoint",
+          "ImageObject",
+          "ListItem",
+          "Organization",
+          "PropertyValueSpecification",
+          "ReadAction",
+          "SearchAction",
+          "WebPage",
+          "WebSite"
+        ],
+        "has_form": true
+      }
+    },
+    {
+      "id": "SRC-040",
+      "type": "website",
+      "key": "https://www.spreewald-luftaufnahmen.de/fassadenaufmass-drohnen-vermessung-fassade/",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "Fassadenaufmaß mit Drohne | Drohnenvermessung Fassade",
+      "domain": "spreewald-luftaufnahmen.de",
+      "url": "https://www.spreewald-luftaufnahmen.de/fassadenaufmass-drohnen-vermessung-fassade/",
+      "fetched": "2026-11-26T09:03:46Z",
+      "fetched_precision": "exact",
+      "status": 200,
+      "error": null,
+      "raw_path": "clients/spreewald-luftaufnahmen/data/research/OPP-04/pages/spreewald-luftaufnahmen-de-fassadenaufmass-drohnen-vermessung-fassade.json",
+      "meta": {
+        "h1": "Fassadenaufmaß mit Drohne in Berlin und Brandenburg",
+        "words": 827,
+        "faq_questions": 1,
+        "schema_types": [
+          "BreadcrumbList",
+          "EntryPoint",
+          "ImageObject",
+          "ListItem",
+          "Organization",
+          "PropertyValueSpecification",
+          "ReadAction",
+          "SearchAction",
+          "WebPage",
+          "WebSite"
+        ],
+        "has_form": true
+      }
+    },
+    {
+      "id": "SRC-041",
+      "type": "gsc",
+      "key": "gsc-query-page-vermessung",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "GSC · Query×Seite + Query×Datum, Cluster Vermessung",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "property": "https://www.spreewald-luftaufnahmen.de/ (URL-Präfix)",
+        "period": "2025-07-21 – 2026-11-20",
+        "dimensions": "query,page / query,date",
+        "filter": "Queries mit vermess|aufmaß|photogramm|3d|orthofoto (65 Queries, 6.158 Impressionen)",
+        "raw_path": "clients/spreewald-luftaufnahmen/data/gsc-2026-11/gsc_query_page.csv"
+      }
+    },
+    {
+      "id": "SRC-042",
+      "type": "ga4",
+      "key": "ga4-landing-vermessung",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "GA4 · Organic-Landingpages Vermessung",
+      "fetched": "2026-11",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "raw_path": "clients/spreewald-luftaufnahmen/data/ga4-2026-11/ga4_landing_channel.csv"
+      }
+    },
+    {
+      "id": "SRC-043",
+      "type": "semrush",
+      "key": "semrush-keyword-cache-vermessung",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "Semrush Keyword-Cache · Vermessung (DE)",
+      "fetched": "2026-11-23",
+      "fetched_precision": "date",
+      "url": null,
+      "semrush": {
+        "report": "Keyword Overview (phrase_these) / Domain Organic",
+        "endpoint": "phrase_these, domain_organic",
+        "keyword": "22 Vermessungs-Keywords",
+        "database": "DE",
+        "results_count": 22,
+        "units": 0,
+        "mode": "cache",
+        "link": null,
+        "link_note": "Aus data/keyword-cache.csv (Abruf 23.11.2026); in diesem Lauf keine Abfrage, 0 Units."
+      }
+    },
+    {
+      "id": "SRC-044",
+      "type": "web_search",
+      "key": "ws-drohnenvermessung (Standard)",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "WebSearch · drohnenvermessung (Standard)",
+      "fetched": "2026-11-26",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "tool": "Claude WebSearch (US-Index, keine Google.de-SERP, keine Positionen)",
+        "query": "drohnenvermessung",
+        "mode": "Standard",
+        "note": "17 Ergebnisse: Ratgeber (DJI), Software (Autodesk), Fachartikel, Hochschul-PDFs"
+      }
+    },
+    {
+      "id": "SRC-045",
+      "type": "web_search",
+      "key": "ws-drohnenvermessung Dienstleister (Extended)",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "WebSearch · drohnenvermessung Dienstleister (Extended)",
+      "fetched": "2026-11-26",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "tool": "Claude WebSearch (US-Index, keine Google.de-SERP, keine Positionen)",
+        "query": "drohnenvermessung Dienstleister",
+        "mode": "Extended",
+        "note": "9 Anbieterseiten (sitech, airmess, hangar-11, 3dcopter, drobotec, prodroneer u. a.)"
+      }
+    },
+    {
+      "id": "SRC-046",
+      "type": "web_search",
+      "key": "ws-drohnenvermessung berlin brandenburg anbieter (Standard)",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "WebSearch · drohnenvermessung berlin brandenburg anbieter (Standard)",
+      "fetched": "2026-11-26",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "tool": "Claude WebSearch (US-Index, keine Google.de-SERP, keine Positionen)",
+        "query": "drohnenvermessung berlin brandenburg anbieter",
+        "mode": "Standard",
+        "note": "17 Ergebnisse, überwiegend Jobportale/Behörden/Verzeichnisse; wenige Anbieter"
+      }
+    },
+    {
+      "id": "SRC-047",
+      "type": "web_search",
+      "key": "ws-Drohnenvermessung Berlin Dach Fassade 3D-Modell Dienstleister (Extended)",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "WebSearch · Drohnenvermessung Berlin Dach Fassade 3D-Modell Dienstleister (Extended)",
+      "fetched": "2026-11-26",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "tool": "Claude WebSearch (US-Index, keine Google.de-SERP, keine Positionen)",
+        "query": "Drohnenvermessung Berlin Dach Fassade 3D-Modell Dienstleister",
+        "mode": "Extended",
+        "note": "9 Ergebnisse: Berliner Anbieter (adlerwind, ocgt, aedvice, flycad, parallelum, georent) + eigene Dachvermessungsseite"
+      }
+    },
+    {
+      "id": "SRC-048",
+      "type": "web_search",
+      "key": "ws-Drohnenvermessung Dach Fassade Aufmaß Leistungen Lieferformate (Extended, Anbieter-Domains)",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "WebSearch · Drohnenvermessung Dach Fassade Aufmaß Leistungen Lieferformate (auf 8 Anbieter-Domains beschränkt)",
+      "fetched": "2026-11-26",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "tool": "Claude WebSearch (US-Index, keine Google.de-SERP, keine Positionen)",
+        "query": "Drohnenvermessung Dach Fassade Aufmaß Leistungen Lieferformate",
+        "mode": "Extended",
+        "note": "Fallback Stufe 2/4 für Competitor Analysis: Snippets von adlerwind, hangar-11, parallelum u. a. – keine analysierten Seiten",
+        "allowed_domains": [
+          "adlerwind.de",
+          "ocgt.de",
+          "aedvice.de",
+          "parallelum.de",
+          "hangar-11.de",
+          "3dcopter.de",
+          "flycad.de",
+          "airmess.de"
+        ]
+      }
+    },
+    {
+      "id": "SRC-049",
+      "type": "web_search",
+      "key": "ws-Drohnenvermessung Berlin Brandenburg Gebäude Dach Kosten Ablauf FAQ",
+      "opp_ids": [
+        "OPP-04"
+      ],
+      "title": "WebSearch · Drohnenvermessung Berlin Brandenburg Gebäude Dach Kosten Ablauf FAQ",
+      "fetched": "2026-11-26",
+      "fetched_precision": "date",
+      "url": null,
+      "meta": {
+        "tool": "Claude WebSearch (US-Index, keine Google.de-SERP, keine Positionen)",
+        "query": "Drohnenvermessung Berlin Brandenburg Gebäude Dach Kosten Ablauf FAQ",
+        "mode": "Standard",
+        "note": "Ratgeber/FAQ-Themen: Genehmigung/Aufstiegserlaubnis Berlin (LuBB-Gebühren), Genauigkeit RTK, Formate, Ablauf"
+      }
     }
   ],
   "findings": [
@@ -864,7 +1291,70 @@
         "SRC-025",
         "SRC-023"
       ]
+    },
+    {
+      "id": "FND-015",
+      "opp": "OPP-04",
+      "section": "B",
+      "text": "Generische Vermessungs-Queries landen zu ~88 % auf /drohne-dach-vermessung/ (z. B. „drohnenvermessung berlin“ 1.013 von 1.150 Impressionen); Peak Feb–Jun 2026, seit Juli 2026 ≈ 0 Impressionen.",
+      "source_ids": [
+        "SRC-041"
+      ]
+    },
+    {
+      "id": "FND-016",
+      "opp": "OPP-04",
+      "section": "B",
+      "text": "3D-Modell-Queries (~1.150 Impressionen) landen überwiegend auf /drohnen-baudokumentation/ ohne passendes Angebot.",
+      "source_ids": [
+        "SRC-041"
+      ]
+    },
+    {
+      "id": "FND-017",
+      "opp": "OPP-04",
+      "section": "C",
+      "text": "„drohnenvermessung“ ohne Zusatz zeigt in der Web Research überwiegend Ratgeber/Hersteller/Software; mit Orts-/Dienstleisterbezug erscheinen Anbieter mit breitem Portfolio bzw. Berliner Gebäude-/Vermessungsanbieter.",
+      "source_ids": [
+        "SRC-044",
+        "SRC-045",
+        "SRC-046",
+        "SRC-047"
+      ]
+    },
+    {
+      "id": "FND-018",
+      "opp": "OPP-04",
+      "section": "D",
+      "text": "Live-Abruf aller 8 ausgewählten Anbieterseiten fehlgeschlagen (Proxy 403 / DNS) – Competitor Analysis nicht durchgeführt.",
+      "source_ids": [
+        "SRC-031",
+        "SRC-032",
+        "SRC-033",
+        "SRC-034",
+        "SRC-035",
+        "SRC-036",
+        "SRC-037",
+        "SRC-038"
+      ]
+    },
+    {
+      "id": "FND-019",
+      "opp": "OPP-04",
+      "section": "D_competitors",
+      "text": "8 Anbieter (u. a. adlerwind, hangar-11, parallelum, ocgt) nennen laut Suchergebnis konkrete Formate, Genauigkeit und Lieferzeit – nur Snippet-Evidenz.",
+      "source_ids": [
+        "SRC-031",
+        "SRC-032",
+        "SRC-033",
+        "SRC-034",
+        "SRC-035",
+        "SRC-036",
+        "SRC-037",
+        "SRC-038",
+        "SRC-048"
+      ]
     }
   ],
-  "updated": "2026-11-26T08:43:47Z"
+  "updated": "2026-11-26T09:05:54Z"
 }

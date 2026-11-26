@@ -382,6 +382,7 @@ def build_client(slug, today):
         _comps = research.components(r["doc"], o, {"profile": _profile(rid), "serp_plan": _sp})
         o["research_status"]["components"] = list(_comps.values())
         o["research_status"]["retry"] = research.retry_plan(_comps)
+        o["research_status"]["progress"] = research.progress(_comps)
         if r["doc"]:  # Semrush-SERP-Plan (führt nichts aus): Keywords, Kosten, Budget-Urteil
             p = _sp
             o["research_status"]["serp_plan"] = {k: p[k] for k in ("items", "web_research", "units_needed", "units_balance", "reserve_units", "verdict", "why", "balance_checked_at", "display_limit", "database")}

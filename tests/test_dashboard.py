@@ -561,6 +561,72 @@ class ArtifactQA(unittest.TestCase):
         finally:
             shutil.rmtree(tmp)
 
+    def test_research_retry_fallback_and_persistence(self):
+        """Bugfix Research-Retry (OPP-04): Netzwerk-Sperre → Fallback statt Wiederholung, Teilfortschritt, db-Persistenz ohne Git."""
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import research, research_log as RL, tempfile, shutil
+        self.assertEqual(research.classify_failure("Proxy 403 – connect tunnel failed"), "network_blocked")
+        self.assertEqual(research.classify_failure("HTTP 403 Forbidden"), "site_blocked")
+        self.assertEqual(research.classify_failure("Timeout"), "error")
+        hold = {"verdict": "budget_hold", "why": "Reserve"}
+        o4 = {"id": "OPP-04", "type": "CREATE"}
+        v1 = research.load("spreewald-luftaufnahmen", "OPP-04"); self.assertGreaterEqual(v1["version"], 2)
+        # Zustand des Runner-Laufs 26.11. (v1): keine Wettbewerber, Netzwerk-Fehlschlag
+        x = json.loads(json.dumps(v1)); x["D_competitors"] = []; x["status"]["failed"] = {"competitors": "Proxy 403 – Host nicht freigegeben"}
+        c = research.components(x, o4, {"serp_plan": hold})
+        self.assertEqual(c["competitors"]["status"], "blocked"); self.assertEqual(c["serp"]["status"], "budget_hold")
+        self.assertEqual(c["gsc"]["status"], "complete")                                   # unabhängige Schritte nicht blockiert
+        pr = research.progress(c)
+        self.assertEqual(pr["overall"], "partial"); self.assertRegex(pr["label"], r"^Research partially completed – \d+/\d+ steps$")
+        p = research.retry_plan(c)
+        self.assertIn("competitors", p["run"]); self.assertEqual(p["fallback"], ["competitors"])
+        self.assertNotIn("gsc", p["run"]); self.assertEqual(p["budget_hold"], ["serp"])
+        st = next(s for s in p["steps"] if s["key"] == "competitors"); self.assertEqual(st["method"], "fallback"); self.assertIn("Snippet", st["how"] + research.COMPETITOR_FALLBACK)
+        self.assertTrue(p["blockers"] and "freigeben" in p["blockers"][0]["action"])
+        # Snippet-Fallback: als snippet_only gekennzeichnet, nie als analysierte Seite
+        D = research.competitors_from_snippets(x["C_serp"], failure="Proxy 403")
+        self.assertTrue(D and all(d["evidence"] == "snippet_only" for d in D))
+        x["D_competitors"] = D
+        c = research.components(x, o4, {"serp_plan": hold})
+        self.assertEqual(c["competitors"]["status"], "complete_with_limits"); self.assertEqual(c["competitors"]["quality"]["analyzed"], 0)
+        p = research.retry_plan(c)
+        self.assertEqual(p["run"], []); self.assertNotIn("competitors", p["fallback"])   # keine Endlosschleife über dieselben URLs
+        self.assertEqual(research.progress(c)["overall"], "complete_with_limits")
+        self.assertIn(research.derive(v1)["state"], research.READY)                        # Gate 1 normal prüfbar
+        self.assertEqual(research.strategy_ok({"status": "approved", "research_version": v1["version"]}, v1), (True, "ok"))
+        self.assertEqual(research.strategy_ok({"status": "pending"}, v1)[0], False)          # kein automatisches Gate 1
+        # Persistenz über db (export → import), idempotent, ohne Git
+        doc = research.export_db("spreewald-luftaufnahmen", "OPP-04")
+        self.assertEqual(doc["version"], v1["version"]); self.assertIn("retry_plan", doc); self.assertTrue(doc["events"] and doc["sources"])
+        tmp = tempfile.mkdtemp(); bak = tempfile.mkdtemp()
+        state = os.path.join(ROOT, "clients", "spreewald-luftaufnahmen", "state")
+        try:
+            for f in ("evidence.json", "research_log.json"):
+                shutil.copy(os.path.join(state, f), bak)
+            shutil.copy(research.path("spreewald-luftaufnahmen", "OPP-04"), bak)
+            newer = json.loads(json.dumps(doc)); newer["dossier"]["version"] += 1; newer["dossier"]["updated"] = "2099-01-01T00:00:00Z"
+            newer["sources"].append({"id": "SRC-999", "type": "web_search", "key": "ws-test-import", "title": "t", "fetched": "2026-11-26", "opp_ids": ["OPP-04"]})
+            newer["events"].append({"id": "EVT-999", "at": "2099-01-01T00:00:00Z", "at_precision": "exact", "opp": "OPP-04", "action": "dossier", "title": "Test", "summary": "", "source_ids": ["SRC-999"], "finding_ids": [], "units": 0})
+            os.makedirs(os.path.join(tmp, "research")); json.dump(newer, open(os.path.join(tmp, "research", "OPP-04.json"), "w"))
+            r = research.import_db("spreewald-luftaufnahmen", tmp)
+            self.assertEqual((r[0]["dossier"], r[0]["events_added"]), ("updated", 1))
+            self.assertEqual(research.load("spreewald-luftaufnahmen", "OPP-04")["version"], v1["version"] + 1)
+            self.assertEqual(RL.validate("spreewald-luftaufnahmen"), [])
+            r = research.import_db("spreewald-luftaufnahmen", tmp)                         # zweiter Import: nichts doppelt
+            self.assertEqual((r[0]["dossier"], r[0]["events_added"]), ("kept (repo newer or equal)", 0))
+        finally:
+            for f in ("evidence.json", "research_log.json"):
+                shutil.copy(os.path.join(bak, f), state)
+            shutil.copy(os.path.join(bak, "OPP-04.json"), research.path("spreewald-luftaufnahmen", "OPP-04"))
+            shutil.rmtree(tmp); shutil.rmtree(bak)
+        # Dashboard: Live-Research aus db, neue Status, kein Alles-oder-nichts
+        js = open(os.path.join(ROOT, "dashboard", "public", "app.js"), encoding="utf-8").read()
+        for t in ('db.collection("research")', "applyLiveResearch", "Complete with Limitations", "Budget Hold", "Research partially completed", "plan.blockers"):
+            self.assertIn(t, js)
+        o = next(x for x in self.d["opportunities"] if x["id"] == "OPP-04")
+        self.assertEqual(o["research_status"]["progress"]["overall"], "complete_with_limits")
+        self.assertEqual(o["research_status"]["retry"]["run"], [])
+
     def test_research_retry_engine(self):
         sys.path.insert(0, os.path.join(ROOT, "tools"))
         import research, workflow, datetime as dt
@@ -570,7 +636,7 @@ class ArtifactQA(unittest.TestCase):
         hold = {"verdict": "budget_hold", "why": "Reserve"}
         c = research.components(R1, o1, {"profile": prof, "serp_plan": hold})
         st = {k: v["status"] for k, v in c.items()}
-        self.assertEqual((st["gsc"], st["own_page"], st["web_research"], st["competitors"], st["serp"]), ("complete", "complete", "missing", "missing", "blocked_budget"))
+        self.assertEqual((st["gsc"], st["own_page"], st["web_research"], st["competitors"], st["serp"]), ("complete", "complete", "not_started", "not_started", "budget_hold"))
         p = research.retry_plan(c)
         self.assertEqual(p["run"], ["web_research", "competitors", "content_gap", "strategy"])   # nur Fehlendes + Abhängiges
         self.assertIn("gsc", p["reuse"]); self.assertIn("own_page", p["reuse"]); self.assertEqual(p["blocked"], ["serp"])
@@ -585,17 +651,17 @@ class ArtifactQA(unittest.TestCase):
         # vom Runner gemeldeter Fehlschlag (status.failed)
         x = json.loads(json.dumps(R2)); x["status"]["failed"] = {"competitors": "Hosts nicht freigegeben"}
         c = research.components(x, o2, {"profile": {"fetched": dt.date.today().isoformat()}, "serp_plan": hold})
-        self.assertEqual((c["competitors"]["status"], c["competitors"]["why"]), ("complete", ""))     # vorhandene Analyse bleibt gültig
+        self.assertEqual((c["competitors"]["status"], c["competitors"]["why"]), ("complete", "7 Seiten analysiert"))     # vorhandene Analyse bleibt gültig
         x["D_competitors"] = []
         c = research.components(x, o2, {"profile": {"fetched": dt.date.today().isoformat()}, "serp_plan": hold})
-        self.assertEqual((c["competitors"]["status"], c["competitors"]["why"]), ("failed", "Hosts nicht freigegeben"))
+        self.assertEqual((c["competitors"]["status"], c["competitors"]["why"], c["competitors"]["failure_kind"]), ("blocked", "Hosts nicht freigegeben", "network_blocked"))
         # nur kostenpflichtige Research fehlt → kein Retry, Erklärung; Budget-Schutz nie umgehen
         c = research.components(R2, o2, {"profile": {"fetched": dt.date.today().isoformat()}, "serp_plan": hold})
         p = research.retry_plan(c)
         self.assertEqual(p["run"], []); self.assertTrue(p["only_paid_missing"]); self.assertIn("Budget", p["explain"] + c["serp"]["why"] + "Budget")
         c = research.components(R2, o2, {"profile": {"fetched": dt.date.today().isoformat()}, "serp_plan": {"verdict": "run"}})
         self.assertEqual(research.retry_plan(c)["run"], ["serp"])                                  # nur bei Budget „run“
-        self.assertEqual(research.components(None, {"id": "N", "type": "CREATE"}, {})["serp"]["status"], "blocked_budget")
+        self.assertEqual(research.components(None, {"id": "N", "type": "CREATE"}, {})["serp"]["status"], "budget_hold")
         # Runner-Queue: Retry am bestehenden Eintrag, unabhängig von Gate 1; laufend → nicht doppelt
         now = dt.datetime.now(dt.timezone.utc).isoformat()
         docs = {"OPP-01": {"opp_id": "OPP-01", "gate1": {"status": "pending"}, "research_retry": {"status": "queued", "components": ["web_research"], "attempt": 1}},

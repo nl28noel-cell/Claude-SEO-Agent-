@@ -217,7 +217,7 @@ function attentionItems() {
     (implOf(w)?.monitoring?.checkpoints || []).filter(cp => cp.result?.outcome === "negative").forEach(cp => out.push({ kind: "monitoring", level: "danger", ref: c.id, title: `Mögliche negative Entwicklung · ${c.o.name}`, detail: cp.result.message || cp.result.label, open: c.id, rank: 0 }));
     if (col === "draft") out.push({ kind: "gate", level: "warning", ref: c.id, title: `Gate 2 · Review ${c.o.name}`, detail: `Entwurf v${w.production?.version || 1} prüfen`, open: c.id, rank: 1 });
     if (w?.wordpress?.status === "qa_passed") out.push({ kind: "gate", level: "warning", ref: c.id, title: `Gate 3 · Publish ${c.o.name}`, detail: "WordPress-Draft visuell prüfen und freigeben", open: c.id, rank: 0 });
-    if (w?.research_retry?.status === "blocked") out.push({ kind: "research", level: "danger", ref: c.id, title: `Research blockiert · ${c.o.name}`, detail: w.research_retry.block_reason || (w.research_retry.blocked || []).map(b => b.component || b).join(", "), href: "#opp-" + c.id, rank: 2 });
+    if (["blocked", "failed"].includes(w?.research_retry?.status)) out.push({ kind: "research", level: "danger", ref: c.id, title: `Research blockiert · ${c.o.name}`, detail: w.research_retry.block_reason || (w.research_retry.blocked || []).map(b => b.component || b).join(", "), href: "#opp-" + c.id, rank: 2 });
     if (["blocked", "qa_failed", "publish_failed"].includes(w?.wordpress?.status)) out.push({ kind: "wordpress", level: "danger", ref: c.id, title: `WordPress · ${c.o.name}`, detail: (WP_LABEL[w.wordpress.status] || [w.wordpress.status])[0], open: c.id, rank: 2 });
     if (w?.production?.status === "blocked") out.push({ kind: "production", level: "danger", ref: c.id, title: `Produktion blockiert · ${c.o.name}`, detail: w.production.block_detail || BLOCK_TEXT[w.production.block_reason] || w.production.block_reason, open: c.id, rank: 2 });
   }
@@ -747,6 +747,11 @@ async function initDb() {
     DB.decisions = snap.docs.map(d => ({ _id: d.id, ...d.data() })).sort((a, b) => String(b.decided_at).localeCompare(String(a.decided_at)));
     DB.fromCache = snap.metadata.fromCache; DB.state = "ready"; dbChanged();
   }, err => { clearTimeout(timer); fail("error", err.code + ": " + err.message); });
+  db.collection("research").onSnapshot(snap => {
+    let changed = false;
+    snap.docs.forEach(d => { if (applyLiveResearch(d.id, d.data())) changed = true; });
+    if (changed) { const k = parseHash().key; if (!WF_OPEN && !document.activeElement?.matches("textarea, input, select")) route(true); else if (k === "approvals") renderBoard(); updateBadges(); }
+  }, () => { /* ohne Live-Research gilt der Git-Spiegel */ });
   db.collection("workflow").onSnapshot(snap => {
     WF.items = Object.fromEntries(snap.docs.map(d => [d.id, { _id: d.id, ...d.data() }])); WF.live = !snap.metadata.fromCache || snap.size > 0;
     const k = parseHash().key;
@@ -1230,28 +1235,48 @@ function wpAction(o, w, col, canWrite) {
     <p class="s">Gate 3: Erst jetzt darf der Agent ${wp.mode === "OPTIMIZE" ? "die freigegebene Draft-Version in die Live-Seite übernehmen (URL, Slug, Canonical, Indexierung bleiben unverändert)" : "den Draft veröffentlichen"}. ${rbOk ? "" : "<b>Gesperrt: Rollback protection unavailable.</b>"}</p></div>`;
 }
 /* ------------------------------------------------------------ Research-Retry: fehlende Research gezielt nachholen (generisch für alle Opportunities) */
-const COMP_ST = { complete: ["Complete", "green"], missing: ["Missing", "amber"], failed: ["Failed", "red"], stale: ["Veraltet", "amber"], blocked_budget: ["Budget-Reserve", ""], blocked: ["Blockiert", "red"], "n/a": ["n/a", ""] };
-const RR_LABEL = { queued: ["Research retry queued", "blue"], running: ["Research running", "blue"], complete: ["Research complete", "green"], blocked: ["Research blocked", "red"] };
+const COMP_ST = { not_started: ["Not started", "amber"], queued: ["Queued", "blue"], running: ["Running", "blue"], complete: ["Complete", "green"], complete_with_limits: ["Complete with Limitations", "blue"],
+  blocked: ["Blocked", "red"], failed: ["Failed", "red"], budget_hold: ["Budget Hold", ""], stale: ["Veraltet", "amber"], "n/a": ["n/a", ""],
+  missing: ["Not started", "amber"], blocked_budget: ["Budget Hold", ""] }; // letzte zwei: Altwerte älterer Builds
+const RR_LABEL = { queued: ["Research retry queued", "blue"], running: ["Research running", "blue"], complete: ["Research complete", "green"], complete_with_limits: ["Research complete with limitations", "blue"],
+  partial: ["Research partially completed", "amber"], blocked: ["Research blocked", "red"], failed: ["Research failed", "red"], stopped: ["Research gestoppt", ""] };
+const RR_OPEN = ["not_started", "failed", "stale", "blocked", "missing"];
+/** Live-Research aus der Artifact-Datenbank (research/<OPP>) – vom Runner nach jedem Schritt gespeichert, unabhängig vom Git-Push.
+ *  Gewinnt nur, wenn die Dossier-Version neuer ist (oder gleich, aber später aktualisiert) als der Git-Spiegel. */
+function applyLiveResearch(id, d) {
+  const o = S.d?.opportunities?.find(x => x.id === id); if (!o || !d?.dossier || d.client && d.client !== S.client) return false;
+  const cur = o.research_status || {}, v = d.version ?? d.dossier.version ?? 0, cv = cur.version ?? 0;
+  if (v < cv || (v === cv && String(d.updated || "") <= String(cur.updated || "") && !cur.live)) return false;
+  if (cur.live && cur.synced_at === d.synced_at) return false;
+  const sm = d.summary || {};
+  o.research = d.dossier;
+  o.research_status = { ...(d.status || {}), version: v, updated: d.updated, decision: sm.decision, serp_quality: sm.serp_quality, units: sm.units, serp_competitors: sm.serp_competitors,
+    components: d.components || [], retry: d.retry_plan || { run: [], blocked: [], reuse: [] }, progress: d.progress || null,
+    serp_plan: cur.serp_plan, serp_validation: cur.serp_validation, live: true, synced_at: d.synced_at };
+  return true;
+}
 const rrOf = id => wfDoc(id)?.research_retry || null;
 const rrActive = rr => rr && (rr.status === "queued" || rr.status === "running");
 function researchActions(o, place = "banner") {
   const r = resStatus(o); if (!r?.components) return "";
   const plan = r.retry || { run: [], blocked: [] }, rr = rrOf(o.id), active = rrActive(rr);
-  const missingLabels = r.components.filter(c => ["missing", "failed", "stale"].includes(c.status)).map(c => c.label);
+  const missingLabels = r.components.filter(c => RR_OPEN.includes(c.status)).map(c => c.label);
+  const prog = r.progress ? `<div class="rr-prog">${chip(r.progress.label, RR_LABEL[r.progress.overall]?.[1] || RES_COLOR[r.progress.overall] || "", true)}${r.live ? `<span class="mini"> · live gespeichert ${fmtDateTime(r.synced_at)}</span>` : ""}</div>` : "";
+  const blockers = (plan.blockers || []).map(b => `<div class="s"><b>${esc(r.components.find(x => x.key === b.step)?.label || b.step)}:</b> ${esc(b.action)}</div>`).join("");
   const comps = `<div class="rr-comps">${r.components.filter(c => c.status !== "n/a").map(c => `<span data-tip="${esc(c.why || "")}">${esc(c.label)}: ${chip(COMP_ST[c.status]?.[0] || c.status, COMP_ST[c.status]?.[1] || "")}</span>`).join("")}</div>`;
   let st = "";
   if (rr) {
     const [l, c] = RR_LABEL[rr.status] || [rr.status, ""], n = (rr.components || []).length, d = (rr.done || []).length;
     st = `<div class="rr-status">${chip(l, c, true)}${active ? ` <span>Research wird nachgeholt … ${rr.status === "running" ? `${d} von ${n} fehlenden Schritten abgeschlossen` : `(${n} Schritte: ${esc((rr.components || []).map(k => r.components.find(x => x.key === k)?.label || k).join(" · "))})`}</span>` : ""}
-      ${rr.status === "blocked" ? `<div class="down s">Ursache: ${esc(rr.block_reason || "unbekannt")}</div>` : ""}${rr.status === "complete" && rr.finished_at ? `<span class="s"> · ${fmtDateTime(rr.finished_at)}</span>` : ""}
-      ${(rr.blocked || []).length ? `<div class="s">Nicht ausgeführt: ${esc(rr.blocked.map(k => (r.components.find(x => x.key === k)?.label || k) + " – Budget-Reserve").join(" · "))}</div>` : ""}</div>`;
+      ${["blocked", "failed"].includes(rr.status) && rr.block_reason ? `<div class="down s">Ursache: ${esc(rr.block_reason)}</div>` : ""}${!active && rr.finished_at ? `<span class="s"> · Versuch ${fmtN(rr.attempt || 1)} · ${fmtDateTime(rr.finished_at)}</span>` : ""}
+      ${(rr.budget_hold || rr.blocked || []).length ? `<div class="s">Nicht ausgeführt: ${esc((rr.budget_hold || rr.blocked).map(k => (r.components.find(x => x.key === k)?.label || k) + " – Budget Hold").join(" · "))}</div>` : ""}</div>`;
   }
   const canRun = plan.run.length > 0;
   const btnLabel = r.state === "not_started" ? "Research starten" : missingLabels.length ? "Fehlende Research nachholen" : "Research neu anstoßen";
   const btn = canRun ? `<button class="btn primary" data-rr="${esc(o.id)}" ${active ? "disabled" : ""}>${active ? "Research wird nachgeholt …" : esc(btnLabel)}</button>` : "";
   const blockedNote = plan.blocked.length ? `<div class="s">${plan.only_paid_missing ? esc(plan.explain) : `Semrush SERP weiterhin blockiert – Budget-Reserve (wird nicht ausgeführt, kostenlose Schritte laufen trotzdem).`}</div>` : "";
-  return `<div class="rr ${place}" data-rr-opp="${esc(o.id)}" data-rr-place="${esc(place)}">${missingLabels.length ? `<div><b>Fehlend:</b> ${esc(missingLabels.join(" · "))}</div>` : ""}${comps}${st}
-    ${canRun ? `<div class="row mt">${btn}<span class="mini" data-rr-msg="${esc(o.id)}"></span></div><div class="s">Holt nur fehlende/fehlgeschlagene/veraltete Schritte nach (${esc(plan.run.map(k => r.components.find(x => x.key === k)?.label || k).join(" · "))}); vorhandene Research (${esc(plan.reuse.map(k => r.components.find(x => x.key === k)?.label || k).join(" · ") || "–")}) wird wiederverwendet. Dasselbe Dossier wird fortgeschrieben und versioniert.</div>` : ""}
+  return `<div class="rr ${place}" data-rr-opp="${esc(o.id)}" data-rr-place="${esc(place)}">${prog}${missingLabels.length ? `<div><b>Offen:</b> ${esc(missingLabels.join(" · "))}</div>` : ""}${comps}${st}${blockers}
+    ${canRun ? `<div class="row mt">${btn}<span class="mini" data-rr-msg="${esc(o.id)}"></span></div><div class="s">Holt nur fehlende/fehlgeschlagene/veraltete Schritte nach (${esc(plan.run.map(k => (r.components.find(x => x.key === k)?.label || k) + ((plan.fallback || []).includes(k) ? " (Fallback)" : "")).join(" · "))}); vorhandene Research (${esc(plan.reuse.map(k => r.components.find(x => x.key === k)?.label || k).join(" · ") || "–")}) wird wiederverwendet. Dasselbe Dossier wird fortgeschrieben und versioniert.</div>` : ""}
     ${blockedNote}</div>`;
 }
 /** Retry anstoßen: Auftrag am bestehenden Workflow-Eintrag (kein neuer Datensatz), Protokoll, Agentenlauf */
@@ -1277,12 +1302,12 @@ async function researchRetry(id) {
 document.addEventListener("click", e => { const b = e.target.closest("[data-rr]"); if (b && !b.disabled) { e.preventDefault(); researchRetry(b.dataset.rr); } });
 /* ------------------------------------------------------------ Research-/Strategy-Stufe (A–J, vor Gate 1) */
 const RES_READY = ["complete", "complete_with_limits"];
-const RES_COLOR = { complete: "green", complete_with_limits: "blue", incomplete: "amber", not_started: "" };
+const RES_COLOR = { complete: "green", complete_with_limits: "blue", incomplete: "amber", partial: "amber", not_started: "" };
 const resStatus = o => o?.research_status || (["CREATE", "OPTIMIZE", "MERGE"].includes(o?.type) ? { state: "not_started", label: "Research not started", missing: [], limits: [] } : null);
 const resChip = o => { const r = resStatus(o); return r ? chip(r.label, RES_COLOR[r.state], true) : ""; };
 const REL = { business_competitor: ["Wettbewerber", "red"], platform: ["Plattform", "amber"], software: ["Software", ""], guide: ["Ratgeber", ""], directory: ["Verzeichnis", ""], partner: ["Partner", "green"], own: ["Eigene Seite", "blue"], other: ["Sonstiges", ""] };
 const ROLE = { primary: ["Primary", "blue"], secondary: ["Secondary", "green"], supporting: ["Supporting", ""], do_not_target: ["Do not target", "red"] };
-const ul = a => a?.length ? `<ul class="list">${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : `<span class="mini">–</span>`;
+const ul = a => { a = typeof a === "string" ? [a] : Array.isArray(a) ? a : []; return a.length ? `<ul class="list">${a.map(x => `<li>${esc(typeof x === "string" ? x : JSON.stringify(x))}</li>`).join("")}</ul>` : `<span class="mini">–</span>`; };
 let RS_OPP = null; // Opportunity, deren Dossier gerade gerendert wird (für belegte Erkenntnisse je Abschnitt)
 const rsCard = (key, title, body, hint = "") => { const fs = RS_OPP ? oppFindings(RS_OPP, key) : [];
   return `<section class="card rs" id="rs-${key}"><div class="card-h"><div><h2>${esc(title)}</h2>${hint ? `<div class="hint">${esc(hint)}</div>` : ""}</div></div><div class="card-b">${body}${fs.length ? `<div class="rs-ev"><h4>Belegt durch</h4>${fs.map(findingRefs).join("")}</div>` : ""}</div></section>`; };

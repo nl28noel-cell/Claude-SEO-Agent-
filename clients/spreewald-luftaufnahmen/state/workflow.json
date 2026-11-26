@@ -1,6 +1,6 @@
 {
   "_doc": "Git-Spiegel der Artifact-db-Collection 'workflow' (SSOT ist die db). Vom Agenten nach jedem Workflow-Lauf geschrieben.",
-  "updated": "2026-11-24",
+  "updated": "2026-11-26",
   "items": [
     {
       "id": "OPP-01",
@@ -25,6 +25,33 @@
       "opp_id": "OPP-01",
       "production": {
         "status": "not_started"
+      },
+      "research_retry": {
+        "attempt": 1,
+        "block_reason": "Wettbewerber-Hosts im Netzwerk der Umgebung nicht freigegeben – Competitor Analysis und Content Gap offen. Web Research erledigt, Strategie geprüft (unverändert).",
+        "blocked": [
+          "serp"
+        ],
+        "components": [
+          "web_research",
+          "competitors",
+          "content_gap",
+          "strategy"
+        ],
+        "done": [
+          "web_research",
+          "strategy"
+        ],
+        "failed": {
+          "competitors": "Wettbewerber-Hosts im Netzwerk nicht freigegeben (Proxy 403 / DNS) – 0 von 7 Seiten abrufbar",
+          "content_gap": "abhängig von Competitor Analysis"
+        },
+        "finished_at": "2026-11-24T13:08:00Z",
+        "requested_at": "2026-11-24T12:52:42.325Z",
+        "research_version": 2,
+        "run_id": "wr-20261124-1255",
+        "started_at": "2026-11-24T12:55:00Z",
+        "status": "blocked"
       },
       "review": {
         "status": "not_started"
@@ -52,7 +79,11 @@
           "result": "Agentenlauf blockiert (2026-11-23): Session ohne Repository (docs/workflow.md, state/workflow.json fehlen) und Google-Drive-Connector in der Session nicht aktiviert – kein Entwurf erstellt. production bleibt 'waiting'; bitte Trigger erneut auslösen, sobald Repo + Drive-Zugriff in der Routine-Umgebung konfiguriert sind."
         }
       },
-      "title": "Dachinspektion"
+      "title": "Dachinspektion",
+      "trigger": {
+        "requested_at": "2026-11-24T12:52:45.479Z",
+        "result": "Agentenlauf angestoßen"
+      }
     },
     {
       "id": "OPP-02",
@@ -278,6 +309,120 @@
       "production": {
         "status": "not_started"
       },
+      "research_retry": {
+        "attempt": 2,
+        "blocked": [],
+        "blockers": [
+          {
+            "action": "Optional: Wettbewerber-Hosts in der Umgebung „Claude-SEO-Agent“ (Settings → Network) freigeben, damit Seiten vollständig analysiert werden können. Ohne Freigabe läuft die Analyse mit Snippet-Evidenz weiter (eingeschränkt).",
+            "step": "competitors"
+          }
+        ],
+        "budget_hold": [
+          "serp"
+        ],
+        "components": [
+          "gsc",
+          "semrush_keywords",
+          "own_page",
+          "web_research",
+          "competitors",
+          "serp",
+          "content_gap",
+          "strategy"
+        ],
+        "done": [
+          "gsc",
+          "semrush_keywords",
+          "web_research",
+          "competitors",
+          "content_gap",
+          "strategy"
+        ],
+        "failed": [],
+        "fallback": {
+          "competitors": "Snippet-Evidenz (Stufe 2/4) – Live-Abruf in der Umgebung nicht freigegeben (Proxy 403), nicht umgangen"
+        },
+        "finished_at": "2026-11-26T09:06:27Z",
+        "history": [
+          {
+            "attempt": 1,
+            "finished_at": "2026-11-26T08:54:30Z",
+            "note": "Runner-Ergebnisse durch Push-403 (F-025) verloren; aus Transkript rekonstruiert",
+            "status": "blocked (alt: Alles-oder-nichts-Status)"
+          }
+        ],
+        "progress": {
+          "budget_hold": [
+            "serp"
+          ],
+          "done": 6,
+          "label": "Research complete with limitations – 6/6 steps",
+          "limited": [
+            "semrush_keywords",
+            "competitors",
+            "content_gap",
+            "strategy"
+          ],
+          "overall": "complete_with_limits",
+          "problems": [],
+          "steps": {
+            "competitors": "complete_with_limits",
+            "content_gap": "complete_with_limits",
+            "gsc": "complete",
+            "own_page": "n/a",
+            "semrush_keywords": "complete_with_limits",
+            "serp": "budget_hold",
+            "strategy": "complete_with_limits",
+            "web_research": "complete"
+          },
+          "total": 6
+        },
+        "requested_at": "2026-11-26T08:48:23.906Z",
+        "research_version": 2,
+        "result": "Dossier v2: Research complete with limitations – 6/6 Schritte. Wettbewerber nur als Suchergebnis-Snippets (keine analysierten Seiten); Semrush SERP budget hold; GSC-Trend offen. Gate 1 kann normal geprüft werden.",
+        "saved": {
+          "collection": "research",
+          "doc": "OPP-04",
+          "version": 2
+        },
+        "started_at": "2026-11-26T09:00:00Z",
+        "status": "complete_with_limits",
+        "steps": {
+          "competitors": {
+            "status": "complete_with_limits",
+            "why": "0 analysierte Seite(n), 8 nur als Suchergebnis-Snippet · Live-Abruf: Wettbewerber-Hosts im Netzwerk der Runner-Umgebung nicht freigegeben (Proxy 403 für alle 8 Anbieterseiten, 26.11.2026)"
+          },
+          "content_gap": {
+            "status": "complete_with_limits",
+            "why": "vorläufig – Wettbewerberbasis eingeschränkt"
+          },
+          "gsc": {
+            "status": "complete",
+            "why": ""
+          },
+          "own_page": {
+            "status": "n/a",
+            "why": "Keine bestehende Seite"
+          },
+          "semrush_keywords": {
+            "status": "complete_with_limits",
+            "why": "6 Keyword(s) nicht im Cache – Abfrage nur mit Budgetfreigabe"
+          },
+          "serp": {
+            "status": "budget_hold",
+            "why": "Kontostand 250 − 200 = 50 < Reserve 250"
+          },
+          "strategy": {
+            "status": "complete_with_limits",
+            "why": "auf eingeschränkter Wettbewerber-/SERP-Basis"
+          },
+          "web_research": {
+            "status": "complete",
+            "why": ""
+          }
+        }
+      },
       "review": {
         "status": "not_started"
       },
@@ -304,7 +449,11 @@
           "result": "Agentenlauf blockiert (2026-11-23): Session ohne Repository (docs/workflow.md, state/workflow.json fehlen) und Google-Drive-Connector in der Session nicht aktiviert – kein Entwurf erstellt. production bleibt 'waiting'; bitte Trigger erneut auslösen, sobald Repo + Drive-Zugriff in der Routine-Umgebung konfiguriert sind."
         }
       },
-      "title": "Drohnenvermessung (Hub)"
+      "title": "Drohnenvermessung (Hub)",
+      "trigger": {
+        "requested_at": "2026-11-26T08:48:27.103Z",
+        "result": "Research-Retry abgeschlossen (mit Einschränkungen) – Dossier v2 in der Datenbank gespeichert"
+      }
     },
     {
       "id": "OPP-05",

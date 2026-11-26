@@ -1,0 +1,6 @@
+{
+  "url": "https://www.aedvice.de/leistungen/drohnenvermessung/",
+  "domain": "aedvice.de",
+  "fetched": "2026-11-26T09:03:42Z",
+  "error": "HTTPSConnectionPool(host='www.aedvice.de', port=443): Max retries exceeded with url: /leistungen/drohnenvermessung/ (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection faile"
+}

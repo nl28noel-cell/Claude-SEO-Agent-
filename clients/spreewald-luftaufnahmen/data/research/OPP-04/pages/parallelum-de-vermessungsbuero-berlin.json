@@ -1,0 +1,6 @@
+{
+  "url": "https://parallelum.de/vermessungsbuero-berlin/",
+  "domain": "parallelum.de",
+  "fetched": "2026-11-26T09:03:43Z",
+  "error": "HTTPSConnectionPool(host='parallelum.de', port=443): Max retries exceeded with url: /vermessungsbuero-berlin/ (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403"
+}
